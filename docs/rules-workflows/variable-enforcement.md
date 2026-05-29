@@ -10,5 +10,6 @@ To maintain the integrity of the stylized, non-realistic "Cyan/Mist" aesthetic (
    - Standard Tailwind layout utilities.
    - Global semantic variables from the preset: `bg-background`, `text-foreground`, `border-border`, `ring-ring`.
    - Primary/Secondary variables from the preset: `bg-primary`, `text-secondary`, `bg-muted`.
+   - All standard Tailwind utility classes mapping to these CSS variables (e.g., `text-accent`, `bg-destructive/90`).
 
 Any agent generation attempt failing these rules must automatically reject and self-correct to use the defined variable taxonomy provided by the shadcn CLI.

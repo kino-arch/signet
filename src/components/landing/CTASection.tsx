@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { ArrowRight, CheckCircle2, Flame, Shield } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
@@ -14,8 +15,12 @@ const benefits = [
 
 export function CTASection() {
   const [email, setEmail] = useState("");
+  const navigate = useNavigate();
 
-
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    navigate("/login");
+  };
   return (
     <section id="forge" className="relative w-full overflow-hidden bg-background py-16 md:py-24 lg:py-32">
       {/* Animated background elements */}
@@ -85,15 +90,16 @@ export function CTASection() {
               transition={{ delay: 0.5 }}
               className="mb-6 md:mb-8"
             >
-              <div className="flex flex-col gap-3 sm:flex-row">
+              <form onSubmit={handleSubmit} className="flex flex-col gap-3 sm:flex-row">
                 <Input
                   type="email"
                   placeholder="Enter your comm-link (email)"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   className="h-12 flex-1 text-base md:h-14"
+                  required
                 />
-                <Button variant="default" size="lg" className="group h-12 md:h-14">
+                <Button type="submit" variant="default" size="lg" className="group h-12 md:h-14">
                   Forge Corporate Resume
                   <motion.div
                     className="ml-2"
@@ -103,7 +109,7 @@ export function CTASection() {
                     <ArrowRight className="h-4 w-4" />
                   </motion.div>
                 </Button>
-              </div>
+              </form>
             </motion.div>
 
             {/* Benefits list */}

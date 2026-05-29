@@ -103,6 +103,8 @@ export function OnboardingPage() {
   const [website, setWebsite] = useState("");
   const [swearOath, setSwearOath] = useState(false);
   const [creedComplete, setCreedComplete] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   // Scanner states
   const [scannerStatus, setScannerStatus] = useState("INITIALIZING");
@@ -157,25 +159,27 @@ export function OnboardingPage() {
   const handleIgniteForge = async () => {
     if (!swearOath) return;
     
-    // Create custom onboarding details mapping
-    const onboardingDetails = {
-      role,
-      firstName,
-      lastName,
-      email: user?.email || "",
-      phone,
-      location,
-      website
-    };
+    setSubmitting(true);
+    setError(null);
+    try {
+      const onboardingDetails = {
+        role,
+        firstName,
+        lastName,
+        email: user?.email || "",
+        phone,
+        location,
+        website
+      };
 
-    // 1. Initialize Forge Editor Store with defaults
-    initializeWithOnboarding(onboardingDetails);
-
-    // 2. Set Auth onboarding status to true (writes to Supabase and LocalStorage)
-    await completeOnboarding(onboardingDetails);
-
-    // 3. Redirect to editor
-    navigate("/editor", { replace: true });
+      initializeWithOnboarding(onboardingDetails);
+      await completeOnboarding(onboardingDetails);
+      navigate("/editor", { replace: true });
+    } catch (err: any) {
+      setError(err.message || "Failed to complete onboarding. Please try again.");
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -298,10 +302,12 @@ export function OnboardingPage() {
                       const isSelected = role === option.id;
 
                       return (
-                        <div
+                        <button
                           key={option.id}
+                          type="button"
+                          aria-pressed={isSelected}
                           onClick={() => handleSelectRole(option.id)}
-                          className={`relative flex cursor-pointer flex-col items-center justify-between rounded-xl border p-5 text-center transition-all duration-300 select-none ${
+                          className={`relative flex cursor-pointer flex-col items-center justify-between rounded-xl border p-5 text-center text-left transition-all duration-300 select-none ${
                             isSelected 
                               ? "-translate-y-1 border-primary bg-muted shadow-[0_0_15px_var(--color-primary-foreground)] shadow-primary/20" 
                               : "border-border/50 bg-background hover:border-primary/50 hover:bg-muted/50"
@@ -330,7 +336,7 @@ export function OnboardingPage() {
                           <div className="mt-4 w-full truncate border-t border-border/50 pt-2 font-mono text-[9px] text-muted-foreground/60 italic">
                             "{option.creed}"
                           </div>
-                        </div>
+                        </button>
                       );
                     })}
                   </div>
@@ -512,8 +518,10 @@ export function OnboardingPage() {
                           animate={{ opacity: 1, y: 0 }}
                           transition={{ duration: 0.5, ease: "easeOut" }}
                         >
-                          <div
-                            className="flex cursor-pointer items-center space-x-3 rounded-lg border border-border/50 bg-muted/30 p-4 text-left transition-all hover:bg-muted/50"
+                          <button
+                            type="button"
+                            aria-pressed={swearOath}
+                            className="flex w-full cursor-pointer items-center space-x-3 rounded-lg border border-border/50 bg-muted/30 p-4 text-left transition-all hover:bg-muted/50"
                             onClick={() => setSwearOath(!swearOath)}
                           >
                             <div className={`flex h-5 w-5 items-center justify-center rounded border transition-all ${
@@ -524,7 +532,10 @@ export function OnboardingPage() {
                             <span className="text-xs font-medium text-foreground select-none">
                               I swear the Creed. I am ready to forge my resume.
                             </span>
-                          </div>
+                          </button>
+                          {error && (
+                            <p className="mt-3 text-sm text-destructive font-medium">{error}</p>
+                          )}
                         </motion.div>
                       )}
                     </AnimatePresence>
@@ -532,16 +543,16 @@ export function OnboardingPage() {
 
                   <CardFooter className="flex flex-col gap-3">
                     <Button
-                      disabled={!swearOath}
+                      disabled={!swearOath || submitting}
                       onClick={handleIgniteForge}
                       className={`relative h-12 w-full overflow-hidden font-bold transition-all duration-500 ${
-                        swearOath 
+                        swearOath && !submitting
                           ? "shadow-[0_0_15px_var(--color-primary-foreground)] shadow-primary/30" 
                           : ""
                       }`}
                     >
                       <span className="relative z-10 flex items-center justify-center gap-2">
-                        IGNITE THE FORGE <Sparkles className="h-4 w-4" />
+                        {submitting ? "IGNITING..." : "IGNITE THE FORGE"} <Sparkles className="h-4 w-4" />
                       </span>
                     </Button>
                     

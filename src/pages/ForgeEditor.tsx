@@ -121,22 +121,24 @@ export function ForgeEditor() {
       return;
     }
 
-    setDownloadStep("deducting");
-    
-    // Simulate custom biometric delay
-    await new Promise((resolve) => setTimeout(resolve, 1400));
-    
-    const success = await deductToken();
-    if (!success) {
-      setDownloadStep("idle");
-      setExchangeMessage("Authorization failed. Replenish your balance.");
-      setShowExchange(true);
-      return;
-    }
+    try {
+      setDownloadStep("generating");
+      await generatePDF("resume-document", "mandalorian-dossier.pdf");
 
-    setDownloadStep("generating");
-    await generatePDF("resume-document", "mandalorian-dossier.pdf");
-    setDownloadStep("idle");
+      setDownloadStep("deducting");
+      // Simulate custom biometric delay
+      await new Promise((resolve) => setTimeout(resolve, 1400));
+      
+      const success = await deductToken();
+      if (!success) {
+        setExchangeMessage("Authorization failed. Replenish your balance.");
+        setShowExchange(true);
+      }
+    } catch (error) {
+      console.error("PDF generation error:", error);
+    } finally {
+      setDownloadStep("idle");
+    }
   };
 
   const handleSignOut = async () => {

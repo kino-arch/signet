@@ -75,14 +75,22 @@ export function CommLink() {
           >
             <Card className="border-border/50 bg-card shadow-md">
               <CardContent className="p-6 md:p-8">
-                <form className="space-y-6">
+                <form 
+                  className="space-y-6"
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    // In a real implementation, this would send to an API.
+                    // For now, we alert to show it's wired up.
+                    alert("Transmission sent to the Covert.");
+                  }}
+                >
                   <div className="space-y-2">
                     <Label htmlFor="name">Designation</Label>
-                    <Input id="name" placeholder="Mando" className="bg-background/50" />
+                    <Input id="name" placeholder="Mando" className="bg-background/50" required />
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="email">Comm-Link Address (Email)</Label>
-                    <Input id="email" type="email" placeholder="mando@covert.com" className="bg-background/50" />
+                    <Input id="email" type="email" placeholder="mando@covert.com" className="bg-background/50" required />
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="message">Transmission</Label>
@@ -90,9 +98,10 @@ export function CommLink() {
                       id="message" 
                       placeholder="Enter your message..." 
                       className="min-h-[120px] bg-background/50"
+                      required
                     />
                   </div>
-                  <Button type="button" className="w-full gap-2">
+                  <Button type="submit" className="w-full gap-2">
                     Send Transmission
                     <Send className="h-4 w-4" />
                   </Button>

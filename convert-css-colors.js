@@ -58,4 +58,7 @@ async function run() {
   console.log(`Successfully converted ${replacedCount} oklch colors in ${cssPath}!`);
 }
 
-run().catch(console.error);
+run().catch((err) => {
+  console.error("Fatal error during CSS color conversion:", err);
+  process.exit(1);
+});

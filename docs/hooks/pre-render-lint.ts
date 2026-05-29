@@ -21,7 +21,10 @@ function scanDirectory(directory: string) {
             lines.forEach((line, index) => {
                 bannedTags.forEach(tag => {
                     // Very rudimentary check for raw tags
-                    if (line.includes(tag) && !line.includes('// eslint-disable')) {
+                    const hasExplicitBypass =
+                        line.includes('// pre-render-lint-disable') ||
+                        line.includes('// eslint-disable-next-line pre-render-lint/no-raw-primitives');
+                    if (line.includes(tag) && !hasExplicitBypass) {
                         console.error(`\x1b[31m[PRE-RENDER-LINT] Banned raw HTML tag "${tag}" found in ${fullPath}:${index + 1}\x1b[0m`);
                         console.error(`\x1b[33mFix: Replace with the equivalent Shadcn UI component (e.g., <Button>, <Input>).\x1b[0m`);
                         process.exit(1);

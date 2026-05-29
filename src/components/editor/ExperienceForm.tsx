@@ -96,12 +96,16 @@ export function ExperienceForm() {
           <Card key={exp.id} className="overflow-hidden border-border/50 bg-card transition-all duration-200">
             {/* Header (Collapsed View) */}
             <div
-              className={`flex cursor-pointer items-center justify-between p-4 hover:bg-secondary/50 ${
+              className={`flex items-center justify-between p-4 hover:bg-secondary/50 ${
                 isExpanded ? "border-b border-border/40 bg-secondary/50" : ""
               }`}
-              onClick={() => setExpandedId(isExpanded ? null : exp.id)}
             >
-              <div className="flex items-center space-x-4">
+              <button
+                type="button"
+                aria-expanded={isExpanded}
+                onClick={() => setExpandedId(isExpanded ? null : exp.id)}
+                className="flex flex-1 items-center space-x-4 text-left"
+              >
                 <div className="rounded-md bg-secondary p-2">
                   <Briefcase className="h-5 w-5 text-foreground" />
                 </div>
@@ -113,20 +117,26 @@ export function ExperienceForm() {
                     {exp.company || "Company"} {exp.startDate && `• ${exp.startDate}`}
                   </p>
                 </div>
-              </div>
-              <div className="flex items-center space-x-2">
+              </button>
+              <div className="flex items-center space-x-2 ml-4 shrink-0">
                 <Button
                   variant="ghost"
                   size="icon"
+                  aria-label="Remove experience"
                   className="text-destructive hover:bg-destructive/10 hover:text-destructive"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    removeExperience(exp.id);
-                  }}
+                  onClick={() => removeExperience(exp.id)}
                 >
                   <Trash2 className="h-4 w-4" />
                 </Button>
-                {isExpanded ? <ChevronUp className="h-5 w-5 text-muted-foreground" /> : <ChevronDown className="h-5 w-5 text-muted-foreground" />}
+                <button
+                  type="button"
+                  aria-expanded={isExpanded}
+                  aria-label={isExpanded ? "Collapse" : "Expand"}
+                  onClick={() => setExpandedId(isExpanded ? null : exp.id)}
+                  className="flex items-center justify-center p-2"
+                >
+                  {isExpanded ? <ChevronUp className="h-5 w-5 text-muted-foreground" /> : <ChevronDown className="h-5 w-5 text-muted-foreground" />}
+                </button>
               </div>
             </div>
 
@@ -201,6 +211,7 @@ export function ExperienceForm() {
                               type="button"
                               onClick={() => handleMoveHighlight(exp.id, idx, 'up')}
                               disabled={idx === 0}
+                              aria-label="Move highlight up"
                               className="text-muted-foreground hover:text-foreground disabled:opacity-30 disabled:hover:text-muted-foreground"
                             >
                               <ArrowUp className="h-3.5 w-3.5" />
@@ -209,6 +220,7 @@ export function ExperienceForm() {
                               type="button"
                               onClick={() => handleMoveHighlight(exp.id, idx, 'down')}
                               disabled={idx === exp.highlights.length - 1}
+                              aria-label="Move highlight down"
                               className="text-muted-foreground hover:text-foreground disabled:opacity-30 disabled:hover:text-muted-foreground"
                             >
                               <ArrowDown className="h-3.5 w-3.5" />
@@ -223,6 +235,7 @@ export function ExperienceForm() {
                           <Button
                             variant="ghost"
                             size="icon"
+                            aria-label="Remove highlight"
                             onClick={() => handleRemoveHighlight(exp.id, idx)}
                             className="shrink-0 text-destructive hover:bg-destructive/10 hover:text-destructive"
                           >

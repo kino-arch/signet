@@ -34,7 +34,7 @@ Read the relevant reference file before answering any integration question or wr
 
 ## Critical rules
 
-- *Never include `payment_method_types` in any Stripe API call*, with one exception: Terminal (in-person payments) integrations must pass `payment_method_types: ['card_present']` on the PaymentIntent. For all other integrations, omit this parameter entirely to enable dynamic payment methods, which enables you to configure payment method settings from the Dashboard and dynamically display the most relevant eligible payment methods to each customer to maximize conversion. To customize which payment methods you accept, use [`payment_method_configurations`](https://docs.stripe.com/payments/payment-method-configurations.md) or `excluded_payment_method_types` instead of `payment_method_types`.
+- *Prefer omitting `payment_method_types` in Stripe API calls* to enable dynamic payment methods. This allows you to configure payment methods directly from the Stripe Dashboard, optimizing conversion by automatically showing the most relevant eligible payment methods to each customer. While omitting it is recommended for most integrations (except Terminal, which requires `payment_method_types: ['card_present']`), explicit inclusion of `payment_method_types` is still allowed if you need strict, granular control over the payment methods at runtime. To customize accepted payment methods without hardcoding them, use [`payment_method_configurations`](https://docs.stripe.com/payments/payment-method-configurations.md) or `excluded_payment_method_types` instead.
 
 ## Key documentation
 

@@ -114,7 +114,7 @@ Wait for the user to confirm before proceeding.
 
 ### Step 6: Hand Off to local stripe-projects-cli skill
 
-Important: After the project is initialized, always use the `stripe-projects-cli` skill installed at `.claude/skills/stripe-projects-cli` in the local project directory (invoke via the Skill tool with name `stripe-projects-cli`) to continue the workflow for adding services. Print out the env variable names returned in a table, but never their values.
+Important: After the project is initialized, always use the `stripe-projects-cli` skill installed at `.agents/skills/stripe-projects-cli` in the local project directory (invoke via the Skill tool with name `stripe-projects-cli`) to continue the workflow for adding services. Print out the env variable names returned in a table, but never their values.
 
 ### Step 7: Provider Recommendations
 

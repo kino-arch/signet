@@ -162,14 +162,16 @@ export function SettingsForm() {
           {templates.map((template) => {
             const isActive = activeTemplate === template.id;
             return (
-              <motion.div
+              <motion.button
                 key={template.id}
+                type="button"
+                aria-pressed={isActive}
                 whileHover={{ y: -2 }}
                 whileTap={{ scale: 0.98 }}
                 transition={{ duration: 0.15 }}
                 onClick={() => setActiveTemplate(template.id)}
                 className={cn(
-                  "group relative cursor-pointer rounded-xl border-2 p-0 overflow-hidden transition-all duration-200",
+                  "group relative cursor-pointer rounded-xl border-2 p-0 overflow-hidden text-left transition-all duration-200",
                   isActive
                     ? "border-primary shadow-lg shadow-primary/15 ring-2 ring-primary/20"
                     : "border-border/50 hover:border-primary/50 hover:shadow-md"
@@ -206,7 +208,7 @@ export function SettingsForm() {
                 {isActive && (
                   <div className="pointer-events-none absolute inset-0 rounded-xl ring-2 ring-primary/30" />
                 )}
-              </motion.div>
+              </motion.button>
             );
           })}
         </div>

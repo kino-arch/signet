@@ -248,24 +248,29 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   deductToken: async () => {
     const { user, profile } = get();
     if (!profile || (profile.token_balance || 0) <= 0) return false;
-    const nextBalance = (profile.token_balance || 0) - 1;
     
-    set({
-      profile: {
-        ...profile,
-        token_balance: nextBalance,
-      },
-    });
-
-    if (user && !user.id.startsWith("guest_")) {
-      const { error } = await supabase
-        .from("profiles")
-        .update({ token_balance: nextBalance })
-        .eq("id", user.id);
-      if (error) {
-        console.error("Error deducting token:", error.message);
-      }
+    // For guest users, simulate the deduction locally
+    if (!user || user.id.startsWith("guest_")) {
+      const nextBalance = (profile.token_balance || 0) - 1;
+      set({
+        profile: {
+          ...profile,
+          token_balance: nextBalance,
+        },
+      });
+      return true;
     }
+
+    // For real users, use a server-authoritative RPC
+    const { error } = await supabase.rpc('deduct_token');
+    
+    if (error) {
+      console.error("Error deducting token:", error.message);
+      return false;
+    }
+    
+    // Refetch profile to get the authoritative balance
+    await get().fetchProfile();
     return true;
   },
 

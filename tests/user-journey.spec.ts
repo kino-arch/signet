@@ -142,7 +142,8 @@ test.describe("Mandalorian Forge User Journey", () => {
     await signOutButton.click();
 
     // Verify returned to landing page
-    await expect(page).toHaveURL("http://localhost:5173/");
+    const baseUrl = new URL(page.url()).origin;
+    await expect(page).toHaveURL(new RegExp(`^${baseUrl}/$`));
     await expect(page.getByRole("link", { name: "Enter the Forge" }).first()).toBeVisible();
   });
 });

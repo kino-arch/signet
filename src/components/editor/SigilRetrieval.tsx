@@ -7,11 +7,19 @@ import { generatePDF } from "@/lib/pdf";
 // ============================================================================
 // WEB AUDIO SCI-FI SOUND SYNTHESIS
 // ============================================================================
+let globalAudioCtx: AudioContext | null = null;
+const getAudioContext = () => {
+  if (!globalAudioCtx) {
+    const AudioCtx = window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
+    if (AudioCtx) globalAudioCtx = new AudioCtx();
+  }
+  return globalAudioCtx;
+};
+
 const playSciFiSound = (type: "click" | "success" | "process") => {
   try {
-    const AudioCtx = window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
-    if (!AudioCtx) return;
-    const ctx = new AudioCtx();
+    const ctx = getAudioContext();
+    if (!ctx) return;
     if (ctx.state === "suspended") ctx.resume();
 
     if (type === "click") {

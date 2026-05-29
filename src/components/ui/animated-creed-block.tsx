@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 
@@ -35,17 +35,25 @@ export function AnimatedCreedBlock({
   const [pulseActive, setPulseActive] = useState(false);
   const [allDone, setAllDone] = useState(false);
 
+  const linesRef = useRef(lines);
+  const onCompleteRef = useRef(onComplete);
+
   useEffect(() => {
-    if (currentLine >= lines.length) {
+    linesRef.current = lines;
+    onCompleteRef.current = onComplete;
+  }, [lines, onComplete]);
+
+  useEffect(() => {
+    if (currentLine >= linesRef.current.length) {
       const doneTimer = setTimeout(() => {
         setAllDone(true);
         setPulseActive(true);
-        onComplete?.();
+        onCompleteRef.current?.();
       }, 0);
       return () => clearTimeout(doneTimer);
     }
 
-    const line = lines[currentLine];
+    const line = linesRef.current[currentLine];
     const speed = line.typingSpeed ?? 40;
     const pause = line.pauseBefore ?? 400;
 

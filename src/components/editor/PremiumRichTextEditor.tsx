@@ -70,6 +70,7 @@ export function PremiumRichTextEditor({
           type="button"
           variant="ghost"
           size="icon"
+          aria-label="Bold"
           className={cn("h-7 w-7 rounded-sm", editor.isActive('bold') && "bg-muted shadow-sm")}
           onClick={() => editor.chain().focus().toggleBold().run()}
         >
@@ -79,6 +80,7 @@ export function PremiumRichTextEditor({
           type="button"
           variant="ghost"
           size="icon"
+          aria-label="Italic"
           className={cn("h-7 w-7 rounded-sm", editor.isActive('italic') && "bg-muted shadow-sm")}
           onClick={() => editor.chain().focus().toggleItalic().run()}
         >
@@ -89,6 +91,7 @@ export function PremiumRichTextEditor({
           type="button"
           variant="ghost"
           size="icon"
+          aria-label="Bullet List"
           className={cn("h-7 w-7 rounded-sm", editor.isActive('bulletList') && "bg-muted shadow-sm")}
           onClick={() => editor.chain().focus().toggleBulletList().run()}
         >
@@ -98,6 +101,7 @@ export function PremiumRichTextEditor({
           type="button"
           variant="ghost"
           size="icon"
+          aria-label="Numbered List"
           className={cn("h-7 w-7 rounded-sm", editor.isActive('orderedList') && "bg-muted shadow-sm")}
           onClick={() => editor.chain().focus().toggleOrderedList().run()}
         >
@@ -108,6 +112,7 @@ export function PremiumRichTextEditor({
           type="button"
           variant="ghost"
           size="icon"
+          aria-label="Clear formatting"
           className="h-7 w-7 rounded-sm text-muted-foreground hover:text-foreground"
           onClick={() => editor.chain().focus().clearNodes().unsetAllMarks().run()}
           title="Clear formatting"

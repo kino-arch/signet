@@ -5,7 +5,7 @@ Signet: Project Blueprint & Antigravity AI Execution Plan1. Project Overview & L
 
 **Strict Directives:**
 1. **100% shadcn/ui Constraint:** You are forbidden from using external UI libraries or writing raw HTML components from scratch if a shadcn primitive exists. All cards, inputs, and layouts must be constructed using native shadcn CLI commands (e.g., `npx shadcn@latest add card`).
-2. **Theme Enforcement:** Default to dark mode. Use `slate-900`/`zinc-950` for backgrounds, `amber-500` for forge glowing accents, and `cyan-400` for terminal data fields in `tailwind.config.js`.
+2. **Theme Enforcement:** Default to dark mode. Use semantic tokens like `bg-background` for backgrounds, `text-primary` for forge glowing accents, and `text-accent` for terminal data fields, defining their values in `tailwind.config.js`.
 3. **Ignore Scaffold Warnings:** When running `pnpm dlx shadcn@latest init`, ignore the `node-domexception@1.0.0` deprecation warning. It is a non-blocking subdependency of the CLI.
 4. **Agentic Delegation:** Divide tasks into decoupled chunks (Supabase DB, Frontend UI, Firebase config) and execute them in parallel sub-agents.
 5. **Artifact Generation:** Produce a visual browser walkthrough (using the Browser Agent) after completing the Token Paywall flow to verify Stripe/Supabase webhook integration.

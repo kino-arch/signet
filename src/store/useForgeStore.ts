@@ -70,6 +70,9 @@ interface ForgeState {
     location: string;
     website: string;
   }) => void;
+  // Privacy
+  persistConsent: boolean;
+  setPersistConsent: (consent: boolean) => void;
 }
 
 const defaultResumeData: ResumeData = {
@@ -119,6 +122,8 @@ export const useForgeStore = create<ForgeState>()(
       activeTemplate: 'operative',
       setActiveTemplate: (template) => set({ activeTemplate: template }),
       resumeData: defaultResumeData,
+      persistConsent: false,
+      setPersistConsent: (consent) => set({ persistConsent: consent }),
       updateBasicInfo: (info) =>
         set((state) => ({
           resumeData: {

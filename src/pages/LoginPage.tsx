@@ -36,15 +36,21 @@ export function LoginPage() {
     e.preventDefault();
     if (!email || !password) return;
     setSubmitting(true);
-    if (mode === "sign-in") await signIn(email, password);
-    else await signUp(email, password);
-    setSubmitting(false);
+    try {
+      if (mode === "sign-in") await signIn(email, password);
+      else await signUp(email, password);
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   const handleGoogleSignIn = async () => {
     setSubmitting(true);
-    await signInWithGoogle();
-    setSubmitting(false);
+    try {
+      await signInWithGoogle();
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   const switchMode = (next: AuthMode) => {
@@ -152,7 +158,6 @@ export function LoginPage() {
                   onClick={() => setShowPassword((p) => !p)}
                   className="flex items-center text-muted-foreground/60 transition-colors hover:text-foreground focus:outline-none"
                   aria-label={showPassword ? "Hide password" : "Show password"}
-                  tabIndex={-1}
                 >
                   {showPassword
                     ? <EyeOffIcon className="h-3.5 w-3.5" />

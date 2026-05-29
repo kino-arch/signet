@@ -140,7 +140,6 @@ export const Particles: React.FC<ParticlesProps> = ({
 
   const initCanvas = () => {
     resizeCanvas()
-    drawParticles()
   }
 
   const onMouseMove = () => {
@@ -302,9 +301,11 @@ export const Particles: React.FC<ParticlesProps> = ({
     rafID.current = window.requestAnimationFrame(animateRef.current)
   }
 
-  initCanvasRef.current = initCanvas
-  onMouseMoveRef.current = onMouseMove
-  animateRef.current = animate
+  React.useLayoutEffect(() => {
+    initCanvasRef.current = initCanvas
+    onMouseMoveRef.current = onMouseMove
+    animateRef.current = animate
+  })
 
   return (
     <div

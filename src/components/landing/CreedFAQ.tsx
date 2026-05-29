@@ -102,7 +102,9 @@ export function CreedFAQ() {
               If the Creed does not answer your question, transmit a signal to our Covert.
             </p>
             <div className="flex flex-col justify-center gap-3 sm:flex-row">
-              <Button size="lg" variant="default">Comm-Link Support</Button>
+              <Button asChild size="lg" variant="default">
+                <a href="mailto:support@signet.com">Comm-Link Support</a>
+              </Button>
             </div>
           </Card>
         </motion.div>

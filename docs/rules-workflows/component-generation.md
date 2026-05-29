@@ -15,7 +15,7 @@ This workflow defines the state-machine for generating and styling components to
 - Build the component structure using semantic HTML5, wrapping the primitive where necessary to achieve the "Avant-Garde" aesthetic.
 
 ## State 3: Variable Mapping
-- Apply semantic Tailwind variables for coloring (`bg-beskar-base`, `text-forge-molten`).
+- Apply semantic Tailwind variables for coloring (`bg-background`, `text-primary`).
 - **ABSOLUTE RULE:** Reject any hardcoded utility colors (e.g., `text-red-500` or `#FF0000`).
 
 ## State 4: Validation

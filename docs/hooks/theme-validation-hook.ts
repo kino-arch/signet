@@ -3,9 +3,9 @@ import path from 'path';
 
 // This script scans for hardcoded utility colors that violate the "Great Forge" taxonomy.
 const bannedPatterns = [
-    /text-(red|blue|green|yellow|purple|pink|indigo|teal|orange|gray|slate)-[0-9]{3}/,
-    /bg-(red|blue|green|yellow|purple|pink|indigo|teal|orange|gray|slate)-[0-9]{3}/,
-    /border-(red|blue|green|yellow|purple|pink|indigo|teal|orange|gray|slate)-[0-9]{3}/,
+    /text-(red|blue|green|yellow|purple|pink|indigo|teal|orange|gray|slate)-[0-9]{2,3}/,
+    /bg-(red|blue|green|yellow|purple|pink|indigo|teal|orange|gray|slate)-[0-9]{2,3}/,
+    /border-(red|blue|green|yellow|purple|pink|indigo|teal|orange|gray|slate)-[0-9]{2,3}/,
     /bg-\[#([0-9A-Fa-f]{3}|[0-9A-Fa-f]{6})\]/, // Hardcoded hex
     /text-\[#([0-9A-Fa-f]{3}|[0-9A-Fa-f]{6})\]/
 ];
