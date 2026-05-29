@@ -1,0 +1,35 @@
+{
+  "extends": ["stylelint-config-standard"],
+  "rules": {
+    "at-rule-no-unknown": [
+      true,
+      {
+        "ignoreAtRules": [
+          "tailwind",
+          "apply",
+          "variants",
+          "responsive",
+          "screen",
+          "layer",
+          "theme",
+          "utility",
+          "custom-variant"
+        ]
+      }
+    ],
+    "no-descending-specificity": null,
+    "function-no-unknown": [
+      true,
+      {
+        "ignoreFunctions": ["theme", "screen", "var"]
+      }
+    ],
+    "color-function-notation": null,
+    "alpha-value-notation": null,
+    "color-function-alias-notation": null,
+    "no-invalid-position-declaration": null,
+    "media-feature-range-notation": null,
+    "at-rule-empty-line-before": null,
+    "import-notation": "string"
+  }
+}
