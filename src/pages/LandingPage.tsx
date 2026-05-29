@@ -34,7 +34,11 @@ export function LandingPage() {
         <div className="container flex h-16 items-center justify-between">
           {/* Premium Logo */}
           <div className="flex items-center">
-            <Link className="group flex items-center gap-3" to="/">
+            <Link 
+              className="group flex items-center gap-3" 
+              to="/"
+              onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+            >
               <motion.div 
                 whileHover={{ rotate: 180 }} 
                 transition={{ type: "spring", stiffness: 200, damping: 10 }}
