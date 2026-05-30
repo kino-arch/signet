@@ -41,7 +41,7 @@ export function SkillsForm() {
     <div className="space-y-6">
       <Card className="border-border/50 bg-card p-6 shadow-sm">
         <div className="mb-6 flex items-center space-x-2 border-b border-border/40 pb-4">
-          <div className="rounded-md bg-secondary p-2">
+          <div className=" bg-secondary p-2">
              <Code className="h-5 w-5 text-foreground" />
           </div>
           <h3 className="text-lg font-semibold text-foreground">Technical Arsenal</h3>
@@ -50,7 +50,7 @@ export function SkillsForm() {
         <div className="space-y-4">
           <Label htmlFor="skills">Skills & Proficiencies</Label>
           
-          <div className="flex min-h-[120px] flex-wrap items-start gap-2 rounded-md border border-input bg-background/50 px-3 py-3 shadow-sm focus-within:ring-1 focus-within:ring-ring">
+          <div className="flex min-h-[120px] flex-wrap items-start gap-2  border border-input bg-background/50 px-3 py-3 shadow-sm focus-within:ring-1 focus-within:ring-ring">
             {skills.map((skill, idx) => (
               <Badge key={`${skill}-${idx}`} variant="secondary" className="flex h-auto max-w-full items-center gap-1 whitespace-normal break-words px-2 py-1 text-left text-sm font-medium">
                 <span className="flex-1 break-words">{skill}</span>
@@ -79,7 +79,7 @@ export function SkillsForm() {
           </p>
 
           {/* FAANG Skill Suggestions */}
-          <div className="mt-6 rounded-md border border-primary/20 bg-primary/5 p-4">
+          <div className="mt-6  border border-primary/20 bg-primary/5 p-4">
             <div className="mb-4 flex items-center gap-2">
               <Sparkles className="h-4 w-4 text-primary" />
               <h5 className="text-sm font-semibold text-foreground">FAANG Core Competencies</h5>

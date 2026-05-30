@@ -171,7 +171,7 @@ export function SettingsForm() {
                 transition={{ duration: 0.15 }}
                 onClick={() => setActiveTemplate(template.id)}
                 className={cn(
-                  "group relative cursor-pointer rounded-xl border-2 p-0 overflow-hidden text-left transition-all duration-200",
+                  "group relative cursor-pointer  border-2 p-0 overflow-hidden text-left transition-all duration-200",
                   isActive
                     ? "border-primary shadow-lg shadow-primary/15 ring-2 ring-primary/20"
                     : "border-border/50 hover:border-primary/50 hover:shadow-md"
@@ -189,7 +189,7 @@ export function SettingsForm() {
                       <h3 className="truncate text-sm leading-tight font-bold text-foreground">
                         {template.name}
                       </h3>
-                      <p className="mt-0.5 text-[10px] font-semibold tracking-wider text-muted-foreground/80 uppercase">
+                      <p className="mt-0.5 text-[10px] font-semibold tracking-wider text-muted-foreground uppercase">
                         {template.tagline}
                       </p>
                     </div>
@@ -206,7 +206,7 @@ export function SettingsForm() {
 
                 {/* Active glow effect */}
                 {isActive && (
-                  <div className="pointer-events-none absolute inset-0 rounded-xl ring-2 ring-primary/30" />
+                  <div className="pointer-events-none absolute inset-0  ring-2 ring-primary/30" />
                 )}
               </motion.button>
             );

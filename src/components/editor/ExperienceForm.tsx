@@ -6,7 +6,9 @@ import { Label } from "@/components/ui/label";
 import { PremiumRichTextEditor } from "@/components/editor/PremiumRichTextEditor";
 import { useForgeStore } from "@/store/useForgeStore";
 import type { Experience } from "@/store/useForgeStore";
-import { Briefcase, ChevronDown, ChevronUp, Plus, Trash2, ArrowUp, ArrowDown, Sparkles } from "lucide-react";
+import { Briefcase, ChevronDown, ChevronUp, Plus, Trash2, ArrowUp, ArrowDown, Sparkles, Loader2 } from "lucide-react";
+import { useAI } from "@/lib/useAI";
+import { ReforgeCompareModal } from "@/components/ui/ReforgeCompareModal";
 
 const FAANG_SUGGESTIONS = [
   "Accomplished [X] as measured by [Y], by doing [Z]",
@@ -27,6 +29,21 @@ export function ExperienceForm() {
     experience.length > 0 ? experience[0].id : null
   );
 
+  // AI Reforge states — bullet highlights
+  const { reforgeBullet, reforgeDescription } = useAI();
+  const [modalOpen, setModalOpen] = useState(false);
+  const [originalText, setOriginalText] = useState("");
+  const [reforgedText, setReforgedText] = useState("");
+  const [activeTarget, setActiveTarget] = useState<{ expId: string; index: number } | null>(null);
+  const [loadingBulletId, setLoadingBulletId] = useState<string | null>(null);
+
+  // AI Reforge states — description
+  const [descModalOpen, setDescModalOpen] = useState(false);
+  const [descOriginalText, setDescOriginalText] = useState("");
+  const [descReforgedText, setDescReforgedText] = useState("");
+  const [activeDescExpId, setActiveDescExpId] = useState<string | null>(null);
+  const [loadingDescId, setLoadingDescId] = useState<string | null>(null);
+
   const handleAddNew = () => {
     const newId = `exp-${Date.now()}`;
     addExperience({
@@ -40,6 +57,63 @@ export function ExperienceForm() {
       highlights: [],
     });
     setExpandedId(newId);
+  };
+
+  const handleReforgeBullet = async (expId: string, idx: number, bulletText: string) => {
+    if (!bulletText.trim()) return;
+    const exp = experience.find(e => e.id === expId);
+    const role = exp?.role || "Operative";
+    const company = exp?.company || "Covert Sector";
+    
+    const loadingId = `${expId}-${idx}`;
+    setLoadingBulletId(loadingId);
+    try {
+      const suggestedText = await reforgeBullet(bulletText, role, company);
+      setOriginalText(bulletText);
+      setReforgedText(suggestedText);
+      setActiveTarget({ expId, index: idx });
+      setModalOpen(true);
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setLoadingBulletId(null);
+    }
+  };
+
+  const handleAcceptReforge = (newText: string) => {
+    if (!activeTarget) return;
+    const { expId, index } = activeTarget;
+    const exp = experience.find(e => e.id === expId);
+    if (!exp) return;
+    const newHighlights = [...exp.highlights];
+    newHighlights[index] = newText;
+    updateExperience(expId, { highlights: newHighlights });
+  };
+
+  const handleReforgeDescription = async (expId: string) => {
+    const exp = experience.find(e => e.id === expId);
+    if (!exp) return;
+    const rawDesc = exp.description || "";
+    const strippedDesc = rawDesc.replace(/<[^>]*>/g, "").trim();
+    if (!strippedDesc) return;
+
+    setLoadingDescId(expId);
+    try {
+      const suggestedText = await reforgeDescription(strippedDesc, exp.role, exp.company);
+      setDescOriginalText(rawDesc);
+      setDescReforgedText(suggestedText);
+      setActiveDescExpId(expId);
+      setDescModalOpen(true);
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setLoadingDescId(null);
+    }
+  };
+
+  const handleAcceptDescReforge = (newText: string) => {
+    if (!activeDescExpId) return;
+    updateExperience(activeDescExpId, { description: newText });
   };
 
   const handleChange = (
@@ -106,7 +180,7 @@ export function ExperienceForm() {
                 onClick={() => setExpandedId(isExpanded ? null : exp.id)}
                 className="flex flex-1 items-center space-x-4 text-left"
               >
-                <div className="rounded-md bg-secondary p-2">
+                <div className=" bg-secondary p-2">
                   <Briefcase className="h-5 w-5 text-foreground" />
                 </div>
                 <div>
@@ -191,7 +265,27 @@ export function ExperienceForm() {
                     </div>
                   </div>
                   <div className="space-y-2 @md:col-span-2">
-                    <Label>Description (Optional)</Label>
+                    <div className="flex items-center justify-between">
+                      <Label>Description (Optional)</Label>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        disabled={
+                          !(exp.description || "").replace(/<[^>]*>/g, "").trim() ||
+                          loadingDescId === exp.id
+                        }
+                        onClick={() => handleReforgeDescription(exp.id)}
+                        className="h-7 gap-1 px-2 text-[10px] font-bold tracking-wider uppercase"
+                      >
+                        {loadingDescId === exp.id ? (
+                          <Loader2 className="h-3 w-3 animate-spin" />
+                        ) : (
+                          <Sparkles className="h-3 w-3 text-primary animate-pulse" />
+                        )}
+                        Reforge Overview
+                      </Button>
+                    </div>
                     <PremiumRichTextEditor
                       value={exp.description || ""}
                       onChange={(value) => handleChange(exp.id, "description", value)}
@@ -226,12 +320,31 @@ export function ExperienceForm() {
                               <ArrowDown className="h-3.5 w-3.5" />
                             </button>
                           </div>
-                          <Input
-                            value={highlight}
-                            onChange={(e) => handleHighlightChange(exp.id, idx, e.target.value)}
-                            placeholder="e.g., Increased revenue by 15%..."
-                            className="flex-1 bg-background/50"
-                          />
+                          
+                          <div className="flex-1 flex items-center gap-1.5">
+                            <Input
+                              value={highlight}
+                              onChange={(e) => handleHighlightChange(exp.id, idx, e.target.value)}
+                              placeholder="e.g., Increased revenue by 15%..."
+                              className="flex-1 bg-background/50"
+                            />
+                            <Button
+                              type="button"
+                              variant="outline"
+                              size="icon"
+                              disabled={!highlight.trim() || loadingBulletId !== null}
+                              onClick={() => handleReforgeBullet(exp.id, idx, highlight)}
+                              title="Reforge bullet point"
+                              className="shrink-0"
+                            >
+                              {loadingBulletId === `${exp.id}-${idx}` ? (
+                                <Loader2 className="h-4 w-4 animate-spin" />
+                              ) : (
+                                <Sparkles className="h-4 w-4" />
+                              )}
+                            </Button>
+                          </div>
+
                           <Button
                             variant="ghost"
                             size="icon"
@@ -260,7 +373,7 @@ export function ExperienceForm() {
                     </div>
                     
                     {/* FAANG Suggestions */}
-                    <div className="mt-4 rounded-md border border-primary/20 bg-primary/5 p-4">
+                    <div className="mt-4  border border-primary/20 bg-primary/5 p-4">
                       <div className="mb-3 flex items-center gap-2">
                         <Sparkles className="h-4 w-4 text-primary" />
                         <h5 className="text-sm font-semibold text-foreground">FAANG Blueprint Suggestions</h5>
@@ -300,6 +413,28 @@ export function ExperienceForm() {
         <Plus className="mr-2 h-5 w-5" />
         Add New Experience
       </Button>
+
+      {/* Reforge AI Modal — Bullet Highlights */}
+      <ReforgeCompareModal
+        isOpen={modalOpen}
+        onClose={() => setModalOpen(false)}
+        originalText={originalText}
+        reforgedText={reforgedText}
+        onAccept={handleAcceptReforge}
+        title="Reforge Highlight Bullet"
+        description="Integrate elite, metrics-focused phrasing into your credentials ledger."
+      />
+
+      {/* Reforge AI Modal — Role Description */}
+      <ReforgeCompareModal
+        isOpen={descModalOpen}
+        onClose={() => setDescModalOpen(false)}
+        originalText={descOriginalText}
+        reforgedText={descReforgedText}
+        onAccept={handleAcceptDescReforge}
+        title="Reforge Role Overview"
+        description="Elevate your role description to executive-caliber, strategic impact language."
+      />
     </div>
   );
 }

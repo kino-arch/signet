@@ -119,7 +119,7 @@ export function LoginPage() {
 
           {/* Error */}
           {error && (
-            <p className="rounded-md border border-destructive/30 bg-destructive/10 px-3 py-2 text-xs text-destructive">
+            <p className=" border border-destructive/30 bg-destructive/10 px-3 py-2 text-xs text-destructive">
               {error}
             </p>
           )}
@@ -127,7 +127,7 @@ export function LoginPage() {
           {/* ── Email + Password form ── */}
           <form className="space-y-2.5" onSubmit={handleEmailSubmit}>
             {/* Email */}
-            <InputGroup className="rounded-md">
+            <InputGroup className="">
               <InputGroupInput
                 placeholder="Email address"
                 type="email"
@@ -142,7 +142,7 @@ export function LoginPage() {
             </InputGroup>
 
             {/* Password */}
-            <InputGroup className="rounded-md">
+            <InputGroup className="">
               <InputGroupInput
                 placeholder={mode === "sign-up" ? "Password (min. 6 chars)" : "Password"}
                 type={showPassword ? "text" : "password"}

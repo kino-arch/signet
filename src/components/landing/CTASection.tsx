@@ -45,7 +45,7 @@ export function CTASection() {
         />
       </div>
 
-      <div className="relative z-10 container">
+      <div className="mx-auto w-full max-w-5xl px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="grid gap-8 lg:grid-cols-2 lg:gap-12">
           {/* Left side - Content */}
           <motion.div
@@ -178,7 +178,7 @@ export function CTASection() {
             >
               <Card className="relative overflow-hidden bg-background/50 p-4 shadow-2xl backdrop-blur-xl md:p-6">
                 <motion.div
-                  className="relative aspect-video overflow-hidden rounded-lg"
+                  className="relative aspect-video overflow-hidden "
                   whileHover={{ scale: 1.02 }}
                   transition={{ duration: 0.3 }}
                 >
@@ -192,7 +192,7 @@ export function CTASection() {
 
                   {/* Floating elements */}
                   <motion.div
-                    className="absolute top-4 right-4 rounded-lg bg-background/80 p-2 shadow-lg backdrop-blur-sm md:p-3"
+                    className="absolute top-4 right-4  bg-background/80 p-2 shadow-lg backdrop-blur-sm md:p-3"
                     animate={{ y: [0, -10, 0] }}
                     transition={{ duration: 3, repeat: Infinity }}
                   >
@@ -200,7 +200,7 @@ export function CTASection() {
                   </motion.div>
 
                   <motion.div
-                    className="absolute bottom-4 left-4 rounded-lg bg-background/80 p-2 shadow-lg backdrop-blur-sm md:p-3"
+                    className="absolute bottom-4 left-4  bg-background/80 p-2 shadow-lg backdrop-blur-sm md:p-3"
                     animate={{ y: [0, 10, 0] }}
                     transition={{ duration: 3, repeat: Infinity, delay: 1 }}
                   >
@@ -228,7 +228,7 @@ export function CTASection() {
                         delay: 1.3 + index * 0.1,
                         type: "spring",
                       }}
-                      className="rounded-lg bg-secondary/50 p-2 text-center backdrop-blur-sm md:p-3"
+                      className=" bg-secondary/50 p-2 text-center backdrop-blur-sm md:p-3"
                     >
                       <div className="text-base font-bold md:text-lg">
                         {stat.value}

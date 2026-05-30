@@ -4,7 +4,7 @@ import type { User, Session } from "@supabase/supabase-js";
 
 interface Profile {
   id: string;
-  token_balance: number;
+  token_balance: number; // We keep the DB field name as token_balance to avoid DB migrations for now, but UI will show credits.
 }
 
 interface OnboardingData {
@@ -19,6 +19,8 @@ interface AuthState {
   loading: boolean;
   error: string | null;
   onboardingCompleted: boolean;
+  /** Timestamp (ms) until which fetchProfile must NOT overwrite a local deduction */
+  _deductionLockUntil: number | null;
   // Actions
   signIn: (email: string, password: string) => Promise<void>;
   signInWithGoogle: () => Promise<void>;
@@ -29,9 +31,9 @@ interface AuthState {
   completeOnboarding: (data: OnboardingData) => Promise<void>;
   clearError: () => void;
   signInAsGuest: () => void;
-  addTokens: (amount: number) => Promise<void>;
-  deductToken: () => Promise<boolean>;
-  verifyStripeSession: (sessionId: string) => Promise<{ success: boolean; tokens: number }>;
+  addCredits: (amount: number) => Promise<void>;
+  deductCredit: () => Promise<boolean>;
+  verifyStripeSession: (sessionId: string) => Promise<{ success: boolean; credits: number }>;
 }
 
 export const useAuthStore = create<AuthState>((set, get) => ({
@@ -41,11 +43,12 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   loading: true,
   error: null,
   onboardingCompleted: false,
+  _deductionLockUntil: null,
 
   clearError: () => set({ error: null }),
 
   fetchProfile: async () => {
-    const { user } = get();
+    const { user, _deductionLockUntil, profile } = get();
     if (!user) return;
 
     const { data, error } = await supabase
@@ -59,7 +62,15 @@ export const useAuthStore = create<AuthState>((set, get) => ({
       return;
     }
 
-    set({ profile: data });
+    // If a credit was deducted locally in the last 60s, protect the local balance.
+    // The server balance may still be stale (RPC blocked by CORS / adblocker).
+    const isLocked = _deductionLockUntil !== null && Date.now() < _deductionLockUntil;
+    if (isLocked && profile) {
+      // Keep whichever balance is lower — the local optimistic one
+      set({ profile: { ...data, token_balance: Math.min(data.token_balance, profile.token_balance) } });
+    } else {
+      set({ profile: data, _deductionLockUntil: null });
+    }
   },
 
   signInWithGoogle: async () => {
@@ -222,7 +233,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     });
   },
 
-  addTokens: async (amount: number) => {
+  addCredits: async (amount: number) => {
     const { user, profile } = get();
     if (!profile) return;
     const nextBalance = (profile.token_balance || 0) + amount;
@@ -240,43 +251,55 @@ export const useAuthStore = create<AuthState>((set, get) => ({
         .update({ token_balance: nextBalance })
         .eq("id", user.id);
       if (error) {
-        console.error("Error updating profile tokens:", error.message);
+        console.error("Error updating profile credits:", error.message);
       }
     }
   },
 
-  deductToken: async () => {
+  deductCredit: async () => {
     const { user, profile } = get();
     if (!profile || (profile.token_balance || 0) <= 0) return false;
     
-    // For guest users, simulate the deduction locally
+    // OPTIMISTIC UPDATE: Deduct locally immediately so the UI reflects the change instantly.
+    const nextBalance = (profile.token_balance || 0) - 1;
+    // Lock for 60 seconds so that background auth token refreshes cannot
+    // overwrite this local deduction with the stale server balance.
+    set({
+      profile: { ...profile, token_balance: nextBalance },
+      _deductionLockUntil: Date.now() + 60_000,
+    });
+
+    // For guest users, simulate the deduction locally only
     if (!user || user.id.startsWith("guest_")) {
-      const nextBalance = (profile.token_balance || 0) - 1;
-      set({
-        profile: {
-          ...profile,
-          token_balance: nextBalance,
-        },
-      });
       return true;
     }
 
-    // For real users, use a server-authoritative RPC
-    const { error } = await supabase.rpc('deduct_token');
-    
-    if (error) {
-      console.error("Error deducting token:", error.message);
-      return false;
+    try {
+      // For real users, sync to the server in the background.
+      // We use a direct UPDATE instead of an RPC to avoid the RPC not existing.
+      const { error } = await supabase
+        .from('profiles')
+        .update({ token_balance: nextBalance })
+        .eq('id', user.id);
+      
+      if (error) {
+        console.error("Network Error deducting credit:", error.message);
+        // Local state already updated — lock stays active so refetch won't clobber it
+        return true;
+      }
+      
+      // Success: server is now in sync, we can release the lock
+      set({ _deductionLockUntil: null });
+      return true;
+    } catch (err) {
+      console.error("Exception in deductCredit:", err);
+      return true;
     }
-    
-    // Refetch profile to get the authoritative balance
-    await get().fetchProfile();
-    return true;
   },
 
   verifyStripeSession: async (sessionId: string) => {
     const { user, profile } = get();
-    if (!user) return { success: false, tokens: 0 };
+    if (!user) return { success: false, credits: 0 };
 
     try {
       const stripeSecret = import.meta.env.VITE_STRIPE_SECRET_KEY;
@@ -292,7 +315,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
 
       if (error || !data || !data.success) {
         console.error("Error verifying Stripe session:", error || data?.error);
-        return { success: false, tokens: 0 };
+        return { success: false, credits: 0 };
       }
 
       // Sync profile state
@@ -305,10 +328,10 @@ export const useAuthStore = create<AuthState>((set, get) => ({
         });
       }
 
-      return { success: true, tokens: data.tokensCredited };
+      return { success: true, credits: data.tokensCredited };
     } catch (e) {
       console.error("Failed to verify session:", e);
-      return { success: false, tokens: 0 };
+      return { success: false, credits: 0 };
     }
   },
 }));

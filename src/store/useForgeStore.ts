@@ -307,6 +307,44 @@ export const useForgeStore = create<ForgeState>()(
     }),
     {
       name: "forge-resume-storage",
+      version: 1, // Bump version to trigger migration
+      migrate: (persistedState: any, version: number) => {
+        if (version === 0) {
+          // Migration from version 0 (unversioned) to 1
+          // Automatically scrub out the bad "Original base: ..." AI artifacts
+          const state = persistedState as ForgeState;
+          
+          if (state?.resumeData) {
+            // Clean basic info summary
+            if (state.resumeData.basicInfo?.summary) {
+              state.resumeData.basicInfo.summary = state.resumeData.basicInfo.summary
+                .replace(/Original base:.*$/s, "")
+                .trim();
+            }
+
+            // Clean experience descriptions and highlights
+            if (state.resumeData.experience) {
+              state.resumeData.experience = state.resumeData.experience.map(exp => {
+                const cleanedDescription = (exp.description || "")
+                  .replace(/Original base:.*$/s, "")
+                  .trim();
+                
+                const cleanedHighlights = (exp.highlights || []).map(hl => 
+                  hl.replace(/Original base:.*$/s, "").trim()
+                );
+
+                return {
+                  ...exp,
+                  description: cleanedDescription,
+                  highlights: cleanedHighlights
+                };
+              });
+            }
+          }
+          return state;
+        }
+        return persistedState;
+      }
     }
   )
 );

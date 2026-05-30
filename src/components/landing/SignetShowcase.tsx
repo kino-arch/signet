@@ -32,7 +32,7 @@ export function SignetShowcase() {
         <div className="absolute top-1/2 left-1/4 h-[400px] w-[400px] rounded-full bg-foreground/[0.02] blur-[150px]" />
       </div>
 
-      <div className="relative z-10 container">
+      <div className="mx-auto w-full max-w-5xl px-4 sm:px-6 lg:px-8 relative z-10">
         <motion.header
           variants={sectionVariants}
           initial="hidden"
@@ -151,7 +151,7 @@ export function SignetShowcase() {
                 <CardTitle className="font-heading text-2xl font-bold tracking-tight text-foreground">
                   The Living Waters
                 </CardTitle>
-                <CardDescription className="max-w-sm text-sm text-foreground/80 md:text-base">
+                <CardDescription className="max-w-sm text-sm text-muted-foreground md:text-base">
                   Fluid, elegant, and dynamic. A layout designed to showcase creative portfolios, frontend expertise, and design leadership.
                 </CardDescription>
                 <div className="flex flex-wrap gap-2 pt-2">
@@ -218,7 +218,7 @@ export function SignetShowcase() {
                   Access a curated vault of modern, highly-legible typefaces that ensure your narrative is read effortlessly.
                 </CardDescription>
               </CardHeader>
-              <CardContent className="relative mt-6 min-h-[160px] flex-grow overflow-hidden rounded-xl border border-border p-0">
+              <CardContent className="relative mt-6 min-h-[160px] flex-grow overflow-hidden  border border-border p-0">
                 <img
                   src="/archives_gallery.png"
                   alt="Glowing cyan futuristic runic typography"

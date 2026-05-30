@@ -25,7 +25,7 @@ export function DirectoryFooter() {
 
   return (
     <footer className="w-full border-t border-border/40 bg-card/50 py-16 backdrop-blur-sm md:py-24">
-      <div className="container">
+      <div className="mx-auto w-full max-w-5xl px-4 sm:px-6 lg:px-8">
         <div className="grid gap-12 md:grid-cols-2 lg:grid-cols-5">
           
           {/* Brand & Comm-Link */}

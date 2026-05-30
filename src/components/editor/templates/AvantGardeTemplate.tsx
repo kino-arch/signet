@@ -45,7 +45,7 @@ export function AvantGardeTemplate() {
       }}
     >
       {/* ── HERO HEADER ── */}
-      <header
+      <div
         style={{
           display: "flex",
           justifyContent: "space-between",
@@ -66,7 +66,7 @@ export function AvantGardeTemplate() {
               margin: "0 0 4px 0",
             }}
           >
-            {basicInfo.firstName} {basicInfo.lastName}
+            {basicInfo.firstName || basicInfo.lastName ? `${basicInfo.firstName} ${basicInfo.lastName}` : "YOUR NAME"}
           </h1>
           {basicInfo.designation && (
             <p
@@ -99,13 +99,13 @@ export function AvantGardeTemplate() {
             </span>
           ))}
         </div>
-      </header>
+      </div>
 
       {/* ── BODY (2-Column Grid) ── */}
       <div style={{ display: "flex", flex: 1, gap: "32px", overflow: "visible" }}>
         
         {/* LEFT COLUMN: Skills, Education */}
-        <aside
+        <div
           style={{
             width: "30%",
             display: "flex",
@@ -118,9 +118,9 @@ export function AvantGardeTemplate() {
             <div>
               <SectionLabel label="Expertise" color={INK} />
               <div style={{ display: "flex", flexWrap: "wrap", gap: "6px", marginTop: "12px" }}>
-                {skills.map((skill) => (
+                {skills.map((skill, idx) => (
                   <span
-                    key={skill}
+                    key={`skill-${idx}`}
                     style={{
                       fontSize: "11px",
                       fontWeight: "600",
@@ -169,10 +169,10 @@ export function AvantGardeTemplate() {
               </div>
             </div>
           )}
-        </aside>
+        </div>
 
         {/* RIGHT COLUMN: Summary, Experience */}
-        <main
+        <div
           style={{
             flex: 1,
             display: "flex",
@@ -247,7 +247,7 @@ export function AvantGardeTemplate() {
                       <ul style={{ margin: "6px 0 0 0", paddingLeft: "0", listStyleType: "none" }}>
                         {job.highlights.map((item, idx) => (
                           <li
-                            key={idx}
+                            key={`${job.id}-highlight-${idx}`}
                             style={{
                               fontSize: "13.5px",
                               color: BODY,
@@ -277,7 +277,7 @@ export function AvantGardeTemplate() {
               </div>
             </div>
           )}
-        </main>
+        </div>
       </div>
     </div>
   );

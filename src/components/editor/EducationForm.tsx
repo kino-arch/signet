@@ -71,7 +71,7 @@ export function EducationForm() {
                 onClick={() => setExpandedId(isExpanded ? null : edu.id)}
                 className="flex flex-1 items-center space-x-4 text-left"
               >
-                <div className="rounded-md bg-secondary p-2">
+                <div className=" bg-secondary p-2">
                   <GraduationCap className="h-5 w-5 text-foreground" />
                 </div>
                 <div>
@@ -176,7 +176,7 @@ export function EducationForm() {
                   
                   {/* Suggestions Section */}
                   <div className="space-y-2 @md:col-span-2">
-                    <div className="rounded-md border border-primary/20 bg-primary/5 p-4 mt-2">
+                    <div className=" border border-primary/20 bg-primary/5 p-4 mt-2">
                       <div className="mb-3 flex items-center gap-2">
                         <Sparkles className="h-4 w-4 text-primary" />
                         <h5 className="text-sm font-semibold text-foreground">FAANG Quick Suggestions</h5>

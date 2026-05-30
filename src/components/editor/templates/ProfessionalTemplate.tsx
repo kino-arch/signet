@@ -36,7 +36,7 @@ export function ProfessionalTemplate() {
       }}
     >
       {/* ── HEADER ── */}
-      <header style={{ textAlign: "center", marginBottom: "18px" }}>
+      <div style={{ textAlign: "center", marginBottom: "18px" }}>
         <h1
           style={{
             fontSize: "24px",
@@ -89,7 +89,7 @@ export function ProfessionalTemplate() {
             ))}
           </div>
         )}
-      </header>
+      </div>
 
       {/* ── RULED DIVIDER ── */}
       <hr
@@ -193,7 +193,7 @@ export function ProfessionalTemplate() {
                   >
                     {job.highlights.map((item, idx) => (
                       <li
-                        key={idx}
+                        key={`${job.id}-h-${idx}`}
                         style={{
                           fontSize: "9px",
                           color: "#334155",

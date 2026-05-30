@@ -41,7 +41,7 @@ const faqs = [
 export function CreedFAQ() {
   return (
     <section id="creed" className="w-full bg-background py-16 md:py-24">
-      <div className="relative z-10 container max-w-4xl">
+      <div className="mx-auto w-full max-w-4xl px-4 sm:px-6 lg:px-8 relative z-10">
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: -20 }}

@@ -10,7 +10,7 @@ export function ThemeToggle() {
       variant="outline"
       size="icon"
       onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-      className="group/theme cursor-pointer rounded-full border border-border/60 bg-background/80 text-foreground/70 shadow-sm transition-all duration-300 hover:border-primary/40 hover:text-primary active:scale-95"
+      className="group/theme cursor-pointer rounded-full border border-border/60 bg-background/80 text-muted-foreground shadow-sm transition-all duration-300 hover:border-primary/40 hover:text-primary active:scale-95"
       title={theme === "dark" ? "Switch to Light Mode" : "Switch to Dark Mode"}
       aria-label="Toggle theme"
     >

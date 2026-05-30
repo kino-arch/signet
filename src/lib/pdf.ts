@@ -1,18 +1,46 @@
 /**
- * PDF Generation via native browser print.
+ * PDF Generation via html2canvas + jsPDF.
  *
- * Why window.print()?
- * - Correctly renders ALL modern CSS including oklch(), oklab(), color-mix()
- * - Produces selectable, searchable text (not a raster image)
- * - Output is 10-100x smaller than html2canvas-based raster PDFs
- * - Zero third-party dependencies
- *
- * The print stylesheet in index.css handles hiding the app shell and
- * showing only the resume template at full width.
+ * Captures the hidden off-screen resume element and downloads it directly
+ * as a PDF — no browser print dialog.
  */
 
-export async function generatePDF(_elementId?: string, _filename?: string) {
-  // Small delay to let any pending React state flush before printing
+export async function generatePDF(elementId = "resume-document", filename = "resume.pdf") {
+  // Small delay to let any pending React state flush
   await new Promise((resolve) => setTimeout(resolve, 150));
-  window.print();
+
+  const { toJpeg } = await import("html-to-image");
+  const { default: jsPDF } = await import("jspdf");
+
+  const element = document.getElementById(elementId);
+  if (!element) {
+    throw new Error(`[generatePDF] Element #${elementId} not found.`);
+  }
+
+  try {
+    // html-to-image uses SVG foreignObject, which natively supports modern CSS like oklch()
+    const imgData = await toJpeg(element, {
+      quality: 0.95,
+      pixelRatio: 2, // 2x for crisp high-DPI output
+      backgroundColor: "#ffffff",
+      skipFonts: true, // Bypass Firefox strict mode font CORS blocks which cause blank SVGs
+      cacheBust: true, // Ensure fresh rendering
+    });
+
+    // A4 dimensions in mm
+    const pdfWidth = 210;
+    const pdfHeight = 297;
+
+    const pdf = new jsPDF({
+      orientation: "portrait",
+      unit: "mm",
+      format: "a4",
+    });
+
+    pdf.addImage(imgData, "JPEG", 0, 0, pdfWidth, pdfHeight);
+    pdf.save(filename);
+  } catch (error) {
+    console.error("[generatePDF] html-to-image error:", error);
+    throw error;
+  }
 }

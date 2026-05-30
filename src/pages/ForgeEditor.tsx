@@ -1,9 +1,12 @@
 import { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { BarChart3, Shield, Hammer, LogOut, Coins, Download, Loader2, ShieldCheck, ShieldAlert } from "lucide-react";
+import { BarChart3, Shield, Hammer, LogOut, Coins, Download, Loader2, ShieldCheck, ShieldAlert, Eye, MoreVertical } from "lucide-react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from "@/components/ui/dropdown-menu";
+import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import { useAuthStore } from "@/store/useAuthStore";
 import { LivePreview } from "@/components/editor/LivePreview";
 import { DashboardOverview } from "@/components/editor/DashboardOverview";
@@ -29,6 +32,7 @@ const sidebarTabs = [
 export function ForgeEditor() {
   const [activeTab, setActiveTab] = useState("overview");
   const [showExchange, setShowExchange] = useState(false);
+  const [showPreview, setShowPreview] = useState(false);
   const [exchangeMessage, setExchangeMessage] = useState("");
   const [downloadStep, setDownloadStep] = useState<"idle" | "deducting" | "generating">("idle");
 
@@ -40,18 +44,32 @@ export function ForgeEditor() {
   const [verifyTokensCredited, setVerifyTokensCredited] = useState(0);
   const [defaultExchangePack, setDefaultExchangePack] = useState<string | undefined>(undefined);
 
-  const { user, profile, signOut, deductToken, verifyStripeSession, fetchProfile } = useAuthStore();
+  const { user, profile, signOut, verifyStripeSession, fetchProfile } = useAuthStore();
   const { activeTemplate, resumeData } = useForgeStore();
   const navigate = useNavigate();
 
   useEffect(() => {
     const buyPackage = searchParams.get("buy_package");
-    if (buyPackage) {
-      setDefaultExchangePack(buyPackage);
+    if (!buyPackage) return;
+
+    // Always record which pack was requested so it's pre-selected if they do open the modal.
+    setDefaultExchangePack(buyPackage);
+
+    // Only force-open the exchange if the user has no credits (or profile not yet loaded).
+    // Users arriving from the pricing page with existing credits should not be interrupted.
+    const balance = profile?.token_balance ?? 0;
+    if (balance <= 0 || !profile) {
       setExchangeMessage("Dossier authorization request initiated from pricing boards.");
       setShowExchange(true);
     }
-  }, [searchParams]);
+
+    // Clean the URL param so refreshing doesn't re-trigger
+    setSearchParams((prev) => {
+      const next = new URLSearchParams(prev);
+      next.delete("buy_package");
+      return next;
+    }, { replace: true });
+  }, [searchParams, profile]);
 
   useEffect(() => {
     const sessionId = searchParams.get("stripe_session_id");
@@ -86,10 +104,10 @@ export function ForgeEditor() {
         setVerifyLogs((prev) => [
           ...prev,
           "[SUCCESS] CREDITS SUCCESSFULLY RECORDED IN MAIN LEDGER!",
-          `[SUCCESS] DEPOSITED: +${result.tokens} BESKAR TOKENS.`,
+          `[SUCCESS] DEPOSITED: +${result.credits} BESKAR CREDITS.`,
           "[SYS] CLOSING HOLONET SECURE CONNECTION."
         ]);
-        setVerifyTokensCredited(result.tokens);
+        setVerifyTokensCredited(result.credits);
         setVerifyStatus("success");
         await fetchProfile();
         
@@ -114,26 +132,10 @@ export function ForgeEditor() {
   }, [searchParams, verifyStripeSession, fetchProfile, setSearchParams]);
 
   const handleDownloadPDF = async () => {
-    const tokenBalance = profile?.token_balance ?? 0;
-    if (tokenBalance <= 0) {
-      setExchangeMessage("No Beskar tokens found. Replenish your balance to forge a data-slate.");
-      setShowExchange(true);
-      return;
-    }
-
     try {
       setDownloadStep("generating");
-      await generatePDF("resume-document", "mandalorian-dossier.pdf");
-
-      setDownloadStep("deducting");
-      // Simulate custom biometric delay
-      await new Promise((resolve) => setTimeout(resolve, 1400));
-      
-      const success = await deductToken();
-      if (!success) {
-        setExchangeMessage("Authorization failed. Replenish your balance.");
-        setShowExchange(true);
-      }
+      const filename = `${resumeData.basicInfo.firstName || 'Mandalorian'}-${resumeData.basicInfo.lastName || 'Dossier'}-Resume.pdf`.replace(/\s+/g, '-');
+      await generatePDF("resume-document", filename);
     } catch (error) {
       console.error("PDF generation error:", error);
     } finally {
@@ -160,30 +162,51 @@ export function ForgeEditor() {
           <span className="hidden text-sm font-medium tracking-widest text-muted-foreground uppercase sm:inline-block">The Foundry</span>
         </div>
         
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-2">
           {profile && (
-            <div className="hidden items-center gap-2 rounded-lg border border-border/50 bg-secondary/30 px-3 py-1.5 text-sm font-medium text-foreground sm:flex">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setShowExchange(true)}
+              className="hidden items-center gap-2 border-border/50 bg-secondary/30 text-foreground sm:flex"
+            >
               <Coins className="h-4 w-4 text-primary" />
-              <span>{profile.token_balance} <span className="text-muted-foreground">{profile.token_balance === 1 ? "Beskar" : "Beskar"}</span></span>
-            </div>
+              <span>{profile.token_balance} <span className="text-muted-foreground">{profile.token_balance === 1 ? "Credit" : "Credits"}</span></span>
+            </Button>
           )}
 
           <ThemeToggle />
 
-          <Button 
-            onClick={handleDownloadPDF} 
-            disabled={downloadStep !== "idle"}
-            className="gap-2 shadow-lg shadow-primary/20 transition-all hover:shadow-primary/45 cursor-pointer"
-          >
-            {downloadStep !== "idle" ? (
-              <Loader2 className="h-4 w-4 animate-spin" />
-            ) : (
-              <Download className="h-4 w-4" />
-            )}
-            {downloadStep === "idle" && "Download Intel"}
-            {downloadStep === "deducting" && "Authorizing..."}
-            {downloadStep === "generating" && "Generating PDF..."}
-          </Button>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" size="icon" className="h-9 w-9">
+                <MoreVertical className="h-4 w-4" />
+                <span className="sr-only">Open menu</span>
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem onClick={() => setShowPreview(true)} className="gap-2 cursor-pointer">
+                <Eye className="h-4 w-4" />
+                <span>Preview Dossier</span>
+              </DropdownMenuItem>
+              <DropdownMenuItem 
+                onClick={handleDownloadPDF} 
+                disabled={downloadStep !== "idle"}
+                className="gap-2 cursor-pointer"
+              >
+                {downloadStep !== "idle" ? (
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                ) : (
+                  <Download className="h-4 w-4" />
+                )}
+                <span>
+                  {downloadStep === "idle" && "Download Intel"}
+                  {downloadStep === "deducting" && "Authorizing..."}
+                  {downloadStep === "generating" && "Generating PDF..."}
+                </span>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
       </header>
 
@@ -259,37 +282,39 @@ export function ForgeEditor() {
             activeTab === "retrieval" ? "flex flex-1 flex-col justify-center min-h-0" : ""
           }`}>
             {activeTab === "overview" && (
-              <DashboardOverview onBuyTokens={() => setShowExchange(true)} />
+              <DashboardOverview />
             )}
             {activeTab === "forge" && <ForgeWizard onComplete={() => setActiveTab("retrieval")} />}
             {activeTab === "profile" && <UserProfile />}
-            {activeTab === "retrieval" && <SigilRetrieval onComplete={() => setActiveTab("overview")} />}
+            {activeTab === "retrieval" && (
+              <SigilRetrieval
+                onComplete={() => setActiveTab("overview")}
+                onNoTokens={() => {
+                  setExchangeMessage(
+                    "No Beskar credits found. Replenish your balance to extract your forged sigil."
+                  );
+                  setShowExchange(true);
+                }}
+              />
+            )}
           </div>
         </section>
 
-        {/* Right - The Output (Live Preview) */}
-        <section 
-          className="relative z-20 hidden w-[45%] shrink-0 flex-col items-center overflow-y-auto border-l border-border/50 bg-card xl:flex print:flex print:w-full print:items-start print:overflow-visible print:border-none print:bg-transparent"
-          tabIndex={0}
-          aria-label="Resume Live Preview"
-        >
-           <LivePreview />
-        </section>
-
       </main>
-      {/* Hidden container for PDF capture - always rendered offscreen to guarantee PDF generation on any screen size */}
-      {/* bg-white is intentional: PDF output must always be white regardless of dark/light mode */}
-      <div 
-        id="resume-document" 
-        className="absolute top-[-9999px] left-[-9999px] aspect-[1/1.414] w-[800px] overflow-hidden bg-white"
-        style={{ width: "800px", height: "1131px" }}
-      >
-        <div className="relative h-full w-full">
+      {/* Hidden container for PDF capture - rendered inside a 0x0 fixed container at top-left to avoid browser off-screen culling while remaining invisible to the user */}
+      <div style={{ position: "fixed", top: 0, left: 0, width: 0, height: 0, overflow: "hidden", zIndex: -50, pointerEvents: "none" }}>
+        <div 
+          id="resume-document" 
+          className="bg-white"
+          style={{ width: "800px", height: "1131px" }}
+        >
+          <div className="relative h-full w-full">
           {activeTemplate === "pure-beskar" && <PureBeskarTemplate />}
           {activeTemplate === "operative" && <OperativeTemplate data={resumeData} />}
           {activeTemplate === "minimal" && <MinimalTemplate />}
           {activeTemplate === "standard" && <StandardTemplate />}
           {(activeTemplate === "avant-garde" || !["pure-beskar", "operative", "minimal", "standard"].includes(activeTemplate)) && <AvantGardeTemplate />}
+          </div>
         </div>
       </div>
 
@@ -312,7 +337,7 @@ export function ForgeEditor() {
           <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_bottom,rgba(255,255,255,0),rgba(255,255,255,0)_50%,rgba(0,0,0,0.1)_50%,rgba(0,0,0,0.1))] bg-[size:100%_4px]" />
           <div className="absolute top-0 right-0 left-0 h-[2px] bg-gradient-to-r from-primary/20 via-primary to-primary/20 animate-pulse" />
           
-          <div className="relative w-full max-w-[500px] overflow-hidden rounded-2xl border border-primary/20 bg-card p-6 shadow-2xl shadow-primary/10 md:p-8">
+          <div className="relative w-full max-w-[500px] overflow-hidden  border border-primary/20 bg-card p-6 shadow-2xl shadow-primary/10 md:p-8">
             {/* Ambient glowing radial light */}
             <div className="absolute inset-0 -z-10 bg-[radial-gradient(circle_at_50%_30%,color-mix(in_srgb,var(--color-primary)_10%,transparent),transparent_70%)]" />
 
@@ -362,7 +387,7 @@ export function ForgeEditor() {
               </div>
 
               {/* Scrolling Terminal Output */}
-              <div className="w-full rounded-xl border border-border/80 bg-black/70 p-4.5 font-mono text-[10px] leading-relaxed text-primary/80 h-44 overflow-y-auto">
+              <div className="w-full  border border-border/80 bg-black/70 p-4.5 font-mono text-[10px] leading-relaxed text-primary/80 h-44 overflow-y-auto">
                 <div className="space-y-1">
                   {verifyLogs.map((log, i) => {
                     const isSuccess = log.startsWith("[SUCCESS]");
@@ -400,6 +425,18 @@ export function ForgeEditor() {
           </div>
         </div>
       )}
+      {/* Live Preview Modal */}
+      <Dialog open={showPreview} onOpenChange={setShowPreview}>
+        <DialogContent className="max-w-[860px] h-[90vh] overflow-y-auto bg-card p-6 shadow-2xl sm:p-10 border border-border/40">
+          <VisuallyHidden>
+            <DialogTitle>Live Resume Preview</DialogTitle>
+            <DialogDescription>A visual preview of your configured resume template.</DialogDescription>
+          </VisuallyHidden>
+          <div className="flex w-full items-center justify-center">
+            <LivePreview />
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
