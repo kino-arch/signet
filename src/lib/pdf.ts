@@ -14,8 +14,7 @@ export async function generatePDF(elementId = "resume-document", filename = "res
 
   const element = document.getElementById(elementId);
   if (!element) {
-    console.error(`[generatePDF] Element #${elementId} not found.`);
-    return;
+    throw new Error(`[generatePDF] Element #${elementId} not found.`);
   }
 
   try {

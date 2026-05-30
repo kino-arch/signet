@@ -29,7 +29,7 @@ export function AtsSpecsPage() {
     <div className="min-h-screen bg-background">
       {/* Navigation */}
       <nav className="fixed inset-x-0 top-0 z-50 border-b border-border/40 bg-background/80 backdrop-blur-md">
-        <div className="container flex h-14 items-center justify-between">
+        <div className="container mx-auto flex h-14 items-center justify-between px-4">
           <Link to="/" className="flex items-center gap-2 text-sm font-semibold text-muted-foreground transition-colors hover:text-foreground">
             <ArrowLeft className="h-4 w-4" />
             Back to Base

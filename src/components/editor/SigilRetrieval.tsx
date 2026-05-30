@@ -118,12 +118,13 @@ export function SigilRetrieval({
       const deducted = await deductCredit();
       if (!deducted) {
         onNoTokens?.();
+        setState("idle");
       } else {
         // Award gamification shields for their first export
         forgeFirstSigil();
+        playSciFiSound("success");
+        setState("downloaded");
       }
-      playSciFiSound("success");
-      setState("downloaded");
     } catch (error) {
       console.error("PDF generation failed during retrieval", error);
       setState("idle");
