@@ -10,7 +10,7 @@ import { Mail, MessageSquare, Send } from "lucide-react";
 export function CommLink() {
   return (
     <section id="commlink" className="w-full bg-background py-16 md:py-24">
-      <div className="relative z-10 container max-w-5xl">
+      <div className="mx-auto w-full max-w-4xl px-4 sm:px-6 lg:px-8 relative z-10">
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -40,7 +40,7 @@ export function CommLink() {
             className="flex flex-col justify-center space-y-6"
           >
             <Card className="border-border/50 bg-card p-6 shadow-md">
-              <div className="mb-4 inline-flex rounded-lg bg-secondary p-3">
+              <div className="mb-4 inline-flex  bg-secondary p-3">
                 <MessageSquare className="h-6 w-6 text-foreground" />
               </div>
               <h3 className="mb-2 text-xl font-bold text-foreground">Direct Channel</h3>
@@ -53,7 +53,7 @@ export function CommLink() {
             </Card>
 
             <Card className="border-border/50 bg-card p-6 shadow-md">
-              <div className="mb-4 inline-flex rounded-lg bg-secondary p-3">
+              <div className="mb-4 inline-flex  bg-secondary p-3">
                 <Mail className="h-6 w-6 text-foreground" />
               </div>
               <h3 className="mb-2 text-xl font-bold text-foreground">Enterprise Bounties</h3>

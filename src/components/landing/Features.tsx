@@ -50,7 +50,7 @@ export function Features() {
       {/* Subtle background glow to match the glassmorphism theme */}
       <div className="pointer-events-none absolute top-1/2 left-1/2 h-[500px] w-[800px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary/5 blur-[120px]"></div>
 
-      <div className="relative z-10 container">
+      <div className="mx-auto w-full max-w-5xl px-4 sm:px-6 lg:px-8 relative z-10">
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -77,7 +77,7 @@ export function Features() {
             <motion.div key={i} variants={itemVariants}>
               <Card className="group h-full cursor-pointer border-border/50 bg-background/50 p-6 backdrop-blur-xl transition-all duration-500 hover:border-primary/50 hover:shadow-xl hover:shadow-primary/5 md:p-8">
                 <CardHeader className="p-0">
-                  <div className="mx-auto mb-8 flex h-24 w-24 items-center justify-center rounded-2xl border border-primary/10 bg-primary/5 transition-all duration-500 group-hover:scale-110 group-hover:border-primary/30 group-hover:bg-primary/10 group-hover:shadow-[0_0_20px_rgba(var(--color-primary),0.2)] md:mx-0">
+                  <div className="mx-auto mb-8 flex h-24 w-24 items-center justify-center  border border-primary/10 bg-primary/5 transition-all duration-500 group-hover:scale-110 group-hover:border-primary/30 group-hover:bg-primary/10 group-hover:shadow-[0_0_20px_rgba(var(--color-primary),0.2)] md:mx-0">
                     <img src={feature.image} alt={feature.title} className="h-16 w-16 object-contain" />
                   </div>
                   <CardTitle className="mb-4 text-center text-2xl font-bold tracking-tight md:text-left">

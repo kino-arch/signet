@@ -36,7 +36,7 @@ export function OperativeTemplate({ data }: TemplateProps) {
       />
 
       {/* ═══ HEADER ═══ */}
-      <header style={{ marginBottom: "28px", textAlign: "center" }}>
+      <div style={{ marginBottom: "28px", textAlign: "center" }}>
         <h1
           style={{
             fontSize: "32px",
@@ -92,7 +92,7 @@ export function OperativeTemplate({ data }: TemplateProps) {
           )}
           {basicInfo.website && <span>{basicInfo.website}</span>}
         </div>
-      </header>
+      </div>
 
       <Separator className="bg-slate-200" style={{ marginBottom: "22px" }} />
 
@@ -221,7 +221,7 @@ export function OperativeTemplate({ data }: TemplateProps) {
                   >
                     {exp.highlights.map((highlight, idx) => (
                       <li
-                        key={idx}
+                        key={`${exp.id}-h-${idx}`}
                         style={{
                           fontSize: "13.5px",
                           color: "#3a3a4a",

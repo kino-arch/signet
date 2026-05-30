@@ -12,7 +12,7 @@ export function Hero() {
       {/* Dot Grid Pattern — uses theme token, masked to fade at edges */}
       <div className="absolute inset-0 z-0 pointer-events-none bg-[radial-gradient(var(--color-muted-foreground)_1px,transparent_1px)] bg-[size:28px_28px] opacity-15 [mask-image:radial-gradient(ellipse_at_center,black_40%,transparent_75%)]" />
 
-      <div className="container relative z-10 flex flex-col items-center text-center gap-6 my-auto">
+      <div className="mx-auto w-full max-w-5xl px-4 sm:px-6 lg:px-8 relative z-10 flex flex-col items-center text-center gap-6 my-auto">
         {/* Badge — using the project's own Badge component */}
         <motion.div
           initial={{ opacity: 0, y: 10 }}
@@ -70,8 +70,8 @@ export function Hero() {
           transition={{ duration: 0.7, delay: 0.4 }}
           className="relative mt-2 w-full max-w-sm sm:max-w-md md:max-w-lg lg:max-w-xl xl:max-w-2xl"
         >
-          <div className="absolute -inset-4 rounded-lg bg-primary/5 blur-2xl pointer-events-none" />
-          <div className="relative overflow-hidden rounded-lg border border-border bg-card shadow-lg">
+          <div className="absolute -inset-4  bg-primary/5 blur-2xl pointer-events-none" />
+          <div className="relative overflow-hidden  border border-border bg-card shadow-lg">
             <img
               src="/beskar_dataslate.png"
               alt="Beskar data-slate resume layout"

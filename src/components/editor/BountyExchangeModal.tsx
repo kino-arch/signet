@@ -16,6 +16,7 @@ import { useAuthStore } from "@/store/useAuthStore";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/lib/supabase";
 
 interface BountyExchangeModalProps {
@@ -40,27 +41,27 @@ interface Package {
 const PACKAGES: Package[] = [
   {
     id: "foundling",
-    name: "Foundling Dossier",
+    name: "Foundling",
     tokens: 1,
     price: "$5",
-    description: "Secure one full-access single-column resume export. Perfect for a targeted application.",
+    description: "Single resume export.",
   },
   {
     id: "guild",
-    name: "Guild Contractor",
+    name: "Contractor",
     tokens: 5,
     price: "$15",
-    description: "Receive 5 Beskar Tokens. Edit, iterate, and customize multiple sigil variations.",
+    description: "Edit multiple variations.",
     badge: "Best Value",
     popular: true,
   },
   {
     id: "syndicate",
-    name: "Mandalore Syndicate",
+    name: "Syndicate",
     tokens: 15,
     price: "$35",
-    description: "An unlimited tactical reserve of 15 Beskar Tokens. Command the hiring market.",
-    badge: "Elite Tier",
+    description: "Unlimited tactical reserve.",
+    badge: "Elite",
   },
 ];
 
@@ -71,7 +72,7 @@ const PRICE_CENTS: Record<string, number> = {
 };
 
 export function BountyExchangeModal({ isOpen, onClose, infoMessage, defaultPackageId }: BountyExchangeModalProps) {
-  const { addTokens } = useAuthStore();
+  const { addCredits } = useAuthStore();
   const [phase, setPhase] = useState<ModalPhase>("packages");
   const [selectedPack, setSelectedPack] = useState<Package | null>(PACKAGES[1]);
   const [loadingStripe, setLoadingStripe] = useState(false);
@@ -201,7 +202,7 @@ export function BountyExchangeModal({ isOpen, onClose, infoMessage, defaultPacka
           clearInterval(progressInterval);
           setTimeout(async () => {
             // Credit the tokens
-            await addTokens(selectedPack.tokens);
+            await addCredits(selectedPack.tokens);
             setPhase("success");
           }, 600);
           return 100;
@@ -244,7 +245,7 @@ export function BountyExchangeModal({ isOpen, onClose, infoMessage, defaultPacka
           initial="hidden"
           animate="visible"
           exit="exit"
-          className="relative z-10 w-full max-w-[480px] overflow-hidden rounded-2xl border border-border/80 bg-card p-5 shadow-2xl shadow-black/40"
+          className="relative z-10 w-full max-w-[480px] overflow-hidden  border border-border/80 bg-card p-5 shadow-2xl shadow-black/40"
         >
           {/* Cyber accents */}
           <div className="absolute top-0 right-0 left-0 h-[2px] bg-gradient-to-r from-primary/30 via-primary to-primary/30" />
@@ -253,14 +254,14 @@ export function BountyExchangeModal({ isOpen, onClose, infoMessage, defaultPacka
           {/* Header row */}
           <div className="mb-4 flex items-center justify-between">
             <div className="flex items-center gap-2.5">
-              <div className="flex h-8 w-8 items-center justify-center rounded-lg border border-primary/20 bg-primary/10 text-primary">
+              <div className="flex h-8 w-8 items-center justify-center  border border-primary/20 bg-primary/10 text-primary">
                 <Coins className="h-4 w-4" />
               </div>
               <div>
                 <h2 className="font-heading text-base font-bold tracking-tight text-foreground leading-tight">
                   The Bounty Exchange
                 </h2>
-                <p className="text-[10px] text-muted-foreground/80 tracking-wide">Replenish your Beskar Token supply</p>
+                <p className="text-[10px] text-muted-foreground tracking-wide">Replenish your Beskar Token supply</p>
               </div>
             </div>
 
@@ -269,7 +270,7 @@ export function BountyExchangeModal({ isOpen, onClose, infoMessage, defaultPacka
                 variant="ghost"
                 size="icon"
                 onClick={onClose}
-                className="h-7 w-7 rounded-lg text-muted-foreground hover:text-foreground"
+                className="h-7 w-7  text-muted-foreground hover:text-foreground"
               >
                 <X className="h-3.5 w-3.5" />
               </Button>
@@ -278,7 +279,7 @@ export function BountyExchangeModal({ isOpen, onClose, infoMessage, defaultPacka
 
           {/* Info Alert Message */}
           {infoMessage && phase === "packages" && (
-            <div className="mb-3.5 flex items-center gap-2 rounded-lg border border-primary/20 bg-primary/5 px-3 py-2 text-[11px] text-primary">
+            <div className="mb-3.5 flex items-center gap-2  border border-primary/20 bg-primary/5 px-3 py-2 text-[11px] text-primary">
               <Terminal className="h-3.5 w-3.5 shrink-0 animate-pulse" />
               <p className="font-semibold leading-none truncate">{infoMessage}</p>
             </div>
@@ -289,7 +290,7 @@ export function BountyExchangeModal({ isOpen, onClose, infoMessage, defaultPacka
           {/* ──────────────────────────────────────────────────────── */}
           {phase === "packages" && (
             <div className="space-y-4">
-              <div className="grid gap-2.5">
+              <div className="grid grid-cols-3 gap-3">
                 {PACKAGES.map((pkg) => {
                   const isSelected = selectedPack?.id === pkg.id;
                   return (
@@ -299,54 +300,50 @@ export function BountyExchangeModal({ isOpen, onClose, infoMessage, defaultPacka
                         setSelectedPack(pkg);
                         setStripeError(null);
                       }}
-                      className={`group relative flex cursor-pointer items-center justify-between rounded-xl border p-3.5 transition-all select-none ${
+                      className={`group relative flex cursor-pointer flex-col items-center justify-center space-y-3  border p-4 text-center transition-all select-none ${
                         isSelected
-                          ? "border-primary bg-primary/10 shadow-lg shadow-primary/10 ring-1 ring-primary/30"
+                          ? "border-primary bg-primary/10 shadow-lg shadow-primary/10 ring-1 ring-primary/30 scale-[1.02]"
                           : pkg.popular 
                             ? "border-primary/30 bg-primary/5 hover:border-primary/50" 
                             : "border-border/60 bg-background/50 hover:border-primary/40"
                       }`}
                     >
-                      <div className="space-y-1 pr-4 flex-1">
-                        <div className="flex items-center gap-2 flex-wrap">
-                          {isSelected && (
-                            <ShieldCheck className="h-4 w-4 text-primary shrink-0 animate-pulse" />
-                          )}
-                          <span className={`font-heading text-sm font-bold transition-colors ${
-                            isSelected ? "text-primary" : "text-foreground group-hover:text-primary"
-                          }`}>
-                            {pkg.name}
-                          </span>
-                          {pkg.badge && (
-                            <span className={`rounded-full px-1.5 py-0.5 text-[8px] font-extrabold tracking-widest uppercase shrink-0 ${
-                              isSelected || pkg.popular 
-                                ? "bg-primary text-primary-foreground" 
-                                : "border border-border/80 bg-muted text-muted-foreground"
-                            }`}>
-                              {pkg.badge}
-                            </span>
-                          )}
-                        </div>
-                        <p className="text-[10px] leading-snug text-muted-foreground/90 max-w-sm">
+                      {/* Top Badge */}
+                      <div className="flex h-6 items-center justify-center">
+                        <Badge variant={isSelected || pkg.popular ? "default" : "secondary"} className="text-[9px] uppercase font-black tracking-widest">
+                          {pkg.tokens} {pkg.tokens === 1 ? "TOKEN" : "TOKENS"}
+                        </Badge>
+                      </div>
+
+                      {/* Price Hero */}
+                      <div className="flex flex-col items-center justify-center">
+                        <span className={`font-heading text-3xl font-black leading-none ${isSelected ? "text-primary" : "text-foreground group-hover:text-primary transition-colors"}`}>
+                          {pkg.price}
+                        </span>
+                      </div>
+
+                      {/* Name & Desc */}
+                      <div className="flex flex-col items-center justify-center space-y-1">
+                        <span className="font-heading text-xs font-bold text-foreground">
+                          {pkg.name}
+                        </span>
+                        <p className="text-[9px] leading-tight text-muted-foreground px-1">
                           {pkg.description}
                         </p>
                       </div>
-
-                      <div className="flex flex-col items-end shrink-0 pl-3">
-                        <span className="font-heading text-lg font-black text-foreground leading-none">
-                          {pkg.price}
-                        </span>
-                        <span className="font-mono text-[9px] font-bold tracking-wide text-primary mt-1">
-                          {pkg.tokens} {pkg.tokens === 1 ? "TOKEN" : "TOKENS"}
-                        </span>
-                      </div>
+                      
+                      {isSelected && (
+                        <div className="absolute top-2 right-2">
+                          <ShieldCheck className="h-3.5 w-3.5 text-primary animate-pulse" />
+                        </div>
+                      )}
                     </div>
                   );
                 })}
               </div>
 
               {stripeError && (
-                <div className="flex items-center gap-2 rounded-lg border border-destructive/20 bg-destructive/5 px-3 py-2 text-[11px] text-destructive">
+                <div className="flex items-center gap-2  border border-destructive/20 bg-destructive/5 px-3 py-2 text-[11px] text-destructive">
                   <ShieldAlert className="h-3.5 w-3.5 shrink-0" />
                   <p className="font-semibold leading-none">{stripeError}</p>
                 </div>
@@ -381,7 +378,7 @@ export function BountyExchangeModal({ isOpen, onClose, infoMessage, defaultPacka
                 </Button>
               </div>
 
-              <p className="text-center font-mono text-[9px] text-muted-foreground/50 leading-relaxed">
+              <p className="text-center font-mono text-[9px] text-muted-foreground leading-relaxed">
                 Secured by Stripe · Guild mainframe encrypted
               </p>
             </div>
@@ -393,7 +390,7 @@ export function BountyExchangeModal({ isOpen, onClose, infoMessage, defaultPacka
           {phase === "payment" && selectedPack && (
             <div className="space-y-6">
               {/* Visual payment card outline */}
-              <div className="relative overflow-hidden rounded-xl border border-primary/20 bg-linear-to-br from-primary/10 via-secondary/20 to-background/50 p-5 shadow-inner">
+              <div className="relative overflow-hidden  border border-primary/20 bg-linear-to-br from-primary/10 via-secondary/20 to-background/50 p-5 shadow-inner">
                 {/* Visual card glow */}
                 <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,color-mix(in_srgb,var(--color-primary)_12%,transparent),transparent_50%)]" />
                 <div className="relative z-10 flex h-28 flex-col justify-between">
@@ -412,18 +409,18 @@ export function BountyExchangeModal({ isOpen, onClose, infoMessage, defaultPacka
 
                     <div className="flex justify-between">
                       <div className="flex flex-col">
-                        <span className="text-[7px] text-muted-foreground/70 tracking-widest uppercase">Operative Code</span>
+                        <span className="text-[7px] text-muted-foreground tracking-widest uppercase">Operative Code</span>
                         <span className="font-mono text-[10px] font-bold uppercase truncate max-w-[150px]">
                           {cardName || "Din Djarin"}
                         </span>
                       </div>
                       <div className="flex gap-4">
                         <div className="flex flex-col items-end">
-                          <span className="text-[7px] text-muted-foreground/70 tracking-widest uppercase">Expiry</span>
+                          <span className="text-[7px] text-muted-foreground tracking-widest uppercase">Expiry</span>
                           <span className="font-mono text-[10px] font-bold">{cardExpiry || "MM/YY"}</span>
                         </div>
                         <div className="flex flex-col items-end">
-                          <span className="text-[7px] text-muted-foreground/70 tracking-widest uppercase">Cvc</span>
+                          <span className="text-[7px] text-muted-foreground tracking-widest uppercase">Cvc</span>
                           <span className="font-mono text-[10px] font-bold">{cardCvc || "•••"}</span>
                         </div>
                       </div>
@@ -551,7 +548,7 @@ export function BountyExchangeModal({ isOpen, onClose, infoMessage, defaultPacka
               </div>
 
               {/* Logs block */}
-              <div className="rounded-xl border border-border/80 bg-black/60 p-4.5 font-mono text-[10px] leading-relaxed text-primary/80 h-44 overflow-y-auto">
+              <div className=" border border-border/80 bg-black/60 p-4.5 font-mono text-[10px] leading-relaxed text-primary/80 h-44 overflow-y-auto">
                 <div className="space-y-1.5">
                   {logs.map((log, i) => (
                     <div key={i} className="flex gap-2">
@@ -602,7 +599,7 @@ export function BountyExchangeModal({ isOpen, onClose, infoMessage, defaultPacka
               </div>
 
               {/* Secure voucher widget */}
-              <div className="mx-auto max-w-xs rounded-xl border border-primary/20 bg-primary/5 p-4 font-mono text-xs">
+              <div className="mx-auto max-w-xs  border border-primary/20 bg-primary/5 p-4 font-mono text-xs">
                 <div className="flex justify-between border-b border-border/50 pb-2 mb-2 text-muted-foreground">
                   <span>VOUCHER HASH:</span>
                   <span className="font-semibold text-primary">SEC-{Math.floor(100000 + Math.random() * 900000)}</span>

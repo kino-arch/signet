@@ -44,7 +44,7 @@ export function StandardTemplate() {
       }}
     >
       {/* ── HEADER ── */}
-      <header style={{ textAlign: "center", marginBottom: "4px" }}>
+      <div style={{ textAlign: "center", marginBottom: "4px" }}>
         <h1
           style={{
             fontSize: "32px",
@@ -80,7 +80,7 @@ export function StandardTemplate() {
             ))}
           </div>
         )}
-      </header>
+      </div>
 
       {/* ── SUMMARY ── */}
       {basicInfo.summary && (

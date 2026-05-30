@@ -114,7 +114,7 @@ export function TheCovert() {
 
   return (
     <section id="covert" className="w-full bg-background py-20 md:py-24">
-      <div className="relative z-10 container">
+      <div className="mx-auto w-full max-w-5xl px-4 sm:px-6 lg:px-8 relative z-10">
         {/* About Section */}
         <motion.div
           initial={{ opacity: 0, y: -20 }}
@@ -144,7 +144,7 @@ export function TheCovert() {
             return (
               <motion.div key={value.title} variants={itemVariants}>
                 <Card className="group h-full border-border/50 bg-card/50 p-6 backdrop-blur transition-all hover:border-primary/50 hover:shadow-lg">
-                  <div className="mb-4 inline-flex rounded-lg bg-secondary p-3">
+                  <div className="mb-4 inline-flex  bg-secondary p-3">
                     <Icon className="h-6 w-6 text-foreground transition-transform group-hover:scale-110" />
                   </div>
                   <h3 className="mb-2 text-xl font-semibold text-foreground">{value.title}</h3>
@@ -194,7 +194,7 @@ export function TheCovert() {
                 <Card className="group relative overflow-hidden border-border/50 bg-card p-6 text-center transition-all hover:border-primary/50 hover:shadow-2xl md:p-8">
                   <div className="relative z-10 flex flex-col items-center">
                     <motion.div transition={{ duration: 0.6 }} className="mb-4">
-                      <div className="w-fit rounded-xl bg-secondary p-3">
+                      <div className="w-fit  bg-secondary p-3">
                         <Icon className="h-6 w-6 text-foreground md:h-8 md:w-8" />
                       </div>
                     </motion.div>

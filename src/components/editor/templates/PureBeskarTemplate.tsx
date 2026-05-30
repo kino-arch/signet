@@ -42,7 +42,7 @@ export function PureBeskarTemplate() {
       }}
     >
       {/* ── HEADER (CENTERED ARCHITECTURE) ── */}
-      <header className="resume-header" style={{ textAlign: "center", marginBottom: "32px" }}>
+      <div className="resume-header" style={{ textAlign: "center", marginBottom: "32px" }}>
         <h1
           style={{
             fontSize: "32px",
@@ -54,7 +54,7 @@ export function PureBeskarTemplate() {
             lineHeight: "1",
           }}
         >
-          {basicInfo.firstName} {basicInfo.lastName}
+          {basicInfo.firstName || basicInfo.lastName ? `${basicInfo.firstName} ${basicInfo.lastName}` : "YOUR NAME"}
         </h1>
 
         {/* ── TITLE ── */}
@@ -99,7 +99,7 @@ export function PureBeskarTemplate() {
             ))}
           </div>
         )}
-      </header>
+      </div>
 
       {/* ── SUMMARY ── */}
       {basicInfo.summary && (
@@ -201,7 +201,7 @@ export function PureBeskarTemplate() {
                   >
                     {job.highlights.map((item, idx) => (
                       <li
-                        key={idx}
+                        key={`${job.id}-h-${idx}`}
                         style={{
                           fontSize: "13.5px",
                           color: INK,

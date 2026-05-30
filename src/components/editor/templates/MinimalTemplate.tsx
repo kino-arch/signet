@@ -38,7 +38,7 @@ export function MinimalTemplate() {
       }}
     >
       {/* ── LEFT SIDEBAR ── */}
-      <aside
+      <div
         style={{
           width: SIDEBAR_W,
           backgroundColor: "#f6f6f6",
@@ -176,10 +176,10 @@ export function MinimalTemplate() {
             </div>
           </div>
         )}
-      </aside>
+      </div>
 
       {/* ── MAIN CONTENT ── */}
-      <main
+      <div
         style={{
           width: MAIN_W,
           backgroundColor: "#ffffff",
@@ -306,7 +306,7 @@ export function MinimalTemplate() {
             </div>
           </div>
         )}
-      </main>
+      </div>
     </div>
   );
 }

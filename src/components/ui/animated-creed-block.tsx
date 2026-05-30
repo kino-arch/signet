@@ -203,7 +203,7 @@ function BlinkingCursor() {
     <motion.span
       animate={{ opacity: [1, 0, 1] }}
       transition={{ duration: 0.7, repeat: Infinity }}
-      className="ml-0.5 inline-block h-[1em] w-0.5 rounded-sm bg-primary align-middle"
+      className="ml-0.5 inline-block h-[1em] w-0.5  bg-primary align-middle"
     />
   );
 }

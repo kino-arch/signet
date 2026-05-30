@@ -86,7 +86,7 @@ export function PricingSection() {
       className="w-full bg-background px-4 py-12 sm:py-16 md:py-20 lg:py-24"
       aria-labelledby="pricing-heading"
     >
-      <div className="mx-auto max-w-6xl">
+      <div className="mx-auto w-full max-w-5xl px-4 sm:px-6 lg:px-8">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
@@ -110,7 +110,7 @@ export function PricingSection() {
               <Card
                 className={cn(
                   "relative flex h-full w-full flex-col overflow-hidden transition-all duration-200",
-                  plan.popular ? "border-none bg-background rounded-3xl" : "shadow-md hover:shadow-lg bg-background"
+                  plan.popular ? "border-none bg-background " : "shadow-md hover:shadow-lg bg-background"
                 )}
                 role="article"
                 aria-label={`${plan.name} plan${plan.popular ? ', most popular' : ''}`}

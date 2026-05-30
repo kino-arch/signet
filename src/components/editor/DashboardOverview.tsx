@@ -2,12 +2,14 @@
 
 import { motion, type Variants } from "framer-motion";
 import { useAuthStore } from "@/store/useAuthStore";
+import { useRewardsStore } from "@/store/useRewardsStore";
+import { useEffect } from "react";
 import {
   TrendingUp,
   TrendingDown,
   Users,
   Clock,
-  Eye,
+  Shield,
   Download,
   ArrowUpRight,
 } from "lucide-react";
@@ -89,7 +91,7 @@ const itemVariants: Variants = {
 function CustomTooltip({ active, payload, label }: { active?: boolean; payload?: { value: number }[]; label?: string }) {
   if (!active || !payload?.length) return null;
   return (
-    <div className="rounded-xl border border-border/60 bg-card px-3 py-2 shadow-xl shadow-black/10">
+    <div className=" border border-border/60 bg-card px-3 py-2 shadow-xl shadow-black/10">
       <p className="text-[10px] font-semibold tracking-widest text-muted-foreground uppercase">{label}</p>
       <p className="mt-0.5 text-lg font-bold text-foreground">{payload[0].value}</p>
     </div>
@@ -108,7 +110,7 @@ function MetricCard({ label, value, change, trend, icon }: MetricCardProps) {
     <motion.div
       variants={itemVariants}
       whileHover={{ y: -3, transition: { duration: 0.2 } }}
-      className="group relative flex flex-col justify-between overflow-hidden rounded-2xl border border-border/60 bg-card p-6 shadow-sm ring-1 shadow-black/5 ring-white/5 transition-all duration-300 ring-inset hover:border-primary/30 hover:shadow-md hover:shadow-primary/10"
+      className="group relative flex flex-col justify-between overflow-hidden  border border-border/60 bg-card p-6 shadow-sm ring-1 shadow-black/5 ring-white/5 transition-all duration-300 ring-inset hover:border-primary/30 hover:shadow-md hover:shadow-primary/10"
     >
       {/* Subtle top accent bar */}
       <div
@@ -120,12 +122,12 @@ function MetricCard({ label, value, change, trend, icon }: MetricCardProps) {
       />
 
       {/* Background noise texture */}
-      <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-foreground/[0.015] via-transparent to-transparent" />
+      <div className="absolute inset-0  bg-gradient-to-br from-foreground/[0.015] via-transparent to-transparent" />
 
       <div className="relative space-y-5">
         {/* Icon + badge row */}
         <div className="flex items-start justify-between">
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-border/60 bg-background/80 text-foreground/70 shadow-sm transition-colors duration-300 group-hover:border-primary/30 group-hover:text-primary">
+          <div className="flex h-10 w-10 items-center justify-center  border border-border/60 bg-background/80 text-muted-foreground shadow-sm transition-colors duration-300 group-hover:border-primary/30 group-hover:text-primary">
             {icon}
           </div>
 
@@ -143,7 +145,7 @@ function MetricCard({ label, value, change, trend, icon }: MetricCardProps) {
 
         {/* Metric value */}
         <div className="space-y-1">
-          <p className="text-[10px] font-bold tracking-[0.2em] text-muted-foreground/80 uppercase">
+          <p className="text-[10px] font-bold tracking-[0.2em] text-muted-foreground uppercase">
             {label}
           </p>
           <p className="font-heading text-[2rem] leading-none font-bold tracking-tight text-foreground">
@@ -163,10 +165,10 @@ function SectionHeader({ title, subtitle, action }: { title: string; subtitle: s
   return (
     <div className="flex items-start justify-between">
       <div className="space-y-0.5">
-        <h3 className="text-[10px] font-bold tracking-[0.25em] text-muted-foreground uppercase">
+        <h2 className="text-[10px] font-bold tracking-[0.25em] text-muted-foreground uppercase">
           {title}
-        </h3>
-        <p className="text-xs text-foreground/50">{subtitle}</p>
+        </h2>
+        <p className="text-xs text-muted-foreground">{subtitle}</p>
       </div>
       {action}
     </div>
@@ -177,12 +179,16 @@ function SectionHeader({ title, subtitle, action }: { title: string; subtitle: s
 // DASHBOARD OVERVIEW
 // ============================================================================
 
-interface DashboardOverviewProps {
-  onBuyTokens?: () => void;
-}
+interface DashboardOverviewProps {}
 
-export function DashboardOverview({ onBuyTokens }: DashboardOverviewProps) {
-  const { profile } = useAuthStore();
+export function DashboardOverview({}: DashboardOverviewProps) {
+  const { } = useAuthStore();
+  const { shields, getRank, processDailyCheckIn } = useRewardsStore();
+
+  useEffect(() => {
+    // Award 5 Shields on first login of the day
+    processDailyCheckIn();
+  }, [processDailyCheckIn]);
 
   return (
     <motion.div
@@ -207,31 +213,17 @@ export function DashboardOverview({ onBuyTokens }: DashboardOverviewProps) {
           </p>
         </div>
 
-        {/* Token Balance & Paywall CTA */}
-        <div className="flex items-center gap-3 rounded-xl border border-border/60 bg-card p-2 shadow-sm">
-          <div className="flex flex-col px-3 text-right">
-            <span className="text-[10px] font-bold tracking-widest text-muted-foreground uppercase">Balance</span>
-            <span className="font-heading text-lg font-bold text-foreground">
-              {profile?.token_balance ?? 0} {profile?.token_balance === 1 ? "Token" : "Tokens"}
-            </span>
-          </div>
-          <button 
-            onClick={onBuyTokens}
-            className="rounded-lg bg-primary px-4 py-2 text-sm font-bold text-primary-foreground shadow-md transition-all hover:bg-primary/90 hover:shadow-primary/25 active:scale-95 cursor-pointer"
-          >
-            Buy Tokens
-          </button>
-        </div>
+
       </motion.div>
 
       {/* Metric cards */}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <MetricCard
-          label="Profile Views"
-          value="1,482"
-          change="+12%"
+          label={`Guild Rank: ${getRank()}`}
+          value={shields.toString()}
+          change="Beskar Shields"
           trend="up"
-          icon={<Eye className="h-5 w-5" />}
+          icon={<Shield className="h-5 w-5 text-primary" />}
         />
         <MetricCard
           label="Resume Downloads"
@@ -261,18 +253,18 @@ export function DashboardOverview({ onBuyTokens }: DashboardOverviewProps) {
         {/* Main area chart — Profile Views Trend (spans 2 cols) */}
         <motion.div
           variants={itemVariants}
-          className="group relative col-span-1 overflow-hidden rounded-2xl border border-border/60 bg-card p-6 shadow-sm ring-1 shadow-black/5 ring-white/5 transition-all duration-300 ring-inset hover:shadow-md hover:shadow-primary/10 lg:col-span-2"
+          className="group relative col-span-1 overflow-hidden  border border-border/60 bg-card p-6 shadow-sm ring-1 shadow-black/5 ring-white/5 transition-all duration-300 ring-inset hover:shadow-md hover:shadow-primary/10 lg:col-span-2"
         >
           {/* Top accent */}
           <div className="absolute inset-x-0 top-0 h-[2px] rounded-t-2xl bg-gradient-to-r from-primary/40 via-primary to-primary/40 opacity-60" />
-          <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-primary/[0.03] via-transparent to-transparent" />
+          <div className="absolute inset-0  bg-gradient-to-br from-primary/[0.03] via-transparent to-transparent" />
 
           <div className="relative space-y-6">
             <SectionHeader
               title="Profile Views Trend"
               subtitle="Unique visitors over the last 8 weeks"
               action={
-                <button className="flex items-center gap-1 rounded-lg border border-border/60 bg-background/80 px-3 py-1.5 text-[10px] font-bold tracking-widest text-muted-foreground uppercase transition-colors hover:border-primary/30 hover:text-primary">
+                <button className="flex items-center gap-1  border border-border/60 bg-background/80 px-3 py-1.5 text-[10px] font-bold tracking-widest text-muted-foreground uppercase transition-colors hover:border-primary/30 hover:text-primary">
                   <ArrowUpRight className="h-3 w-3" />
                   Export
                 </button>
@@ -333,9 +325,9 @@ export function DashboardOverview({ onBuyTokens }: DashboardOverviewProps) {
         {/* Secondary chart — Active Contracts */}
         <motion.div
           variants={itemVariants}
-          className="group relative col-span-1 overflow-hidden rounded-2xl border border-border/60 bg-card p-6 shadow-sm ring-1 shadow-black/5 ring-white/5 transition-all duration-300 ring-inset hover:shadow-md hover:shadow-primary/10"
+          className="group relative col-span-1 overflow-hidden  border border-border/60 bg-card p-6 shadow-sm ring-1 shadow-black/5 ring-white/5 transition-all duration-300 ring-inset hover:shadow-md hover:shadow-primary/10"
         >
-          <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-foreground/[0.015] via-transparent to-transparent" />
+          <div className="absolute inset-0  bg-gradient-to-br from-foreground/[0.015] via-transparent to-transparent" />
 
           <div className="relative space-y-6">
             <SectionHeader
@@ -399,9 +391,9 @@ export function DashboardOverview({ onBuyTokens }: DashboardOverviewProps) {
       {/* Activity feed / intel log */}
       <motion.div
         variants={itemVariants}
-        className="group relative overflow-hidden rounded-2xl border border-border/60 bg-card shadow-sm ring-1 shadow-black/5 ring-white/5 transition-all duration-300 ring-inset hover:shadow-md hover:shadow-black/10"
+        className="group relative overflow-hidden  border border-border/60 bg-card shadow-sm ring-1 shadow-black/5 ring-white/5 transition-all duration-300 ring-inset hover:shadow-md hover:shadow-black/10"
       >
-        <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-foreground/[0.015] via-transparent to-transparent" />
+        <div className="absolute inset-0  bg-gradient-to-br from-foreground/[0.015] via-transparent to-transparent" />
         <div className="relative px-6 py-5">
           <SectionHeader title="Intel Log: ATS Scanners" subtitle="Recent data-slate analytics" />
         </div>
@@ -424,8 +416,8 @@ export function DashboardOverview({ onBuyTokens }: DashboardOverviewProps) {
                     : "bg-muted-foreground"
                 }`}
               />
-              <p className="flex-1 text-sm text-foreground/80">{item.event}</p>
-              <span className="shrink-0 text-[10px] font-semibold tracking-wider text-muted-foreground/60 uppercase">
+              <p className="flex-1 text-sm text-muted-foreground">{item.event}</p>
+              <span className="shrink-0 text-[10px] font-semibold tracking-wider text-muted-foreground uppercase">
                 {item.time}
               </span>
             </div>

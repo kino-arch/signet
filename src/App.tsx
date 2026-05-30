@@ -53,7 +53,7 @@ function AuthInitializer({ children }: { children: React.ReactNode }) {
 
 export function App() {
   return (
-    <main className="font-sans antialiased min-h-screen bg-background text-foreground">
+    <div className="font-sans antialiased min-h-screen bg-background text-foreground">
       <BrowserRouter>
         <AuthInitializer>
           <Routes>
@@ -79,7 +79,7 @@ export function App() {
           </Routes>
         </AuthInitializer>
       </BrowserRouter>
-    </main>
+    </div>
   );
 }
 

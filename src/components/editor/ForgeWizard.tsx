@@ -1,16 +1,15 @@
-"use client";
-
 import { useState } from "react";
 import { motion, type Variants } from "framer-motion";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { ArrowLeft, ArrowRight, Check, Briefcase, GraduationCap, Code, User, Settings } from "lucide-react";
+import { ArrowLeft, ArrowRight, Check, Briefcase, GraduationCap, Code, User, Settings, ShieldAlert } from "lucide-react";
 import { BasicInfoForm } from "@/components/editor/BasicInfoForm";
 import { ExperienceForm } from "@/components/editor/ExperienceForm";
 import { EducationForm } from "@/components/editor/EducationForm";
 import { SkillsForm } from "@/components/editor/SkillsForm";
 import { SettingsForm } from "@/components/editor/SettingsForm";
+import { AtsDiagnosticPanel } from "@/components/editor/AtsDiagnosticPanel";
 
 const containerVariants: Variants = {
   hidden: { opacity: 0, scale: 0.98 },
@@ -40,6 +39,7 @@ const STEPS = [
   { id: 3, name: "Education", description: "Training & Academies", icon: GraduationCap },
   { id: 4, name: "Skills", description: "Combat & Tech", icon: Code },
   { id: 5, name: "Aesthetics", description: "Armor & Themes", icon: Settings },
+  { id: 6, name: "System Scan", description: "ATS Compliance", icon: ShieldAlert },
 ];
 
 function SidebarStep({ step, currentStep }: { step: (typeof STEPS)[0]; currentStep: number }) {
@@ -83,7 +83,7 @@ function SidebarStep({ step, currentStep }: { step: (typeof STEPS)[0]; currentSt
         >
           {step.name}
         </span>
-        <span className="text-xs text-muted-foreground/70">{step.description}</span>
+        <span className="text-xs text-muted-foreground">{step.description}</span>
       </div>
     </div>
   );
@@ -126,7 +126,7 @@ export function ForgeWizard({ onComplete }: { onComplete?: () => void }) {
         variants={containerVariants}
         initial="hidden"
         animate="visible"
-        className="relative overflow-hidden rounded-3xl border border-border/40 bg-background/40 backdrop-blur-xl"
+        className="relative overflow-hidden  border border-border/40 bg-background/40 backdrop-blur-xl"
       >
         <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-foreground/5 via-transparent to-transparent" />
 
@@ -163,6 +163,7 @@ export function ForgeWizard({ onComplete }: { onComplete?: () => void }) {
                   {currentStep === 3 && <EducationForm />}
                   {currentStep === 4 && <SkillsForm />}
                   {currentStep === 5 && <SettingsForm />}
+                  {currentStep === 6 && <AtsDiagnosticPanel />}
                 </div>
               </motion.div>
             </div>

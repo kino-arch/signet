@@ -63,7 +63,7 @@ export function PremiumRichTextEditor({
   }
 
   return (
-    <div className={cn("flex flex-col rounded-md border border-input bg-transparent shadow-sm focus-within:ring-1 focus-within:ring-ring transition-all", className)}>
+    <div className={cn("flex flex-col  border border-input bg-transparent shadow-sm focus-within:ring-1 focus-within:ring-ring transition-all", className)}>
       {/* Premium minimal toolbar */}
       <div className="flex flex-wrap items-center gap-1 border-b border-input bg-muted/40 p-1">
         <Button
@@ -71,7 +71,7 @@ export function PremiumRichTextEditor({
           variant="ghost"
           size="icon"
           aria-label="Bold"
-          className={cn("h-7 w-7 rounded-sm", editor.isActive('bold') && "bg-muted shadow-sm")}
+          className={cn("h-7 w-7 ", editor.isActive('bold') && "bg-muted shadow-sm")}
           onClick={() => editor.chain().focus().toggleBold().run()}
         >
           <Bold className="h-3.5 w-3.5" />
@@ -81,7 +81,7 @@ export function PremiumRichTextEditor({
           variant="ghost"
           size="icon"
           aria-label="Italic"
-          className={cn("h-7 w-7 rounded-sm", editor.isActive('italic') && "bg-muted shadow-sm")}
+          className={cn("h-7 w-7 ", editor.isActive('italic') && "bg-muted shadow-sm")}
           onClick={() => editor.chain().focus().toggleItalic().run()}
         >
           <Italic className="h-3.5 w-3.5" />
@@ -92,7 +92,7 @@ export function PremiumRichTextEditor({
           variant="ghost"
           size="icon"
           aria-label="Bullet List"
-          className={cn("h-7 w-7 rounded-sm", editor.isActive('bulletList') && "bg-muted shadow-sm")}
+          className={cn("h-7 w-7 ", editor.isActive('bulletList') && "bg-muted shadow-sm")}
           onClick={() => editor.chain().focus().toggleBulletList().run()}
         >
           <List className="h-3.5 w-3.5" />
@@ -102,7 +102,7 @@ export function PremiumRichTextEditor({
           variant="ghost"
           size="icon"
           aria-label="Numbered List"
-          className={cn("h-7 w-7 rounded-sm", editor.isActive('orderedList') && "bg-muted shadow-sm")}
+          className={cn("h-7 w-7 ", editor.isActive('orderedList') && "bg-muted shadow-sm")}
           onClick={() => editor.chain().focus().toggleOrderedList().run()}
         >
           <ListOrdered className="h-3.5 w-3.5" />
@@ -113,7 +113,7 @@ export function PremiumRichTextEditor({
           variant="ghost"
           size="icon"
           aria-label="Clear formatting"
-          className="h-7 w-7 rounded-sm text-muted-foreground hover:text-foreground"
+          className="h-7 w-7  text-muted-foreground hover:text-foreground"
           onClick={() => editor.chain().focus().clearNodes().unsetAllMarks().run()}
           title="Clear formatting"
         >

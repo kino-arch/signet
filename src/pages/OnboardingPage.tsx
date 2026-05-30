@@ -242,7 +242,7 @@ export function OnboardingPage() {
                   <CardTitle className="tracking-widest text-primary uppercase">Biometric Recognition</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                  <div className="space-y-2 rounded-lg border border-border bg-muted/50 p-3 text-left font-mono text-xs">
+                  <div className="space-y-2  border border-border bg-muted/50 p-3 text-left font-mono text-xs">
                     <div className="flex justify-between text-muted-foreground">
                       <span>SECTOR CONNECTION:</span>
                       <span className="font-bold text-primary">ESTABLISHED</span>
@@ -307,7 +307,7 @@ export function OnboardingPage() {
                           type="button"
                           aria-pressed={isSelected}
                           onClick={() => handleSelectRole(option.id)}
-                          className={`relative flex cursor-pointer flex-col items-center justify-between rounded-xl border p-5 text-center text-left transition-all duration-300 select-none ${
+                          className={`relative flex cursor-pointer flex-col items-center justify-between  border p-5 text-center text-left transition-all duration-300 select-none ${
                             isSelected 
                               ? "-translate-y-1 border-primary bg-muted shadow-[0_0_15px_var(--color-primary-foreground)] shadow-primary/20" 
                               : "border-border/50 bg-background hover:border-primary/50 hover:bg-muted/50"
@@ -317,7 +317,7 @@ export function OnboardingPage() {
                             {isSelected && <div className="h-1.5 w-1.5 rounded-full bg-primary" />}
                           </div>
 
-                          <div className={`mb-4 rounded-lg border border-border/50 bg-background p-3 text-primary transition-transform duration-300 ${isSelected ? 'scale-110' : 'group-hover:scale-105'}`}>
+                          <div className={`mb-4  border border-border/50 bg-background p-3 text-primary transition-transform duration-300 ${isSelected ? 'scale-110' : 'group-hover:scale-105'}`}>
                             <Icon className="h-6 w-6" />
                           </div>
 
@@ -490,7 +490,7 @@ export function OnboardingPage() {
                 borderRadius={24}
                 neonColors={{ firstColor: "hsl(var(--primary))", secondColor: "hsl(var(--primary) / 0.5)" }}
               >
-                <Card className="border-none bg-background text-center rounded-3xl">
+                <Card className="border-none bg-background text-center ">
                   <CardHeader>
                     <div className="mx-auto mb-4 animate-pulse rounded-full border border-primary/30 bg-primary/10 p-3 text-primary">
                       <Terminal className="h-8 w-8" />
@@ -501,7 +501,7 @@ export function OnboardingPage() {
                   
                   <CardContent className="space-y-6">
                     {/* Animated sequential creed */}
-                    <div className="rounded-xl border border-border/50 bg-background/50 p-5">
+                    <div className=" border border-border/50 bg-background/50 p-5">
                       {step === 3 && (
                         <AnimatedCreedBlock
                           lines={CREED_LINES}
@@ -521,7 +521,7 @@ export function OnboardingPage() {
                           <button
                             type="button"
                             aria-pressed={swearOath}
-                            className="flex w-full cursor-pointer items-center space-x-3 rounded-lg border border-border/50 bg-muted/30 p-4 text-left transition-all hover:bg-muted/50"
+                            className="flex w-full cursor-pointer items-center space-x-3  border border-border/50 bg-muted/30 p-4 text-left transition-all hover:bg-muted/50"
                             onClick={() => setSwearOath(!swearOath)}
                           >
                             <div className={`flex h-5 w-5 items-center justify-center rounded border transition-all ${
