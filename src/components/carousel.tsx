@@ -380,8 +380,8 @@ const Lightbox: React.FC<LightboxProps> = ({
 }) => {
   const [current, setCurrent] = useState(initialIndex)
 
-  const prev = () => setCurrent((c) => (c - 1 + slides.length) % slides.length)
-  const next = () => setCurrent((c) => (c + 1) % slides.length)
+  const prev = useCallback(() => setCurrent((c) => (c - 1 + slides.length) % slides.length), [slides.length])
+  const next = useCallback(() => setCurrent((c) => (c + 1) % slides.length), [slides.length])
 
   useEffect(() => {
     const handleKey = (e: KeyboardEvent) => {
@@ -390,7 +390,7 @@ const Lightbox: React.FC<LightboxProps> = ({
     }
     window.addEventListener("keydown", handleKey)
     return () => window.removeEventListener("keydown", handleKey)
-  }, [])
+  }, [prev, next])
 
   return (
     <div
@@ -515,6 +515,9 @@ export const useAutoplayProgress = <ProgressElement extends HTMLElement>(
 
     node.style.animationName = "none"
     node.style.transform = "translate3d(0,0,0)"
+
+    window.cancelAnimationFrame(rafId.current)
+    window.clearTimeout(timeoutId.current)
 
     rafId.current = window.requestAnimationFrame(() => {
       timeoutId.current = window.setTimeout(() => {

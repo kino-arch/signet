@@ -85,7 +85,7 @@ function WorkBlock({ entry }: { entry: WorkEntry }) {
           >
             <Trash2 className="h-3.5 w-3.5" />
           </button>
-          <button className="p-1.5 text-muted-foreground/50 transition-colors hover:text-foreground">
+          <button onClick={() => setExpanded((v) => !v)} className="p-1.5 text-muted-foreground/50 transition-colors hover:text-foreground">
             {expanded ? <ChevronUp className="h-3.5 w-3.5" /> : <ChevronDown className="h-3.5 w-3.5" />}
           </button>
         </div>
@@ -181,6 +181,10 @@ export function MissionHistoryArray() {
     }
   };
 
+  const handleDragCancel = () => {
+    setSyncPaused(false);
+  };
+
   return (
     <div className="space-y-3">
       <div className="flex items-center justify-between border-b border-border/20 pb-2">
@@ -211,6 +215,7 @@ export function MissionHistoryArray() {
         collisionDetection={closestCenter}
         onDragStart={handleDragStart}
         onDragEnd={handleDragEnd}
+        onDragCancel={handleDragCancel}
       >
         <SortableContext items={work.map((e) => e.id)} strategy={verticalListSortingStrategy}>
           <div className="space-y-2">

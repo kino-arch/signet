@@ -245,6 +245,10 @@ export function CoreCompetenciesArray() {
     }
   };
 
+  const handleDragCancel = () => {
+    setSyncPaused(false);
+  };
+
   return (
     <div className="space-y-3">
       <div className="flex items-center justify-between border-b border-border/20 pb-2">
@@ -305,6 +309,7 @@ export function CoreCompetenciesArray() {
         collisionDetection={closestCenter}
         onDragStart={handleDragStart}
         onDragEnd={handleDragEnd}
+        onDragCancel={handleDragCancel}
       >
         <SortableContext items={skills.map((e) => e.id)} strategy={verticalListSortingStrategy}>
           <div className="space-y-2">

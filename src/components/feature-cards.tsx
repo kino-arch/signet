@@ -34,6 +34,7 @@ export function FeatureCards() {
   const mountedRef = useRef(true)
 
   useEffect(() => {
+    mountedRef.current = true;
     const progressInterval = setInterval(() => {
       if (!mountedRef.current) return
 

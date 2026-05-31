@@ -41,6 +41,8 @@ export function ReforgeModal({ entry }: ReforgeModalProps) {
           if (isMounted) setAiProposal(entry.id, result);
         } catch (err: unknown) {
           if (isMounted) setAiProposal(entry.id, `⚠️ Reforge failed: ${(err as Error).message}`);
+        } finally {
+          if (isMounted) setAiLoading(entry.id, false);
         }
         return;
       }
