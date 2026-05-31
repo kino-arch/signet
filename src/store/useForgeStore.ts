@@ -371,7 +371,7 @@ export const useForgeStore = create<ForgeState>()(
     {
       name: "forge-resume-storage",
       version: 2, // Bump version to force migration and purge fantasy placeholder data
-      migrate: (persistedState: any, version: number) => {
+      migrate: (persistedState: unknown, version: number) => {
         const state = persistedState as ForgeState;
 
         // Migration v0 → v1: scrub "Original base:" AI artifacts
@@ -398,14 +398,14 @@ export const useForgeStore = create<ForgeState>()(
           // Scrub placeholder experience
           if (state.resumeData.experience) {
             state.resumeData.experience = state.resumeData.experience.filter(
-              (exp: any) => !PLACEHOLDER_COMPANIES.some(p => exp.company?.toLowerCase() === p.toLowerCase())
+              (exp: Experience) => !PLACEHOLDER_COMPANIES.some(p => exp.company?.toLowerCase() === p.toLowerCase())
             );
           }
 
           // Scrub placeholder education
           if (state.resumeData.education) {
             state.resumeData.education = state.resumeData.education.filter(
-              (edu: any) => !PLACEHOLDER_INSTITUTIONS.some(p => edu.institution?.toLowerCase() === p.toLowerCase())
+              (edu: Education) => !PLACEHOLDER_INSTITUTIONS.some(p => edu.institution?.toLowerCase() === p.toLowerCase())
             );
           }
 

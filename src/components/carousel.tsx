@@ -21,7 +21,7 @@ type ThumbPosition = "bottom" | "left" | "right"
 
 type PropType = {
   slides?: React.ReactNode[]
-  options?: any
+  options?: Record<string, unknown>
   /** Show thumbnail strip. Position defaults to "bottom". */
   thumbnails?: React.ReactNode[]
   thumbPosition?: ThumbPosition
@@ -188,7 +188,7 @@ const Carousel: React.FC<PropType> = (props) => {
 
         {/* ── Caption ── */}
         {captions && captions[selectedIndex] && (
-          <p className="text-muted-foreground mt-2 px-4 text-center text-sm italic transition-all duration-300">
+          <p className="mt-2 px-4 text-center text-sm text-muted-foreground italic transition-all duration-300">
             {captions[selectedIndex]}
           </p>
         )}
@@ -231,10 +231,10 @@ const Carousel: React.FC<PropType> = (props) => {
                   onClick={() =>
                     onAutoplayButtonClick(() => onDotButtonClick(index))
                   }
-                  className={`border-border h-3 w-3 rounded-full border-2 transition-colors duration-200 ${
+                  className={`h-3 w-3 rounded-full border-2 border-border transition-colors duration-200 ${
                     index === selectedIndex
                       ? "bg-foreground"
-                      : "hover:bg-muted bg-transparent"
+                      : "bg-transparent hover:bg-muted"
                   }`}
                 />
               ))}
@@ -243,7 +243,7 @@ const Carousel: React.FC<PropType> = (props) => {
 
           {/* Slide Counter */}
           {showCounter && (
-            <span className="text-muted-foreground w-full text-xs font-medium text-nowrap tabular-nums">
+            <span className="w-full text-xs font-medium text-nowrap text-muted-foreground tabular-nums">
               {selectedIndex + 1} / {scrollSnaps.length}
             </span>
           )}
@@ -251,12 +251,12 @@ const Carousel: React.FC<PropType> = (props) => {
           {/* Progress Bar */}
           {showProgress && autoplayDelay > 0 && (
             <div
-              className={`border-border bg-background relative h-2 w-full justify-center overflow-hidden rounded-sm border-2 transition-opacity duration-300 ease-in-out ${
+              className={`relative h-2 w-full justify-center overflow-hidden rounded-sm border-2 border-border bg-background transition-opacity duration-300 ease-in-out ${
                 showAutoplayProgress ? "opacity-100" : "opacity-0"
               }`}
             >
               <div
-                className="bg-foreground absolute top-0 bottom-0 -left-full w-full animate-[autoplay-progress_linear_1] [animation-play-state:running]"
+                className="absolute top-0 bottom-0 -left-full w-full animate-[autoplay-progress_linear_1] bg-foreground [animation-play-state:running]"
                 ref={progressNode}
                 style={{
                   animationPlayState: showAutoplayProgress
@@ -452,7 +452,7 @@ type UseDotButtonType = {
 }
 
 export const useDotButton = (
-  emblaApi: any | undefined
+  emblaApi: ReturnType<typeof useEmblaCarousel>[1] | undefined
 ): UseDotButtonType => {
   const [selectedIndex, setSelectedIndex] = useState(0)
   const [scrollSnaps, setScrollSnaps] = useState<number[]>([])
@@ -465,11 +465,11 @@ export const useDotButton = (
     [emblaApi]
   )
 
-  const onInit = useCallback((emblaApi: any) => {
+  const onInit = useCallback((emblaApi: ReturnType<typeof useEmblaCarousel>[1]) => {
     setScrollSnaps(emblaApi.scrollSnapList())
   }, [])
 
-  const onSelect = useCallback((emblaApi: any) => {
+  const onSelect = useCallback((emblaApi: ReturnType<typeof useEmblaCarousel>[1]) => {
     setSelectedIndex(emblaApi.selectedScrollSnap())
   }, [])
 
@@ -495,7 +495,7 @@ export const DotButton: React.FC<PropTypeButton> = (props) => {
 type UseAutoplayProgressType = { showAutoplayProgress: boolean }
 
 export const useAutoplayProgress = <ProgressElement extends HTMLElement>(
-  emblaApi: any | undefined,
+  emblaApi: ReturnType<typeof useEmblaCarousel>[1] | undefined,
   progressNode: React.RefObject<ProgressElement>
 ): UseAutoplayProgressType => {
   const [showAutoplayProgress, setShowAutoplayProgress] = useState(false)
@@ -551,7 +551,7 @@ type UseAutoplayType = {
 }
 
 export const useAutoplay = (
-  emblaApi: any | undefined
+  emblaApi: ReturnType<typeof useEmblaCarousel>[1] | undefined
 ): UseAutoplayType => {
   const [autoplayIsPlaying, setAutoplayIsPlaying] = useState(false)
 
@@ -579,6 +579,7 @@ export const useAutoplay = (
   useEffect(() => {
     const autoplay = emblaApi?.plugins()?.autoplay
     if (!autoplay) return
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setAutoplayIsPlaying(autoplay.isPlaying())
     emblaApi
       .on("autoplay:play", () => setAutoplayIsPlaying(true))
@@ -597,7 +598,7 @@ type UsePrevNextButtonsType = {
 }
 
 export const usePrevNextButtons = (
-  emblaApi: any | undefined
+  emblaApi: ReturnType<typeof useEmblaCarousel>[1] | undefined
 ): UsePrevNextButtonsType => {
   const [prevBtnDisabled, setPrevBtnDisabled] = useState(true)
   const [nextBtnDisabled, setNextBtnDisabled] = useState(true)
@@ -612,13 +613,14 @@ export const usePrevNextButtons = (
     emblaApi.scrollNext()
   }, [emblaApi])
 
-  const onSelect = useCallback((emblaApi: any) => {
+  const onSelect = useCallback((emblaApi: ReturnType<typeof useEmblaCarousel>[1]) => {
     setPrevBtnDisabled(!emblaApi.canScrollPrev())
     setNextBtnDisabled(!emblaApi.canScrollNext())
   }, [])
 
   useEffect(() => {
     if (!emblaApi) return
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     onSelect(emblaApi)
     emblaApi.on("reInit", onSelect).on("select", onSelect)
   }, [emblaApi, onSelect])

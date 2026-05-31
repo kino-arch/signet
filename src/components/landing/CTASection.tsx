@@ -45,7 +45,7 @@ export function CTASection() {
         />
       </div>
 
-      <div className="mx-auto w-full max-w-5xl px-4 sm:px-6 lg:px-8 relative z-10">
+      <div className="relative z-10 mx-auto w-full max-w-5xl px-4 sm:px-6 lg:px-8">
         <div className="grid gap-8 lg:grid-cols-2 lg:gap-12">
           {/* Left side - Content */}
           <motion.div

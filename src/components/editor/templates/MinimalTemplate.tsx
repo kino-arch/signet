@@ -27,7 +27,7 @@ export function MinimalTemplate() {
 
   return (
     <div
-      className="relative min-h-full w-full print:p-0 print:overflow-visible"
+      className="relative min-h-full w-full print:overflow-visible print:p-0"
       style={{
         backgroundColor: "#ffffff",
         color: "#1a1a1a",

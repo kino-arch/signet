@@ -54,17 +54,17 @@ export function TargetLockPanel({ onComplete }: { onComplete?: () => void }) {
   };
 
   return (
-    <div className="w-full max-w-5xl mx-auto space-y-6 animate-in fade-in zoom-in-95 duration-500">
+    <div className="mx-auto w-full max-w-5xl animate-in space-y-6 duration-500 zoom-in-95 fade-in">
       
       {/* Header */}
       <div className="flex items-center justify-between border-b border-primary/20 pb-4">
         <div className="flex items-center gap-3">
-          <div className="p-2 bg-primary/10 rounded-md border border-primary/30 text-primary">
-            <Target className="w-6 h-6" />
+          <div className="rounded-md border border-primary/30 bg-primary/10 p-2 text-primary">
+            <Target className="h-6 w-6" />
           </div>
           <div>
-            <h2 className="text-2xl font-bold tracking-tight text-foreground uppercase flex items-center gap-2">
-              Target Lock <OpenBetaBadge title="BETA" className="text-primary border-primary" />
+            <h2 className="flex items-center gap-2 text-2xl font-bold tracking-tight text-foreground uppercase">
+              Target Lock <OpenBetaBadge title="BETA" className="border-primary text-primary" />
             </h2>
             <p className="text-sm text-muted-foreground">AI-Powered Company Intelligence & Resume Strategy</p>
           </div>
@@ -86,39 +86,39 @@ export function TargetLockPanel({ onComplete }: { onComplete?: () => void }) {
             <form onSubmit={handleEngage} className="space-y-4">
               <div className="grid gap-4 md:grid-cols-2">
                 <div className="space-y-2">
-                  <label className="text-sm font-medium text-muted-foreground flex items-center gap-2">
-                    <Building2 className="w-4 h-4" /> Company Name (Required)
+                  <label className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
+                    <Building2 className="h-4 w-4" /> Company Name (Required)
                   </label>
                   <Input 
                     placeholder="e.g. Acme Corp, Google, Stripe..." 
                     value={companyName}
                     onChange={(e) => setCompanyName(e.target.value)}
                     required
-                    className="bg-background/50 border-primary/30 focus-visible:ring-primary"
+                    className="border-primary/30 bg-background/50 focus-visible:ring-primary"
                   />
                 </div>
                 <div className="space-y-2">
-                  <label className="text-sm font-medium text-muted-foreground flex items-center gap-2">
-                    <Crosshair className="w-4 h-4" /> Target Role (Optional)
+                  <label className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
+                    <Crosshair className="h-4 w-4" /> Target Role (Optional)
                   </label>
                   <Input 
                     placeholder="e.g. Senior Frontend Engineer" 
                     value={jobTitle}
                     onChange={(e) => setJobTitle(e.target.value)}
-                    className="bg-background/50 border-primary/30 focus-visible:ring-primary"
+                    className="border-primary/30 bg-background/50 focus-visible:ring-primary"
                   />
                 </div>
               </div>
               
               <div className="flex items-center gap-2 py-2">
-                <label className="relative inline-flex items-center cursor-pointer">
+                <label className="relative inline-flex cursor-pointer items-center">
                   <input 
                     type="checkbox" 
-                    className="sr-only peer" 
+                    className="peer sr-only" 
                     checked={autoDeploy}
                     onChange={(e) => setAutoDeploy(e.target.checked)}
                   />
-                  <div className="w-9 h-5 bg-muted peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-primary/50 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-primary"></div>
+                  <div className="peer h-5 w-9 rounded-full bg-muted peer-checked:bg-primary peer-focus:ring-2 peer-focus:ring-primary/50 peer-focus:outline-none after:absolute after:top-[2px] after:left-[2px] after:h-4 after:w-4 after:rounded-full after:border after:border-gray-300 after:bg-white after:transition-all after:content-[''] peer-checked:after:translate-x-full peer-checked:after:border-white"></div>
                 </label>
                 <div className="flex flex-col">
                   <span className="text-sm font-medium text-foreground">Fast-Track Auto-Deploy</span>
@@ -127,7 +127,7 @@ export function TargetLockPanel({ onComplete }: { onComplete?: () => void }) {
               </div>
 
               <Button type="submit" className="w-full sm:w-auto" disabled={!companyName.trim()}>
-                <Search className="w-4 h-4 mr-2" />
+                <Search className="mr-2 h-4 w-4" />
                 Engage Target Lock
               </Button>
             </form>
@@ -137,20 +137,20 @@ export function TargetLockPanel({ onComplete }: { onComplete?: () => void }) {
 
       {/* State: SCANNING / ANALYZING */}
       {(status === 'scanning' || status === 'analyzing') && (
-        <Card className="border-primary/50 bg-background/50 backdrop-blur-sm relative overflow-hidden">
-          <div className="absolute inset-0 bg-primary/5 animate-pulse" />
-          <CardContent className="pt-6 text-center space-y-6">
+        <Card className="relative overflow-hidden border-primary/50 bg-background/50 backdrop-blur-sm">
+          <div className="absolute inset-0 animate-pulse bg-primary/5" />
+          <CardContent className="space-y-6 pt-6 text-center">
             <div className="flex justify-center">
               <div className="relative">
-                <Radar className="w-16 h-16 text-primary animate-spin-slow" />
-                <div className="absolute inset-0 border-4 border-primary/30 rounded-full animate-ping" />
+                <Radar className="animate-spin h-16 w-16 text-primary" style={{ animationDuration: '3s' }} />
+                <div className="absolute inset-0 animate-ping rounded-full border-4 border-primary/30" />
               </div>
             </div>
             <div className="space-y-2">
               <h3 className="text-xl font-bold tracking-widest text-primary">{progressLabel}</h3>
-              <Progress value={progress} className="h-2 w-full max-w-md mx-auto bg-primary/20" />
+              <Progress value={progress} className="mx-auto h-2 w-full max-w-md bg-primary/20" />
             </div>
-            <p className="text-sm text-muted-foreground animate-pulse">
+            <p className="animate-pulse text-sm text-muted-foreground">
               Scraping corporate registry, decrypting culture signals, and forging strategic matrix...
             </p>
           </CardContent>
@@ -160,8 +160,8 @@ export function TargetLockPanel({ onComplete }: { onComplete?: () => void }) {
       {/* State: ERROR */}
       {status === 'error' && (
         <Card className="border-destructive/50 bg-destructive/10">
-          <CardContent className="pt-6 text-center space-y-4">
-            <Shield className="w-12 h-12 text-destructive mx-auto" />
+          <CardContent className="space-y-4 pt-6 text-center">
+            <Shield className="mx-auto h-12 w-12 text-destructive" />
             <div>
               <h3 className="text-lg font-bold text-destructive">Signal Intercept Failed</h3>
               <p className="text-sm text-destructive/80">{error}</p>
@@ -173,34 +173,34 @@ export function TargetLockPanel({ onComplete }: { onComplete?: () => void }) {
 
       {/* State: COMPLETE */}
       {status === 'complete' && briefing && (
-        <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-700">
+        <div className="animate-in space-y-6 duration-700 fade-in slide-in-from-bottom-4">
           
           {/* Data Persistence Banner */}
-          <div className="bg-primary/10 border border-primary/30 rounded-lg p-4 flex items-start gap-3">
-            <Shield className="w-5 h-5 text-primary shrink-0 mt-0.5" />
+          <div className="flex items-start gap-3 rounded-lg border border-primary/30 bg-primary/10 p-4">
+            <Shield className="mt-0.5 h-5 w-5 shrink-0 text-primary" />
             <div className="text-sm">
-              <span className="font-semibold text-primary uppercase tracking-widest block mb-1">Tactical Cache Secured</span>
+              <span className="mb-1 block font-semibold tracking-widest text-primary uppercase">Tactical Cache Secured</span>
               <span className="text-muted-foreground">Target intelligence and corporate signals have been intercepted and cached. This research data will remain available in your sidebar until you finalize your resume build.</span>
             </div>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-6">
+          <div className="grid gap-6 md:grid-cols-3">
             {/* Company DNA */}
-            <Card className="md:col-span-2 border-primary/20 bg-background/50 backdrop-blur-sm">
+            <Card className="border-primary/20 bg-background/50 backdrop-blur-sm md:col-span-2">
               <CardHeader className="pb-2">
-                <CardTitle className="text-lg flex items-center gap-2">
-                  <Building2 className="w-5 h-5 text-primary" /> 
+                <CardTitle className="flex items-center gap-2 text-lg">
+                  <Building2 className="h-5 w-5 text-primary" /> 
                   Target Profile: {company}
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div>
-                  <div className="text-sm text-muted-foreground mb-1">Corporate Persona</div>
+                  <div className="mb-1 text-sm text-muted-foreground">Corporate Persona</div>
                   <div className="text-lg font-medium">{briefing.company_dna.personality}</div>
                 </div>
                 
                 <div>
-                  <div className="text-sm text-muted-foreground mb-2">Culture Signals</div>
+                  <div className="mb-2 text-sm text-muted-foreground">Culture Signals</div>
                   <div className="flex flex-wrap gap-2">
                     {briefing.company_dna.culture_keywords.map((kw, i) => (
                       <Badge key={i} variant="secondary" className="bg-primary/10 text-primary hover:bg-primary/20">
@@ -211,8 +211,8 @@ export function TargetLockPanel({ onComplete }: { onComplete?: () => void }) {
                 </div>
 
                 <div>
-                  <div className="text-sm text-muted-foreground mb-1">Resume Tone Recommendation</div>
-                  <div className="p-3 bg-secondary/50 rounded-md text-sm border-l-2 border-primary">
+                  <div className="mb-1 text-sm text-muted-foreground">Resume Tone Recommendation</div>
+                  <div className="rounded-md border-l-2 border-primary bg-secondary/50 p-3 text-sm">
                     {briefing.company_dna.tone_recommendation}
                   </div>
                 </div>
@@ -220,13 +220,13 @@ export function TargetLockPanel({ onComplete }: { onComplete?: () => void }) {
             </Card>
 
             {/* Fit Radar */}
-            <Card className="border-primary/20 bg-background/50 backdrop-blur-sm flex flex-col">
+            <Card className="flex flex-col border-primary/20 bg-background/50 backdrop-blur-sm">
               <CardHeader className="pb-0">
-                <CardTitle className="text-lg text-center flex items-center justify-center gap-2">
-                  <Activity className="w-5 h-5 text-primary" /> Role Fit Radar
+                <CardTitle className="flex items-center justify-center gap-2 text-center text-lg">
+                  <Activity className="h-5 w-5 text-primary" /> Role Fit Radar
                 </CardTitle>
               </CardHeader>
-              <CardContent className="flex-1 flex items-center justify-center min-h-[250px] -mt-4">
+              <CardContent className="-mt-4 flex min-h-[250px] flex-1 items-center justify-center">
                 <ResponsiveContainer width="100%" height={250} minWidth={200}>
                   <RadarChart cx="50%" cy="50%" outerRadius="65%" data={[
                     { subject: 'Tech', A: briefing.fit_radar.technical_match, fullMark: 100 },
@@ -247,16 +247,16 @@ export function TargetLockPanel({ onComplete }: { onComplete?: () => void }) {
 
           {/* Advantage Cards */}
           <div>
-            <h3 className="text-lg font-bold mb-3 flex items-center gap-2">
-              <Zap className="w-5 h-5 text-primary" /> Strategic Advantages
+            <h3 className="mb-3 flex items-center gap-2 text-lg font-bold">
+              <Zap className="h-5 w-5 text-primary" /> Strategic Advantages
             </h3>
-            <div className="grid md:grid-cols-3 gap-4">
+            <div className="grid gap-4 md:grid-cols-3">
               {briefing.advantage_cards.map((card, idx) => (
                 <Card key={idx} className="border-primary/20 bg-background/50 backdrop-blur-sm transition-all hover:border-primary/50 hover:bg-primary/5">
-                  <CardContent className="p-5 space-y-2">
+                  <CardContent className="space-y-2 p-5">
                     <h4 className="font-bold text-foreground">{card.title}</h4>
                     <p className="text-sm text-muted-foreground">{card.insight}</p>
-                    <div className="pt-2 mt-2 border-t border-border/50 text-xs font-medium text-primary">
+                    <div className="mt-2 border-t border-border/50 pt-2 text-xs font-medium text-primary">
                       <span className="opacity-70">ACTION:</span> {card.action}
                     </div>
                   </CardContent>
@@ -268,22 +268,22 @@ export function TargetLockPanel({ onComplete }: { onComplete?: () => void }) {
           {/* Strategy Preview */}
           <Card className="border-primary/20 bg-background/50 backdrop-blur-sm">
             <CardHeader>
-              <CardTitle className="text-lg flex items-center gap-2">
-                <CheckCircle2 className="w-5 h-5 text-primary" /> Target Strategy Generated
+              <CardTitle className="flex items-center gap-2 text-lg">
+                <CheckCircle2 className="h-5 w-5 text-primary" /> Target Strategy Generated
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-6">
               
-              <div className="grid md:grid-cols-2 gap-6">
+              <div className="grid gap-6 md:grid-cols-2">
                 <div className="space-y-4">
                   <div>
-                    <div className="text-sm font-medium text-muted-foreground mb-1">Generated Summary Draft</div>
-                    <div className="p-3 bg-secondary/30 rounded-md text-sm">
+                    <div className="mb-1 text-sm font-medium text-muted-foreground">Generated Summary Draft</div>
+                    <div className="rounded-md bg-secondary/30 p-3 text-sm">
                       {briefing.resume_strategy.summary_draft}
                     </div>
                   </div>
                   <div>
-                    <div className="text-sm font-medium text-muted-foreground mb-2">Priority Skills</div>
+                    <div className="mb-2 text-sm font-medium text-muted-foreground">Priority Skills</div>
                     <div className="flex flex-wrap gap-2">
                       {briefing.resume_strategy.skills_priority.map((skill, i) => (
                         <Badge key={i} variant="outline" className="border-primary/30">
@@ -296,11 +296,11 @@ export function TargetLockPanel({ onComplete }: { onComplete?: () => void }) {
 
                 <div className="space-y-4">
                   <div>
-                    <div className="text-sm font-medium text-muted-foreground mb-2">Keyword Injection Targets</div>
+                    <div className="mb-2 text-sm font-medium text-muted-foreground">Keyword Injection Targets</div>
                     <div className="space-y-2">
                       {briefing.resume_strategy.keyword_injection_targets.map((kw, i) => (
-                        <div key={i} className="flex items-center gap-2 text-sm bg-secondary/30 p-2 rounded-md">
-                          <div className="w-1.5 h-1.5 rounded-full bg-primary" />
+                        <div key={i} className="flex items-center gap-2 rounded-md bg-secondary/30 p-2 text-sm">
+                          <div className="h-1.5 w-1.5 rounded-full bg-primary" />
                           {kw}
                         </div>
                       ))}
@@ -310,14 +310,14 @@ export function TargetLockPanel({ onComplete }: { onComplete?: () => void }) {
               </div>
 
               {deployPhase === 'deployed' ? (
-                <div className="mt-4 border-t border-green-500/30 pt-6 animate-in fade-in slide-in-from-bottom-2 duration-500">
+                <div className="mt-4 animate-in border-t border-green-500/30 pt-6 duration-500 fade-in slide-in-from-bottom-2">
                   <div className="rounded-lg border border-green-500/30 bg-green-500/10 p-5">
                     <div className="flex items-start gap-4">
                       <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-green-500/20 text-green-400">
                         <Check className="h-5 w-5" strokeWidth={3} />
                       </div>
                       <div className="space-y-1">
-                        <h4 className="text-sm font-bold text-green-400 uppercase tracking-widest">Strategy Deployed Successfully</h4>
+                        <h4 className="text-sm font-bold tracking-widest text-green-400 uppercase">Strategy Deployed Successfully</h4>
                         <p className="text-sm text-muted-foreground">
                           Your resume summary, skills, and keyword targets have been injected.
                           Continue to the next step to review and refine your data.
@@ -327,25 +327,25 @@ export function TargetLockPanel({ onComplete }: { onComplete?: () => void }) {
                   </div>
                 </div>
               ) : (
-                <div className="flex justify-end pt-4 border-t border-primary/20">
+                <div className="flex justify-end border-t border-primary/20 pt-4">
                   <Button 
                     onClick={handleDeploy} 
                     disabled={deployPhase === 'deploying'}
-                    className="gap-2 relative overflow-hidden group transition-all duration-300 w-full sm:w-auto" 
+                    className="group relative w-full gap-2 overflow-hidden transition-all duration-300 sm:w-auto" 
                     size="lg"
                   >
                     {deployPhase === 'deploying' ? (
                       <>
-                        <div className="absolute inset-0 bg-primary/20 animate-pulse" />
-                        <div className="flex items-center gap-2 relative z-10">
-                          <Activity className="w-4 h-4 animate-spin" />
+                        <div className="absolute inset-0 animate-pulse bg-primary/20" />
+                        <div className="relative z-10 flex items-center gap-2">
+                          <Activity className="h-4 w-4 animate-spin" />
                           INJECTING DATASLATE...
                         </div>
                       </>
                     ) : (
                       <>
                         Deploy Strategy to Resume
-                        <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                        <ChevronRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
                       </>
                     )}
                   </Button>

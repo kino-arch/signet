@@ -68,7 +68,7 @@ export function AtsSpecsPage() {
             {/* The Flashy Failure */}
             <motion.div variants={itemVariants} className="flex h-full">
               <Card className="relative flex w-full flex-col overflow-hidden border-destructive/20 bg-destructive/5 transition-colors hover:border-destructive/40 hover:bg-destructive/10">
-                <div className="absolute top-0 right-0 bg-destructive/10 px-4 py-1.5 text-xs font-bold text-destructive uppercase tracking-wider">
+                <div className="absolute top-0 right-0 bg-destructive/10 px-4 py-1.5 text-xs font-bold tracking-wider text-destructive uppercase">
                   Rejected
                 </div>
                 <CardContent className="flex flex-1 flex-col p-8 md:p-10">
@@ -97,7 +97,7 @@ export function AtsSpecsPage() {
             {/* The Signet Solution */}
             <motion.div variants={itemVariants} className="flex h-full">
               <Card className="relative flex w-full flex-col overflow-hidden border-primary/30 bg-primary/5 transition-colors hover:border-primary/50 hover:bg-primary/10 hover:shadow-lg hover:shadow-primary/5">
-                <div className="absolute top-0 right-0 bg-primary/15 px-4 py-1.5 text-xs font-bold text-primary uppercase tracking-wider">
+                <div className="absolute top-0 right-0 bg-primary/15 px-4 py-1.5 text-xs font-bold tracking-wider text-primary uppercase">
                   Verified
                 </div>
                 <CardContent className="flex flex-1 flex-col p-8 md:p-10">

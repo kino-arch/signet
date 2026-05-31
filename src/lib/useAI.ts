@@ -22,7 +22,7 @@ const fetchOpenRouter = async (
 
   const model = models[currentModelIndex];
   
-  const body: any = {
+  const body: Record<string, unknown> = {
     model: model,
     messages: [
       { role: "user", content: prompt }
@@ -65,9 +65,9 @@ const fetchOpenRouter = async (
       throw new Error("Invalid response structure from OpenRouter API");
     }
     return content;
-  } catch (err: any) {
+  } catch (err: unknown) {
     if (currentModelIndex < models.length - 1) {
-      console.warn(`Model ${model} threw error: ${err.message}. Falling back...`);
+      console.warn(`Model ${model} threw error: ${(err as Error).message}. Falling back...`);
       return fetchOpenRouter(prompt, options, models, currentModelIndex + 1, 1, 2000);
     }
     throw err;
@@ -123,9 +123,9 @@ Instructions:
 
       const resultText = await fetchOpenRouter(prompt, { temperature: 0.7, maxTokens: 150 });
       return resultText.replace(/^"|"$/g, "");
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("AI Reforge Bullet failed:", err);
-      setError(err.message || "Failed to reforge bullet point.");
+      setError((err as Error).message || "Failed to reforge bullet point.");
       return mockReforgeBullet(bullet, role, company);
     } finally {
       setLoading(false);
@@ -163,9 +163,9 @@ Instructions:
 
       const resultText = await fetchOpenRouter(prompt, { temperature: 0.7, maxTokens: 250 });
       return resultText.replace(/^"|"$/g, "");
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("AI Reforge Summary failed:", err);
-      setError(err.message || "Failed to reforge summary.");
+      setError((err as Error).message || "Failed to reforge summary.");
       return mockReforgeSummary(summary, designation);
     } finally {
       setLoading(false);
@@ -207,23 +207,27 @@ Instructions:
 
       const resultText = await fetchOpenRouter(prompt, { temperature: 0.7, maxTokens: 250 });
       return resultText.replace(/^"|"$/g, "");
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("AI Reforge Description failed:", err);
-      setError(err.message || "Failed to reforge description.");
+      setError((err as Error).message || "Failed to reforge description.");
       return mockReforgeDescription(description, role, company);
     } finally {
       setLoading(false);
     }
   };
 
-  const runAtsDiagnostic = async (resumeData: any): Promise<AtsDiagnosticResult[]> => {
+  const runAtsDiagnostic = async (resumeData: {
+    basicInfo?: { summary?: string };
+    experience?: Array<{ id: string; role?: string; description?: string; highlights?: string[]; company?: string }>;
+    skills?: string[];
+  }): Promise<AtsDiagnosticResult[]> => {
     setLoading(true);
     setError(null);
     try {
       // Trim payload to strictly the necessary ATS fields to avoid context overflow (token limit)
       const slimData = {
         summary: resumeData.basicInfo?.summary,
-        experience: resumeData.experience?.map((exp: any) => ({
+        experience: resumeData.experience?.map((exp) => ({
           id: exp.id,
           role: exp.role,
           description: exp.description,
@@ -268,11 +272,11 @@ Instructions:
       const resultText = await fetchOpenRouter(prompt, { temperature: 0.2, maxTokens: 2500 });
       
       // Strip markdown code block wrappers if ignored instructions and added them
-      const cleanedJson = resultText.replace(/^\`\`\`(json)?/i, "").replace(/\`\`\`$/i, "").trim();
+      const cleanedJson = resultText.replace(/^```(json)?/i, "").replace(/```$/i, "").trim();
       return JSON.parse(cleanedJson);
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("ATS Diagnostic failed:", err);
-      setError(err.message || "Failed to run ATS diagnostic.");
+      setError((err as Error).message || "Failed to run ATS diagnostic.");
       return mockAtsDiagnostic(resumeData);
     } finally {
       setLoading(false);
@@ -301,9 +305,9 @@ Instructions:
 
       const resultText = await fetchOpenRouter(prompt, { temperature: 0.7, maxTokens: 250 });
       return resultText.replace(/^"|"$/g, "");
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("AI ATS Auto-Fix failed:", err);
-      setError(err.message || "Failed to auto-fix ATS vulnerability.");
+      setError((err as Error).message || "Failed to auto-fix ATS vulnerability.");
       return mockAtsFix(field, originalValue);
     } finally {
       setLoading(false);
@@ -337,7 +341,11 @@ function mockReforgeSummary(_summary: string, designation: string): string {
   return `Elite ${designation || "Software Specialist"} with 5+ years of verified field operations. Demonstrated expertise in architecting high-impact deliverables, optimizing cross-functional metrics, and leading strategic missions under tight deadlines. Committed to engineering premium, Beskar-grade infrastructure.`;
 }
 
-function mockAtsDiagnostic(resumeData: any): AtsDiagnosticResult[] {
+function mockAtsDiagnostic(resumeData: {
+  basicInfo?: { summary?: string };
+  experience?: Array<{ id: string; role?: string; description?: string; highlights?: string[]; company?: string }>;
+  skills?: string[];
+}): AtsDiagnosticResult[] {
   const results: AtsDiagnosticResult[] = [];
   const basicInfo = resumeData.basicInfo || {};
   const experience = resumeData.experience || [];
@@ -364,7 +372,7 @@ function mockAtsDiagnostic(resumeData: any): AtsDiagnosticResult[] {
 
   // 2. Check experience bullets
   let warnedBullets = false;
-  experience.forEach((exp: any) => {
+  experience.forEach((exp) => {
     (exp.highlights || []).forEach((hl: string, idx: number) => {
       if (!warnedBullets && (!hl.includes("%") && !hl.match(/\d+/) && hl.length > 5)) {
         warnedBullets = true;
@@ -418,6 +426,7 @@ function mockAtsDiagnostic(resumeData: any): AtsDiagnosticResult[] {
   return results;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function mockAtsFix(_field: string, _originalValue: string): string {
   if (_field === "summary") {
     return "Accomplished operative specializing in high-stakes mission execution and cross-functional team coordination. Shipped 4 major system releases, improving performance by 30% while enforcing rigorous compliance guidelines.";

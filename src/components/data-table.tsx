@@ -628,7 +628,7 @@ function TableCellViewer({ item }: { item: z.infer<typeof schema> }) {
         <DrawerHeader>
           <DrawerTitle>{item.header}</DrawerTitle>
         </DrawerHeader>
-        <div className="p-4 flex flex-col gap-2 text-sm text-muted-foreground">
+        <div className="flex flex-col gap-2 p-4 text-sm text-muted-foreground">
           <p><strong>Type:</strong> {item.type}</p>
           <p><strong>Status:</strong> {item.status}</p>
           <p><strong>Reviewer:</strong> {item.reviewer}</p>

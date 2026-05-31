@@ -157,6 +157,7 @@ export function SigilRetrieval({
         triggerDownload();
       }, 120); // extra 120ms breathing room for the repaint to flush
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [progress, state]);
 
   const flyoutVariants: Variants = useMemo(
@@ -215,7 +216,7 @@ export function SigilRetrieval({
           <motion.div
             onMouseEnter={handleActivate}
             onMouseLeave={handleDeactivate}
-            className={`group relative inline-flex w-full flex-col gap-4  border border-border/60 px-7 py-6 text-muted-foreground backdrop-blur-2xl transition-colors duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/60 focus-visible:ring-offset-2 focus-visible:ring-offset-background hover:border-primary/40 ${
+            className={`group relative inline-flex w-full flex-col gap-4  border border-border/60 px-7 py-6 text-muted-foreground backdrop-blur-2xl transition-colors duration-300 hover:border-primary/40 focus-visible:ring-2 focus-visible:ring-primary/60 focus-visible:ring-offset-2 focus-visible:ring-offset-background focus-visible:outline-none ${
               state === "extracting" ? "bg-primary/5" : "bg-card/80"
             }`}
             layout
@@ -227,9 +228,9 @@ export function SigilRetrieval({
                <div className="absolute inset-0 -z-10 animate-pulse  bg-primary/10 blur-xl" />
             )}
 
-            <div className="flex items-center justify-between text-xs uppercase tracking-[0.32em]">
+            <div className="flex items-center justify-between text-xs tracking-[0.32em] uppercase">
               <span className="inline-flex items-center gap-2 text-muted-foreground">
-                <span className={`flex h-8 w-8 items-center justify-center rounded-full transition-colors ${state === "extracting" ? "bg-primary text-primary-foreground animate-pulse" : "bg-primary/15 text-primary"}`}>
+                <span className={`flex h-8 w-8 items-center justify-center rounded-full transition-colors ${state === "extracting" ? "animate-pulse bg-primary text-primary-foreground" : "bg-primary/15 text-primary"}`}>
                   <Sparkles className="h-4 w-4" aria-hidden />
                 </span>
                 {state === "idle" && "Ready for extraction"}
@@ -242,13 +243,13 @@ export function SigilRetrieval({
                   {creditBalance > 0 ? (
                     <span className="text-primary">{creditBalance} Credits</span>
                   ) : (
-                    <span className="text-destructive flex items-center gap-1"><AlertCircle className="w-3 h-3"/> 0 Credits</span>
+                    <span className="flex items-center gap-1 text-destructive"><AlertCircle className="h-3 w-3"/> 0 Credits</span>
                   )}
                 </div>
               )}
             </div>
 
-            <div className="space-y-2 text-left z-10">
+            <div className="z-10 space-y-2 text-left">
               <h2
                 id={`${previewId}-title`}
                 className="text-xl font-semibold text-foreground sm:text-2xl"
@@ -274,14 +275,14 @@ export function SigilRetrieval({
                   animate={{ opacity: 1, scale: 1 }}
                   exit={{ opacity: 0, scale: 0.85 }}
                   transition={{ duration: 0.35, ease: "easeOut" }}
-                  className="flex flex-col items-center gap-5 mt-3"
+                  className="mt-3 flex flex-col items-center gap-5"
                 >
                   <OrbitalLoader
                     color="primary"
                     messagePlacement="bottom"
                   />
                   <div className="w-full space-y-1.5">
-                    <div className="flex justify-between text-[10px] font-mono font-bold tracking-widest uppercase text-muted-foreground">
+                    <div className="flex justify-between font-mono text-[10px] font-bold tracking-widest text-muted-foreground uppercase">
                       <span>Tempering Beskar</span>
                       <span className="text-primary">{progress}%</span>
                     </div>
@@ -307,11 +308,11 @@ export function SigilRetrieval({
                   initial="hidden"
                   animate="visible"
                   exit="exit"
-                  className="mt-2 overflow-hidden  border border-primary/20 bg-card/95 p-4 shadow-[0_25px_70px_-20px_rgba(var(--color-primary),0.3)] z-20 relative"
+                  className="relative z-20  mt-2 overflow-hidden border border-primary/20 bg-card/95 p-4 shadow-[0_25px_70px_-20px_rgba(var(--color-primary),0.3)]"
                   role="region"
                   aria-live="polite"
                 >
-                  <div className="mb-4 flex items-center justify-between text-[11px] uppercase tracking-[0.36em] text-muted-foreground">
+                  <div className="mb-4 flex items-center justify-between text-[11px] tracking-[0.36em] text-muted-foreground uppercase">
                     Action Required
                   </div>
                   
@@ -343,12 +344,12 @@ export function SigilRetrieval({
                 <motion.div
                    initial={{ opacity: 0, y: 10 }}
                    animate={{ opacity: 1, y: 0 }}
-                   className="mt-4 pt-4 border-t border-border/40"
+                   className="mt-4 border-t border-border/40 pt-4"
                 >
                   <Button
                     onClick={onComplete}
                     variant="default"
-                    className="w-full gap-2  bg-emerald-500/10 text-emerald-500 hover:bg-emerald-500/20 text-xs font-bold tracking-widest uppercase shadow-md transition-all hover:scale-[1.02]"
+                    className="w-full gap-2  bg-emerald-500/10 text-xs font-bold tracking-widest text-emerald-500 uppercase shadow-md transition-all hover:scale-[1.02] hover:bg-emerald-500/20"
                   >
                     <Check className="h-4 w-4" />
                     Return to Covert

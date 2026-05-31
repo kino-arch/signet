@@ -6,7 +6,7 @@ import {
   useSensor,
   useSensors,
 } from "@dnd-kit/core";
-import type { DragEndEvent, DragStartEvent } from "@dnd-kit/core";
+import type { DragEndEvent } from "@dnd-kit/core";
 import {
   SortableContext,
   useSortable,
@@ -51,35 +51,35 @@ function EducationBlock({ entry }: { entry: EducationEntry }) {
     >
       {/* Collapsed Header Row */}
       <div
-        className="flex items-center gap-2 p-3 cursor-pointer select-none"
+        className="flex cursor-pointer items-center gap-2 p-3 select-none"
         onClick={() => setExpanded((v) => !v)}
       >
         <button
           {...attributes}
           {...listeners}
           onClick={(e) => e.stopPropagation()}
-          className="touch-none shrink-0 cursor-grab active:cursor-grabbing text-muted-foreground/40 hover:text-muted-foreground transition-colors p-1 rounded"
+          className="shrink-0 cursor-grab touch-none rounded p-1 text-muted-foreground/40 transition-colors hover:text-muted-foreground active:cursor-grabbing"
           aria-label="Drag to reorder"
         >
           <GripVertical className="h-4 w-4" />
         </button>
 
-        <div className="flex-1 min-w-0">
-          <span className="text-sm font-medium text-foreground truncate block">{displayTitle}</span>
+        <div className="min-w-0 flex-1">
+          <span className="block truncate text-sm font-medium text-foreground">{displayTitle}</span>
           {entry.area && (
-            <span className="text-[10px] font-mono text-muted-foreground">{entry.area}</span>
+            <span className="font-mono text-[10px] text-muted-foreground">{entry.area}</span>
           )}
         </div>
 
-        <div className="flex items-center gap-1 shrink-0" onClick={(e) => e.stopPropagation()}>
+        <div className="flex shrink-0 items-center gap-1" onClick={(e) => e.stopPropagation()}>
           <button
             onClick={() => removeEducationEntry(entry.id)}
-            className="p-1.5 text-muted-foreground/50 hover:text-destructive transition-colors rounded"
+            className="rounded p-1.5 text-muted-foreground/50 transition-colors hover:text-destructive"
             aria-label="Remove entry"
           >
             <Trash2 className="h-3.5 w-3.5" />
           </button>
-          <button className="p-1.5 text-muted-foreground/50 hover:text-foreground transition-colors">
+          <button className="p-1.5 text-muted-foreground/50 transition-colors hover:text-foreground">
             {expanded ? <ChevronUp className="h-3.5 w-3.5" /> : <ChevronDown className="h-3.5 w-3.5" />}
           </button>
         </div>
@@ -87,10 +87,10 @@ function EducationBlock({ entry }: { entry: EducationEntry }) {
 
       {/* Expanded Panel */}
       {expanded && (
-        <div className="px-4 pb-4 pt-1 border-t border-border/20 space-y-3 animate-in slide-in-from-top-1 duration-150">
+        <div className="animate-in space-y-3 border-t border-border/20 px-4 pt-1 pb-4 duration-150 slide-in-from-top-1">
           <div className="grid grid-cols-2 gap-3">
             <div className="space-y-1.5">
-              <Label className="text-[10px] uppercase tracking-widest text-muted-foreground">Institution</Label>
+              <Label className="text-[10px] tracking-widest text-muted-foreground uppercase">Institution</Label>
               <Input
                 value={entry.institution}
                 onChange={(e) => updateEducationEntry(entry.id, { institution: e.target.value })}
@@ -98,7 +98,7 @@ function EducationBlock({ entry }: { entry: EducationEntry }) {
               />
             </div>
             <div className="space-y-1.5">
-              <Label className="text-[10px] uppercase tracking-widest text-muted-foreground">Degree Type</Label>
+              <Label className="text-[10px] tracking-widest text-muted-foreground uppercase">Degree Type</Label>
               <Input
                 value={entry.studyType}
                 onChange={(e) => updateEducationEntry(entry.id, { studyType: e.target.value })}
@@ -106,8 +106,8 @@ function EducationBlock({ entry }: { entry: EducationEntry }) {
                 className="h-8 bg-background/50 text-sm"
               />
             </div>
-            <div className="space-y-1.5 col-span-2">
-              <Label className="text-[10px] uppercase tracking-widest text-muted-foreground">Field of Study</Label>
+            <div className="col-span-2 space-y-1.5">
+              <Label className="text-[10px] tracking-widest text-muted-foreground uppercase">Field of Study</Label>
               <Input
                 value={entry.area}
                 onChange={(e) => updateEducationEntry(entry.id, { area: e.target.value })}
@@ -116,7 +116,7 @@ function EducationBlock({ entry }: { entry: EducationEntry }) {
               />
             </div>
             <div className="space-y-1.5">
-              <Label className="text-[10px] uppercase tracking-widest text-muted-foreground">Start Date</Label>
+              <Label className="text-[10px] tracking-widest text-muted-foreground uppercase">Start Date</Label>
               <Input
                 value={entry.startDate}
                 onChange={(e) => updateEducationEntry(entry.id, { startDate: e.target.value })}
@@ -125,7 +125,7 @@ function EducationBlock({ entry }: { entry: EducationEntry }) {
               />
             </div>
             <div className="space-y-1.5">
-              <Label className="text-[10px] uppercase tracking-widest text-muted-foreground">End Date</Label>
+              <Label className="text-[10px] tracking-widest text-muted-foreground uppercase">End Date</Label>
               <Input
                 value={entry.endDate}
                 onChange={(e) => updateEducationEntry(entry.id, { endDate: e.target.value })}
@@ -133,8 +133,8 @@ function EducationBlock({ entry }: { entry: EducationEntry }) {
                 className="h-8 bg-background/50 text-sm"
               />
             </div>
-            <div className="space-y-1.5 col-span-2">
-              <Label className="text-[10px] uppercase tracking-widest text-muted-foreground">GPA / Score (optional)</Label>
+            <div className="col-span-2 space-y-1.5">
+              <Label className="text-[10px] tracking-widest text-muted-foreground uppercase">GPA / Score (optional)</Label>
               <Input
                 value={entry.score}
                 onChange={(e) => updateEducationEntry(entry.id, { score: e.target.value })}
@@ -157,7 +157,7 @@ export function EducationArray() {
     useSensor(PointerSensor, { activationConstraint: { distance: 8 } })
   );
 
-  const handleDragStart = (_e: DragStartEvent) => {
+  const handleDragStart = () => {
     setSyncPaused(true);
   };
 
@@ -172,7 +172,7 @@ export function EducationArray() {
   return (
     <div className="space-y-3">
       <div className="flex items-center justify-between border-b border-border/20 pb-2">
-        <h3 className="text-sm font-bold text-primary tracking-widest uppercase">Education</h3>
+        <h3 className="text-sm font-bold tracking-widest text-primary uppercase">Education</h3>
         <Button
           variant="ghost"
           size="sm"
@@ -186,7 +186,7 @@ export function EducationArray() {
 
       {education.length === 0 && (
         <div
-          className="flex flex-col items-center justify-center gap-2 rounded-lg border border-dashed border-border/30 p-6 cursor-pointer hover:border-border/50 transition-colors text-center"
+          className="flex cursor-pointer flex-col items-center justify-center gap-2 rounded-lg border border-dashed border-border/30 p-6 text-center transition-colors hover:border-border/50"
           onClick={addEducationEntry}
         >
           <Plus className="h-5 w-5 text-muted-foreground/50" />

@@ -54,9 +54,9 @@ const data = [
 
 export function DashboardPage() {
   return (
-    <div className="flex flex-col gap-8 w-full pt-2">
+    <div className="flex w-full flex-col gap-8 pt-2">
       <SectionCards />
-      <div className="px-4 lg:px-6 w-full">
+      <div className="w-full px-4 lg:px-6">
         <ChartAreaInteractive />
       </div>
       <div className="w-full">

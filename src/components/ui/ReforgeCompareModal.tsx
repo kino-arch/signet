@@ -35,10 +35,10 @@ export function ReforgeCompareModal({
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="!max-w-none w-[min(920px,calc(100vw-2rem))] border border-primary/20 bg-background/95 p-6 shadow-[0_0_50px_rgba(var(--primary),0.15)] backdrop-blur-xl">
+      <DialogContent className="w-[min(920px,calc(100vw-2rem))] !max-w-none border border-primary/20 bg-background/95 p-6 shadow-[0_0_50px_rgba(var(--primary),0.15)] backdrop-blur-xl">
         {/* Glow overlay */}
         <div className="pointer-events-none absolute -top-24 -left-24 h-48 w-48 rounded-full bg-primary/10 blur-3xl" />
-        <div className="pointer-events-none absolute -bottom-24 -right-24 h-48 w-48 rounded-full bg-primary/5 blur-3xl" />
+        <div className="pointer-events-none absolute -right-24 -bottom-24 h-48 w-48 rounded-full bg-primary/5 blur-3xl" />
 
         <DialogHeader className="relative z-10 border-b border-border/40 pb-4">
           <div className="flex items-center gap-2 text-primary">
@@ -47,16 +47,16 @@ export function ReforgeCompareModal({
               {title}
             </DialogTitle>
           </div>
-          <DialogDescription className="text-xs text-muted-foreground mt-1">
+          <DialogDescription className="mt-1 text-xs text-muted-foreground">
             {description}
           </DialogDescription>
         </DialogHeader>
 
         {/* Comparison grid */}
-        <div className="relative z-10 grid grid-cols-1 gap-4 md:grid-cols-2 py-4">
+        <div className="relative z-10 grid grid-cols-1 gap-4 py-4 md:grid-cols-2">
           {/* Original panel */}
           <div className="flex flex-col  border border-border/40 bg-muted/20 p-4">
-            <div className="mb-2 flex items-center justify-between border-b border-border/20 pb-1.5 text-[10px] font-mono text-muted-foreground">
+            <div className="mb-2 flex items-center justify-between border-b border-border/20 pb-1.5 font-mono text-[10px] text-muted-foreground">
               <span>RAW DATASTATE</span>
               <span className="flex items-center gap-1">
                 <span className="h-1 w-1 rounded-full bg-muted-foreground" />
@@ -64,7 +64,7 @@ export function ReforgeCompareModal({
               </span>
             </div>
             <div 
-              className="flex-1 overflow-y-auto text-xs/relaxed text-muted-foreground whitespace-pre-wrap min-h-[120px] max-h-[220px]"
+              className="max-h-[220px] min-h-[120px] flex-1 overflow-y-auto text-xs/relaxed whitespace-pre-wrap text-muted-foreground"
               dangerouslySetInnerHTML={{ __html: originalText }}
             />
           </div>
@@ -79,7 +79,7 @@ export function ReforgeCompareModal({
             {/* Ambient reforge glow */}
             <div className="absolute inset-0 -z-10  bg-[radial-gradient(circle_at_50%_0%,color-mix(in_srgb,var(--color-primary)_12%,transparent),transparent_60%)]" />
 
-            <div className="mb-2 flex items-center justify-between border-b border-primary/20 pb-1.5 text-[10px] font-mono text-primary font-bold">
+            <div className="mb-2 flex items-center justify-between border-b border-primary/20 pb-1.5 font-mono text-[10px] font-bold text-primary">
               <span className="flex items-center gap-1">
                 <Sparkles className="h-3 w-3 animate-pulse" />
                 REFORGED SIGIL
@@ -90,14 +90,14 @@ export function ReforgeCompareModal({
               </span>
             </div>
             <div 
-              className="flex-1 overflow-y-auto text-xs/relaxed text-foreground whitespace-pre-wrap min-h-[120px] max-h-[220px]"
+              className="max-h-[220px] min-h-[120px] flex-1 overflow-y-auto text-xs/relaxed whitespace-pre-wrap text-foreground"
               dangerouslySetInnerHTML={{ __html: reforgedText }}
             />
           </motion.div>
         </div>
 
         {/* Custom Actions */}
-        <div className="relative z-10 flex flex-col-reverse gap-2 sm:flex-row sm:justify-end border-t border-border/40 pt-4">
+        <div className="relative z-10 flex flex-col-reverse gap-2 border-t border-border/40 pt-4 sm:flex-row sm:justify-end">
           <Button
             variant="outline"
             onClick={onClose}

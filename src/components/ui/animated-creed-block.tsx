@@ -86,7 +86,7 @@ export function AnimatedCreedBlock({
       clearTimeout(pauseTimer);
       clearInterval(typingTimer);
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+     
   }, [currentLine]);
 
   return (

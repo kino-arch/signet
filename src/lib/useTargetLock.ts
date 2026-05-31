@@ -64,8 +64,8 @@ async function invokeWithRetry(
   fnName: string,
   body: Record<string, unknown>,
   maxRetries = 3
-): Promise<{ data: any; error: any }> {
-  let lastError: any = null;
+): Promise<{ data: Record<string, unknown> | null; error: unknown }> {
+  let lastError: unknown = null;
 
   for (let attempt = 0; attempt < maxRetries; attempt++) {
     if (attempt > 0) {
@@ -159,14 +159,14 @@ export function useTargetLock() {
         }
       }
 
-      if (data?.error) {
+      if (data && typeof data.error === 'string') {
         throw new Error(data.error);
       }
 
       setProgress(100);
       setProgressLabel('TARGET ACQUIRED');
       setStatus('complete');
-      setBriefing(data.briefing);
+      setBriefing(data?.briefing as TargetLockBriefing);
       setCompany(companyName, jobTitle);
 
       if (autoDeploy) {
@@ -174,11 +174,12 @@ export function useTargetLock() {
       }
 
       return data;
-    } catch (err: any) {
+    } catch (err: unknown) {
       clearInterval(progressInterval);
       console.error('[Target Lock] Final error:', err);
       setStatus('error');
-      setError(err.message || 'Failed to engage Target Lock. Please try again.');
+      const e = err as Error;
+      setError(e.message || 'Failed to engage Target Lock. Please try again.');
     }
   };
 

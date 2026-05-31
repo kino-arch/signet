@@ -197,8 +197,8 @@ function OnboardingRoot({
       currentStep: currentStep ?? 1,
       totalSteps,
       stepValue: stepValue ?? 0,
-      setStep: setCurrentStep as any,
-      setStepValue: setStepValueState as any,
+      setStep: setCurrentStep as unknown as (step: number | ((prev: number) => number)) => void,
+      setStepValue: setStepValueState as unknown as (value: number | ((prev: number) => number)) => void,
       maxStepValue,
       canGoNext,
       canGoBack,
@@ -278,8 +278,7 @@ function OnboardingStep({
 // StepIndicator Context Wrapper
 // ============================================================================
 
-export interface OnboardingStepIndicatorProps
-  extends Omit<React.ComponentProps<typeof StepIndicator>, "currentStep" | "totalSteps"> {}
+export type OnboardingStepIndicatorProps = Omit<React.ComponentProps<typeof StepIndicator>, "currentStep" | "totalSteps">
 
 function OnboardingStepIndicator(props: OnboardingStepIndicatorProps) {
   const { currentStep, totalSteps } = useOnboarding()
@@ -424,7 +423,7 @@ function OnboardingNavigation({
       {isLastStep ? (
         <Button
           aria-label={completeLabel}
-          className="text-xs font-semibold tracking-wide gap-2"
+          className="gap-2 text-xs font-semibold tracking-wide"
           size="sm"
           data-slot="onboarding-complete"
           onClick={handleComplete}
@@ -434,7 +433,7 @@ function OnboardingNavigation({
       ) : (
         <Button
           aria-label={nextLabel}
-          className="text-xs font-semibold tracking-wide gap-2"
+          className="gap-2 text-xs font-semibold tracking-wide"
           size="sm"
           data-slot="onboarding-next"
           disabled={!canGoNext}
@@ -619,7 +618,7 @@ function ChoiceGroupItemComponent({
             )}
           </div>
           {creed && (
-            <p className="mt-auto truncate border-t border-border/30 pt-2 text-[9px] font-mono italic text-muted-foreground/50">
+            <p className="mt-auto truncate border-t border-border/30 pt-2 font-mono text-[9px] text-muted-foreground/50 italic">
               "{creed}"
             </p>
           )}

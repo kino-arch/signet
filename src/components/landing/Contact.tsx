@@ -10,7 +10,7 @@ import { Mail, MessageSquare, Send } from "lucide-react";
 export function Contact() {
   return (
     <section id="contact" className="w-full bg-background py-16 md:py-24">
-      <div className="mx-auto w-full max-w-4xl px-4 sm:px-6 lg:px-8 relative z-10">
+      <div className="relative z-10 mx-auto w-full max-w-4xl px-4 sm:px-6 lg:px-8">
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           whileInView={{ opacity: 1, y: 0 }}

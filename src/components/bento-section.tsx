@@ -9,10 +9,10 @@ export function BentoSection() {
     <section id="manifesto" className="w-full py-16 md:py-24">
       {/* Header */}
       <div className="mx-auto flex w-full max-w-4xl flex-col items-center gap-3 px-4 sm:px-6">
-        <Badge variant="outline" className="font-mono tracking-wider border-primary/30 text-primary bg-primary/5 animate-beskar-shimmer">
+        <Badge variant="outline" className="animate-beskar-shimmer border-primary/30 bg-primary/5 font-mono tracking-wider text-primary">
           THE WAY OF THE PROFESSIONAL
         </Badge>
-        <h2 className="max-w-xl text-center text-2xl font-semibold tracking-tight sm:text-3xl md:text-4xl uppercase">
+        <h2 className="max-w-xl text-center text-2xl font-semibold tracking-tight uppercase sm:text-3xl md:text-4xl">
           Armament for the Modern Career
         </h2>
         <p className="max-w-lg text-center text-sm leading-6 text-muted-foreground">
@@ -30,10 +30,10 @@ export function BentoSection() {
           className="gap-4"
         >
           {/* Main Hero Tile */}
-          <BentoGridItem colSpan={{ base: 1, md: 2 }} rowSpan={{ base: 1, md: 2 }} className="overflow-hidden group border border-border/50 transition-colors duration-500 hover:border-primary/50 relative">
+          <BentoGridItem colSpan={{ base: 1, md: 2 }} rowSpan={{ base: 1, md: 2 }} className="group relative overflow-hidden border border-border/50 transition-colors duration-500 hover:border-primary/50">
             {/* Tactical Glow */}
             <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
-            <div className="relative flex h-full min-h-[300px] flex-col justify-between p-6 sm:p-8 z-10">
+            <div className="relative z-10 flex h-full min-h-[300px] flex-col justify-between p-6 sm:p-8">
               <div className="absolute inset-0 -z-10 bg-muted/30">
                 <GridPattern
                   width={40}
@@ -67,30 +67,30 @@ export function BentoSection() {
           </BentoGridItem>
 
           {/* Capabilities Tile */}
-          <BentoGridItem className="group border border-border/50 transition-colors duration-500 hover:border-primary/50 relative">
+          <BentoGridItem className="group relative border border-border/50 transition-colors duration-500 hover:border-primary/50">
             <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
-            <div className="relative flex h-full flex-col justify-between p-6 z-10">
-              <span className="text-xs font-mono font-semibold uppercase tracking-wider text-primary">
+            <div className="relative z-10 flex h-full flex-col justify-between p-6">
+              <span className="font-mono text-xs font-semibold tracking-wider text-primary uppercase">
                 [ SYS.CAPABILITIES ]
               </span>
-              <ul className="mt-4 space-y-2 text-sm font-medium font-mono">
-                <li className="flex items-center gap-2"><span className="w-1.5 h-1.5 bg-primary/70" /> ATS Bypass Modules</li>
-                <li className="flex items-center gap-2"><span className="w-1.5 h-1.5 bg-primary/70" /> Structural Formatting</li>
-                <li className="flex items-center gap-2"><span className="w-1.5 h-1.5 bg-primary/70" /> Logic Cores (AI)</li>
-                <li className="flex items-center gap-2"><span className="w-1.5 h-1.5 bg-primary/70" /> Encrypted Datacore</li>
+              <ul className="mt-4 space-y-2 font-mono text-sm font-medium">
+                <li className="flex items-center gap-2"><span className="h-1.5 w-1.5 bg-primary/70" /> ATS Bypass Modules</li>
+                <li className="flex items-center gap-2"><span className="h-1.5 w-1.5 bg-primary/70" /> Structural Formatting</li>
+                <li className="flex items-center gap-2"><span className="h-1.5 w-1.5 bg-primary/70" /> Logic Cores (AI)</li>
+                <li className="flex items-center gap-2"><span className="h-1.5 w-1.5 bg-primary/70" /> Encrypted Datacore</li>
               </ul>
             </div>
           </BentoGridItem>
 
           {/* Approach Tile */}
-          <BentoGridItem className="group border border-border/50 transition-colors duration-500 hover:border-primary/50 relative">
+          <BentoGridItem className="group relative border border-border/50 transition-colors duration-500 hover:border-primary/50">
             <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
-            <div className="relative flex h-full flex-col justify-between p-6 z-10">
-              <span className="text-xs font-mono font-semibold uppercase tracking-wider text-primary">
+            <div className="relative z-10 flex h-full flex-col justify-between p-6">
+              <span className="font-mono text-xs font-semibold tracking-wider text-primary uppercase">
                 [ TACTICAL.APPROACH ]
               </span>
               <div className="mt-4">
-                <p className="text-sm font-medium font-mono text-foreground/90 leading-relaxed">
+                <p className="font-mono text-sm leading-relaxed font-medium text-foreground/90">
                   IMPORT <span className="text-primary/70">→</span> FORGE <span className="text-primary/70">→</span> CALIBRATE <span className="text-primary/70">→</span> EXPORT
                 </p>
                 <p className="mt-2 text-xs text-muted-foreground">
@@ -101,18 +101,18 @@ export function BentoSection() {
           </BentoGridItem>
 
           {/* Highlighted Work Tile */}
-          <BentoGridItem colSpan={{ base: 1, lg: 2 }} className="group border border-border/50 transition-colors duration-500 hover:border-primary/50 relative overflow-hidden">
+          <BentoGridItem colSpan={{ base: 1, lg: 2 }} className="group relative overflow-hidden border border-border/50 transition-colors duration-500 hover:border-primary/50">
             <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
-            <div className="hud-grid absolute inset-0 opacity-10 mix-blend-screen pointer-events-none" />
-            <div className="relative flex h-full flex-col justify-between p-6 z-10">
-              <span className="text-xs font-mono font-semibold uppercase tracking-wider text-primary">
+            <div className="pointer-events-none absolute inset-0 hud-grid opacity-10 mix-blend-screen" />
+            <div className="relative z-10 flex h-full flex-col justify-between p-6">
+              <span className="font-mono text-xs font-semibold tracking-wider text-primary uppercase">
                 [ SIGNATURE.ASSET ]
               </span>
               <div className="mt-4">
-                <h4 className="text-xl font-semibold tracking-tight text-foreground flex items-center gap-2">
-                  The Beskar Blueprint <span className="flex h-2 w-2 rounded-full bg-primary animate-pulse" />
+                <h4 className="flex items-center gap-2 text-xl font-semibold tracking-tight text-foreground">
+                  The Beskar Blueprint <span className="flex h-2 w-2 animate-pulse rounded-full bg-primary" />
                 </h4>
-                <p className="mt-2 text-sm text-muted-foreground max-w-md">
+                <p className="mt-2 max-w-md text-sm text-muted-foreground">
                   Redesigned core resume architectures to improve cognitive parsing and guarantee 
                   system bypass rates across enterprise ATS filters.
                 </p>

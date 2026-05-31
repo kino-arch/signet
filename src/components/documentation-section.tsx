@@ -44,7 +44,7 @@ export default function DocumentationSection() {
         </p>
       </div>
 
-      <div className="mx-auto mt-12 flex w-full max-w-5xl items-center justify-center border-b pb-20 px-4 sm:px-6">
+      <div className="mx-auto mt-12 flex w-full max-w-5xl items-center justify-center border-b px-4 pb-20 sm:px-6">
         <Carousel slides={slides} />
       </div>
     </section>

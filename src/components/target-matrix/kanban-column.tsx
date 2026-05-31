@@ -28,7 +28,7 @@ export function KanbanColumn({ column, applications, isOver }: KanbanColumnProps
             style={{ backgroundColor: column.accent }}
             aria-hidden="true"
           />
-          <h2 className="font-heading text-xs font-semibold uppercase tracking-widest text-muted-foreground">
+          <h2 className="font-heading text-xs font-semibold tracking-widest text-muted-foreground uppercase">
             {column.label}
           </h2>
         </div>
@@ -60,7 +60,7 @@ export function KanbanColumn({ column, applications, isOver }: KanbanColumnProps
 
         {applications.length === 0 && (
           <div className="flex flex-1 items-center justify-center">
-            <p className="font-mono text-[10px] text-muted-foreground/40 uppercase tracking-wider">
+            <p className="font-mono text-[10px] tracking-wider text-muted-foreground/40 uppercase">
               Drop targets here
             </p>
           </div>

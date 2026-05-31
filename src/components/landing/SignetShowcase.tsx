@@ -32,7 +32,7 @@ export function SignetShowcase() {
         <div className="absolute top-1/2 left-1/4 h-[400px] w-[400px] rounded-full bg-foreground/[0.02] blur-[150px]" />
       </div>
 
-      <div className="mx-auto w-full max-w-5xl px-4 sm:px-6 lg:px-8 relative z-10">
+      <div className="relative z-10 mx-auto w-full max-w-5xl px-4 sm:px-6 lg:px-8">
         <motion.header
           variants={sectionVariants}
           initial="hidden"

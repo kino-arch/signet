@@ -46,11 +46,11 @@ export function ShineBorder({
     // for animation, masking, and layout.
     // Using px ensures predictable rendering.
     // Consumers can still style the wrapper via className or style if desired.
-    //@ts-ignore: CSS variables allowed at runtime
+    //@ts-expect-error: CSS variables allowed at runtime
     "--sb-border-radius": `${borderRadius}px`,
-    //@ts-ignore
+    //@ts-expect-error: CSS variables allowed at runtime
     "--sb-border-width": `${borderWidth}px`,
-    //@ts-ignore
+    //@ts-expect-error: CSS variables allowed at runtime
     "--sb-duration": `${duration}s`,
   }
 
@@ -67,10 +67,10 @@ export function ShineBorder({
     // WebKit/Safari
     WebkitMask:
       "linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0)",
-    WebkitMaskComposite: "xor" as any,
+    WebkitMaskComposite: "xor" as string,
     // Standard (Chromium/Firefox)
     mask: "linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0)",
-    maskComposite: "exclude" as any,
+    maskComposite: "exclude" as string,
     pointerEvents: "none",
   }
 

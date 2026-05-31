@@ -48,7 +48,7 @@ export function Header() {
   }, [])
 
   return (
-    <header className="relative w-full z-50">
+    <header className="relative z-50 w-full">
       <motion.nav
         initial={{ y: -100, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
@@ -68,7 +68,7 @@ export function Header() {
           )}
         >
           <div className="relative flex flex-wrap items-center justify-between gap-3 py-2.5">
-            <div className="flex w-full justify-between lg:w-auto items-center">
+            <div className="flex w-full items-center justify-between lg:w-auto">
               <Link 
                 to="/" 
                 aria-label="home" 
@@ -102,7 +102,7 @@ export function Header() {
                     <li key={index}>
                       <a
                         href={item.href}
-                        className="text-muted-foreground hover:text-primary block text-sm duration-150"
+                        className="block text-sm text-muted-foreground duration-150 hover:text-primary"
                         onClick={() => setMenuState(false)}
                       >
                         <span>{item.name}</span>
@@ -130,7 +130,7 @@ export function Header() {
                       <DropdownMenuTrigger asChild>
                         <Button variant="ghost" aria-label="User Menu" className="relative h-8 w-8 rounded-full hover:bg-transparent">
                           <Avatar className="h-8 w-8 border border-primary/20 shadow-[0_0_10px_rgba(var(--color-primary),0.15)] transition-transform hover:scale-105">
-                            <AvatarFallback className="bg-primary/10 text-primary font-heading font-bold">
+                            <AvatarFallback className="bg-primary/10 font-heading font-bold text-primary">
                               {user.email ? user.email.charAt(0).toUpperCase() : "S"}
                             </AvatarFallback>
                           </Avatar>
@@ -139,13 +139,13 @@ export function Header() {
                       <DropdownMenuContent className="w-56 border-border/40 bg-background/95 backdrop-blur-md" align="end" forceMount>
                         <DropdownMenuLabel className="font-normal">
                           <div className="flex flex-col space-y-1">
-                            <p className="text-sm font-medium leading-none text-foreground">My Account</p>
+                            <p className="text-sm leading-none font-medium text-foreground">My Account</p>
                             <p className="text-xs leading-none text-muted-foreground">{user.email || ""}</p>
                           </div>
                         </DropdownMenuLabel>
                         <DropdownMenuSeparator className="bg-border/40" />
                         <DropdownMenuItem asChild className="cursor-pointer focus:bg-primary/10 focus:text-primary">
-                          <Link to="/editor" className="w-full flex items-center">
+                          <Link to="/editor" className="flex w-full items-center">
                             <LayoutDashboard className="mr-2 h-4 w-4" />
                             <span>Resume Builder</span>
                           </Link>

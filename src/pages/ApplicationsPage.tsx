@@ -48,7 +48,7 @@ export function ApplicationsPage() {
               style={{ backgroundColor: col.accent }}
               aria-hidden="true"
             />
-            <span className="font-mono text-[10px] uppercase tracking-wider text-muted-foreground">
+            <span className="font-mono text-[10px] tracking-wider text-muted-foreground uppercase">
               {col.label}
             </span>
             <span className="font-mono text-[10px] font-semibold text-foreground tabular-nums">
@@ -60,9 +60,9 @@ export function ApplicationsPage() {
 
       {/* Kanban Board */}
       <div className="flex-1 overflow-hidden">
-        <div className="flex items-center gap-2 mb-4">
+        <div className="mb-4 flex items-center gap-2">
           <LayoutGrid className="size-3.5 text-muted-foreground" />
-          <span className="font-mono text-[10px] uppercase tracking-wider text-muted-foreground">
+          <span className="font-mono text-[10px] tracking-wider text-muted-foreground uppercase">
             Deployment Grid
           </span>
         </div>

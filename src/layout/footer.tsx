@@ -10,15 +10,15 @@ export default function FooterSection() {
           </div>
           <div className="text-sm font-medium">
             <h1 className="text-lg font-medium">Design without limits</h1>
-            <p className="text-muted-foreground max-w-md">
+            <p className="max-w-md text-muted-foreground">
               I create digital experiences that connect and inspire. I build
               apps, websites, brands, and products end-to-end.
             </p>
           </div>
           <div className="flex items-start justify-start gap-6 text-muted-foreground">
-            <Globe className="w-6 h-6 hover:text-primary transition-colors cursor-pointer" />
-            <MessageCircle className="w-6 h-6 hover:text-primary transition-colors cursor-pointer" />
-            <Mail className="w-6 h-6 hover:text-primary transition-colors cursor-pointer" />
+            <Globe className="h-6 w-6 cursor-pointer transition-colors hover:text-primary" />
+            <MessageCircle className="h-6 w-6 cursor-pointer transition-colors hover:text-primary" />
+            <Mail className="h-6 w-6 cursor-pointer transition-colors hover:text-primary" />
           </div>
         </div>
 
@@ -28,19 +28,19 @@ export default function FooterSection() {
               Product
             </div>
             <div className="flex flex-col items-start justify-end gap-2">
-              <div className="text-muted-foreground hover:text-primary cursor-pointer text-sm leading-5 font-normal transition-colors">
+              <div className="cursor-pointer text-sm leading-5 font-normal text-muted-foreground transition-colors hover:text-primary">
                 Features
               </div>
-              <div className="text-muted-foreground hover:text-primary cursor-pointer text-sm leading-5 font-normal transition-colors">
+              <div className="cursor-pointer text-sm leading-5 font-normal text-muted-foreground transition-colors hover:text-primary">
                 Pricing
               </div>
-              <div className="text-muted-foreground hover:text-primary cursor-pointer text-sm leading-5 font-normal transition-colors">
+              <div className="cursor-pointer text-sm leading-5 font-normal text-muted-foreground transition-colors hover:text-primary">
                 Live Previews
               </div>
-              <div className="text-muted-foreground hover:text-primary cursor-pointer text-sm leading-5 font-normal transition-colors">
+              <div className="cursor-pointer text-sm leading-5 font-normal text-muted-foreground transition-colors hover:text-primary">
                 Real-time Previews
               </div>
-              <div className="text-muted-foreground hover:text-primary cursor-pointer text-sm leading-5 font-normal transition-colors">
+              <div className="cursor-pointer text-sm leading-5 font-normal text-muted-foreground transition-colors hover:text-primary">
                 AI Agents
               </div>
             </div>
@@ -49,19 +49,19 @@ export default function FooterSection() {
           <div className="flex min-w-40 flex-1 flex-col items-start justify-start gap-3">
             <div className="text-sm leading-5 font-medium">Company</div>
             <div className="flex flex-col items-start justify-center gap-2">
-              <div className="text-muted-foreground hover:text-primary cursor-pointer text-sm leading-5 font-normal transition-colors">
+              <div className="cursor-pointer text-sm leading-5 font-normal text-muted-foreground transition-colors hover:text-primary">
                 About us
               </div>
-              <div className="text-muted-foreground hover:text-primary cursor-pointer text-sm leading-5 font-normal transition-colors">
+              <div className="cursor-pointer text-sm leading-5 font-normal text-muted-foreground transition-colors hover:text-primary">
                 Our team
               </div>
-              <div className="text-muted-foreground hover:text-primary cursor-pointer text-sm leading-5 font-normal transition-colors">
+              <div className="cursor-pointer text-sm leading-5 font-normal text-muted-foreground transition-colors hover:text-primary">
                 Careers
               </div>
-              <div className="text-muted-foreground hover:text-primary cursor-pointer text-sm leading-5 font-normal transition-colors">
+              <div className="cursor-pointer text-sm leading-5 font-normal text-muted-foreground transition-colors hover:text-primary">
                 Brand
               </div>
-              <div className="text-muted-foreground hover:text-primary cursor-pointer text-sm leading-5 font-normal transition-colors">
+              <div className="cursor-pointer text-sm leading-5 font-normal text-muted-foreground transition-colors hover:text-primary">
                 Contact
               </div>
             </div>
@@ -70,19 +70,19 @@ export default function FooterSection() {
           <div className="flex min-w-40 flex-1 flex-col items-start justify-start gap-3">
             <div className="text-sm leading-5 font-medium">Resources</div>
             <div className="flex flex-col items-center justify-center gap-2">
-              <div className="text-muted-foreground hover:text-primary cursor-pointer self-stretch text-sm leading-5 font-normal transition-colors">
+              <div className="cursor-pointer self-stretch text-sm leading-5 font-normal text-muted-foreground transition-colors hover:text-primary">
                 Terms of use
               </div>
-              <div className="text-muted-foreground hover:text-primary cursor-pointer self-stretch text-sm leading-5 font-normal transition-colors">
+              <div className="cursor-pointer self-stretch text-sm leading-5 font-normal text-muted-foreground transition-colors hover:text-primary">
                 API Reference
               </div>
-              <div className="text-muted-foreground hover:text-primary cursor-pointer self-stretch text-sm leading-5 font-normal transition-colors">
+              <div className="cursor-pointer self-stretch text-sm leading-5 font-normal text-muted-foreground transition-colors hover:text-primary">
                 Documentation
               </div>
-              <div className="text-muted-foreground hover:text-primary cursor-pointer self-stretch text-sm leading-5 font-normal transition-colors">
+              <div className="cursor-pointer self-stretch text-sm leading-5 font-normal text-muted-foreground transition-colors hover:text-primary">
                 Community
               </div>
-              <div className="text-muted-foreground hover:text-primary cursor-pointer self-stretch text-sm leading-5 font-normal transition-colors">
+              <div className="cursor-pointer self-stretch text-sm leading-5 font-normal text-muted-foreground transition-colors hover:text-primary">
                 Support
               </div>
             </div>

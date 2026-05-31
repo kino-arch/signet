@@ -14,7 +14,7 @@ export function NavSecondary({
   items: {
     title: string
     url: string
-    icon: any
+    icon: React.ElementType
   }[]
 } & React.ComponentPropsWithoutRef<typeof SidebarGroup>) {
   return (

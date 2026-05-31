@@ -115,9 +115,11 @@ export function OnboardingPage() {
   useEffect(() => {
     if (user?.user_metadata?.full_name && !firstName) {
       const parts = user.user_metadata.full_name.split(' ');
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setFirstName(parts[0] || '');
       setLastName(parts.slice(1).join(' ') || '');
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
 
   // Edge Function Geolocation (Step 3 mount)
@@ -135,7 +137,7 @@ export function OnboardingPage() {
       };
       fetchGeo();
     }
-  }, [preOnboardingStep]);
+  }, [preOnboardingStep, location]);
 
   useEffect(() => {
     if (preOnboardingStep !== 0) return;
@@ -212,8 +214,9 @@ export function OnboardingPage() {
       });
 
       navigate(`/slates`, { replace: true });
-    } catch (err: any) {
-      setError(err.message || "Something went wrong. Please try again.");
+    } catch (err: unknown) {
+      const e = err as Error;
+      setError(e.message || "Something went wrong. Please try again.");
     } finally {
       setSubmitting(false);
     }
@@ -254,7 +257,7 @@ export function OnboardingPage() {
                 transition={{ duration: 0.35 }}
                 className="mx-auto max-w-sm"
               >
-                <div className="rounded-2xl border border-border/50 bg-card/60 p-8 backdrop-blur-xl shadow-xl">
+                <div className="rounded-2xl border border-border/50 bg-card/60 p-8 shadow-xl backdrop-blur-xl">
                   {/* Icon */}
                   <div className="relative mx-auto mb-6 flex h-20 w-20 items-center justify-center overflow-hidden rounded-full border border-primary/20 bg-primary/5">
                     <Logo size="lg" showText={false} className="ml-1" animateOnHover={false} />
@@ -322,7 +325,7 @@ export function OnboardingPage() {
                 <Onboarding totalSteps={4} onComplete={handleLaunch}>
                   
                   {/* Global Step Indicator */}
-                  <div className="mb-8 w-full max-w-sm mx-auto">
+                  <div className="mx-auto mb-8 w-full max-w-sm">
                     <Onboarding.StepIndicator />
                   </div>
 
@@ -351,7 +354,7 @@ export function OnboardingPage() {
                       })}
                     </ChoiceGroup>
 
-                    <div className="flex justify-end mt-6">
+                    <div className="mt-6 flex justify-end">
                       <Onboarding.Navigation canGoNext={!!role} hideBack nextLabel="Confirm Specialization" />
                     </div>
                   </Onboarding.Step>
@@ -381,11 +384,11 @@ export function OnboardingPage() {
                         description="Enter your contact details. These will pre-populate your resume so you can get started instantly."
                       />
 
-                      <div className="rounded-xl border border-border/50 bg-card/40 p-6 backdrop-blur-xl space-y-5">
+                      <div className="space-y-5 rounded-xl border border-border/50 bg-card/40 p-6 backdrop-blur-xl">
                         
-                        <div className="flex items-center gap-2 mb-2">
+                        <div className="mb-2 flex items-center gap-2">
                            <div className="h-px flex-1 bg-border/50"></div>
-                           <span className="text-[10px] font-mono text-muted-foreground uppercase tracking-widest px-2">Pre-filled for {user?.user_metadata?.full_name || user?.email || "John Doe"}</span>
+                           <span className="px-2 font-mono text-[10px] tracking-widest text-muted-foreground uppercase">Pre-filled for {user?.user_metadata?.full_name || user?.email || "John Doe"}</span>
                            <div className="h-px flex-1 bg-border/50"></div>
                         </div>
 
@@ -405,11 +408,11 @@ export function OnboardingPage() {
                             <Mail className="h-3 w-3" /> Email Address
                           </Label>
                           <Input type="email" disabled value={user?.email || ""} className="h-9 cursor-not-allowed bg-muted/40 text-sm text-muted-foreground" />
-                          <p className="text-[10px] font-mono text-muted-foreground/50">Synced from your authentication credentials.</p>
+                          <p className="font-mono text-[10px] text-muted-foreground/50">Synced from your authentication credentials.</p>
                         </div>
 
                         <div className="grid grid-cols-2 gap-4">
-                          <div className="space-y-1.5 flex flex-col">
+                          <div className="flex flex-col space-y-1.5">
                             <Label htmlFor="phone" className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground">
                               <Phone className="h-3 w-3" /> Phone
                             </Label>
@@ -418,7 +421,7 @@ export function OnboardingPage() {
                               defaultCountry="US"
                               value={phone}
                               onChange={(val) => setPhone(val || "")}
-                              className="flex h-9 w-full rounded-md border border-input bg-background/60 px-3 py-1 text-sm shadow-sm transition-colors [&>.PhoneInputCountry]:mr-3 [&>.PhoneInputCountry>select]:bg-background [&>.PhoneInputCountry>select]:text-foreground [&>input]:bg-transparent [&>input]:outline-none [&>input]:w-full focus-within:ring-1 focus-within:ring-primary"
+                              className="flex h-9 w-full rounded-md border border-input bg-background/60 px-3 py-1 text-sm shadow-sm transition-colors focus-within:ring-1 focus-within:ring-primary [&>.PhoneInputCountry]:mr-3 [&>.PhoneInputCountry>select]:bg-background [&>.PhoneInputCountry>select]:text-foreground [&>input]:w-full [&>input]:bg-transparent [&>input]:outline-none"
                             />
                           </div>
                           <div className="space-y-1.5">
@@ -444,7 +447,7 @@ export function OnboardingPage() {
                   {/* STEP 4: The Forge Commitment */}
                   <Onboarding.Step step={4}>
                     <div className="mx-auto max-w-md">
-                      <div className="rounded-2xl border border-border/50 bg-card/60 p-8 backdrop-blur-xl shadow-xl">
+                      <div className="rounded-2xl border border-border/50 bg-card/60 p-8 shadow-xl backdrop-blur-xl">
                         <div className="mx-auto mb-5 flex h-12 w-12 items-center justify-center rounded-xl border border-primary/20 bg-primary/5 text-primary">
                           <Terminal className="h-5 w-5" />
                         </div>
@@ -512,7 +515,7 @@ export function OnboardingPage() {
                             <Sparkles className="h-3.5 w-3.5" />
                           </Button>
 
-                          <Onboarding.Navigation hideBack={false} nextLabel="" backLabel="Back to Profile" className="mt-0 justify-center flex [&>button[data-slot='onboarding-back']]:w-full [&>button[data-slot='onboarding-back']]:border-none [&>button[data-slot='onboarding-back']]:text-muted-foreground [&>button[data-slot='onboarding-complete']]:hidden" />
+                          <Onboarding.Navigation hideBack={false} nextLabel="" backLabel="Back to Profile" className="mt-0 flex justify-center [&>button[data-slot='onboarding-back']]:w-full [&>button[data-slot='onboarding-back']]:border-none [&>button[data-slot='onboarding-back']]:text-muted-foreground [&>button[data-slot='onboarding-complete']]:hidden" />
                         </div>
                       </div>
                     </div>

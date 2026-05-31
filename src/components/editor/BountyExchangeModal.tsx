@@ -73,6 +73,7 @@ export function BountyExchangeModal({ isOpen, onClose, infoMessage, defaultPacka
   useEffect(() => {
     if (isOpen) {
       const matched = PACKAGES.find((p) => p.id === defaultPackageId);
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setSelectedPack(matched || PACKAGES[1]);
       setLoadingStripe(false);
       setStripeError(null);
@@ -113,9 +114,9 @@ export function BountyExchangeModal({ isOpen, onClose, infoMessage, defaultPacka
       }
 
       window.location.href = data.url;
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("Error during checkout invocation:", err);
-      setStripeError(err.message || "An unexpected checkout error occurred.");
+      setStripeError((err as Error).message || "An unexpected checkout error occurred.");
       setLoadingStripe(false);
     }
   };
@@ -170,7 +171,7 @@ export function BountyExchangeModal({ isOpen, onClose, infoMessage, defaultPacka
                 <h2 className="text-2xl font-bold tracking-tight text-white">
                   Unlock More Credits
                 </h2>
-                <p className="text-sm text-zinc-400 mt-1">Select a package to continue generating elite resumes.</p>
+                <p className="mt-1 text-sm text-zinc-400">Select a package to continue generating elite resumes.</p>
               </div>
             </div>
 
@@ -179,7 +180,7 @@ export function BountyExchangeModal({ isOpen, onClose, infoMessage, defaultPacka
               size="icon"
               onClick={onClose}
               disabled={loadingStripe}
-              className="h-8 w-8 rounded-full text-zinc-400 hover:bg-white/10 hover:text-white transition-colors"
+              className="h-8 w-8 rounded-full text-zinc-400 transition-colors hover:bg-white/10 hover:text-white"
             >
               <X className="h-4 w-4" />
             </Button>
@@ -194,7 +195,7 @@ export function BountyExchangeModal({ isOpen, onClose, infoMessage, defaultPacka
           )}
 
           {/* Packages */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+          <div className="mb-8 grid grid-cols-1 gap-4 md:grid-cols-3">
             {PACKAGES.map((pkg) => {
               const isSelected = selectedPack?.id === pkg.id;
               return (
@@ -217,7 +218,7 @@ export function BountyExchangeModal({ isOpen, onClose, infoMessage, defaultPacka
                     {(isSelected || pkg.popular) && (
                       <Badge 
                         variant={isSelected ? "default" : "secondary"} 
-                        className={`text-[10px] uppercase font-bold tracking-wider ${
+                        className={`text-[10px] font-bold tracking-wider uppercase ${
                           isSelected ? "bg-primary text-primary-foreground" : "bg-white/10 text-white"
                         }`}
                       >
@@ -242,7 +243,7 @@ export function BountyExchangeModal({ isOpen, onClose, infoMessage, defaultPacka
                   </div>
 
                   {/* Desc */}
-                  <p className="text-xs leading-relaxed text-zinc-400 px-2 h-10">
+                  <p className="h-10 px-2 text-xs leading-relaxed text-zinc-400">
                     {pkg.description}
                   </p>
                   
@@ -269,7 +270,7 @@ export function BountyExchangeModal({ isOpen, onClose, infoMessage, defaultPacka
               size="lg"
               onClick={() => selectedPack && handleStripeCheckout(selectedPack)}
               disabled={loadingStripe || !selectedPack}
-              className="w-full sm:w-2/3 h-12 gap-2 text-sm font-bold shadow-lg shadow-primary/25 transition-all hover:shadow-primary/40 rounded-full"
+              className="h-12 w-full gap-2 rounded-full text-sm font-bold shadow-lg shadow-primary/25 transition-all hover:shadow-primary/40 sm:w-2/3"
             >
               {loadingStripe ? (
                 <>
@@ -284,7 +285,7 @@ export function BountyExchangeModal({ isOpen, onClose, infoMessage, defaultPacka
               )}
             </Button>
             
-            <p className="text-xs text-zinc-500 flex items-center gap-1.5">
+            <p className="flex items-center gap-1.5 text-xs text-zinc-500">
               <Lock className="h-3 w-3" />
               Payments are secure and encrypted.
             </p>
