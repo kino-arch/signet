@@ -33,7 +33,6 @@ interface AuthState {
   signInAsGuest: () => void;
   addCredits: (amount: number) => Promise<void>;
   deductCredit: () => Promise<boolean>;
-  verifyStripeSession: (sessionId: string) => Promise<{ success: boolean; credits: number }>;
 }
 
 export const useAuthStore = create<AuthState>((set, get) => ({
@@ -294,44 +293,6 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     } catch (err) {
       console.error("Exception in deductCredit:", err);
       return true;
-    }
-  },
-
-  verifyStripeSession: async (sessionId: string) => {
-    const { user, profile } = get();
-    if (!user) return { success: false, credits: 0 };
-
-    try {
-      const stripeSecret = import.meta.env.VITE_STRIPE_SECRET_KEY;
-      const { data, error } = await supabase.functions.invoke("verify-stripe-session", {
-        body: {
-          sessionId,
-          userId: user.id,
-        },
-        headers: {
-          "x-stripe-secret-key": stripeSecret,
-        },
-      });
-
-      if (error || !data || !data.success) {
-        console.error("Error verifying Stripe session:", error || data?.error);
-        return { success: false, credits: 0 };
-      }
-
-      // Sync profile state
-      if (profile) {
-        set({
-          profile: {
-            ...profile,
-            token_balance: data.balance,
-          },
-        });
-      }
-
-      return { success: true, credits: data.tokensCredited };
-    } catch (e) {
-      console.error("Failed to verify session:", e);
-      return { success: false, credits: 0 };
     }
   },
 }));

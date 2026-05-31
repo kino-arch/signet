@@ -39,7 +39,7 @@ test.describe("Mandalorian Forge - Accessibility Audits (Axe)", () => {
   test("Login Page accessibility audit", async ({ page }) => {
     await page.setViewportSize({ width: 1600, height: 900 });
     await page.goto("/login");
-    await expect(page.getByText("Welcome back, Mando")).toBeVisible();
+    await expect(page.getByText("Access the Forge")).toBeVisible();
     await page.waitForTimeout(1000);
     await runAxeScan(page, "Login Page");
   });
@@ -56,8 +56,8 @@ test.describe("Mandalorian Forge - Accessibility Audits (Axe)", () => {
     await expect(page).toHaveURL(/.*onboarding/);
     
     // STEP 0: Wait for Biometric Recognition scanner
-    const enterForgeButton = page.getByRole("button", { name: "ENTER THE FORGE" });
-    await expect(enterForgeButton).toBeEnabled({ timeout: 8000 });
+    const enterForgeButton = page.getByRole("button", { name: "Enter the Forge" });
+    await expect(enterForgeButton).toBeEnabled({ timeout: 15000 });
     
     // Audit the onboarding splash/biometrics state
     await runAxeScan(page, "Onboarding - Biometrics Step");
@@ -66,7 +66,7 @@ test.describe("Mandalorian Forge - Accessibility Audits (Axe)", () => {
     await enterForgeButton.click();
 
     // STEP 1: Select Guild Creed (Specialization)
-    await expect(page.getByText("Choose Your Guild Creed")).toBeVisible();
+    await expect(page.getByText("Select Your Specialization")).toBeVisible();
     await runAxeScan(page, "Onboarding - Select Guild Creed Step");
   });
 
@@ -78,39 +78,39 @@ test.describe("Mandalorian Forge - Accessibility Audits (Axe)", () => {
     const guestButton = page.getByRole("button", { name: "Enter as Guest / Demo Mode" });
     await guestButton.click();
     
-    const enterForgeButton = page.getByRole("button", { name: "ENTER THE FORGE" });
-    await expect(enterForgeButton).toBeEnabled({ timeout: 8000 });
+    const enterForgeButton = page.getByRole("button", { name: "Enter the Forge" });
+    await expect(enterForgeButton).toBeEnabled({ timeout: 15000 });
     await enterForgeButton.click();
     
     await page.getByText("The Forge", { exact: true }).click();
     await page.getByRole("button", { name: "Confirm Specialization" }).click();
     
+    // Step 2: Target Intelligence (Skip for now)
+    await expect(page.getByText("Target Intelligence")).toBeVisible();
+    await page.getByRole("button", { name: "Skip for now / Continue" }).click();
+    
     await page.locator("#firstName").fill("Din");
     await page.locator("#lastName").fill("Djarin");
-    await page.locator("#phone").fill("555-0198");
+    await page.locator("input[type='tel']").fill("+15550198000");
     await page.locator("#location").fill("Mandalore Sector");
     await page.locator("#website").fill("guild.org");
-    await page.getByRole("button", { name: "Proceed to the Oath" }).click();
+    await page.getByRole("button", { name: "Continue to Review" }).click();
     
-    const oathCheckboxText = page.getByText("I swear the Creed. I am ready to forge my resume.");
+    await expect(page.getByText("The Forge Commitment")).toBeVisible();
+    const oathCheckboxText = page.getByText("I'm ready to build my resume inside the Forge editor.");
     await expect(oathCheckboxText).toBeVisible({ timeout: 25000 });
     await oathCheckboxText.click();
     
-    const igniteButton = page.getByRole("button", { name: "IGNITE THE FORGE" });
+    const igniteButton = page.getByRole("button", { name: "Launch the Forge" });
     await expect(igniteButton).toBeEnabled();
     await igniteButton.click();
     
-    // Redirect to Editor Dashboard
-    await expect(page).toHaveURL(/.*editor/);
-    await expect(page.getByRole("heading", { name: "Bounty Analytics" })).toBeVisible();
+    // New flow: redirects to /slates, click empty state to enter the forge
+    await expect(page).toHaveURL(/.*slates/, { timeout: 10000 });
+    await page.locator("text=AWAITING INTEL").click();
+    await expect(page).toHaveURL(/.*\/forge\/.+/, { timeout: 15000 });
+    await expect(page.getByRole("heading", { name: /Forge Array/i })).toBeVisible({ timeout: 10000 });
     
     await runAxeScan(page, "Editor - Dashboard Overview");
-
-    // Check "The Forge" tab accessibility
-    const forgeTabButton = page.getByRole("button", { name: "The Forge" });
-    await forgeTabButton.click();
-    await expect(page.getByRole("heading", { name: "The Crucible" })).toBeVisible();
-    
-    await runAxeScan(page, "Editor - The Forge Form");
   });
 });

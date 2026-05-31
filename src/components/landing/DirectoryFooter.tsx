@@ -2,19 +2,33 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ArrowUp, Globe, Mail, Terminal } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const footerLinks = [
   {
-    title: "The Forge",
-    links: ["Signets", "Pricing (Beskar Exchange)", "API Specs", "Documentation"],
+    title: "Product",
+    links: [
+      { name: "Templates", href: "#" },
+      { name: "Pricing", href: "#" },
+      { name: "API Specs", href: "/ats-specs" },
+      { name: "Documentation", href: "#" }
+    ],
   },
   {
-    title: "The Covert",
-    links: ["About Us", "Bounties (Careers)", "Manifesto"],
+    title: "Company",
+    links: [
+      { name: "About Us", href: "#" },
+      { name: "Careers", href: "#" },
+      { name: "Manifesto", href: "#" }
+    ],
   },
   {
-    title: "The Code",
-    links: ["Privacy Policy", "Terms of Service", "Cookie Policy"],
+    title: "Legal",
+    links: [
+      { name: "Privacy Policy", href: "/privacy" },
+      { name: "Terms of Service", href: "/terms" },
+      { name: "Cookie Policy", href: "#" }
+    ],
   },
 ];
 
@@ -35,17 +49,17 @@ export function DirectoryFooter() {
               <Badge variant="outline" className="text-xs">Est. 2026</Badge>
             </div>
             <p className="mb-6 max-w-xs text-sm leading-relaxed text-muted-foreground">
-              Forging indestructible resumes for the modern warrior. Built to survive the most rigorous Imperial ATS filters.
+              Building professional resumes for the modern job market. Engineered to bypass Applicant Tracking Systems.
             </p>
 
             <div className="mb-4">
               <p className="mb-2 text-sm font-semibold text-foreground">
-                Subscribe to Covert Transmissions
+                Subscribe to Updates
               </p>
               <div className="flex max-w-sm gap-2">
                 <Input
                   type="email"
-                  placeholder="comm-link address"
+                  placeholder="Email address"
                   className="bg-background/50"
                 />
                 <Button variant="default" size="icon" aria-label="Subscribe">
@@ -58,18 +72,27 @@ export function DirectoryFooter() {
           {/* Links */}
           {footerLinks.map((section) => (
             <div key={section.title} className="space-y-4">
-              <h4 className="text-sm font-bold text-foreground">
+              <h3 className="text-sm font-bold text-foreground">
                 {section.title}
-              </h4>
+              </h3>
               <ul className="space-y-2">
                 {section.links.map((link) => (
-                  <li key={link}>
-                    <a
-                      href="#"
-                      className="text-sm text-muted-foreground transition-colors hover:text-primary"
-                    >
-                      {link}
-                    </a>
+                  <li key={link.name}>
+                    {link.href.startsWith("/") ? (
+                      <Link
+                        to={link.href}
+                        className="text-sm text-muted-foreground transition-colors hover:text-primary"
+                      >
+                        {link.name}
+                      </Link>
+                    ) : (
+                      <a
+                        href={link.href}
+                        className="text-sm text-muted-foreground transition-colors hover:text-primary"
+                      >
+                        {link.name}
+                      </a>
+                    )}
                   </li>
                 ))}
               </ul>
@@ -93,7 +116,7 @@ export function DirectoryFooter() {
           </div>
 
           <div className="flex items-center gap-2 text-sm text-muted-foreground">
-            <span>© 2026 Signet Forge. The Covert Endures.</span>
+            <span>© 2026 Signet. All rights reserved.</span>
           </div>
 
           <Button

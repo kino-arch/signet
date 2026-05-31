@@ -1,11 +1,20 @@
 import { useEffect } from "react";
 import { BrowserRouter, Route, Routes, Navigate, useLocation } from "react-router-dom";
 import { LandingPage } from "@/pages/LandingPage";
-import { ForgeEditor } from "@/pages/ForgeEditor";
+import { EditorPage } from "@/pages/EditorPage";
 import { LoginPage } from "@/pages/LoginPage";
 import { OnboardingPage } from "@/pages/OnboardingPage";
 import { AtsSpecsPage } from "@/pages/AtsSpecsPage";
+import { PrivacyPage } from "@/pages/PrivacyPage";
+import { TermsPage } from "@/pages/TermsPage";
+import { DashboardPage } from "@/pages/DashboardPage";
+import { SlatesPage } from "@/pages/SlatesPage";
+import { ApplicationsPage } from "@/pages/ApplicationsPage";
+import { AnalyticsPage } from "@/pages/AnalyticsPage";
+import { SettingsPage } from "@/pages/SettingsPage";
+import { DashboardLayout } from "@/components/layout/dashboard-layout";
 import { useAuthStore } from "@/store/useAuthStore";
+import { TooltipProvider } from "@/components/ui/tooltip";
 
 // ProtectedRoute ensures authentication and onboarding are completed before dashboard access
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
@@ -29,13 +38,13 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
     return <Navigate to="/login" replace />;
   }
 
+  const isOnboarding = location.pathname === "/onboarding";
+  const isForge = location.pathname.startsWith("/forge/");
+
   // Redirect to onboarding if not completed and trying to access other protected routes
-  if (!onboardingCompleted && location.pathname !== "/onboarding") {
+  if (!onboardingCompleted && !isOnboarding && !isForge) {
     return <Navigate to="/onboarding" replace />;
   }
-
-  // We removed the strict redirect that prevented users from re-visiting the onboarding page 
-  // so that the "Test Onboarding" button functions properly.
 
   return <>{children}</>;
 }
@@ -54,17 +63,80 @@ function AuthInitializer({ children }: { children: React.ReactNode }) {
 export function App() {
   return (
     <div className="font-sans antialiased min-h-screen bg-background text-foreground">
-      <BrowserRouter>
-        <AuthInitializer>
-          <Routes>
+      <TooltipProvider>
+        <BrowserRouter>
+          <AuthInitializer>
+            <Routes>
             <Route path="/" element={<LandingPage />} />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/ats-specs" element={<AtsSpecsPage />} />
+            <Route path="/privacy" element={<PrivacyPage />} />
+            <Route path="/terms" element={<TermsPage />} />
+            <Route
+              path="/dashboard"
+              element={
+                <ProtectedRoute>
+                  <DashboardLayout>
+                    <DashboardPage />
+                  </DashboardLayout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/slates"
+              element={
+                <ProtectedRoute>
+                  <DashboardLayout>
+                    <SlatesPage />
+                  </DashboardLayout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/applications"
+              element={
+                <ProtectedRoute>
+                  <DashboardLayout>
+                    <ApplicationsPage />
+                  </DashboardLayout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/analytics"
+              element={
+                <ProtectedRoute>
+                  <DashboardLayout>
+                    <AnalyticsPage />
+                  </DashboardLayout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/settings"
+              element={
+                <ProtectedRoute>
+                  <DashboardLayout>
+                    <SettingsPage />
+                  </DashboardLayout>
+                </ProtectedRoute>
+              }
+            />
+            {/* Legacy editor route — kept for backward compatibility */}
             <Route
               path="/editor"
               element={
                 <ProtectedRoute>
-                  <ForgeEditor />
+                  <EditorPage />
+                </ProtectedRoute>
+              }
+            />
+            {/* Primary dynamic forge route — /forge/:slateId */}
+            <Route
+              path="/forge/:slateId"
+              element={
+                <ProtectedRoute>
+                  <EditorPage />
                 </ProtectedRoute>
               }
             />
@@ -77,10 +149,12 @@ export function App() {
               }
             />
           </Routes>
-        </AuthInitializer>
-      </BrowserRouter>
+          </AuthInitializer>
+        </BrowserRouter>
+      </TooltipProvider>
     </div>
   );
 }
 
 export default App;
+

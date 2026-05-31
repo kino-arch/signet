@@ -42,10 +42,10 @@ export function SignetShowcase() {
         >
           <Badge variant="outline" className="gap-2">
             <Flame className="h-3.5 w-3.5" />
-            The Signet Archive
+            Premium Templates
           </Badge>
           <h2 className="font-heading text-3xl font-bold tracking-tight text-foreground md:text-4xl lg:text-5xl">
-            Choose Your Armor
+            Choose Your Layout
           </h2>
           <p className="max-w-2xl text-base text-muted-foreground md:text-lg">
             Select from battle-tested resume templates designed to pass automated filters while leaving a lasting impression on human recruiters.
@@ -88,7 +88,7 @@ export function SignetShowcase() {
                     <Badge variant="secondary">Featured Layout</Badge>
                   </div>
                   <CardTitle className="max-w-[250px] font-heading text-2xl leading-tight font-bold md:text-3xl">
-                    The Darksaber
+                    The Executive
                   </CardTitle>
                   <CardDescription className="max-w-[280px] text-sm md:text-base">
                     Aggressive, high-contrast, and commanding. Designed for tech leadership and senior engineering roles where impact is everything.
@@ -96,7 +96,7 @@ export function SignetShowcase() {
                 </CardHeader>
                 <CardFooter className="mt-8 p-0">
                   <Button variant="default" className="group/cta gap-2 px-6 py-2">
-                    Equip Signet
+                    Use Template
                     <ArrowUpRight className="h-4 w-4 transition-transform group-hover/cta:translate-x-1 group-hover/cta:-translate-y-1" />
                   </Button>
                 </CardFooter>
@@ -149,7 +149,7 @@ export function SignetShowcase() {
                   <Badge variant="secondary">Creative Focus</Badge>
                 </div>
                 <CardTitle className="font-heading text-2xl font-bold tracking-tight text-foreground">
-                  The Living Waters
+                  The Creative
                 </CardTitle>
                 <CardDescription className="max-w-sm text-sm text-muted-foreground md:text-base">
                   Fluid, elegant, and dynamic. A layout designed to showcase creative portfolios, frontend expertise, and design leadership.
@@ -173,17 +173,17 @@ export function SignetShowcase() {
                   <Badge variant="outline">The Process</Badge>
                 </div>
                 <CardTitle className="font-heading text-xl font-bold tracking-tight md:text-2xl">
-                  From raw data to indestructible armor in minutes
+                  From raw data to a polished resume in minutes
                 </CardTitle>
                 <CardDescription className="text-sm md:text-base">
-                  We compress the tedious formatting and layout tweaking into a streamlined forge process.
+                  We compress the tedious formatting and layout tweaking into a streamlined building process.
                 </CardDescription>
               </CardHeader>
               <CardContent className="mt-8 space-y-5 p-0">
                 {[
-                  { label: "Extraction (Parsing)", progress: 100 },
-                  { label: "Crucible (AI Refinement)", progress: 85 },
-                  { label: "Anvil (Signet Formatting)", progress: 95 },
+                  { label: "Data Parsing", progress: 100 },
+                  { label: "AI Refinement", progress: 85 },
+                  { label: "Signet Formatting", progress: 95 },
                 ].map((step, index) => (
                   <div key={step.label} className="space-y-2">
                     <div className="flex items-center justify-between text-xs tracking-widest text-muted-foreground uppercase">

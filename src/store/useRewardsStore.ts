@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
-export type GuildRank = "Foundling" | "Apprentice" | "Journeyman" | "Mandalorian" | "Alor";
+export type UserTier = "Initiate" | "Apprentice" | "Journeyman" | "Forgemaster" | "Alor";
 
 export interface RewardsState {
   shields: number;
@@ -14,15 +14,15 @@ export interface RewardsState {
   processDailyCheckIn: () => { awarded: boolean; amount: number };
   completeIdentityCore: () => { awarded: boolean; amount: number };
   forgeFirstSigil: () => { awarded: boolean; amount: number };
-  getRank: () => GuildRank;
+  getRank: () => UserTier;
 }
 
-const getRankFromShields = (shields: number): GuildRank => {
+const getRankFromShields = (shields: number): UserTier => {
   if (shields >= 500) return "Alor";
-  if (shields >= 250) return "Mandalorian";
+  if (shields >= 250) return "Forgemaster";
   if (shields >= 100) return "Journeyman";
   if (shields >= 25) return "Apprentice";
-  return "Foundling";
+  return "Initiate";
 };
 
 export const useRewardsStore = create<RewardsState>()(
@@ -79,7 +79,7 @@ export const useRewardsStore = create<RewardsState>()(
       getRank: () => getRankFromShields(get().shields),
     }),
     {
-      name: "mando-rewards-storage",
+      name: "signet-rewards-storage",
     }
   )
 );

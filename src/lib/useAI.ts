@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useForgeStore } from "@/store/useForgeStore";
 
 export type ReforgeType = "bullet" | "summary" | "ats-diagnostic" | "ats-fix";
 
@@ -9,8 +10,8 @@ const fetchOpenRouter = async (
     maxTokens?: number;
   },
   models: string[] = [
-    "google/gemma-4-31b-it:free",
-    "nvidia/nemotron-3-super-120b-a12b:free"
+    "nvidia/llama-3.1-nemotron-70b-instruct",
+    "meta-llama/llama-3.1-70b-instruct"
   ],
   currentModelIndex = 0,
   retries = 1,
@@ -85,11 +86,25 @@ export interface AtsDiagnosticResult {
 export function useAI() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  
+  const targetLockBriefing = useForgeStore(state => state.targetLockBriefing);
 
   const reforgeBullet = async (bullet: string, role: string, company: string): Promise<string> => {
     setLoading(true);
     setError(null);
     try {
+      let contextAddition = "";
+      if (targetLockBriefing) {
+        contextAddition = `
+TARGET COMPANY INTELLIGENCE:
+Company DNA: ${targetLockBriefing.company_dna.personality}
+Culture Keywords: ${targetLockBriefing.company_dna.culture_keywords.join(", ")}
+Target Skills to Inject if relevant: ${targetLockBriefing.resume_strategy.keyword_injection_targets.join(", ")}
+Avoid Terms: ${targetLockBriefing.company_dna.avoid_terms.join(", ")}
+Metrics Emphasis: ${targetLockBriefing.resume_strategy.metrics_emphasis}
+        `;
+      }
+
       const prompt = `You are a legendary tech industry armorer who reforges resume bullets into pure Beskar-grade excellence. 
 Your goal is to optimize the user's draft bullet point into a high-impact, professional accomplishments-focused, metrics-quantified (FAANG-style) bullet point.
 
@@ -97,6 +112,7 @@ Context:
 Role: ${role || "Professional"}
 Company: ${company || "Signet Covert"}
 Original Bullet: "${bullet}"
+${contextAddition}
 
 Instructions:
 - Use strong action verbs (e.g., Spearheaded, Engineered, Orchestrated, Optimized, Designed).
@@ -120,11 +136,23 @@ Instructions:
     setLoading(true);
     setError(null);
     try {
+      let contextAddition = "";
+      if (targetLockBriefing) {
+        contextAddition = `
+TARGET COMPANY INTELLIGENCE:
+Company DNA: ${targetLockBriefing.company_dna.personality}
+Tone Recommendation: ${targetLockBriefing.company_dna.tone_recommendation}
+Priority Skills to Highlight: ${targetLockBriefing.resume_strategy.skills_priority.slice(0, 3).join(", ")}
+Summary Directive: ${targetLockBriefing.resume_strategy.summary_directive}
+        `;
+      }
+
       const prompt = `You are a legendary tech industry armorer who reforges professional summaries into highly strategic, impactful, Beskar-grade templates.
 Optimize the following summary to sound extremely compelling, executive-level, and aligned to their professional identity.
 
 Professional Designation: ${designation || "Operative"}
 Original Summary: "${summary}"
+${contextAddition}
 
 Instructions:
 - Write a concise paragraph (2-3 sentences max).
@@ -152,12 +180,22 @@ Instructions:
     setLoading(true);
     setError(null);
     try {
+      let contextAddition = "";
+      if (targetLockBriefing) {
+        contextAddition = `
+TARGET COMPANY INTELLIGENCE:
+Experience Framing Recommendation: ${targetLockBriefing.resume_strategy.experience_framing}
+Culture Keywords: ${targetLockBriefing.company_dna.culture_keywords.join(", ")}
+        `;
+      }
+
       const prompt = `You are a legendary tech industry armorer who transforms role overview descriptions into polished, executive-caliber narratives.
 Optimize the following role description so that it reads as a high-impact, strategic, professional paragraph fit for senior-level resumes.
 
 Role: ${role || "Professional"}
 Company: ${company || "Covert Sector"}
 Original Description: "${description}"
+${contextAddition}
 
 Instructions:
 - Write a concise 2-3 sentence paragraph maximum.
@@ -194,10 +232,21 @@ Instructions:
         skills: resumeData.skills,
       };
 
+      let contextAddition = "";
+      if (targetLockBriefing) {
+        contextAddition = `
+TARGET COMPANY INTELLIGENCE (Apply stricter checks based on these criteria):
+- They value these skills: ${targetLockBriefing.resume_strategy.skills_priority.join(", ")}
+- They value these metrics: ${targetLockBriefing.resume_strategy.metrics_emphasis}
+- Check if any of these avoid-terms are used and warn if they are: ${targetLockBriefing.company_dna.avoid_terms.join(", ")}
+        `;
+      }
+
       const prompt = `You are an elite ATS (Applicant Tracking System) compiler scanner. Your task is to perform a strict system scan on the provided resume data and output a structured analysis JSON array.
 
 Resume Data:
 ${JSON.stringify(slimData)}
+${contextAddition}
 
 Instructions:
 - Scan for weak spots, specifically:

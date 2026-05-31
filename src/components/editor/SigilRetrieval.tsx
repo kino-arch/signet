@@ -259,7 +259,7 @@ export function SigilRetrieval({
                 id={descriptionId}
                 className="text-sm leading-relaxed text-muted-foreground"
               >
-                {state === "idle" && "Hover to reveal extraction protocols. This action will consume 1 Beskar Credit."}
+                {state === "idle" && "Hover to reveal extraction protocols. This action will consume 1 Credit."}
                 {state === "extracting" && `Extracting sigil coordinates... ${progress}%`}
                 {state === "downloaded" && "The sigil has been successfully extracted to your local system."}
               </p>

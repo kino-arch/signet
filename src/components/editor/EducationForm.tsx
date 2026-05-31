@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { useForgeStore } from "@/store/useForgeStore";
 import type { Education } from "@/store/useForgeStore";
 import { GraduationCap, ChevronDown, ChevronUp, Plus, Trash2, Sparkles } from "lucide-react";
@@ -175,60 +176,70 @@ export function EducationForm() {
                   </div>
                   
                   {/* Suggestions Section */}
-                  <div className="space-y-2 @md:col-span-2">
-                    <div className=" border border-primary/20 bg-primary/5 p-4 mt-2">
-                      <div className="mb-3 flex items-center gap-2">
-                        <Sparkles className="h-4 w-4 text-primary" />
-                        <h5 className="text-sm font-semibold text-foreground">FAANG Quick Suggestions</h5>
-                      </div>
-                      
-                      <div className="space-y-3">
-                        <div>
-                          <p className="mb-1 text-xs text-muted-foreground">Degree:</p>
-                          <div className="flex flex-wrap gap-2">
-                            {DEGREE_SUGGESTIONS.map((suggestion, idx) => (
-                              <button
-                                key={`deg-${idx}`}
-                                onClick={() => handleChange(edu.id, "degree", suggestion)}
-                                className="inline-flex items-center rounded-full border border-border bg-background px-2.5 py-0.5 text-[11px] text-muted-foreground transition-colors hover:border-primary/50 hover:text-foreground text-left"
-                              >
-                                {suggestion}
-                              </button>
-                            ))}
+                  <div className="space-y-2 mt-2">
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <Button variant="outline" size="sm" className="gap-2 text-primary hover:text-primary hover:bg-primary/10 border-primary/20 bg-primary/5">
+                          <Sparkles className="h-4 w-4" />
+                          FAANG Quick Suggestions
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent align="start" className="w-[400px] p-4">
+                        <div className="space-y-4">
+                          <div className="mb-2 flex items-center gap-2 border-b border-border/40 pb-2">
+                            <Sparkles className="h-4 w-4 text-primary" />
+                            <h5 className="text-sm font-semibold text-foreground">FAANG Quick Suggestions</h5>
                           </div>
-                        </div>
-                        
-                        <div>
-                          <p className="mb-1 text-xs text-muted-foreground">Field of Study:</p>
-                          <div className="flex flex-wrap gap-2">
-                            {FIELD_SUGGESTIONS.map((suggestion, idx) => (
-                              <button
-                                key={`field-${idx}`}
-                                onClick={() => handleChange(edu.id, "field", suggestion)}
-                                className="inline-flex items-center rounded-full border border-border bg-background px-2.5 py-0.5 text-[11px] text-muted-foreground transition-colors hover:border-primary/50 hover:text-foreground text-left"
-                              >
-                                {suggestion}
-                              </button>
-                            ))}
-                          </div>
-                        </div>
+                          
+                          <div className="space-y-4">
+                            <div>
+                              <p className="mb-1 text-xs text-muted-foreground font-medium">Degree:</p>
+                              <div className="flex flex-wrap gap-1.5">
+                                {DEGREE_SUGGESTIONS.map((suggestion, idx) => (
+                                  <button
+                                    key={`deg-${idx}`}
+                                    onClick={() => handleChange(edu.id, "degree", suggestion)}
+                                    className="inline-flex items-center rounded-md border border-border bg-background px-2.5 py-1 text-[11px] text-muted-foreground transition-colors hover:border-primary/50 hover:text-foreground text-left"
+                                  >
+                                    {suggestion}
+                                  </button>
+                                ))}
+                              </div>
+                            </div>
+                            
+                            <div>
+                              <p className="mb-1 text-xs text-muted-foreground font-medium">Field of Study:</p>
+                              <div className="flex flex-wrap gap-1.5">
+                                {FIELD_SUGGESTIONS.map((suggestion, idx) => (
+                                  <button
+                                    key={`field-${idx}`}
+                                    onClick={() => handleChange(edu.id, "field", suggestion)}
+                                    className="inline-flex items-center rounded-md border border-border bg-background px-2.5 py-1 text-[11px] text-muted-foreground transition-colors hover:border-primary/50 hover:text-foreground text-left"
+                                  >
+                                    {suggestion}
+                                  </button>
+                                ))}
+                              </div>
+                            </div>
 
-                        <div>
-                          <p className="mb-1 text-xs text-muted-foreground">Score & Honors:</p>
-                          <div className="flex flex-wrap gap-2">
-                            {SCORE_SUGGESTIONS.map((suggestion, idx) => (
-                              <button
-                                key={`score-${idx}`}
-                                onClick={() => handleChange(edu.id, "score", suggestion)}
-                                className="inline-flex items-center rounded-full border border-border bg-background px-2.5 py-0.5 text-[11px] text-muted-foreground transition-colors hover:border-primary/50 hover:text-foreground text-left"
-                              >
-                                {suggestion}
-                              </button>
-                            ))}
+                            <div>
+                              <p className="mb-1 text-xs text-muted-foreground font-medium">Score & Honors:</p>
+                              <div className="flex flex-wrap gap-1.5">
+                                {SCORE_SUGGESTIONS.map((suggestion, idx) => (
+                                  <button
+                                    key={`score-${idx}`}
+                                    onClick={() => handleChange(edu.id, "score", suggestion)}
+                                    className="inline-flex items-center rounded-md border border-border bg-background px-2.5 py-1 text-[11px] text-muted-foreground transition-colors hover:border-primary/50 hover:text-foreground text-left"
+                                  >
+                                    {suggestion}
+                                  </button>
+                                ))}
+                              </div>
+                            </div>
                           </div>
                         </div>
-                      </div>
-                    </div>
+                      </PopoverContent>
+                    </Popover>
                   </div>
                 </div>
               </div>

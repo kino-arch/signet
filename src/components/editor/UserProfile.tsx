@@ -1,7 +1,7 @@
 "use client";
 
 import { useForgeStore } from "@/store/useForgeStore";
-import { useRewardsStore, type GuildRank } from "@/store/useRewardsStore";
+import { useRewardsStore, type UserTier } from "@/store/useRewardsStore";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -66,15 +66,15 @@ function getCompletion(basicInfo: Record<string, unknown>): {
   return { filled, total, percent: Math.round((filled / total) * 100), missing };
 }
 
-const RANK_THRESHOLDS: { rank: GuildRank; min: number }[] = [
+const RANK_THRESHOLDS: { rank: UserTier; min: number }[] = [
   { rank: "Alor", min: 500 },
-  { rank: "Mandalorian", min: 250 },
+  { rank: "Forgemaster", min: 250 },
   { rank: "Journeyman", min: 100 },
   { rank: "Apprentice", min: 25 },
-  { rank: "Foundling", min: 0 },
+  { rank: "Initiate", min: 0 },
 ];
 
-function getNextRank(shields: number): { nextRank: GuildRank; shieldsNeeded: number } | null {
+function getNextRank(shields: number): { nextRank: UserTier; shieldsNeeded: number } | null {
   for (let i = 0; i < RANK_THRESHOLDS.length; i++) {
     if (shields >= RANK_THRESHOLDS[i].min) {
       if (i === 0) return null; // Already at max rank
@@ -172,7 +172,7 @@ export function UserProfile() {
                   <Shield className="h-5 w-5" />
                 </div>
                 <div>
-                  <p className="text-xs font-medium text-muted-foreground">Guild Standing</p>
+                  <p className="text-xs font-medium text-muted-foreground">Forge Standing</p>
                   <div className="flex items-baseline gap-1">
                     <p className="text-2xl font-bold tracking-tight text-foreground">{shields}</p>
                     <span className="text-xs font-medium text-muted-foreground">Shields</span>
@@ -337,7 +337,7 @@ export function UserProfile() {
                     onClick={() => fileInputRef.current?.click()}
                   >
                     <UploadCloud className="mr-2 h-4 w-4" />
-                    Upload Hologram
+                    Upload Photo
                   </Button>
                 </div>
               </div>
@@ -345,7 +345,7 @@ export function UserProfile() {
               {/* Name & Designation Fields */}
               <div className="space-y-6 md:col-span-3">
                 <span className="text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">
-                  Operative Identity
+                  Personal Details
                 </span>
                 <div className="grid gap-4 sm:grid-cols-2">
                   <div className="space-y-2">
@@ -390,7 +390,7 @@ export function UserProfile() {
             >
               <div className="flex items-center justify-between">
                 <span className="text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">
-                  Comms Network
+                  Contact Information
                 </span>
                 <Badge variant="outline">
                   <span className="h-2 w-2 animate-pulse rounded-full bg-primary" aria-hidden />
@@ -409,7 +409,7 @@ export function UserProfile() {
                     value={basicInfo.email}
                     onChange={(e) => updateStore({ email: e.target.value })}
                     className="bg-background/50"
-                    placeholder="operative@guild.org"
+                    placeholder="your@email.com"
                   />
                 </div>
                 <div className="space-y-2">
@@ -434,7 +434,7 @@ export function UserProfile() {
                     value={basicInfo.location}
                     onChange={(e) => updateStore({ location: e.target.value })}
                     className="bg-background/50"
-                    placeholder="Nevarro, Outer Rim"
+                    placeholder="San Francisco, CA"
                   />
                 </div>
                 <div className="space-y-2">
@@ -447,7 +447,7 @@ export function UserProfile() {
                     value={basicInfo.website}
                     onChange={(e) => updateStore({ website: e.target.value })}
                     className="bg-background/50"
-                    placeholder="https://guild.dev"
+                    placeholder="https://yourwebsite.com"
                   />
                 </div>
               </div>
@@ -461,7 +461,7 @@ export function UserProfile() {
                   value={basicInfo.linkedin || ""}
                   onChange={(e) => updateStore({ linkedin: e.target.value })}
                   className="bg-background/50"
-                  placeholder="https://linkedin.com/in/operative"
+                  placeholder="https://linkedin.com/in/yourname"
                 />
               </div>
             </motion.div>
@@ -476,7 +476,7 @@ export function UserProfile() {
               className="space-y-4"
             >
               <span className="text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">
-                Mission Briefing
+                Professional Summary
               </span>
               <div className="space-y-2">
                 <Label htmlFor="profile-bio">Summary</Label>
@@ -495,7 +495,7 @@ export function UserProfile() {
 
         <CardFooter className="flex items-center justify-between border-t border-border/40 bg-background/50 px-6 py-4 backdrop-blur">
           <p className="text-xs text-muted-foreground">
-            Guild Mainframe · All changes persist locally
+            Signet Editor · All changes persist locally
           </p>
           {completion.missing.length > 0 && (
             <p className="text-xs text-muted-foreground">

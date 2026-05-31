@@ -1,38 +1,13 @@
 {
   "profile": {
-    "name": "Kon Bato",
-    "title": "Freelance Consultant",
-    "email": "admin@signet.app",
-    "phone": "9859693094",
-    "location": "Giga Valley, Mando Corp",
-    "summary": "High-performing freelance operator executing specialized contracts and client acquisitions. Fast, adaptable, and focused on delivering results across various complex project parameters."
+    "name": " ",
+    "title": "",
+    "email": "",
+    "phone": "",
+    "location": "",
+    "summary": ""
   },
-  "workExperience": [
-    {
-      "role": "Senior Freelance Consultant",
-      "company": "The Outer Rim Guilds",
-      "period": "2021-01 - Present",
-      "highlights": [
-        "Executed high-stakes freelance contracts for asset retrieval and covert operations across the Outer Rim.",
-        "Successfully completed 20+ custom client contracts strictly under budget and ahead of schedule.",
-        "Adapted continuously to rapid changes in client requirements and unpredictable environmental variables.",
-        "Navigated complex, high-risk negotiations directly with local warlords to secure asset compliance."
-      ]
-    }
-  ],
-  "technicalSkills": [
-    "Freelance Consulting",
-    "Project Execution",
-    "Client Negotiation",
-    "Rapid Prototyping",
-    "Risk Mitigation",
-    "Contract Management"
-  ],
-  "education": [
-    {
-      "degree": "Sworn Adept in The Way of the Creed (Grade: A+)",
-      "institution": "The Academy of Mandalore",
-      "period": "2015-09 - 2019-06"
-    }
-  ]
+  "workExperience": [],
+  "technicalSkills": [],
+  "education": []
 }

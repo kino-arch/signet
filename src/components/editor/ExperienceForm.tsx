@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { PremiumRichTextEditor } from "@/components/editor/PremiumRichTextEditor";
 import { useForgeStore } from "@/store/useForgeStore";
 import type { Experience } from "@/store/useForgeStore";
@@ -357,8 +358,7 @@ export function ExperienceForm() {
                         </div>
                       ))}
                     </div>
-                    
-                    <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
+                    <div className="flex flex-col gap-2 sm:flex-row sm:items-center mt-2">
                       <Button
                         variant="outline"
                         size="sm"
@@ -370,31 +370,43 @@ export function ExperienceForm() {
                       </Button>
                       
                       <div className="flex-1"></div>
-                    </div>
-                    
-                    {/* FAANG Suggestions */}
-                    <div className="mt-4  border border-primary/20 bg-primary/5 p-4">
-                      <div className="mb-3 flex items-center gap-2">
-                        <Sparkles className="h-4 w-4 text-primary" />
-                        <h5 className="text-sm font-semibold text-foreground">FAANG Blueprint Suggestions</h5>
-                      </div>
-                      <div className="flex flex-wrap gap-2">
-                        {FAANG_SUGGESTIONS.map((suggestion, idx) => (
-                          <button
-                            key={idx}
-                            onClick={() => {
-                              const expToUpdate = experience.find(e => e.id === exp.id);
-                              if (expToUpdate) {
-                                updateExperience(exp.id, { highlights: [...expToUpdate.highlights, suggestion] });
-                              }
-                            }}
-                            className="inline-flex items-center rounded-full border border-border bg-background px-3 py-1 text-xs text-muted-foreground transition-colors hover:border-primary/50 hover:text-foreground text-left"
-                          >
-                            <Plus className="mr-1 h-3 w-3" />
-                            {suggestion.length > 50 ? suggestion.substring(0, 50) + "..." : suggestion}
-                          </button>
-                        ))}
-                      </div>
+
+                      {/* FAANG Suggestions Popover */}
+                      <Popover>
+                        <PopoverTrigger asChild>
+                          <Button variant="outline" size="sm" className="gap-2 text-primary hover:text-primary hover:bg-primary/10 border-primary/20 bg-primary/5">
+                            <Sparkles className="h-4 w-4" />
+                            AI Bullet Templates
+                          </Button>
+                        </PopoverTrigger>
+                        <PopoverContent align="end" className="w-[400px] p-4">
+                          <div className="space-y-4">
+                            <div>
+                              <h4 className="font-semibold text-foreground text-sm flex items-center gap-2">
+                                <Sparkles className="h-4 w-4 text-primary" />
+                                FAANG Blueprint Suggestions
+                              </h4>
+                              <p className="text-xs text-muted-foreground mt-1">Select a template to inject into your highlights.</p>
+                            </div>
+                            <div className="flex flex-col gap-2 max-h-[300px] overflow-y-auto pr-1">
+                              {FAANG_SUGGESTIONS.map((suggestion, idx) => (
+                                <button
+                                  key={idx}
+                                  onClick={() => {
+                                    const expToUpdate = experience.find(e => e.id === exp.id);
+                                    if (expToUpdate) {
+                                      updateExperience(exp.id, { highlights: [...expToUpdate.highlights, suggestion] });
+                                    }
+                                  }}
+                                  className="text-left w-full rounded-md border border-border bg-background px-3 py-2 text-xs text-muted-foreground transition-colors hover:border-primary/50 hover:text-foreground"
+                                >
+                                  {suggestion}
+                                </button>
+                              ))}
+                            </div>
+                          </div>
+                        </PopoverContent>
+                      </Popover>
                     </div>
                   </div>
                 </div>

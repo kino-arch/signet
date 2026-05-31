@@ -21,7 +21,7 @@ export function Hero() {
         >
           <Badge variant="outline" className="gap-1.5">
             <Sparkles className="h-3 w-3" />
-            ATS-Immune Resume Forge
+            AI-Powered Resume Builder
           </Badge>
         </motion.div>
 
@@ -32,8 +32,8 @@ export function Hero() {
           transition={{ duration: 0.6, delay: 0.1 }}
           className="max-w-3xl font-heading text-3xl font-bold tracking-tight text-foreground sm:text-4xl md:text-5xl lg:text-6xl"
         >
-          Survive the{" "}
-          <span className="text-primary">Corporate Scanners</span>
+          Secure Your Next Role with{" "}
+          <span className="text-primary">Beskar-Grade Precision</span>
         </motion.h1>
 
         {/* Subtitle */}
@@ -43,8 +43,7 @@ export function Hero() {
           transition={{ duration: 0.6, delay: 0.2 }}
           className="max-w-xl text-base text-muted-foreground sm:text-lg"
         >
-          43% of flashy resumes fail the ATS. Forge a single-column Beskar
-          data-slate engineered to bypass any corporate filter.
+          Over 70% of flashy resumes fail Applicant Tracking Systems (ATS). Build a clean, data-driven professional resume engineered to bypass filters and land the interview.
         </motion.p>
 
         {/* CTA Buttons — using project's Button component with no overrides */}
@@ -55,7 +54,7 @@ export function Hero() {
           className="flex flex-col sm:flex-row gap-3 items-center"
         >
           <Button size="lg" onClick={() => navigate("/editor")} className="gap-2">
-            Initialize
+            Start Building
             <ArrowRight className="h-4 w-4" />
           </Button>
           <Button size="lg" variant="outline" onClick={() => navigate("/ats-specs")}>
