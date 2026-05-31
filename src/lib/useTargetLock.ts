@@ -155,7 +155,7 @@ export function useTargetLock() {
           throw new Error(message);
         } else {
           // Unknown error type
-          throw new Error(invokeError.message || 'An unexpected error occurred.');
+          throw new Error((invokeError as Error)?.message || 'An unexpected error occurred.');
         }
       }
 

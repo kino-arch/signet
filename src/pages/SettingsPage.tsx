@@ -1,6 +1,5 @@
 
 
-import * as Sentry from '@sentry/react';
 import { Button } from "@/components/ui/button";
 
 function ErrorButton() {

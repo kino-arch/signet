@@ -46,11 +46,8 @@ export function ShineBorder({
     // for animation, masking, and layout.
     // Using px ensures predictable rendering.
     // Consumers can still style the wrapper via className or style if desired.
-    //@ts-expect-error: CSS variables allowed at runtime
     "--sb-border-radius": `${borderRadius}px`,
-    //@ts-expect-error: CSS variables allowed at runtime
     "--sb-border-width": `${borderWidth}px`,
-    //@ts-expect-error: CSS variables allowed at runtime
     "--sb-duration": `${duration}s`,
   }
 
