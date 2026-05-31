@@ -477,6 +477,7 @@ export const useDotButton = (
 
   useEffect(() => {
     if (!emblaApi) return
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     onInit(emblaApi)
     onSelect(emblaApi)
     emblaApi.on("reInit", onInit).on("reInit", onSelect).on("select", onSelect)
@@ -515,6 +516,7 @@ export const useAutoplayProgress = <ProgressElement extends HTMLElement>(
       animationName.current = style.animationName
     }
 
+    // eslint-disable-next-line react-hooks/immutability
     node.style.animationName = "none"
     node.style.transform = "translate3d(0,0,0)"
 
