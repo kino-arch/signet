@@ -466,10 +466,12 @@ export const useDotButton = (
   )
 
   const onInit = useCallback((emblaApi: ReturnType<typeof useEmblaCarousel>[1]) => {
+    if (!emblaApi) return
     setScrollSnaps(emblaApi.scrollSnapList())
   }, [])
 
   const onSelect = useCallback((emblaApi: ReturnType<typeof useEmblaCarousel>[1]) => {
+    if (!emblaApi) return
     setSelectedIndex(emblaApi.selectedScrollSnap())
   }, [])
 
@@ -639,6 +641,7 @@ export const usePrevNextButtons = (
   }, [emblaApi])
 
   const onSelect = useCallback((emblaApi: ReturnType<typeof useEmblaCarousel>[1]) => {
+    if (!emblaApi) return
     setPrevBtnDisabled(!emblaApi.canScrollPrev())
     setNextBtnDisabled(!emblaApi.canScrollNext())
   }, [])
