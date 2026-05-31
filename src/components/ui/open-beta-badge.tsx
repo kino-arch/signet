@@ -1,4 +1,5 @@
 import { Badge } from "@/components/ui/badge"
+import { cn } from "@/lib/utils"
 import {
   Tooltip,
   TooltipContent,
@@ -21,7 +22,7 @@ export const OpenBetaBadge = ({
     <TooltipProvider>
       <Tooltip>
         <TooltipTrigger asChild>
-          <Badge variant="secondary" className={`cursor-help ${className}`}>
+          <Badge variant="secondary" className={cn("cursor-help", className)}>
             {title}
           </Badge>
         </TooltipTrigger>
