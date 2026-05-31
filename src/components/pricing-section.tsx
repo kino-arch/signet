@@ -58,10 +58,10 @@ export function PricingSection() {
   return (
     <section id="the-forge" className="flex w-full flex-col items-center justify-center py-16 md:py-24">
       <div className="flex w-full max-w-4xl flex-col items-center gap-3 px-4 sm:px-6">
-        <Badge variant="outline" className="font-mono tracking-wider border-primary/30 text-primary bg-primary/5">
+        <Badge variant="outline" className="border-primary/30 bg-primary/5 font-mono tracking-wider text-primary">
           [ STRATEGIC RESERVES ]
         </Badge>
-        <h2 className="max-w-xl text-center text-2xl font-semibold tracking-tight sm:text-3xl md:text-4xl uppercase">
+        <h2 className="max-w-xl text-center text-2xl font-semibold tracking-tight uppercase sm:text-3xl md:text-4xl">
           Acquire Target Assets
         </h2>
         <p className="max-w-lg text-center text-sm leading-6 text-muted-foreground">
@@ -82,13 +82,13 @@ export function PricingSection() {
             }`}
           >
             {plan.popular && (
-              <div className="absolute inset-0 bg-gradient-to-b from-primary/10 via-transparent to-transparent pointer-events-none" />
+              <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-primary/10 via-transparent to-transparent" />
             )}
-            <CardHeader className="space-y-2 relative z-10">
+            <CardHeader className="relative z-10 space-y-2">
               <div className="flex items-center gap-2">
-                <h3 className="text-lg font-mono font-semibold uppercase">{plan.name}</h3>
+                <h3 className="font-mono text-lg font-semibold uppercase">{plan.name}</h3>
                 {plan.popular && (
-                  <Badge variant="default" className="font-mono animate-pulse">RECOMMENDED</Badge>
+                  <Badge variant="default" className="animate-pulse font-mono">RECOMMENDED</Badge>
                 )}
               </div>
               <p className="text-sm text-muted-foreground">

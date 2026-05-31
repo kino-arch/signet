@@ -48,7 +48,7 @@ export function Testimonials() {
 
   return (
     <section id="testimonials" className="w-full bg-background py-20 md:py-24">
-      <div className="mx-auto w-full max-w-5xl px-4 sm:px-6 lg:px-8 relative z-10">
+      <div className="relative z-10 mx-auto w-full max-w-5xl px-4 sm:px-6 lg:px-8">
         {/* About Section */}
         <motion.div
           initial={{ opacity: 0, y: -20 }}

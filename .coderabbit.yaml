@@ -1,7 +1,7 @@
 # yaml-language-server: $schema=https://coderabbit.ai/export/schema.json
 language: "en-US"
 reviews:
-  profile: "CHILL"
+  profile: "chill"
   request_changes_workflow: false
   auto_review:
     enabled: true

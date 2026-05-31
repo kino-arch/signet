@@ -50,7 +50,7 @@ export function BasicInfoForm() {
   };
 
   return (
-    <div className="space-y-6 @container">
+    <div className="@container space-y-6">
       <Card className="border-border/50 bg-card p-6 shadow-sm">
         <div className="mb-6 flex items-center space-x-2 border-b border-border/40 pb-4">
           <div className=" bg-secondary p-2">
@@ -152,7 +152,7 @@ export function BasicInfoForm() {
                 {loadingSummary ? (
                   <Loader2 className="h-3 w-3 animate-spin" />
                 ) : (
-                  <Sparkles className="h-3 w-3 text-primary animate-pulse" />
+                  <Sparkles className="h-3 w-3 animate-pulse text-primary" />
                 )}
                 Calibrate Metrics
               </Button>

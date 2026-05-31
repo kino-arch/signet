@@ -11,7 +11,7 @@ export function OperativeTemplate({ data }: TemplateProps) {
 
   return (
     <div
-      className="relative min-h-full w-full print:p-0 print:overflow-visible"
+      className="relative min-h-full w-full print:overflow-visible print:p-0"
       style={{
         maxWidth: "800px",
         margin: "0 auto",

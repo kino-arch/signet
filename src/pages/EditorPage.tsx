@@ -116,7 +116,7 @@ export function EditorPage() {
           };
           html2pdf().set(opt).from(element).save().then(() => {
             setIsExporting(false);
-          }).catch((err: any) => {
+          }).catch((err: unknown) => {
             console.error("PDF generation failed:", err);
             setIsExporting(false);
           });
@@ -134,7 +134,7 @@ export function EditorPage() {
   // ── Render States ─────────────────────────────────────────────────────────
   if (hydrationError) {
     return (
-      <div className="flex h-screen w-full flex-col items-center justify-center bg-background gap-4">
+      <div className="flex h-screen w-full flex-col items-center justify-center gap-4 bg-background">
         <div className="flex items-center gap-3 text-destructive">
           <AlertTriangle className="h-8 w-8" />
           <div>
@@ -151,7 +151,7 @@ export function EditorPage() {
         <Button
           variant="outline"
           onClick={() => navigate("/onboarding", { replace: true })}
-          className="gap-2 font-mono text-xs uppercase tracking-widest"
+          className="gap-2 font-mono text-xs tracking-widest uppercase"
         >
           <ShieldCheck className="h-3.5 w-3.5" />
           Return to Base
@@ -163,9 +163,9 @@ export function EditorPage() {
   // ── Hydration loading state ───────────────────────────────────────────────
   if (isHydrating) {
     return (
-      <div className="flex h-screen w-full flex-col items-center justify-center bg-background gap-3">
+      <div className="flex h-screen w-full flex-col items-center justify-center gap-3 bg-background">
         <Loader2 className="h-6 w-6 animate-spin text-primary" />
-        <p className="text-sm text-muted-foreground font-mono uppercase tracking-widest">
+        <p className="font-mono text-sm tracking-widest text-muted-foreground uppercase">
           Hydrating Forge…
         </p>
       </div>
@@ -173,32 +173,32 @@ export function EditorPage() {
   }
 
   return (
-    <div className="flex h-screen w-full flex-col bg-background overflow-hidden">
+    <div className="flex h-screen w-full flex-col overflow-hidden bg-background">
       {/* Tactical Header */}
       <header className="flex h-14 shrink-0 items-center justify-between border-b border-border/40 bg-card/50 px-6 backdrop-blur-md">
         <div className="flex items-center gap-4">
-          <Button variant="ghost" size="sm" onClick={() => navigate("/dashboard")} className="hidden sm:flex text-muted-foreground hover:text-foreground">
+          <Button variant="ghost" size="sm" onClick={() => navigate("/dashboard")} className="hidden text-muted-foreground hover:text-foreground sm:flex">
             &larr; Dashboard
           </Button>
-          <Button variant="ghost" className="h-auto p-0 hover:bg-transparent justify-start" onClick={() => navigate("/")}>
+          <Button variant="ghost" className="h-auto justify-start p-0 hover:bg-transparent" onClick={() => navigate("/")}>
             <Logo size="sm" />
           </Button>
         </div>
         
         <div className="flex items-center gap-4">
           {/* Sync Status Indicator (Hardened — includes ERROR state) */}
-          <div className={`flex items-center gap-2 px-3 py-1 rounded-full border ${
+          <div className={`flex items-center gap-2 rounded-full border px-3 py-1 ${
             syncState === "ERROR"
-              ? "bg-destructive/10 border-destructive/30"
+              ? "border-destructive/30 bg-destructive/10"
               : syncState === "SYNCING..."
-              ? "bg-muted/30 border-border/50"
-              : "bg-muted/30 border-border/50"
+              ? "border-border/50 bg-muted/30"
+              : "border-border/50 bg-muted/30"
           }`}>
-            <Activity className={`w-3 h-3 ${
+            <Activity className={`h-3 w-3 ${
               syncState === "ERROR"
                 ? "text-destructive"
                 : syncState === "SYNCING..."
-                ? "text-amber-500 animate-pulse"
+                ? "animate-pulse text-amber-500"
                 : "text-primary"
             }`} />
             <span className={`font-mono text-[10px] tracking-widest uppercase ${
@@ -217,7 +217,7 @@ export function EditorPage() {
           <Button 
             variant="outline" 
             size="sm" 
-            className="h-8 gap-1.5 font-mono text-[10px] uppercase tracking-widest text-primary border-primary/30 hover:bg-primary hover:text-primary-foreground transition-colors"
+            className="h-8 gap-1.5 border-primary/30 font-mono text-[10px] tracking-widest text-primary uppercase transition-colors hover:bg-primary hover:text-primary-foreground"
             onClick={() => setIsExportDialogOpen(true)}
           >
             <Printer className="h-3.5 w-3.5" />
@@ -235,51 +235,51 @@ export function EditorPage() {
           "shrink-0 overflow-y-auto border-border/40 bg-card/10 hide-scrollbar print:hidden flex flex-col relative transition-all duration-300",
           isPreviewOpen ? "w-full max-w-xl border-r" : "flex-1 max-w-3xl mx-auto border-x shadow-2xl"
         )}>
-          <div className="flex-1 p-6 xl:p-10 space-y-8">
+          <div className="flex-1 space-y-8 p-6 xl:p-10">
             <div>
-              <h2 className="text-lg font-bold tracking-tight text-foreground uppercase mb-1">Input Array</h2>
+              <h2 className="mb-1 text-lg font-bold tracking-tight text-foreground uppercase">Input Array</h2>
               <p className="text-sm text-muted-foreground">Calibrate your tactical data payload.</p>
             </div>
 
             {/* Identity Array */}
             <div className="space-y-4">
               <div className="border-b border-border/20 pb-2">
-                <h3 className="text-sm font-bold text-primary tracking-widest uppercase">Identity Core</h3>
+                <h3 className="text-sm font-bold tracking-widest text-primary uppercase">Identity Core</h3>
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-1.5">
-                  <Label htmlFor="basics-name" className="text-xs uppercase tracking-widest text-muted-foreground">Full Name</Label>
+                  <Label htmlFor="basics-name" className="text-xs tracking-widest text-muted-foreground uppercase">Full Name</Label>
                   <Input id="basics-name" value={basics.name} onChange={(e) => setBasics({ name: e.target.value })} className="bg-background/50" />
                 </div>
                 <div className="space-y-1.5">
-                  <Label htmlFor="basics-label" className="text-xs uppercase tracking-widest text-muted-foreground">Title / Role</Label>
+                  <Label htmlFor="basics-label" className="text-xs tracking-widest text-muted-foreground uppercase">Title / Role</Label>
                   <Input id="basics-label" value={basics.label} onChange={(e) => setBasics({ label: e.target.value })} className="bg-background/50" />
                 </div>
                 <div className="space-y-1.5">
-                  <Label htmlFor="basics-email" className="text-xs uppercase tracking-widest text-muted-foreground">Email</Label>
+                  <Label htmlFor="basics-email" className="text-xs tracking-widest text-muted-foreground uppercase">Email</Label>
                   <Input id="basics-email" value={basics.email} onChange={(e) => setBasics({ email: e.target.value })} className="bg-background/50" />
                 </div>
                 <div className="space-y-1.5">
-                  <Label htmlFor="basics-phone" className="text-xs uppercase tracking-widest text-muted-foreground">Phone</Label>
+                  <Label htmlFor="basics-phone" className="text-xs tracking-widest text-muted-foreground uppercase">Phone</Label>
                   <Input id="basics-phone" value={basics.phone} onChange={(e) => setBasics({ phone: e.target.value })} className="bg-background/50" />
                 </div>
-                <div className="space-y-1.5 col-span-2">
-                  <Label htmlFor="basics-city" className="text-xs uppercase tracking-widest text-muted-foreground">Location (City, Region)</Label>
+                <div className="col-span-2 space-y-1.5">
+                  <Label htmlFor="basics-city" className="text-xs tracking-widest text-muted-foreground uppercase">Location (City, Region)</Label>
                   <Input id="basics-city" value={basics.location?.city || ''} onChange={(e) => setBasics({ location: { ...basics.location, city: e.target.value } })} className="bg-background/50" />
                 </div>
-                <div className="space-y-1.5 col-span-2">
-                  <Label htmlFor="basics-url" className="text-xs uppercase tracking-widest text-muted-foreground">Website / Portfolio</Label>
+                <div className="col-span-2 space-y-1.5">
+                  <Label htmlFor="basics-url" className="text-xs tracking-widest text-muted-foreground uppercase">Website / Portfolio</Label>
                   <Input id="basics-url" value={basics.url} onChange={(e) => setBasics({ url: e.target.value })} className="bg-background/50" />
                 </div>
-                <div className="space-y-1.5 col-span-2">
+                <div className="col-span-2 space-y-1.5">
                   <div className="flex items-center justify-between">
-                    <Label htmlFor="basics-summary" className="text-xs uppercase tracking-widest text-muted-foreground">Professional Summary</Label>
+                    <Label htmlFor="basics-summary" className="text-xs tracking-widest text-muted-foreground uppercase">Professional Summary</Label>
                     <Button
                       variant="outline"
                       size="sm"
                       disabled={isSummaryAiLoading}
                       onClick={() => setIsSummaryAiLoading(true)}
-                      className="h-6 px-2 gap-1.5 border-primary/30 text-primary hover:bg-primary/10 hover:border-primary/60 font-mono text-[10px] uppercase tracking-widest"
+                      className="h-6 gap-1.5 border-primary/30 px-2 font-mono text-[10px] tracking-widest text-primary uppercase hover:border-primary/60 hover:bg-primary/10"
                     >
                       <Wand2 className="h-3 w-3" />
                       {isSummaryAiLoading ? "Reforging..." : "Reforge with AI"}
@@ -289,7 +289,7 @@ export function EditorPage() {
                     id="basics-summary"
                     value={basics.summary}
                     onChange={(e) => setBasics({ summary: e.target.value })}
-                    className="w-full min-h-[120px] p-3 bg-background/50 border border-input rounded-md text-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring resize-none text-foreground"
+                    className="min-h-[120px] w-full resize-none rounded-md border border-input bg-background/50 p-3 text-sm text-foreground focus-visible:ring-1 focus-visible:ring-ring focus-visible:outline-none"
                     placeholder="Results-driven professional..."
                   />
                   <ReforgeSummaryModal 
@@ -329,23 +329,23 @@ export function EditorPage() {
           </div>
 
           {/* Floating Command Dock */}
-          <div className="sticky bottom-6 mx-auto w-max z-20 p-1.5 mb-6 rounded-full bg-background/80 backdrop-blur-xl border border-border/50 shadow-[0_20px_40px_-15px_rgba(0,0,0,0.5)] flex items-center gap-1.5 animate-in slide-in-from-bottom-8">
+          <div className="sticky bottom-6 z-20 mx-auto mb-6 flex w-max animate-in items-center gap-1.5 rounded-full border border-border/50 bg-background/80 p-1.5 shadow-[0_20px_40px_-15px_rgba(0,0,0,0.5)] backdrop-blur-xl slide-in-from-bottom-8">
             <Button
               variant="ghost"
               size="sm"
               onClick={() => setIsPreviewOpen(!isPreviewOpen)}
-              className="rounded-full font-mono text-[10px] tracking-widest uppercase px-4 h-9 hover:bg-muted/50"
+              className="h-9 rounded-full px-4 font-mono text-[10px] tracking-widest uppercase hover:bg-muted/50"
             >
               {isPreviewOpen ? "Hide Preview" : "Show Preview"}
             </Button>
             
-            <div className="w-px h-4 bg-border/50 mx-1" />
+            <div className="mx-1 h-4 w-px bg-border/50" />
 
             <Button
               variant="ghost"
               size="sm"
               onClick={flushAllPending}
-              className="rounded-full font-mono text-[10px] tracking-widest uppercase px-4 h-9 gap-2 hover:bg-muted/50"
+              className="h-9 gap-2 rounded-full px-4 font-mono text-[10px] tracking-widest uppercase hover:bg-muted/50"
               disabled={syncState === "SYNCING..."}
             >
               {syncState === "SYNCING..." ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : "Save Draft"}
@@ -354,7 +354,7 @@ export function EditorPage() {
             <Button
               size="sm"
               onClick={() => setIsExportDialogOpen(true)}
-              className="rounded-full font-mono text-[10px] tracking-widest uppercase px-5 h-9 gap-2 bg-primary text-primary-foreground hover:bg-primary/90 shadow-lg shadow-primary/20"
+              className="h-9 gap-2 rounded-full bg-primary px-5 font-mono text-[10px] tracking-widest text-primary-foreground uppercase shadow-lg shadow-primary/20 hover:bg-primary/90"
             >
               <Printer className="h-3.5 w-3.5" />
               Export PDF
@@ -364,31 +364,31 @@ export function EditorPage() {
 
         {/* Right: Data-Slate Preview (Teardown Dock) */}
         {isPreviewOpen && (
-          <div className="flex-1 overflow-y-auto bg-[#09090b] p-6 xl:p-10 flex justify-center relative print:p-0 print:bg-white animate-in slide-in-from-right-4 duration-300">
+          <div className="relative flex flex-1 animate-in justify-center overflow-y-auto bg-[#09090b] p-6 duration-300 slide-in-from-right-4 xl:p-10 print:bg-white print:p-0">
           
           {/* Tactical Backdrop Grid */}
-          <div className="absolute inset-0 pointer-events-none bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px] print:hidden" />
+          <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px] print:hidden" />
 
           {/* Teardown Dock Mounting */}
-          <div className="relative w-full max-w-[850px] my-auto">
+          <div className="relative my-auto w-full max-w-[850px]">
             {/* Corner Crop Marks */}
-            <div className="absolute -top-4 -left-4 w-4 h-4 border-t-2 border-l-2 border-primary/40 pointer-events-none print:hidden" />
-            <div className="absolute -top-4 -right-4 w-4 h-4 border-t-2 border-r-2 border-primary/40 pointer-events-none print:hidden" />
-            <div className="absolute -bottom-4 -left-4 w-4 h-4 border-b-2 border-l-2 border-primary/40 pointer-events-none print:hidden" />
-            <div className="absolute -bottom-4 -right-4 w-4 h-4 border-b-2 border-r-2 border-primary/40 pointer-events-none print:hidden" />
+            <div className="pointer-events-none absolute -top-4 -left-4 h-4 w-4 border-t-2 border-l-2 border-primary/40 print:hidden" />
+            <div className="pointer-events-none absolute -top-4 -right-4 h-4 w-4 border-t-2 border-r-2 border-primary/40 print:hidden" />
+            <div className="pointer-events-none absolute -bottom-4 -left-4 h-4 w-4 border-b-2 border-l-2 border-primary/40 print:hidden" />
+            <div className="pointer-events-none absolute -right-4 -bottom-4 h-4 w-4 border-r-2 border-b-2 border-primary/40 print:hidden" />
 
             {/* Zero-Deviation Corporate Template Preview */}
-            <div id="resume-preview-content" className="w-full bg-white text-[#09090b] shadow-2xl ring-1 ring-white/10 min-h-[1100px] p-10 sm:p-14 transition-all print:shadow-none print:ring-0 print:p-0 relative z-10 rounded-sm font-sans">
+            <div id="resume-preview-content" className="relative z-10 min-h-[1100px] w-full rounded-sm bg-white p-10 font-sans text-[#09090b] shadow-2xl ring-1 ring-white/10 transition-all sm:p-14 print:p-0 print:shadow-none print:ring-0">
               
               {/* Template Header */}
-              <div className="border-b border-[#d4d4d8] pb-6 mb-6 text-center">
-                <h1 className="text-4xl font-serif font-bold text-[#18181b] tracking-tight">
+              <div className="mb-6 border-b border-[#d4d4d8] pb-6 text-center">
+                <h1 className="font-serif text-4xl font-bold tracking-tight text-[#18181b]">
                   {basics?.name || "JOHN DOE"}
                 </h1>
                 {basics?.label && (
-                  <p className="text-sm font-medium text-[#52525b] uppercase tracking-widest mt-2">{basics.label}</p>
+                  <p className="mt-2 text-sm font-medium tracking-widest text-[#52525b] uppercase">{basics.label}</p>
                 )}
-                <div className="flex flex-wrap justify-center gap-x-4 gap-y-2 mt-4 text-xs font-medium text-[#71717a]">
+                <div className="mt-4 flex flex-wrap justify-center gap-x-4 gap-y-2 text-xs font-medium text-[#71717a]">
                   {basics?.email && <span>{basics.email}</span>}
                   {basics?.phone && <span>• {basics.phone}</span>}
                   {basics?.location?.city && <span>• {basics.location.city}</span>}
@@ -400,17 +400,17 @@ export function EditorPage() {
               <div className="space-y-6">
                 {basics?.summary && (
                   <section>
-                    <h2 className="text-sm font-bold uppercase tracking-widest text-[#18181b] mb-2 border-b border-[#d4d4d8] pb-1 font-serif">Professional Summary</h2>
-                    <p className="text-sm leading-relaxed text-[#27272a] whitespace-pre-wrap font-serif">{basics.summary}</p>
+                    <h2 className="mb-2 border-b border-[#d4d4d8] pb-1 font-serif text-sm font-bold tracking-widest text-[#18181b] uppercase">Professional Summary</h2>
+                    <p className="font-serif text-sm leading-relaxed whitespace-pre-wrap text-[#27272a]">{basics.summary}</p>
                   </section>
                 )}
 
                 {skills.length > 0 && (
                   <section>
-                    <h2 className="text-sm font-bold uppercase tracking-widest text-[#18181b] mb-2 border-b border-[#d4d4d8] pb-1 font-serif">Core Competencies</h2>
+                    <h2 className="mb-2 border-b border-[#d4d4d8] pb-1 font-serif text-sm font-bold tracking-widest text-[#18181b] uppercase">Core Competencies</h2>
                     <div className="space-y-1">
                       {skills.map((skill) => (
-                        <div key={skill.id} className="text-sm text-[#27272a] font-serif leading-relaxed">
+                        <div key={skill.id} className="font-serif text-sm leading-relaxed text-[#27272a]">
                           {skill.name && <span className="font-semibold text-[#18181b]">{skill.name}: </span>}
                           {skill.keywords.join(" · ")}
                         </div>
@@ -421,21 +421,21 @@ export function EditorPage() {
 
                 {work.length > 0 && (
                   <section>
-                    <h2 className="text-sm font-bold uppercase tracking-widest text-[#18181b] mb-3 border-b border-[#d4d4d8] pb-1 font-serif">Experience</h2>
+                    <h2 className="mb-3 border-b border-[#d4d4d8] pb-1 font-serif text-sm font-bold tracking-widest text-[#18181b] uppercase">Experience</h2>
                     <div className="space-y-5">
                       {work.map((entry) => (
                         <div key={entry.id} className="print:break-inside-avoid">
-                          <div className="flex justify-between items-start mb-1">
+                          <div className="mb-1 flex items-start justify-between">
                             <div>
-                              <p className="font-bold text-[#18181b] text-[15px] font-serif">{entry.position || "Role Title"}</p>
-                              <p className="text-sm text-[#3f3f46] font-serif font-medium">{entry.name || "Company Name"}</p>
+                              <p className="font-serif text-[15px] font-bold text-[#18181b]">{entry.position || "Role Title"}</p>
+                              <p className="font-serif text-sm font-medium text-[#3f3f46]">{entry.name || "Company Name"}</p>
                             </div>
-                            <p className="text-sm text-[#52525b] shrink-0 ml-4 font-serif">
+                            <p className="ml-4 shrink-0 font-serif text-sm text-[#52525b]">
                               {entry.startDate}{entry.startDate && " – "}{entry.endDate || (entry.startDate ? "Present" : "")}
                             </p>
                           </div>
                           {entry.summary && (
-                            <p className="mt-1.5 text-sm text-[#27272a] leading-relaxed font-serif whitespace-pre-wrap">{entry.summary}</p>
+                            <p className="mt-1.5 font-serif text-sm leading-relaxed whitespace-pre-wrap text-[#27272a]">{entry.summary}</p>
                           )}
                         </div>
                       ))}
@@ -445,22 +445,22 @@ export function EditorPage() {
 
                 {education.length > 0 && (
                   <section>
-                    <h2 className="text-sm font-bold uppercase tracking-widest text-[#18181b] mb-3 border-b border-[#d4d4d8] pb-1 font-serif">Education</h2>
+                    <h2 className="mb-3 border-b border-[#d4d4d8] pb-1 font-serif text-sm font-bold tracking-widest text-[#18181b] uppercase">Education</h2>
                     <div className="space-y-4">
                       {education.map((entry) => (
                         <div key={entry.id} className="print:break-inside-avoid">
-                          <div className="flex justify-between items-start">
+                          <div className="flex items-start justify-between">
                             <div>
-                              <p className="font-bold text-[#18181b] text-[15px] font-serif">
+                              <p className="font-serif text-[15px] font-bold text-[#18181b]">
                                 {entry.studyType} {entry.area && `in ${entry.area}`}
                               </p>
-                              <p className="text-sm text-[#3f3f46] font-serif font-medium">{entry.institution || "Institution Name"}</p>
+                              <p className="font-serif text-sm font-medium text-[#3f3f46]">{entry.institution || "Institution Name"}</p>
                             </div>
                             <div className="text-right">
-                              <p className="text-sm text-[#52525b] font-serif">
+                              <p className="font-serif text-sm text-[#52525b]">
                                 {entry.startDate}{entry.startDate && " – "}{entry.endDate || (entry.startDate ? "Present" : "")}
                               </p>
-                              {entry.score && <p className="text-sm text-[#3f3f46] mt-0.5 font-serif">{entry.score}</p>}
+                              {entry.score && <p className="mt-0.5 font-serif text-sm text-[#3f3f46]">{entry.score}</p>}
                             </div>
                           </div>
                         </div>
@@ -471,12 +471,12 @@ export function EditorPage() {
 
                 {certifications.length > 0 && (
                   <section>
-                    <h2 className="text-sm font-bold uppercase tracking-widest text-[#18181b] mb-3 border-b border-[#d4d4d8] pb-1 font-serif">Certifications</h2>
+                    <h2 className="mb-3 border-b border-[#d4d4d8] pb-1 font-serif text-sm font-bold tracking-widest text-[#18181b] uppercase">Certifications</h2>
                     <div className="space-y-3">
                       {certifications.map((entry) => (
-                        <div key={entry.id} className="flex justify-between items-start print:break-inside-avoid">
+                        <div key={entry.id} className="flex items-start justify-between print:break-inside-avoid">
                           <div>
-                            <p className="font-bold text-[#18181b] text-[15px] font-serif">
+                            <p className="font-serif text-[15px] font-bold text-[#18181b]">
                               {entry.url ? (
                                 <a href={entry.url} target="_blank" rel="noopener noreferrer" className="hover:underline">
                                   {entry.name || "Certification Name"}
@@ -485,10 +485,10 @@ export function EditorPage() {
                                 entry.name || "Certification Name"
                               )}
                             </p>
-                            {entry.issuer && <p className="text-sm text-[#3f3f46] font-serif font-medium">{entry.issuer}</p>}
+                            {entry.issuer && <p className="font-serif text-sm font-medium text-[#3f3f46]">{entry.issuer}</p>}
                           </div>
                           {entry.date && (
-                            <p className="text-sm text-[#52525b] font-serif shrink-0 ml-4">
+                            <p className="ml-4 shrink-0 font-serif text-sm text-[#52525b]">
                               {entry.date}
                             </p>
                           )}
@@ -505,36 +505,36 @@ export function EditorPage() {
       </main>
 
       <Dialog open={isExportDialogOpen} onOpenChange={setIsExportDialogOpen}>
-        <DialogContent className="sm:max-w-[400px] border-border/50 bg-background/95 backdrop-blur-xl shadow-2xl p-6">
+        <DialogContent className="border-border/50 bg-background/95 p-6 shadow-2xl backdrop-blur-xl sm:max-w-[400px]">
           <DialogHeader className="space-y-3">
-            <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mb-2 mx-auto">
-              <Printer className="w-5 h-5 text-primary" />
+            <div className="mx-auto mb-2 flex h-12 w-12 items-center justify-center rounded-full bg-primary/10">
+              <Printer className="h-5 w-5 text-primary" />
             </div>
-            <DialogTitle className="text-center text-xl font-heading tracking-widest uppercase">Generate PDF Dossier</DialogTitle>
+            <DialogTitle className="text-center font-heading text-xl tracking-widest uppercase">Generate PDF Dossier</DialogTitle>
             <DialogDescription className="text-center text-xs leading-relaxed">
               Compile your data slate into a strictly-formatted, ATS-optimized PDF document.
             </DialogDescription>
           </DialogHeader>
 
-          <div className="bg-muted/30 rounded-lg p-4 my-2 space-y-3 border border-border/50">
+          <div className="my-2 space-y-3 rounded-lg border border-border/50 bg-muted/30 p-4">
             <div className="flex items-center justify-between text-sm">
-              <span className="text-muted-foreground uppercase tracking-widest text-[10px] font-mono">Export Cost</span>
-              <span className="font-mono text-foreground font-bold">1 Credit</span>
+              <span className="font-mono text-[10px] tracking-widest text-muted-foreground uppercase">Export Cost</span>
+              <span className="font-mono font-bold text-foreground">1 Credit</span>
             </div>
-            <div className="w-full h-px bg-border/50" />
+            <div className="h-px w-full bg-border/50" />
             <div className="flex items-center justify-between text-sm">
-              <span className="text-muted-foreground uppercase tracking-widest text-[10px] font-mono">Available Balance</span>
+              <span className="font-mono text-[10px] tracking-widest text-muted-foreground uppercase">Available Balance</span>
               <span className={cn("font-mono font-bold", profile?.token_balance ? "text-primary" : "text-destructive")}>
                 {profile?.token_balance || 0} Credits
               </span>
             </div>
           </div>
 
-          <DialogFooter className="flex-col sm:flex-col gap-2 mt-4 sm:space-x-0">
+          <DialogFooter className="mt-4 flex-col gap-2 sm:flex-col sm:space-x-0">
             <Button 
               onClick={handleExportPDF} 
               disabled={isExporting}
-              className="w-full h-10 gap-2 font-mono text-[10px] uppercase tracking-widest shadow-lg shadow-primary/20"
+              className="h-10 w-full gap-2 font-mono text-[10px] tracking-widest uppercase shadow-lg shadow-primary/20"
             >
               {isExporting ? <Loader2 className="h-4 w-4 animate-spin" /> : <Printer className="h-3.5 w-3.5" />}
               {isExporting ? "Extracting..." : "Confirm Download"}
@@ -542,7 +542,7 @@ export function EditorPage() {
             <Button 
               variant="ghost" 
               onClick={() => setIsExportDialogOpen(false)}
-              className="w-full h-10 text-muted-foreground hover:bg-muted/50 font-mono text-[10px] uppercase tracking-widest"
+              className="h-10 w-full font-mono text-[10px] tracking-widest text-muted-foreground uppercase hover:bg-muted/50"
             >
               Cancel & Close
             </Button>

@@ -51,7 +51,7 @@ export function FAQSection() {
           <h2 className="text-4xl leading-tight font-semibold tracking-tight">
             Frequently Asked Questions
           </h2>
-          <p className="text-muted-foreground text-base leading-7">
+          <p className="text-base leading-7 text-muted-foreground">
             Everything you need to know about our pricing,
             <br className="hidden md:block" />
             plans, and billing.

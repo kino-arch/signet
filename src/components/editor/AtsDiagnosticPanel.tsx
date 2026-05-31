@@ -112,24 +112,24 @@ export function AtsDiagnosticPanel() {
   return (
     <div className="space-y-6">
       {/* Cinematic Banner */}
-      <Card className="border-border/40 bg-card/40 p-6 backdrop-blur-md relative overflow-hidden">
+      <Card className="relative overflow-hidden border-border/40 bg-card/40 p-6 backdrop-blur-md">
         <div className="pointer-events-none absolute -top-24 -left-24 h-48 w-48 rounded-full bg-primary/10 blur-3xl" />
         
-        <div className="flex flex-col items-center text-center space-y-4 relative z-10 py-4">
+        <div className="relative z-10 flex flex-col items-center space-y-4 py-4 text-center">
           <div className="relative flex h-16 w-16 items-center justify-center rounded-full border border-primary/20 bg-muted/40">
             <ScanLine className={`h-8 w-8 text-primary ${loading ? "animate-pulse" : ""}`} />
             {diagnostics && (
-              <div className="absolute -bottom-1 -right-1 flex h-6 w-6 items-center justify-center rounded-full bg-background border border-border">
+              <div className="absolute -right-1 -bottom-1 flex h-6 w-6 items-center justify-center rounded-full border border-border bg-background">
                 {allResolved ? (
                   <ShieldCheck className="h-4 w-4 text-primary" />
                 ) : (
-                  <ShieldAlert className="h-4 w-4 text-amber-500 animate-bounce" />
+                  <ShieldAlert className="h-4 w-4 animate-bounce text-amber-500" />
                 )}
               </div>
             )}
           </div>
           
-          <div className="space-y-1.5 max-w-lg">
+          <div className="max-w-lg space-y-1.5">
             <h3 className="font-heading text-lg font-bold tracking-widest uppercase">
               {diagnostics ? "System Audit Results" : "Initiate System Diagnostic"}
             </h3>
@@ -139,7 +139,7 @@ export function AtsDiagnosticPanel() {
           </div>
 
           {error && (
-            <div className="flex items-center gap-2 max-w-md rounded-md border border-destructive/20 bg-destructive/5 px-3 py-2 text-left text-xs text-destructive">
+            <div className="flex max-w-md items-center gap-2 rounded-md border border-destructive/20 bg-destructive/5 px-3 py-2 text-left text-xs text-destructive">
               <AlertCircle className="h-4 w-4 shrink-0" />
               <div>
                 <span className="font-bold">Transmission Interrupted:</span> {
@@ -155,7 +155,7 @@ export function AtsDiagnosticPanel() {
             <Button
               onClick={handleRunScan}
               disabled={loading}
-              className="gap-2 shadow-md shadow-primary/15 tracking-widest uppercase font-bold text-xs h-10 px-5"
+              className="h-10 gap-2 px-5 text-xs font-bold tracking-widest uppercase shadow-md shadow-primary/15"
             >
               {loading ? (
                 <>
@@ -196,11 +196,11 @@ export function AtsDiagnosticPanel() {
                 className=" border border-primary/25 bg-primary/5 p-4.5 text-center shadow-[0_0_15px_rgba(var(--primary),0.05)]"
               >
                 <div className="flex flex-col items-center space-y-2">
-                  <ShieldCheck className="h-7 w-7 text-primary animate-pulse" />
+                  <ShieldCheck className="h-7 w-7 animate-pulse text-primary" />
                   <span className="font-heading text-sm font-bold tracking-wider text-foreground uppercase">
                     System Compliance: SECURED
                   </span>
-                  <p className="text-xs text-muted-foreground max-w-md">
+                  <p className="max-w-md text-xs text-muted-foreground">
                     Congratulations! All vulnerabilities have been purged. Your coordinates are optimized for elite recruitment guilds.
                   </p>
                 </div>
@@ -217,7 +217,7 @@ export function AtsDiagnosticPanel() {
                   <motion.div
                     key={idx}
                     layout
-                    className={`flex items-start justify-between gap-4 p-4  border transition-all ${
+                    className={`flex items-start justify-between gap-4 border  p-4 transition-all ${
                       isWarning
                         ? "border-amber-500/25 bg-amber-500/5 hover:bg-amber-500/10"
                         : "border-border/40 bg-card/60"
@@ -244,7 +244,7 @@ export function AtsDiagnosticPanel() {
                             {isWarning ? "VULNERABILITY DETECTED" : "CLEARED"}
                           </span>
                         </div>
-                        <p className="text-xs text-muted-foreground font-medium">
+                        <p className="text-xs font-medium text-muted-foreground">
                           {diagnostic.message}
                         </p>
                       </div>
@@ -256,7 +256,7 @@ export function AtsDiagnosticPanel() {
                         size="sm"
                         disabled={fixingField !== null}
                         onClick={() => handleAutoFix(diagnostic)}
-                        className="shrink-0 h-8 gap-1.5 border-amber-500/30 hover:bg-amber-500/10 text-amber-500 font-bold uppercase text-[10px]"
+                        className="h-8 shrink-0 gap-1.5 border-amber-500/30 text-[10px] font-bold text-amber-500 uppercase hover:bg-amber-500/10"
                       >
                         {isFixing ? (
                           <Loader2 className="h-3 w-3 animate-spin" />

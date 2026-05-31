@@ -1,7 +1,7 @@
 "use client";
 
 import { motion, type Variants } from "framer-motion";
-import { useAuthStore } from "@/store/useAuthStore";
+
 import { useRewardsStore } from "@/store/useRewardsStore";
 import { useEffect, useState } from "react";
 import {
@@ -190,10 +190,10 @@ function SectionHeader({ title, subtitle, action }: { title: string; subtitle: s
 // DASHBOARD OVERVIEW
 // ============================================================================
 
-interface DashboardOverviewProps {}
+export type DashboardOverviewProps = Record<string, never>;
 
-export function DashboardOverview({}: DashboardOverviewProps) {
-  const { } = useAuthStore();
+export function DashboardOverview() {
+
   const { shields, getRank, processDailyCheckIn } = useRewardsStore();
   const [targetLockOpen, setTargetLockOpen] = useState(false);
 
@@ -228,12 +228,12 @@ export function DashboardOverview({}: DashboardOverviewProps) {
         <div>
           <Dialog open={targetLockOpen} onOpenChange={setTargetLockOpen}>
             <DialogTrigger asChild>
-              <Button variant="outline" className="border-primary/50 text-primary hover:bg-primary/10 gap-2">
-                <Crosshair className="w-4 h-4" />
+              <Button variant="outline" className="gap-2 border-primary/50 text-primary hover:bg-primary/10">
+                <Crosshair className="h-4 w-4" />
                 Engage Target Lock
               </Button>
             </DialogTrigger>
-            <DialogContent className="w-full max-w-5xl sm:max-w-5xl bg-background/95 backdrop-blur-xl border-primary/20 max-h-[85vh] overflow-y-auto overflow-x-hidden">
+            <DialogContent className="max-h-[85vh] w-full max-w-5xl overflow-x-hidden overflow-y-auto border-primary/20 bg-background/95 backdrop-blur-xl sm:max-w-5xl">
               <DialogHeader>
                 <DialogTitle className="sr-only">Target Lock Intelligence</DialogTitle>
                 <DialogDescription className="sr-only">AI-powered company intelligence and resume strategy</DialogDescription>

@@ -10,9 +10,9 @@ export function Hero() {
   return (
     <section className="relative flex min-h-[calc(100svh-3.5rem)] w-full flex-col items-center overflow-hidden bg-background pt-16 pb-12 sm:pt-20 sm:pb-16 md:pt-24 md:pb-20">
       {/* Dot Grid Pattern — uses theme token, masked to fade at edges */}
-      <div className="absolute inset-0 z-0 pointer-events-none bg-[radial-gradient(var(--color-muted-foreground)_1px,transparent_1px)] bg-[size:28px_28px] opacity-15 [mask-image:radial-gradient(ellipse_at_center,black_40%,transparent_75%)]" />
+      <div className="pointer-events-none absolute inset-0 z-0 bg-[radial-gradient(var(--color-muted-foreground)_1px,transparent_1px)] [mask-image:radial-gradient(ellipse_at_center,black_40%,transparent_75%)] bg-[size:28px_28px] opacity-15" />
 
-      <div className="mx-auto w-full max-w-5xl px-4 sm:px-6 lg:px-8 relative z-10 flex flex-col items-center text-center gap-6 my-auto">
+      <div className="relative z-10 mx-auto my-auto flex w-full max-w-5xl flex-col items-center gap-6 px-4 text-center sm:px-6 lg:px-8">
         {/* Badge — using the project's own Badge component */}
         <motion.div
           initial={{ opacity: 0, y: 10 }}
@@ -51,7 +51,7 @@ export function Hero() {
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.3 }}
-          className="flex flex-col sm:flex-row gap-3 items-center"
+          className="flex flex-col items-center gap-3 sm:flex-row"
         >
           <Button size="lg" onClick={() => navigate("/editor")} className="gap-2">
             Start Building
@@ -69,7 +69,7 @@ export function Hero() {
           transition={{ duration: 0.7, delay: 0.4 }}
           className="relative mt-2 w-full max-w-sm sm:max-w-md md:max-w-lg lg:max-w-xl xl:max-w-2xl"
         >
-          <div className="absolute -inset-4  bg-primary/5 blur-2xl pointer-events-none" />
+          <div className="pointer-events-none absolute  -inset-4 bg-primary/5 blur-2xl" />
           <div className="relative overflow-hidden  border border-border bg-card shadow-lg">
             <img
               src="/beskar_dataslate.png"

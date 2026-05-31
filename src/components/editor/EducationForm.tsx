@@ -53,7 +53,7 @@ export function EducationForm() {
   };
 
   return (
-    <div className="space-y-6 @container">
+    <div className="@container space-y-6">
       {/* Existing Education */}
       {education.map((edu) => {
         const isExpanded = expandedId === edu.id;
@@ -84,7 +84,7 @@ export function EducationForm() {
                   </p>
                 </div>
               </button>
-              <div className="flex items-center space-x-2 ml-4 shrink-0">
+              <div className="ml-4 flex shrink-0 items-center space-x-2">
                 <Button
                   variant="ghost"
                   size="icon"
@@ -176,10 +176,10 @@ export function EducationForm() {
                   </div>
                   
                   {/* Suggestions Section */}
-                  <div className="space-y-2 mt-2">
+                  <div className="mt-2 space-y-2">
                     <Popover>
                       <PopoverTrigger asChild>
-                        <Button variant="outline" size="sm" className="gap-2 text-primary hover:text-primary hover:bg-primary/10 border-primary/20 bg-primary/5">
+                        <Button variant="outline" size="sm" className="gap-2 border-primary/20 bg-primary/5 text-primary hover:bg-primary/10 hover:text-primary">
                           <Sparkles className="h-4 w-4" />
                           FAANG Quick Suggestions
                         </Button>
@@ -193,13 +193,13 @@ export function EducationForm() {
                           
                           <div className="space-y-4">
                             <div>
-                              <p className="mb-1 text-xs text-muted-foreground font-medium">Degree:</p>
+                              <p className="mb-1 text-xs font-medium text-muted-foreground">Degree:</p>
                               <div className="flex flex-wrap gap-1.5">
                                 {DEGREE_SUGGESTIONS.map((suggestion, idx) => (
                                   <button
                                     key={`deg-${idx}`}
                                     onClick={() => handleChange(edu.id, "degree", suggestion)}
-                                    className="inline-flex items-center rounded-md border border-border bg-background px-2.5 py-1 text-[11px] text-muted-foreground transition-colors hover:border-primary/50 hover:text-foreground text-left"
+                                    className="inline-flex items-center rounded-md border border-border bg-background px-2.5 py-1 text-left text-[11px] text-muted-foreground transition-colors hover:border-primary/50 hover:text-foreground"
                                   >
                                     {suggestion}
                                   </button>
@@ -208,13 +208,13 @@ export function EducationForm() {
                             </div>
                             
                             <div>
-                              <p className="mb-1 text-xs text-muted-foreground font-medium">Field of Study:</p>
+                              <p className="mb-1 text-xs font-medium text-muted-foreground">Field of Study:</p>
                               <div className="flex flex-wrap gap-1.5">
                                 {FIELD_SUGGESTIONS.map((suggestion, idx) => (
                                   <button
                                     key={`field-${idx}`}
                                     onClick={() => handleChange(edu.id, "field", suggestion)}
-                                    className="inline-flex items-center rounded-md border border-border bg-background px-2.5 py-1 text-[11px] text-muted-foreground transition-colors hover:border-primary/50 hover:text-foreground text-left"
+                                    className="inline-flex items-center rounded-md border border-border bg-background px-2.5 py-1 text-left text-[11px] text-muted-foreground transition-colors hover:border-primary/50 hover:text-foreground"
                                   >
                                     {suggestion}
                                   </button>
@@ -223,13 +223,13 @@ export function EducationForm() {
                             </div>
 
                             <div>
-                              <p className="mb-1 text-xs text-muted-foreground font-medium">Score & Honors:</p>
+                              <p className="mb-1 text-xs font-medium text-muted-foreground">Score & Honors:</p>
                               <div className="flex flex-wrap gap-1.5">
                                 {SCORE_SUGGESTIONS.map((suggestion, idx) => (
                                   <button
                                     key={`score-${idx}`}
                                     onClick={() => handleChange(edu.id, "score", suggestion)}
-                                    className="inline-flex items-center rounded-md border border-border bg-background px-2.5 py-1 text-[11px] text-muted-foreground transition-colors hover:border-primary/50 hover:text-foreground text-left"
+                                    className="inline-flex items-center rounded-md border border-border bg-background px-2.5 py-1 text-left text-[11px] text-muted-foreground transition-colors hover:border-primary/50 hover:text-foreground"
                                   >
                                     {suggestion}
                                   </button>

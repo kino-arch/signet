@@ -63,10 +63,10 @@ export default function TestimonialsSection() {
     <section id="runes" className="w-full py-16 md:py-24">
       {/* Header */}
       <div className="mx-auto flex w-full max-w-4xl flex-col items-center gap-3 px-4 sm:px-6">
-        <Badge variant="outline" className="font-mono tracking-wider border-primary/30 text-primary bg-primary/5">
+        <Badge variant="outline" className="border-primary/30 bg-primary/5 font-mono tracking-wider text-primary">
           [ MISSION REPORTS ]
         </Badge>
-        <h2 className="max-w-xl text-center text-2xl font-semibold tracking-tight sm:text-3xl md:text-4xl uppercase">
+        <h2 className="max-w-xl text-center text-2xl font-semibold tracking-tight uppercase sm:text-3xl md:text-4xl">
           Verified Success Records
         </h2>
         <p className="max-w-lg text-center text-sm leading-6 text-muted-foreground">
@@ -79,7 +79,7 @@ export default function TestimonialsSection() {
       {/* Testimonial card */}
       <div className="mx-auto mt-12 flex w-full max-w-4xl flex-col items-start gap-8 border-y border-border/50 px-4 py-12 sm:px-6 md:flex-row md:items-center md:px-12 md:py-16">
         <Avatar
-          className="h-24 w-24 shrink-0 border border-border/50 transition-all duration-700 grayscale hover:grayscale-0 ring-offset-background hover:ring-2 hover:ring-primary hover:ring-offset-2"
+          className="h-24 w-24 shrink-0 border border-border/50 ring-offset-background grayscale transition-all duration-700 hover:ring-2 hover:ring-primary hover:ring-offset-2 hover:grayscale-0"
           style={{
             opacity: transitioning ? 0.5 : 1,
             transform: transitioning ? "scale(0.95)" : "scale(1)",
@@ -93,7 +93,7 @@ export default function TestimonialsSection() {
 
         <div className="flex flex-1 flex-col gap-4">
           <blockquote
-            className="text-xl font-medium leading-relaxed tracking-tight transition-all duration-500 md:text-2xl"
+            className="text-xl leading-relaxed font-medium tracking-tight transition-all duration-500 md:text-2xl"
             style={{
               filter: transitioning ? "blur(4px)" : "blur(0px)",
             }}

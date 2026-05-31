@@ -84,16 +84,16 @@ export function LoginForm({
   return (
     <div className={cn("flex flex-col gap-4 w-full max-w-[320px]", className)} {...props}>
       <motion.div variants={containerVariants} initial="hidden" animate="show">
-        <Card className="bg-zinc-950/60 backdrop-blur-xl border-white/10 shadow-2xl relative overflow-hidden">
+        <Card className="relative overflow-hidden border-white/10 bg-zinc-950/60 shadow-2xl backdrop-blur-xl">
           {/* Subtle top glow */}
-          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-3/4 h-1 bg-primary/20 blur-sm" />
+          <div className="absolute top-0 left-1/2 h-1 w-3/4 -translate-x-1/2 bg-primary/20 blur-sm" />
 
-          <CardHeader className="text-center pt-6 pb-4 px-6">
+          <CardHeader className="px-6 pt-6 pb-4 text-center">
             <motion.div variants={itemVariants}>
-              <CardTitle className="font-heading font-bold text-lg tracking-tight text-white">
+              <CardTitle className="font-heading text-lg font-bold tracking-tight text-white">
                 {mode === "sign-in" ? "Access the Forge" : "Join the Guild"}
               </CardTitle>
-              <CardDescription className="text-xs mt-1">
+              <CardDescription className="mt-1 text-xs">
                 {mode === "sign-in"
                   ? "Enter your credentials to command the market."
                   : "Create your Signet account."}
@@ -109,9 +109,9 @@ export function LoginForm({
                   initial={{ opacity: 0, height: 0 }}
                   animate={{ opacity: 1, height: "auto" }}
                   exit={{ opacity: 0, height: 0 }}
-                  className="overflow-hidden mb-4"
+                  className="mb-4 overflow-hidden"
                 >
-                  <p className="border border-destructive/30 bg-destructive/10 px-3 py-2 text-xs text-destructive rounded-sm font-mono">
+                  <p className="rounded-sm border border-destructive/30 bg-destructive/10 px-3 py-2 font-mono text-xs text-destructive">
                     [ERROR]: {error}
                   </p>
                 </motion.div>
@@ -122,7 +122,7 @@ export function LoginForm({
               <FieldGroup className="gap-4">
                 <motion.div variants={itemVariants}>
                   <Field className="gap-1.5">
-                    <FieldLabel htmlFor="email" className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
+                    <FieldLabel htmlFor="email" className="font-mono text-[10px] tracking-widest text-muted-foreground uppercase">
                       Email
                     </FieldLabel>
                     <Input
@@ -133,7 +133,7 @@ export function LoginForm({
                       onChange={(e) => setEmail(e.target.value)}
                       required
                       autoComplete="email"
-                      className="bg-black/40 border-white/10 text-white placeholder:text-muted-foreground focus-visible:border-primary/50 focus-visible:ring-1 focus-visible:ring-primary/50 h-8 text-xs rounded-sm transition-all"
+                      className="h-8 rounded-sm border-white/10 bg-black/40 text-xs text-white transition-all placeholder:text-muted-foreground focus-visible:border-primary/50 focus-visible:ring-1 focus-visible:ring-primary/50"
                     />
                   </Field>
                 </motion.div>
@@ -141,13 +141,13 @@ export function LoginForm({
                 <motion.div variants={itemVariants}>
                   <Field className="gap-1.5">
                     <div className="flex items-center justify-between">
-                      <FieldLabel htmlFor="password" className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
+                      <FieldLabel htmlFor="password" className="font-mono text-[10px] tracking-widest text-muted-foreground uppercase">
                         Password
                       </FieldLabel>
                       {mode === "sign-in" && (
                         <a
                           href="#"
-                          className="text-[10px] font-mono tracking-tight text-muted-foreground hover:text-primary transition-colors underline-offset-4 hover:underline"
+                          className="font-mono text-[10px] tracking-tight text-muted-foreground underline-offset-4 transition-colors hover:text-primary hover:underline"
                         >
                           Forgot password?
                         </a>
@@ -162,7 +162,7 @@ export function LoginForm({
                       required
                       minLength={6}
                       autoComplete={mode === "sign-in" ? "current-password" : "new-password"}
-                      className="bg-black/40 border-white/10 text-white placeholder:text-muted-foreground focus-visible:border-primary/50 focus-visible:ring-1 focus-visible:ring-primary/50 h-8 text-xs rounded-sm transition-all"
+                      className="h-8 rounded-sm border-white/10 bg-black/40 text-xs text-white transition-all placeholder:text-muted-foreground focus-visible:border-primary/50 focus-visible:ring-1 focus-visible:ring-primary/50"
                     />
                   </Field>
                 </motion.div>
@@ -170,7 +170,7 @@ export function LoginForm({
                 <motion.div variants={itemVariants} className="pt-2">
                   <Button
                     type="submit"
-                    className="w-full h-8 text-[11px] relative overflow-hidden group border border-primary/50 text-primary-foreground font-mono font-bold tracking-widest uppercase rounded-sm bg-primary hover:bg-primary/90 transition-all"
+                    className="group relative h-8 w-full overflow-hidden rounded-sm border border-primary/50 bg-primary font-mono text-[11px] font-bold tracking-widest text-primary-foreground uppercase transition-all hover:bg-primary/90"
                     disabled={submitting || !email || !password}
                   >
                     {submitting ? (
@@ -179,8 +179,8 @@ export function LoginForm({
                       </span>
                     ) : (
                       <>
-                        <div className="absolute inset-0 bg-primary/20 animate-beskar-shimmer" />
-                        <span className="relative z-10 group-hover:scale-[1.02] transition-transform">
+                        <div className="absolute inset-0 animate-beskar-shimmer bg-primary/20" />
+                        <span className="relative z-10 transition-transform group-hover:scale-[1.02]">
                           {mode === "sign-in" ? "[ INITIALIZE ]" : "[ ACCESS DATACORE ]"}
                         </span>
                       </>
@@ -196,7 +196,7 @@ export function LoginForm({
                   <Button
                     variant="outline"
                     type="button"
-                    className="w-full h-8 text-xs bg-zinc-900/50 hover:bg-zinc-800 border border-white/5 hover:border-primary/30 transition-all text-white rounded-sm font-sans"
+                    className="h-8 w-full rounded-sm border border-white/5 bg-zinc-900/50 font-sans text-xs text-white transition-all hover:border-primary/30 hover:bg-zinc-800"
                     onClick={handleGoogleSignIn}
                     disabled={submitting}
                   >
@@ -209,7 +209,7 @@ export function LoginForm({
                   <Button
                     variant="ghost"
                     type="button"
-                    className="w-full h-8 text-xs text-muted-foreground hover:text-white hover:bg-white/5 rounded-sm font-mono tracking-widest uppercase"
+                    className="h-8 w-full rounded-sm font-mono text-xs tracking-widest text-muted-foreground uppercase hover:bg-white/5 hover:text-white"
                     onClick={() => useAuthStore.getState().signInAsGuest()}
                     disabled={submitting}
                   >
@@ -218,24 +218,24 @@ export function LoginForm({
                 </motion.div>
 
                 <motion.div variants={itemVariants}>
-                  <FieldDescription className="text-center mt-2">
+                  <FieldDescription className="mt-2 text-center">
                     {mode === "sign-in" ? (
-                      <span className="text-muted-foreground text-[11px]">
+                      <span className="text-[11px] text-muted-foreground">
                         Don&apos;t have an account?{" "}
                         <button
                           type="button"
-                          className="font-medium text-primary hover:underline underline-offset-4"
+                          className="font-medium text-primary underline-offset-4 hover:underline"
                           onClick={() => switchMode("sign-up")}
                         >
                           Sign up
                         </button>
                       </span>
                     ) : (
-                      <span className="text-muted-foreground text-[11px]">
+                      <span className="text-[11px] text-muted-foreground">
                         Already have an account?{" "}
                         <button
                           type="button"
-                          className="font-medium text-primary hover:underline underline-offset-4"
+                          className="font-medium text-primary underline-offset-4 hover:underline"
                           onClick={() => switchMode("sign-in")}
                         >
                           Sign in

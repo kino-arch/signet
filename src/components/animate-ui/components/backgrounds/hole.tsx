@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-use-before-define */
 'use client';
 
 import * as React from 'react';
@@ -334,7 +336,7 @@ function HoleBackground({
       {children}
       <canvas
         ref={canvasRef}
-        className="absolute inset-0 block size-full dark:opacity-20 opacity-10"
+        className="absolute inset-0 block size-full opacity-10 dark:opacity-20"
       />
       <motion.div
         className={cn(
@@ -344,7 +346,7 @@ function HoleBackground({
         animate={{ backgroundPosition: '0% 300%' }}
         transition={{ duration: 5, ease: 'linear', repeat: Infinity }}
       />
-      <div className="absolute top-0 left-0 z-[7] size-full dark:[background:repeating-linear-gradient(transparent,transparent_1px,white_1px,white_2px)] mix-blend-overlay opacity-50" />
+      <div className="absolute top-0 left-0 z-[7] size-full opacity-50 mix-blend-overlay dark:[background:repeating-linear-gradient(transparent,transparent_1px,white_1px,white_2px)]" />
     </div>
   );
 }

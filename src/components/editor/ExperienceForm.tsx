@@ -162,7 +162,7 @@ export function ExperienceForm() {
   };
 
   return (
-    <div className="space-y-6 @container">
+    <div className="@container space-y-6">
       {/* Existing Experiences */}
       {experience.map((exp) => {
         const isExpanded = expandedId === exp.id;
@@ -193,7 +193,7 @@ export function ExperienceForm() {
                   </p>
                 </div>
               </button>
-              <div className="flex items-center space-x-2 ml-4 shrink-0">
+              <div className="ml-4 flex shrink-0 items-center space-x-2">
                 <Button
                   variant="ghost"
                   size="icon"
@@ -282,7 +282,7 @@ export function ExperienceForm() {
                         {loadingDescId === exp.id ? (
                           <Loader2 className="h-3 w-3 animate-spin" />
                         ) : (
-                          <Sparkles className="h-3 w-3 text-primary animate-pulse" />
+                          <Sparkles className="h-3 w-3 animate-pulse text-primary" />
                         )}
                         Reforge Overview
                       </Button>
@@ -300,8 +300,8 @@ export function ExperienceForm() {
                     
                     <div className="space-y-3">
                       {exp.highlights.map((highlight, idx) => (
-                        <div key={idx} className="flex items-start gap-2 animate-in slide-in-from-top-1">
-                          <div className="flex flex-col gap-1 mt-1">
+                        <div key={idx} className="flex animate-in items-start gap-2 slide-in-from-top-1">
+                          <div className="mt-1 flex flex-col gap-1">
                             <button
                               type="button"
                               onClick={() => handleMoveHighlight(exp.id, idx, 'up')}
@@ -322,7 +322,7 @@ export function ExperienceForm() {
                             </button>
                           </div>
                           
-                          <div className="flex-1 flex items-center gap-1.5">
+                          <div className="flex flex-1 items-center gap-1.5">
                             <Input
                               value={highlight}
                               onChange={(e) => handleHighlightChange(exp.id, idx, e.target.value)}
@@ -358,7 +358,7 @@ export function ExperienceForm() {
                         </div>
                       ))}
                     </div>
-                    <div className="flex flex-col gap-2 sm:flex-row sm:items-center mt-2">
+                    <div className="mt-2 flex flex-col gap-2 sm:flex-row sm:items-center">
                       <Button
                         variant="outline"
                         size="sm"
@@ -374,7 +374,7 @@ export function ExperienceForm() {
                       {/* FAANG Suggestions Popover */}
                       <Popover>
                         <PopoverTrigger asChild>
-                          <Button variant="outline" size="sm" className="gap-2 text-primary hover:text-primary hover:bg-primary/10 border-primary/20 bg-primary/5">
+                          <Button variant="outline" size="sm" className="gap-2 border-primary/20 bg-primary/5 text-primary hover:bg-primary/10 hover:text-primary">
                             <Sparkles className="h-4 w-4" />
                             AI Bullet Templates
                           </Button>
@@ -382,13 +382,13 @@ export function ExperienceForm() {
                         <PopoverContent align="end" className="w-[400px] p-4">
                           <div className="space-y-4">
                             <div>
-                              <h4 className="font-semibold text-foreground text-sm flex items-center gap-2">
+                              <h4 className="flex items-center gap-2 text-sm font-semibold text-foreground">
                                 <Sparkles className="h-4 w-4 text-primary" />
                                 FAANG Blueprint Suggestions
                               </h4>
-                              <p className="text-xs text-muted-foreground mt-1">Select a template to inject into your highlights.</p>
+                              <p className="mt-1 text-xs text-muted-foreground">Select a template to inject into your highlights.</p>
                             </div>
-                            <div className="flex flex-col gap-2 max-h-[300px] overflow-y-auto pr-1">
+                            <div className="flex max-h-[300px] flex-col gap-2 overflow-y-auto pr-1">
                               {FAANG_SUGGESTIONS.map((suggestion, idx) => (
                                 <button
                                   key={idx}
@@ -398,7 +398,7 @@ export function ExperienceForm() {
                                       updateExperience(exp.id, { highlights: [...expToUpdate.highlights, suggestion] });
                                     }
                                   }}
-                                  className="text-left w-full rounded-md border border-border bg-background px-3 py-2 text-xs text-muted-foreground transition-colors hover:border-primary/50 hover:text-foreground"
+                                  className="w-full rounded-md border border-border bg-background px-3 py-2 text-left text-xs text-muted-foreground transition-colors hover:border-primary/50 hover:text-foreground"
                                 >
                                   {suggestion}
                                 </button>

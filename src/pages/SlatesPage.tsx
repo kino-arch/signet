@@ -51,10 +51,10 @@ export function SlatesPage() {
       <div className="mb-8 flex items-center justify-between">
         <div>
           <h1 className="font-heading text-3xl font-bold tracking-widest text-zinc-100 uppercase">Data-Slates</h1>
-          <p className="font-mono text-sm text-zinc-500 mt-1">THE ACTIVE ARMORY OF THE GREAT FORGE</p>
+          <p className="mt-1 font-mono text-sm text-zinc-500">THE ACTIVE ARMORY OF THE GREAT FORGE</p>
         </div>
         {slates.length > 0 && !loading && (
-          <Button onClick={() => navigate("/forge/new")} className="bg-cyan-500 text-zinc-950 hover:bg-cyan-400 font-mono tracking-widest">
+          <Button onClick={() => navigate("/forge/new")} className="bg-cyan-500 font-mono tracking-widest text-zinc-950 hover:bg-cyan-400">
             <PlusCircle className="mr-2 h-4 w-4" /> MINT NEW SLATE
           </Button>
         )}
@@ -65,10 +65,10 @@ export function SlatesPage() {
           {[1, 2, 3].map((i) => (
             <Card key={i} className="flex flex-col border-zinc-800 bg-zinc-900/50 backdrop-blur-sm">
               <CardHeader>
-                <Skeleton className="h-6 w-3/4 mb-2" />
+                <Skeleton className="mb-2 h-6 w-3/4" />
                 <Skeleton className="h-4 w-1/2" />
               </CardHeader>
-              <CardContent className="flex-1 flex justify-center py-6">
+              <CardContent className="flex flex-1 justify-center py-6">
                 <Skeleton className="h-32 w-24 rounded-sm" />
               </CardContent>
               <CardFooter>
@@ -112,13 +112,13 @@ export function SlatesPage() {
                   <CardTitle className="font-heading tracking-wider text-zinc-100">{slate.title || "UNNAMED SLATE"}</CardTitle>
                   <div className="font-mono text-xs text-zinc-500 uppercase">MODIFIED: {formattedDate}</div>
                 </CardHeader>
-                <CardContent className="flex-1 flex justify-center py-6">
+                <CardContent className="flex flex-1 justify-center py-6">
                   <div className="flex h-32 w-24 items-center justify-center rounded-sm border border-zinc-700 bg-zinc-800/50 shadow-inner">
                     <FileText className="h-8 w-8 text-zinc-600" />
                   </div>
                 </CardContent>
                 <CardFooter>
-                  <Button onClick={() => navigate(`/forge/${slate.id}`)} className="w-full bg-zinc-800 text-cyan-400 hover:bg-zinc-700 font-mono tracking-widest">
+                  <Button onClick={() => navigate(`/forge/${slate.id}`)} className="w-full bg-zinc-800 font-mono tracking-widest text-cyan-400 hover:bg-zinc-700">
                     [ ACCESS FORGE ] <ArrowRight className="ml-2 h-4 w-4" />
                   </Button>
                 </CardFooter>

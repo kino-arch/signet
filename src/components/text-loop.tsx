@@ -61,7 +61,7 @@ export default function TextLoop({
               animate={{ width: "auto", opacity: 1 }}
               exit={{ width: 0, opacity: 0 }}
               transition={transition}
-              className="overflow-hidden whitespace-nowrap relative"
+              className="relative overflow-hidden whitespace-nowrap"
             >
               {/* Background gradient box */}
               <div

@@ -10,7 +10,7 @@ export function HeroSection() {
               <h1 className="max-w-4xl text-center text-5xl leading-tight font-medium md:text-7xl">
                 Design experiences that people remember
               </h1>
-              <p className="text-muted-foreground max-w-xl text-center text-lg leading-7 font-medium">
+              <p className="max-w-xl text-center text-lg leading-7 font-medium text-muted-foreground">
                 From brand identity to polished interfaces, build bold,
                 user-focused designs that elevate your product and stand out.
               </p>

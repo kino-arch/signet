@@ -6,7 +6,7 @@ import { motion } from "framer-motion"
 
 import { cn } from "@/lib/utils"
 
-const orbitalLoaderVariants = cva("flex gap-2 items-center justify-center", {
+const orbitalLoaderVariants = cva("flex items-center justify-center gap-2", {
   variants: {
     messagePlacement: {
       bottom: "flex-col",
@@ -97,7 +97,7 @@ export function OrbitalLoader({
         />
       </div>
       {message && (
-        <div className="text-xs font-mono font-bold tracking-widest uppercase text-muted-foreground">
+        <div className="font-mono text-xs font-bold tracking-widest text-muted-foreground uppercase">
           {message}
         </div>
       )}

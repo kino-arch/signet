@@ -74,7 +74,7 @@ export function Logo({ size = "md", showText = true, className, animateOnHover =
 
         {/* Forge Spark / Heat Glow */}
         <motion.div
-          className="absolute left-1 bottom-1 w-3 h-3 rounded-full bg-[#FF7B00] blur-[4px] mix-blend-screen"
+          className="absolute bottom-1 left-1 h-3 w-3 rounded-full bg-[#FF7B00] mix-blend-screen blur-[4px]"
           variants={{
             initial: { scale: 0, opacity: 0 },
             hover: {

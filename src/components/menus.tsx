@@ -52,7 +52,7 @@ function TacticalLink({ href, children }: { href: string, children: React.ReactN
     <NavigationMenuLink asChild className={cn(navigationMenuTriggerStyle(), "bg-transparent text-xs font-mono uppercase tracking-widest hover:bg-transparent focus:bg-transparent data-[active]:bg-transparent relative group cursor-pointer")}>
       <a href={href}>
         {children}
-        <span className="absolute bottom-1.5 left-3 right-3 h-[2px] bg-primary scale-x-0 group-hover:scale-x-100 transition-transform origin-left duration-300 ease-out shadow-[0_0_8px_var(--color-primary)]" />
+        <span className="absolute right-3 bottom-1.5 left-3 h-[2px] origin-left scale-x-0 bg-primary shadow-[0_0_8px_var(--color-primary)] transition-transform duration-300 ease-out group-hover:scale-x-100" />
       </a>
     </NavigationMenuLink>
   )
@@ -67,11 +67,11 @@ export function Menus() {
         <NavigationMenuItem><TacticalLink href="#arsenal">Arsenal</TacticalLink></NavigationMenuItem>
         
         <NavigationMenuItem>
-          <NavigationMenuTrigger className="bg-transparent text-xs font-mono uppercase tracking-widest hover:bg-transparent focus:bg-transparent data-[state=open]:bg-transparent relative group">
+          <NavigationMenuTrigger className="group relative bg-transparent font-mono text-xs tracking-widest uppercase hover:bg-transparent focus:bg-transparent data-[state=open]:bg-transparent">
             Intel
-            <span className="absolute bottom-1.5 left-3 right-8 h-[2px] bg-primary scale-x-0 group-hover:scale-x-100 transition-transform origin-left duration-300 ease-out shadow-[0_0_8px_var(--color-primary)]" />
+            <span className="absolute right-8 bottom-1.5 left-3 h-[2px] origin-left scale-x-0 bg-primary shadow-[0_0_8px_var(--color-primary)] transition-transform duration-300 ease-out group-hover:scale-x-100" />
           </NavigationMenuTrigger>
-          <NavigationMenuContent className="p-2 border border-primary/20 bg-background/95 backdrop-blur-xl shadow-[0_10px_40px_rgba(var(--color-primary),0.1)]">
+          <NavigationMenuContent className="border border-primary/20 bg-background/95 p-2 shadow-[0_10px_40px_rgba(var(--color-primary),0.1)] backdrop-blur-xl">
             <ul className="grid max-w-xl gap-3 md:grid-cols-3 lg:w-3xl">
               {components.map((component) => (
                 <ListItem key={component.title} title={component.title} href={component.href}>
@@ -93,9 +93,9 @@ function ListItem({ title, children, href, ...props }: React.ComponentPropsWitho
   return (
     <li {...props}>
       <NavigationMenuLink asChild>
-        <a className="group p-3 block select-none space-y-1 rounded-md leading-none no-underline outline-none transition-all hover:bg-primary/10 border border-transparent hover:border-primary/20 focus:bg-primary/10 focus:border-primary/20" href={href}>
-          <div className="text-sm font-mono tracking-widest uppercase font-bold text-primary group-hover:drop-shadow-[0_0_5px_rgba(var(--color-primary),0.5)] transition-all">{title}</div>
-          <p className="text-muted-foreground line-clamp-2 text-xs leading-snug font-sans group-hover:text-foreground transition-colors mt-2">
+        <a className="group block space-y-1 rounded-md border border-transparent p-3 leading-none no-underline transition-all outline-none select-none hover:border-primary/20 hover:bg-primary/10 focus:border-primary/20 focus:bg-primary/10" href={href}>
+          <div className="font-mono text-sm font-bold tracking-widest text-primary uppercase transition-all group-hover:drop-shadow-[0_0_5px_rgba(var(--color-primary),0.5)]">{title}</div>
+          <p className="mt-2 line-clamp-2 font-sans text-xs leading-snug text-muted-foreground transition-colors group-hover:text-foreground">
             {children}
           </p>
         </a>

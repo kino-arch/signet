@@ -39,12 +39,12 @@ export function ProfileDropdown() {
     <>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button variant="ghost" className="relative h-9 rounded-full pl-3 pr-2 flex items-center gap-2 hover:bg-zinc-800/50 group border border-transparent hover:border-zinc-800 transition-colors">
-            <span className="font-mono text-xs text-zinc-400 group-hover:text-zinc-300 transition-colors hidden sm:inline-block">
+          <Button variant="ghost" className="group relative flex h-9 items-center gap-2 rounded-full border border-transparent pr-2 pl-3 transition-colors hover:border-zinc-800 hover:bg-zinc-800/50">
+            <span className="hidden font-mono text-xs text-zinc-400 transition-colors group-hover:text-zinc-300 sm:inline-block">
               {displayName}
             </span>
-            <Avatar className="h-7 w-7 border border-cyan-500/30 bg-zinc-900 group-hover:border-cyan-500/60 transition-colors">
-              <AvatarFallback className="bg-transparent text-cyan-400 font-mono text-[10px]">
+            <Avatar className="h-7 w-7 border border-cyan-500/30 bg-zinc-900 transition-colors group-hover:border-cyan-500/60">
+              <AvatarFallback className="bg-transparent font-mono text-[10px] text-cyan-400">
                 {fallbackLetter}
               </AvatarFallback>
             </Avatar>
@@ -53,8 +53,8 @@ export function ProfileDropdown() {
         <DropdownMenuContent className="w-64" align="end" forceMount>
           <DropdownMenuLabel className="font-normal">
             <div className="flex flex-col space-y-1">
-              <p className="text-sm font-medium leading-none">{displayName}</p>
-              <p className="text-xs leading-none text-muted-foreground font-mono">
+              <p className="text-sm leading-none font-medium">{displayName}</p>
+              <p className="font-mono text-xs leading-none text-muted-foreground">
                 {user?.email || "covert@signet.org"}
               </p>
             </div>
@@ -64,13 +64,13 @@ export function ProfileDropdown() {
           <div className="flex items-center justify-between px-2 py-1.5">
             <div className="flex items-center gap-2">
               <Coins className="h-4 w-4 text-primary" />
-              <span className="text-xs font-mono uppercase tracking-wider text-muted-foreground">Tokens</span>
+              <span className="font-mono text-xs tracking-wider text-muted-foreground uppercase">Tokens</span>
             </div>
             <span className="font-mono text-sm font-bold text-primary">{tokenBalance}</span>
           </div>
           
           <DropdownMenuItem 
-            className="cursor-pointer text-cyan-500 focus:text-cyan-400 focus:bg-cyan-500/10 mb-1"
+            className="mb-1 cursor-pointer text-cyan-500 focus:bg-cyan-500/10 focus:text-cyan-400"
             onSelect={(e) => {
               e.preventDefault();
               setIsBountyModalOpen(true);
@@ -82,8 +82,8 @@ export function ProfileDropdown() {
 
           <DropdownMenuSeparator />
           
-          <div className="flex items-center justify-between px-2 py-1.5 mb-1">
-            <span className="text-sm flex items-center gap-2">
+          <div className="mb-1 flex items-center justify-between px-2 py-1.5">
+            <span className="flex items-center gap-2 text-sm">
               <Settings className="h-4 w-4 text-muted-foreground" />
               System Theme
             </span>
@@ -92,7 +92,7 @@ export function ProfileDropdown() {
 
           <DropdownMenuSeparator />
           <DropdownMenuItem 
-            className="cursor-pointer text-red-500 focus:text-red-400 focus:bg-red-500/10"
+            className="cursor-pointer text-red-500 focus:bg-red-500/10 focus:text-red-400"
             onClick={() => signOut()}
           >
             <LogOut className="mr-2 h-4 w-4" />

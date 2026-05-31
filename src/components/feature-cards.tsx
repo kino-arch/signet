@@ -34,6 +34,7 @@ export function FeatureCards() {
   const mountedRef = useRef(true)
 
   useEffect(() => {
+    mountedRef.current = true;
     const progressInterval = setInterval(() => {
       if (!mountedRef.current) return
 
@@ -92,7 +93,7 @@ export function FeatureCards() {
           <button
             key={feature.title}
             type="button"
-            className={`relative flex flex-1 cursor-pointer flex-col gap-2 border-b px-6 py-5 text-left transition-colors md:border-r md:border-b-0 last:border-r-0 last:border-b-0 ${
+            className={`relative flex flex-1 cursor-pointer flex-col gap-2 border-b px-6 py-5 text-left transition-colors last:border-r-0 last:border-b-0 md:border-r md:border-b-0 ${
               activeCard === i ? "bg-accent" : "hover:bg-accent/50"
             }`}
             onClick={() => handleCardClick(i)}

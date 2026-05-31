@@ -40,19 +40,16 @@ export function ShineBorder({
   const colorString =
     Array.isArray(color) && color.length > 0 ? color.join(",") : String(color)
 
-  const rootStyle: React.CSSProperties = {
+  const rootStyle = {
     // Expose variables for internal CSS
     // Note: These are referenced by the <style> block below
     // for animation, masking, and layout.
     // Using px ensures predictable rendering.
     // Consumers can still style the wrapper via className or style if desired.
-    //@ts-ignore: CSS variables allowed at runtime
     "--sb-border-radius": `${borderRadius}px`,
-    //@ts-ignore
     "--sb-border-width": `${borderWidth}px`,
-    //@ts-ignore
     "--sb-duration": `${duration}s`,
-  }
+  } as React.CSSProperties
 
   const overlayStyle: React.CSSProperties = {
     position: "absolute",
@@ -67,10 +64,10 @@ export function ShineBorder({
     // WebKit/Safari
     WebkitMask:
       "linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0)",
-    WebkitMaskComposite: "xor" as any,
+    WebkitMaskComposite: "xor" as string,
     // Standard (Chromium/Firefox)
     mask: "linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0)",
-    maskComposite: "exclude" as any,
+    maskComposite: "exclude" as string,
     pointerEvents: "none",
   }
 

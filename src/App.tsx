@@ -62,7 +62,7 @@ function AuthInitializer({ children }: { children: React.ReactNode }) {
 
 export function App() {
   return (
-    <div className="font-sans antialiased min-h-screen bg-background text-foreground">
+    <div className="min-h-screen bg-background font-sans text-foreground antialiased">
       <TooltipProvider>
         <BrowserRouter>
           <AuthInitializer>

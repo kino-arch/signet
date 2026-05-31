@@ -162,7 +162,7 @@ export function UserProfile() {
         {/* ── Guild Standing Card (inspired by GlassWalletCard) ── */}
         <Card className="group relative overflow-hidden border-border/50 backdrop-blur-md transition-all duration-300 hover:border-primary/50 hover:shadow-xl hover:shadow-primary/10">
           {/* Abstract Background Shapes */}
-          <div className="absolute -right-16 -top-16 h-48 w-48 rounded-full bg-primary/10 blur-3xl transition-all duration-500 group-hover:bg-primary/20" />
+          <div className="absolute -top-16 -right-16 h-48 w-48 rounded-full bg-primary/10 blur-3xl transition-all duration-500 group-hover:bg-primary/20" />
           <div className="absolute -bottom-16 -left-16 h-48 w-48 rounded-full bg-secondary/10 blur-3xl transition-all duration-500 group-hover:bg-secondary/20" />
 
           <div className="relative flex h-full flex-col justify-between p-6">
@@ -217,7 +217,7 @@ export function UserProfile() {
         <Card className="group relative overflow-hidden border-border/50 backdrop-blur-md transition-all duration-300 hover:border-primary/50 hover:shadow-xl hover:shadow-primary/10">
           <div
             aria-hidden="true"
-            className="absolute inset-0 bg-gradient-to-br from-foreground/[0.04] via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100 -z-10"
+            className="absolute inset-0 -z-10 bg-gradient-to-br from-foreground/[0.04] via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100"
           />
           <div className="relative flex h-full flex-col justify-between p-6">
             <div className="flex items-start justify-between">
@@ -279,13 +279,13 @@ export function UserProfile() {
       {/* ROW 2: Main Profile Form (inspired by DetailTaskCard)              */}
       {/* ================================================================== */}
       <Card className="group relative overflow-hidden border-border/40 text-foreground backdrop-blur transition-all hover:border-border/60 hover:shadow-lg">
-        <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-foreground/[0.04] via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100 -z-10" />
+        <div className="pointer-events-none absolute inset-0 -z-10 bg-gradient-to-br from-foreground/[0.04] via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
 
         <CardHeader className="relative gap-3 border-b border-border/40 bg-background/40 px-6 py-6">
           <Badge variant="secondary" className="w-fit">
             Identity Core
           </Badge>
-          <CardTitle className="text-sm font-semibold uppercase tracking-[0.25em] text-foreground">
+          <CardTitle className="text-sm font-semibold tracking-[0.25em] text-foreground uppercase">
             Profile Settings
           </CardTitle>
           <CardDescription className="text-sm text-muted-foreground">
@@ -305,7 +305,7 @@ export function UserProfile() {
             >
               {/* Avatar Upload */}
               <div className="flex flex-col items-center gap-4 md:col-span-2">
-                <div className="flex flex-col items-center gap-4  border border-border/60 bg-background/40 p-6 backdrop-blur w-full">
+                <div className="flex w-full flex-col items-center  gap-4 border border-border/60 bg-background/40 p-6 backdrop-blur">
                   <Avatar className="h-24 w-24">
                     {basicInfo.avatarUrl ? (
                       <AvatarImage src={basicInfo.avatarUrl} className="object-cover" />
@@ -344,7 +344,7 @@ export function UserProfile() {
 
               {/* Name & Designation Fields */}
               <div className="space-y-6 md:col-span-3">
-                <span className="text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">
+                <span className="text-xs font-semibold tracking-[0.2em] text-muted-foreground uppercase">
                   Personal Details
                 </span>
                 <div className="grid gap-4 sm:grid-cols-2">
@@ -389,7 +389,7 @@ export function UserProfile() {
               className="space-y-4"
             >
               <div className="flex items-center justify-between">
-                <span className="text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">
+                <span className="text-xs font-semibold tracking-[0.2em] text-muted-foreground uppercase">
                   Contact Information
                 </span>
                 <Badge variant="outline">
@@ -475,7 +475,7 @@ export function UserProfile() {
               transition={{ duration: 0.35, ease: "easeOut", delay: 0.2 }}
               className="space-y-4"
             >
-              <span className="text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">
+              <span className="text-xs font-semibold tracking-[0.2em] text-muted-foreground uppercase">
                 Professional Summary
               </span>
               <div className="space-y-2">

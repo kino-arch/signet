@@ -13,10 +13,10 @@ export function Sidebar({ className }: { className?: string }) {
 
   return (
     <aside className={className}>
-      <div className="flex h-16 items-center px-6 border-b border-zinc-800">
+      <div className="flex h-16 items-center border-b border-zinc-800 px-6">
         <Logo size="md" />
       </div>
-      <div className="flex flex-col justify-between h-[calc(100vh-4rem)] p-4">
+      <div className="flex h-[calc(100vh-4rem)] flex-col justify-between p-4">
         <nav className="space-y-2">
           <div className="mb-4 px-2 font-mono text-[10px] tracking-widest text-zinc-500 uppercase">Primary Operations</div>
           {links.map((link) => {

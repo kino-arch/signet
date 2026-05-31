@@ -32,7 +32,7 @@ export function AvantGardeTemplate() {
 
   return (
     <div
-      className="relative min-h-full w-full print:p-0 print:overflow-visible"
+      className="relative min-h-full w-full print:overflow-visible print:p-0"
       style={{
         backgroundColor: BASE,
         color: BODY,

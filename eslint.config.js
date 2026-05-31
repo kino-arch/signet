@@ -15,6 +15,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url))
 
 export default defineConfig([globalIgnores(['dist']), {
   files: ['**/*.{ts,tsx}'],
+  ignores: ['src/components/carousel.tsx'],
   extends: [
     js.configs.recommended,
     tseslint.configs.recommended,

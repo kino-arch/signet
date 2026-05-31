@@ -6,7 +6,7 @@ import {
   useSensor,
   useSensors,
 } from "@dnd-kit/core";
-import type { DragEndEvent, DragStartEvent } from "@dnd-kit/core";
+import type { DragEndEvent } from "@dnd-kit/core";
 import {
   SortableContext,
   useSortable,
@@ -110,7 +110,7 @@ function SkillBlock({ entry }: { entry: SkillEntry }) {
         <button
           {...attributes}
           {...listeners}
-          className="touch-none shrink-0 cursor-grab active:cursor-grabbing text-muted-foreground/40 hover:text-muted-foreground transition-colors p-1 rounded"
+          className="shrink-0 cursor-grab touch-none rounded p-1 text-muted-foreground/40 transition-colors hover:text-muted-foreground active:cursor-grabbing"
           aria-label="Drag to reorder"
         >
           <GripVertical className="h-4 w-4" />
@@ -120,12 +120,12 @@ function SkillBlock({ entry }: { entry: SkillEntry }) {
           value={entry.name}
           onChange={(e) => updateSkillEntry(entry.id, { name: e.target.value })}
           placeholder="Skill category name..."
-          className="flex-1 h-7 bg-background/50 text-sm font-medium border-0 border-b border-border/40 rounded-none focus-visible:ring-0 px-0"
+          className="h-7 flex-1 rounded-none border-0 border-b border-border/40 bg-background/50 px-0 text-sm font-medium focus-visible:ring-0"
         />
 
         <button
           onClick={() => removeSkillEntry(entry.id)}
-          className="p-1.5 text-muted-foreground/50 hover:text-destructive transition-colors rounded shrink-0"
+          className="shrink-0 rounded p-1.5 text-muted-foreground/50 transition-colors hover:text-destructive"
           aria-label="Remove skill"
         >
           <Trash2 className="h-3.5 w-3.5" />
@@ -134,18 +134,18 @@ function SkillBlock({ entry }: { entry: SkillEntry }) {
 
       {/* Keywords / Tags */}
       <div className="space-y-2">
-        <Label className="text-[10px] uppercase tracking-widest text-muted-foreground">Keywords</Label>
-        <div className="flex flex-wrap gap-1.5 min-h-[28px]">
+        <Label className="text-[10px] tracking-widest text-muted-foreground uppercase">Keywords</Label>
+        <div className="flex min-h-[28px] flex-wrap gap-1.5">
           {entry.keywords.map((kw) => (
             <Badge
               key={kw}
               variant="secondary"
-              className="gap-1 text-xs py-0.5 cursor-default group"
+              className="group cursor-default gap-1 py-0.5 text-xs"
             >
               {kw}
               <button
                 onClick={() => removeKeyword(kw)}
-                className="opacity-50 group-hover:opacity-100 transition-opacity"
+                className="opacity-50 transition-opacity group-hover:opacity-100"
               >
                 <X className="h-2.5 w-2.5" />
               </button>
@@ -171,7 +171,7 @@ function SkillBlock({ entry }: { entry: SkillEntry }) {
             size="sm"
             onClick={handleAiSuggest}
             disabled={isAiSuggesting || (!entry.name.trim() && !keywordInput.trim())}
-            className="h-7 px-2.5 text-[10px] uppercase tracking-widest text-primary border-primary/20 hover:bg-primary/10 gap-1.5"
+            className="h-7 gap-1.5 border-primary/20 px-2.5 text-[10px] tracking-widest text-primary uppercase hover:bg-primary/10"
             title="Auto-suggest keywords for this category or extract from input text"
           >
             {isAiSuggesting ? <Loader2 className="h-3 w-3 animate-spin" /> : <Sparkles className="h-3 w-3" />}
@@ -181,7 +181,7 @@ function SkillBlock({ entry }: { entry: SkillEntry }) {
             variant="ghost"
             size="sm"
             onClick={addKeyword}
-            className="h-7 px-2 text-xs text-muted-foreground hover:text-foreground shrink-0"
+            className="h-7 shrink-0 px-2 text-xs text-muted-foreground hover:text-foreground"
           >
             <Plus className="h-3 w-3" />
           </Button>
@@ -233,7 +233,7 @@ export function CoreCompetenciesArray() {
     useSensor(PointerSensor, { activationConstraint: { distance: 8 } })
   );
 
-  const handleDragStart = (_e: DragStartEvent) => {
+  const handleDragStart = () => {
     setSyncPaused(true);
   };
 
@@ -245,10 +245,14 @@ export function CoreCompetenciesArray() {
     }
   };
 
+  const handleDragCancel = () => {
+    setSyncPaused(false);
+  };
+
   return (
     <div className="space-y-3">
       <div className="flex items-center justify-between border-b border-border/20 pb-2">
-        <h3 className="text-sm font-bold text-primary tracking-widest uppercase">Core Competencies</h3>
+        <h3 className="text-sm font-bold tracking-widest text-primary uppercase">Core Competencies</h3>
         <Button
           variant="ghost"
           size="sm"
@@ -260,12 +264,12 @@ export function CoreCompetenciesArray() {
         </Button>
       </div>
 
-      <div className="bg-primary/5 border border-primary/20 rounded-md p-4 space-y-3">
+      <div className="space-y-3 rounded-md border border-primary/20 bg-primary/5 p-4">
         <div className="flex items-start gap-3">
-          <Sparkles className="w-4 h-4 text-primary mt-1 shrink-0" />
-          <div className="space-y-1.5 flex-1">
-            <Label className="text-xs uppercase tracking-widest text-primary font-bold">Auto-Distill Competencies</Label>
-            <p className="text-[11px] text-muted-foreground leading-relaxed">
+          <Sparkles className="mt-1 h-4 w-4 shrink-0 text-primary" />
+          <div className="flex-1 space-y-1.5">
+            <Label className="text-xs font-bold tracking-widest text-primary uppercase">Auto-Distill Competencies</Label>
+            <p className="text-[11px] leading-relaxed text-muted-foreground">
               Describe your strengths, tools, and expertise in plain English. The AI will extract and structure them into ATS-optimized keywords.
             </p>
             <textarea
@@ -273,14 +277,14 @@ export function CoreCompetenciesArray() {
               onChange={(e) => setAiInput(e.target.value)}
               disabled={isAiLoading}
               placeholder="e.g. I am great at managing frontend teams using React, TypeScript, and Vite. I also know a bit of Node.js for backend work."
-              className="w-full mt-2 min-h-[60px] p-2.5 bg-background/50 border border-input rounded-md text-xs focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary resize-none text-foreground placeholder:text-muted-foreground/50"
+              className="mt-2 min-h-[60px] w-full resize-none rounded-md border border-input bg-background/50 p-2.5 text-xs text-foreground placeholder:text-muted-foreground/50 focus-visible:ring-1 focus-visible:ring-primary focus-visible:outline-none"
             />
             <div className="flex justify-end pt-1">
               <Button
                 size="sm"
                 onClick={handleDistill}
                 disabled={isAiLoading || !aiInput.trim()}
-                className="h-7 gap-1.5 text-[10px] uppercase tracking-widest bg-primary text-primary-foreground hover:bg-primary/90"
+                className="h-7 gap-1.5 bg-primary text-[10px] tracking-widest text-primary-foreground uppercase hover:bg-primary/90"
               >
                 {isAiLoading && <Loader2 className="h-3 w-3 animate-spin" />}
                 Distill Keywords
@@ -292,7 +296,7 @@ export function CoreCompetenciesArray() {
 
       {skills.length === 0 && (
         <div
-          className="flex flex-col items-center justify-center gap-2 rounded-lg border border-dashed border-border/30 p-6 cursor-pointer hover:border-border/50 transition-colors text-center"
+          className="flex cursor-pointer flex-col items-center justify-center gap-2 rounded-lg border border-dashed border-border/30 p-6 text-center transition-colors hover:border-border/50"
           onClick={addSkillEntry}
         >
           <Plus className="h-5 w-5 text-muted-foreground/50" />
@@ -305,6 +309,7 @@ export function CoreCompetenciesArray() {
         collisionDetection={closestCenter}
         onDragStart={handleDragStart}
         onDragEnd={handleDragEnd}
+        onDragCancel={handleDragCancel}
       >
         <SortableContext items={skills.map((e) => e.id)} strategy={verticalListSortingStrategy}>
           <div className="space-y-2">

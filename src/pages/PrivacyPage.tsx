@@ -7,7 +7,7 @@ export function PrivacyPage() {
       <main className="mx-auto max-w-4xl px-4 py-24 sm:px-6 lg:px-8">
         <Link
           to="/"
-          className="mb-8 inline-flex items-center text-sm font-medium text-muted-foreground hover:text-primary transition-colors"
+          className="mb-8 inline-flex items-center text-sm font-medium text-muted-foreground transition-colors hover:text-primary"
         >
           <ArrowLeft className="mr-2 h-4 w-4" />
           Back to the Forge
@@ -31,7 +31,7 @@ export function PrivacyPage() {
               <p>
                 At Signet, we treat your professional data with the same security protocols used for Beskar alloys. We collect only the information necessary to forge your resume and optimize it for Applicant Tracking Systems (ATS).
               </p>
-              <ul className="list-disc pl-6 space-y-2">
+              <ul className="list-disc space-y-2 pl-6">
                 <li>
                   <strong>Account Information:</strong> When you authenticate via Google or create an account, we store your email address and basic profile information.
                 </li>
@@ -51,7 +51,7 @@ export function PrivacyPage() {
               <p>
                 Your data is utilized strictly for your advancement. We use the information we collect to:
               </p>
-              <ul className="list-disc pl-6 space-y-2">
+              <ul className="list-disc space-y-2 pl-6">
                 <li>Generate, format, and optimize your professional resumes.</li>
                 <li>Analyze ATS compatibility and suggest improvements via our AI models.</li>
                 <li>Process transactions and maintain your Beskar Exchange token balance.</li>
@@ -66,7 +66,7 @@ export function PrivacyPage() {
               <p>
                 We do not sell your personal data to data brokers or third-party recruiters. We share your data only with trusted infrastructure partners required to operate our service:
               </p>
-              <ul className="list-disc pl-6 space-y-2">
+              <ul className="list-disc space-y-2 pl-6">
                 <li>
                   <strong>Authentication:</strong> Google (for OAuth login) and Supabase (for secure credential management).
                 </li>

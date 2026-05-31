@@ -88,7 +88,7 @@ export const RippleButton = React.forwardRef<
         <span className="pointer-events-none absolute inset-0">
           {buttonRipples.map((ripple) => (
             <span
-              className="animate-rippling absolute rounded-full opacity-30"
+              className="absolute animate-rippling rounded-full opacity-30"
               key={ripple.key}
               style={
                 {

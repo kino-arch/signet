@@ -11,6 +11,7 @@ export function ModeToggle() {
   const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setMounted(true)
   }, [])
 
@@ -20,7 +21,7 @@ export function ModeToggle() {
     <div className="flex flex-col justify-center">
       <div>
         <Toggle
-          className="group bg-secondary dark:bg-secondary data-[state=on]:hover:bg-muted size-9 cursor-pointer data-[state=on]:bg-transparent"
+          className="group size-9 cursor-pointer bg-secondary data-[state=on]:bg-transparent data-[state=on]:hover:bg-muted dark:bg-secondary"
           pressed={theme === "dark"}
           onPressedChange={() => setTheme(theme === "dark" ? "light" : "dark")}
           aria-label={`Switch to ${theme === "dark" ? "light" : "dark"} mode`}

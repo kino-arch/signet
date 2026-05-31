@@ -159,12 +159,13 @@ async function ensureFreshSession(): Promise<boolean> {
 function stripVolatileFields<T extends Record<string, unknown>>(
   entries: T[]
 ): Omit<T, "id" | "ai_proposal" | "ai_loading">[] {
-  return entries.map(({ id: _id, ai_proposal: _ap, ai_loading: _al, ...rest }) => rest) as any;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  return entries.map(({ id: _id, ai_proposal: _ap, ai_loading: _al, ...rest }) => rest) as unknown as Omit<T, "id" | "ai_proposal" | "ai_loading">[];
 }
 
 // ─── Store Factory ────────────────────────────────────────────────────────────
 export const useDataSlateStore = create<DataSlateStore>((set, get) => {
-  let debounceTimers: Record<string, ReturnType<typeof setTimeout>> = {};
+  const debounceTimers: Record<string, ReturnType<typeof setTimeout>> = {};
   let syncPaused = false;
   // Track which sections have pending debounced writes
   const pendingSections = new Set<"basics" | "work" | "skills" | "education" | "certifications">();
@@ -463,8 +464,9 @@ export const useDataSlateStore = create<DataSlateStore>((set, get) => {
         setTimeout(() => {
           if (get().syncState === "SECURED") set({ syncState: "IDLE" });
         }, 2000);
-      } catch (err: any) {
-        console.error(`Sync failed for ${sectionType}:`, err?.message || err);
+      } catch (err: unknown) {
+        const error = err as Error;
+        console.error(`Sync failed for ${sectionType}:`, error?.message || err);
         set({ syncState: "ERROR" });
 
         // Retry once after 3 seconds for transient failures

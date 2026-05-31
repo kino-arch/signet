@@ -14,7 +14,7 @@ export function NavDocuments({
   items: {
     name: string
     url: string
-    icon: any
+    icon: React.ElementType
   }[]
 }) {
   return (

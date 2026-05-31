@@ -31,7 +31,7 @@ export function PureBeskarTemplate() {
 
   return (
     <div
-      className="relative min-h-full w-full bg-white print:p-0 print:overflow-visible"
+      className="relative min-h-full w-full bg-white print:overflow-visible print:p-0"
       style={{
         color: INK,
         fontFamily: SERIF,

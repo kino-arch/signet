@@ -116,10 +116,10 @@ export function PricingSection() {
                 aria-label={`${plan.name} plan${plan.popular ? ', most popular' : ''}`}
               >
                 {plan.popular && (
-                  <div className="absolute top-3 right-3 sm:top-4 sm:right-4 z-10">
+                  <div className="absolute top-3 right-3 z-10 sm:top-4 sm:right-4">
                     <Badge
                       variant="default"
-                      className="text-xs font-medium sm:text-sm shadow-[0_0_15px_rgba(var(--primary),0.5)]"
+                      className="text-xs font-medium shadow-[0_0_15px_rgba(var(--primary),0.5)] sm:text-sm"
                       aria-label="Most popular plan"
                     >
                       Popular
@@ -128,14 +128,14 @@ export function PricingSection() {
                 )}
 
                 <CardHeader className="px-4 pt-6 pb-6 sm:px-6 sm:pt-8 sm:pb-8">
-                  <CardTitle className="font-heading text-lg font-bold sm:text-xl text-foreground">
+                  <CardTitle className="font-heading text-lg font-bold text-foreground sm:text-xl">
                     {plan.name}
                   </CardTitle>
                   <div className="mt-3 flex items-baseline gap-1.5 sm:mt-4">
                     <span className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
                       {localization.loading ? "..." : displayPrice}
                     </span>
-                    <span className="font-mono text-[11px] font-bold uppercase tracking-wider text-primary">
+                    <span className="font-mono text-[11px] font-bold tracking-wider text-primary uppercase">
                       / {plan.tokens} {plan.tokens === 1 ? "token" : "tokens"}
                     </span>
                   </div>
@@ -212,7 +212,7 @@ export function PricingSection() {
           initial={{ opacity: 0 }}
           animate={isInView ? { opacity: 1 } : { opacity: 0 }}
           transition={{ duration: 0.6, delay: 0.5 }}
-          className="mt-8 flex items-center justify-center text-xs text-muted-foreground gap-2"
+          className="mt-8 flex items-center justify-center gap-2 text-xs text-muted-foreground"
         >
           <Info className="h-4 w-4" />
           <span>Prices are estimates based on your location. Final exact pricing in your local currency is calculated securely at checkout.</span>

@@ -42,7 +42,7 @@ export function AddTargetDialog() {
     reset,
     formState: { errors },
   } = useForm<FormValues>({
-    defaultValues: { status: "lead" },
+    defaultValues: { status: "lead", notes: "" },
   });
 
   const onSubmit = (data: FormValues) => {

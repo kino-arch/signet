@@ -81,10 +81,10 @@ export function KanbanCard({ application, isDragOverlay = false }: KanbanCardPro
 
         {/* Company + Role */}
         <div className="-mt-1">
-          <p className="font-heading text-sm font-semibold text-foreground leading-tight">
+          <p className="font-heading text-sm leading-tight font-semibold text-foreground">
             {application.company}
           </p>
-          <p className="mt-0.5 text-xs text-muted-foreground leading-snug">
+          <p className="mt-0.5 text-xs leading-snug text-muted-foreground">
             {application.role}
           </p>
         </div>

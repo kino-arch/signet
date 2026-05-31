@@ -7,7 +7,7 @@ export function TextScrambleEffect({ text, className }: { text: string; classNam
   useEffect(() => {
     let iteration = 0;
     const interval = setInterval(() => {
-      setDisplayText((_prev) =>
+      setDisplayText(() =>
         text
           .split("")
           .map((_letter, index) => {

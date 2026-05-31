@@ -7,7 +7,7 @@ export function TermsPage() {
       <main className="mx-auto max-w-4xl px-4 py-24 sm:px-6 lg:px-8">
         <Link
           to="/"
-          className="mb-8 inline-flex items-center text-sm font-medium text-muted-foreground hover:text-primary transition-colors"
+          className="mb-8 inline-flex items-center text-sm font-medium text-muted-foreground transition-colors hover:text-primary"
         >
           <ArrowLeft className="mr-2 h-4 w-4" />
           Back to the Forge
@@ -49,7 +49,7 @@ export function TermsPage() {
               <p>
                 As a user of Signet, you agree to:
               </p>
-              <ul className="list-disc pl-6 space-y-2">
+              <ul className="list-disc space-y-2 pl-6">
                 <li>Provide accurate and truthful information regarding your professional experience.</li>
                 <li>Maintain the confidentiality of your account credentials.</li>
                 <li>Refrain from attempting to reverse engineer, disrupt, or exploit the platform's infrastructure or AI models.</li>
@@ -64,7 +64,7 @@ export function TermsPage() {
               <p>
                 Certain premium features, such as advanced AI re-forging and deep ATS diagnostics, require the expenditure of internal tokens ("Beskar").
               </p>
-              <ul className="list-disc pl-6 space-y-2">
+              <ul className="list-disc space-y-2 pl-6">
                 <li>Tokens are purchased via our secure payment provider (Stripe) and are non-refundable once used.</li>
                 <li>Token packages are billed at the time of purchase in your local currency, based on real-time or fallback exchange rates.</li>
                 <li>Signet reserves the right to adjust the token cost of specific AI operations based on underlying compute costs.</li>

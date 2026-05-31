@@ -56,9 +56,9 @@ export function ReforgeSummaryModal({
             setProposal(result);
             setIsLoading(false);
           }
-        } catch (err: any) {
+        } catch (err: unknown) {
           if (isMounted) {
-            setProposal(`⚠️ Reforge failed: ${err.message}`);
+            setProposal(`⚠️ Reforge failed: ${(err as Error).message}`);
             setIsLoading(false);
           }
         }
@@ -148,9 +148,9 @@ export function ReforgeSummaryModal({
           }
         }
         if (isMounted) setIsLoading(false);
-      } catch (err: any) {
+      } catch (err: unknown) {
         if (isMounted) {
-          setProposal(`⚠️ Reforge failed: ${err.message}`);
+          setProposal(`⚠️ Reforge failed: ${(err as Error).message}`);
           setIsLoading(false);
         }
       }
@@ -159,6 +159,7 @@ export function ReforgeSummaryModal({
     streamData();
 
     return () => { isMounted = false; };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpen, isLoading, rawText, targetRole]);
 
   if (!isOpen) return null;
@@ -170,34 +171,34 @@ export function ReforgeSummaryModal({
         animate={{ opacity: 1, y: 0, height: "auto" }}
         exit={{ opacity: 0, y: 8, height: 0 }}
         transition={{ duration: 0.2 }}
-        className="mt-3 rounded-lg border border-primary/30 bg-background overflow-hidden shadow-lg shadow-primary/5"
+        className="mt-3 overflow-hidden rounded-lg border border-primary/30 bg-background shadow-lg shadow-primary/5"
       >
-        <div className="flex items-center justify-between px-4 py-2.5 bg-primary/5 border-b border-primary/20">
+        <div className="flex items-center justify-between border-b border-primary/20 bg-primary/5 px-4 py-2.5">
           <div className="flex items-center gap-2">
             <Zap className="h-3.5 w-3.5 text-primary" />
-            <span className="text-xs font-bold text-primary tracking-widest uppercase font-mono">
+            <span className="font-mono text-xs font-bold tracking-widest text-primary uppercase">
               System Override (Summary)
             </span>
           </div>
           {isLoading && (
             <div className="flex items-center gap-1.5 text-amber-500">
               <Loader2 className="h-3.5 w-3.5 animate-spin" />
-              <span className="text-[10px] uppercase tracking-widest font-mono">Processing</span>
+              <span className="font-mono text-[10px] tracking-widest uppercase">Processing</span>
             </div>
           )}
         </div>
 
-        <div className="p-4 text-sm text-foreground/90 whitespace-pre-wrap leading-relaxed border-l-2 border-primary/40 ml-4 pl-4 my-2 font-mono">
+        <div className="my-2 ml-4 border-l-2 border-primary/40 p-4 pl-4 font-mono text-sm leading-relaxed whitespace-pre-wrap text-foreground/90">
           {proposal || (isLoading ? "Connecting to Datacore..." : "")}
         </div>
 
         {!isLoading && proposal && (
-          <div className="flex items-center justify-end gap-2 px-4 py-3 bg-secondary/30 border-t border-border/40">
+          <div className="flex items-center justify-end gap-2 border-t border-border/40 bg-secondary/30 px-4 py-3">
             <Button
               variant="outline"
               size="sm"
               onClick={onClose}
-              className="h-8 gap-1.5 text-xs text-muted-foreground hover:text-foreground font-mono uppercase tracking-wider"
+              className="h-8 gap-1.5 font-mono text-xs tracking-wider text-muted-foreground uppercase hover:text-foreground"
             >
               <XCircle className="h-3.5 w-3.5" />
               Discard

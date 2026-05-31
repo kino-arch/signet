@@ -28,7 +28,7 @@ export function LivePreview() {
 
       {/* A4 Paper Container - 1:1.414 Aspect Ratio */}
       {/* bg-white is intentional: resume output must always be white regardless of dark/light mode */}
-      <div className="relative aspect-[1/1.414] w-full max-w-[800px] overflow-hidden  border border-border/40 bg-white shadow-[0_8px_48px_rgba(0,0,0,0.22)] ring-1 ring-black/5 transition-all duration-300 print:m-0 print:aspect-auto print:min-h-[297mm] print:h-auto print:w-[210mm] print:max-w-none print:border-none print:bg-white print:p-0 print:shadow-none print:overflow-visible">
+      <div className="relative aspect-[1/1.414] w-full max-w-[800px] overflow-hidden  border border-border/40 bg-white shadow-[0_8px_48px_rgba(0,0,0,0.22)] ring-1 ring-black/5 transition-all duration-300 print:m-0 print:aspect-auto print:h-auto print:min-h-[297mm] print:w-[210mm] print:max-w-none print:overflow-visible print:border-none print:bg-white print:p-0 print:shadow-none">
         {activeTemplate === "pure-beskar" && <PureBeskarTemplate />}
         {activeTemplate === "operative" && <OperativeTemplate data={resumeData} />}
         {activeTemplate === "minimal" && <MinimalTemplate />}

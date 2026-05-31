@@ -13,7 +13,7 @@ import {
 
 export function SiteHeader() {
   return (
-    <header className="flex h-14 shrink-0 items-center justify-between border-b border-border/40 bg-background/50 backdrop-blur-md px-4 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12">
+    <header className="flex h-14 shrink-0 items-center justify-between border-b border-border/40 bg-background/50 px-4 backdrop-blur-md transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12">
       <div className="flex items-center gap-2">
         <SidebarTrigger className="-ml-1" />
         <div className="mr-2 h-4 w-[1px] bg-border" />

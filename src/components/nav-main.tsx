@@ -14,7 +14,7 @@ export function NavMain({
   items: {
     title: string
     url: string
-    icon: any
+    icon: React.ElementType
     isActive?: boolean
   }[]
 }) {

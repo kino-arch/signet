@@ -54,7 +54,7 @@ export function SkillsForm() {
           
           <div className="flex min-h-[120px] flex-wrap items-start gap-2  border border-input bg-background/50 px-3 py-3 shadow-sm focus-within:ring-1 focus-within:ring-ring">
             {skills.map((skill, idx) => (
-              <Badge key={`${skill}-${idx}`} variant="secondary" className="flex h-auto max-w-full items-center gap-1 whitespace-normal break-words px-2 py-1 text-left text-sm font-medium">
+              <Badge key={`${skill}-${idx}`} variant="secondary" className="flex h-auto max-w-full items-center gap-1 px-2 py-1 text-left text-sm font-medium break-words whitespace-normal">
                 <span className="flex-1 break-words">{skill}</span>
                 <button
                   type="button"
@@ -72,11 +72,11 @@ export function SkillsForm() {
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
               onKeyDown={handleKeyDown}
-              className="flex-1 bg-transparent px-1 py-0.5 text-sm outline-none placeholder:text-muted-foreground min-w-[120px]"
+              className="min-w-[120px] flex-1 bg-transparent px-1 py-0.5 text-sm outline-none placeholder:text-muted-foreground"
             />
             <Popover>
                 <PopoverTrigger asChild>
-                  <Button variant="outline" size="sm" className="h-8 gap-2 text-primary hover:text-primary hover:bg-primary/10 border-primary/20 bg-primary/5">
+                  <Button variant="outline" size="sm" className="h-8 gap-2 border-primary/20 bg-primary/5 text-primary hover:bg-primary/10 hover:text-primary">
                     <Sparkles className="h-3.5 w-3.5" />
                     FAANG Suggestions
                     <ChevronDown className="h-3 w-3 opacity-50" />
@@ -103,7 +103,7 @@ export function SkillsForm() {
                                   onClick={() => updateSkills([...skills, skill])}
                                   className={`inline-flex items-center rounded-md border px-2 py-0.5 text-[11px] transition-colors ${
                                     isAdded
-                                      ? "border-transparent bg-secondary/50 text-muted-foreground opacity-50 cursor-not-allowed"
+                                      ? "cursor-not-allowed border-transparent bg-secondary/50 text-muted-foreground opacity-50"
                                       : "border-border bg-background text-muted-foreground hover:border-primary/50 hover:text-foreground"
                                   }`}
                                 >
