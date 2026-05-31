@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
+import { OpenBetaBadge } from '@/components/ui/open-beta-badge';
 import { Progress } from '@/components/ui/progress';
 import { useTargetLock } from '@/lib/useTargetLock';
 import { useForgeStore } from '@/store/useForgeStore';
@@ -63,7 +64,7 @@ export function TargetLockPanel({ onComplete }: { onComplete?: () => void }) {
           </div>
           <div>
             <h2 className="text-2xl font-bold tracking-tight text-foreground uppercase flex items-center gap-2">
-              Target Lock <Badge variant="outline" className="text-primary border-primary">BETA</Badge>
+              Target Lock <OpenBetaBadge title="BETA" className="text-primary border-primary" />
             </h2>
             <p className="text-sm text-muted-foreground">AI-Powered Company Intelligence & Resume Strategy</p>
           </div>
