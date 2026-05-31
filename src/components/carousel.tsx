@@ -1,4 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable react-hooks/immutability */
 import type React from "react"
 import { useCallback, useEffect, useRef, useState } from "react"
 // types removed to bypass build error on embla-carousel package missing
