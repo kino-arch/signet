@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import rawData from "@/data/resumeData.json";
+import type { TargetLockBriefing } from "@/lib/useTargetLock";
 
 export interface BasicInfo {
   firstName: string;
@@ -73,47 +73,31 @@ interface ForgeState {
   // Privacy
   persistConsent: boolean;
   setPersistConsent: (consent: boolean) => void;
+  // Target Lock
+  targetLockBriefing: TargetLockBriefing | null;
+  targetLockCompany: string | null;
+  targetLockJobTitle: string | null;
+  setTargetLockBriefing: (briefing: TargetLockBriefing | null) => void;
+  setTargetLockCompany: (company: string | null, jobTitle?: string | null) => void;
+  applyTargetLock: () => void;
+  clearTargetLock: () => void;
 }
 
 const defaultResumeData: ResumeData = {
   basicInfo: {
-    firstName: rawData.profile.name.split(" ")[0] || "",
-    lastName: rawData.profile.name.split(" ")[1] || "",
-    designation: rawData.profile.title,
-    email: rawData.profile.email,
-    phone: rawData.profile.phone,
-    location: rawData.profile.location,
+    firstName: "",
+    lastName: "",
+    designation: "",
+    email: "",
+    phone: "",
+    location: "",
     website: "",
-    summary: rawData.profile.summary,
+    summary: "",
     avatarUrl: "",
   },
-  experience: rawData.workExperience.map((exp, idx) => {
-    const dates = exp.period.split(" - ");
-    return {
-      id: `exp-${idx + 1}`,
-      company: exp.company,
-      role: exp.role,
-      startDate: dates[0] || "",
-      endDate: dates[1] === "Present" ? "" : (dates[1] || ""),
-      current: dates[1] === "Present",
-      description: "",
-      highlights: exp.highlights
-    };
-  }),
-  education: rawData.education.map((edu, idx) => {
-    const dates = edu.period.split(" - ");
-    return {
-      id: `edu-${idx + 1}`,
-      institution: edu.institution,
-      degree: edu.degree,
-      field: "",
-      startDate: dates[0] || "",
-      endDate: dates[1] || "",
-      current: false,
-      score: "",
-    };
-  }),
-  skills: rawData.technicalSkills
+  experience: [],
+  education: [],
+  skills: [],
 };
 
 export const useForgeStore = create<ForgeState>()(
@@ -124,6 +108,85 @@ export const useForgeStore = create<ForgeState>()(
       resumeData: defaultResumeData,
       persistConsent: false,
       setPersistConsent: (consent) => set({ persistConsent: consent }),
+      targetLockBriefing: null,
+      targetLockCompany: null,
+      targetLockJobTitle: null,
+      setTargetLockBriefing: (briefing) => set({ targetLockBriefing: briefing }),
+      setTargetLockCompany: (company, jobTitle) => set({ targetLockCompany: company, targetLockJobTitle: jobTitle || null }),
+      clearTargetLock: () => set({ targetLockBriefing: null, targetLockCompany: null, targetLockJobTitle: null }),
+      applyTargetLock: () =>
+        set((state) => {
+          if (!state.targetLockBriefing) return state;
+          
+          const { summary_draft, skills_priority } = state.targetLockBriefing.resume_strategy;
+          const targetDesignation = state.targetLockJobTitle || state.resumeData.basicInfo.designation;
+
+          // Sentinel strings that identify fantasy / onboarding placeholder entries
+          const PLACEHOLDER_COMPANIES = new Set([
+            'The Outer Rim Guilds',
+            'Your Company Name',
+            'the outer rim guilds',
+            'your company name',
+          ]);
+          const PLACEHOLDER_INSTITUTIONS = new Set([
+            'The Academy of Mandalore',
+            'Your University',
+            'the academy of mandalore',
+            'your university',
+          ]);
+
+          // Filter out placeholder experience entries
+          const cleanedExperience = state.resumeData.experience.filter(
+            exp => !PLACEHOLDER_COMPANIES.has(exp.company) && !PLACEHOLDER_COMPANIES.has(exp.company.toLowerCase())
+          );
+
+          // If ALL experience was placeholder (or empty), seed one blank entry for the target role
+          const finalExperience = cleanedExperience.length > 0
+            ? cleanedExperience
+            : [{
+                id: `exp-tl-${Date.now()}`,
+                company: '',
+                role: targetDesignation,
+                startDate: '',
+                endDate: '',
+                current: false,
+                description: '',
+                highlights: [],
+              }];
+
+          // Filter out placeholder education entries
+          const cleanedEducation = state.resumeData.education.filter(
+            edu => !PLACEHOLDER_INSTITUTIONS.has(edu.institution) && !PLACEHOLDER_INSTITUTIONS.has(edu.institution.toLowerCase())
+          );
+
+          // If ALL education was placeholder (or empty), seed one blank entry
+          const finalEducation = cleanedEducation.length > 0
+            ? cleanedEducation
+            : [{
+                id: `edu-tl-${Date.now()}`,
+                institution: '',
+                degree: '',
+                field: '',
+                startDate: '',
+                endDate: '',
+                current: false,
+                score: '',
+              }];
+
+          return {
+            resumeData: {
+              ...state.resumeData,
+              basicInfo: {
+                ...state.resumeData.basicInfo,
+                summary: summary_draft || state.resumeData.basicInfo.summary,
+                designation: targetDesignation,
+              },
+              skills: skills_priority,
+              experience: finalExperience,
+              education: finalEducation,
+            }
+          };
+        }),
       updateBasicInfo: (info) =>
         set((state) => ({
           resumeData: {
@@ -206,58 +269,58 @@ export const useForgeStore = create<ForgeState>()(
             case "forge":
               return {
                 designation: "Software Engineer / Designer",
-                summary: "Builder of digital and physical infrastructure. Passionate about architecting resilient systems, crafting intuitive interfaces, and turning ideas into production-ready products. Driven by craftsmanship and technical excellence.",
-                experienceDescription: "Designed and engineered full-stack systems and visual interfaces for guild operations across the Outer Rim.",
+                summary: "Results-driven engineer and designer with a passion for building scalable systems and intuitive interfaces. Thrives at the intersection of technical excellence and user experience. Adept at taking products from concept to production across the full stack.",
+                experienceDescription: "Designed and engineered full-stack systems and customer-facing interfaces for a fast-growing SaaS platform.",
                 highlights: [
-                  "Architected a distributed ledger system for tracking Beskar transactions across 12 sectors",
-                  "Designed and shipped a helm-mounted HUD system used by 200+ Mandalorian operators",
-                  "Reduced infrastructure deployment time by 60% through automated forge pipelines",
+                  "Architected a distributed microservices backend serving 50,000+ daily active users",
+                  "Reduced page load times by 65% through frontend performance optimizations and caching strategies",
+                  "Led a cross-functional team to ship a major redesign, increasing user activation by 40%",
                 ],
-                skills: ["Software Engineering", "UI/UX Design", "System Architecture", "Cloud Infrastructure", "Prototyping & Iteration"],
+                skills: ["Software Engineering", "UI/UX Design", "System Architecture", "Cloud Infrastructure", "TypeScript", "React"],
               };
             case "outpost":
               return {
                 designation: "Customer Success Manager",
-                summary: "Frontline specialist in client relations, communication, and service delivery. Expert in managing high-stakes accounts, de-escalating tension in the field, and ensuring every client contract is honored with Beskar-grade integrity.",
-                experienceDescription: "Managed guild-client relations and frontline communications for high-value asset recovery operations.",
+                summary: "Customer-obsessed professional with a proven track record of building long-term client relationships, driving product adoption, and reducing churn. Skilled at translating complex technical concepts into clear business value for stakeholders at every level.",
+                experienceDescription: "Managed a portfolio of enterprise accounts and led onboarding programs for a B2B SaaS company.",
                 highlights: [
-                  "Maintained a 98% client satisfaction rating across 300+ active guild contracts",
-                  "Resolved critical service escalations within 2 hours average response time",
-                  "Onboarded 50+ new guild clients, reducing time-to-first-mission by 40%",
+                  "Maintained a 97% customer retention rate across a portfolio of 120+ enterprise accounts",
+                  "Reduced average onboarding time by 35% by designing a scalable self-serve training program",
+                  "Achieved NPS score of 72, ranking in the top 10% of the industry benchmark",
                 ],
-                skills: ["Client Relations", "Customer Success", "Conflict Resolution", "Service Delivery", "Account Management"],
+                skills: ["Client Relations", "Customer Success", "Churn Reduction", "Onboarding", "Stakeholder Communication", "CRM Tools"],
               };
             case "guild":
               return {
-                designation: "Operations & Leadership Director",
-                summary: "Strategic leader orchestrating cross-functional teams and large-scale operations. Expert at resource allocation, mission planning, and driving alignment across complex organizations. Commands from the war table with data and decisive action.",
-                experienceDescription: "Led multi-covert operations and managed resource allocation for guild campaigns spanning the Outer Rim.",
+                designation: "Director of Operations",
+                summary: "Operational leader with a track record of scaling teams, streamlining processes, and delivering complex multi-workstream initiatives on time and under budget. Bridges strategy and execution to align organizations around measurable outcomes.",
+                experienceDescription: "Led cross-functional operations and program management for a high-growth technology company.",
                 highlights: [
-                  "Directed a team of 40+ operators across 3 concurrent high-priority campaigns",
-                  "Managed annual resource budget of 50,000 Beskar tokens, delivering 15% under forecast",
-                  "Implemented agile war-table rituals, improving mission delivery speed by 30%",
+                  "Scaled the operations team from 12 to 45 people while maintaining quality and reducing cost-per-hire by 20%",
+                  "Managed an annual operational budget of $4.2M, consistently delivering 10–15% under forecast",
+                  "Implemented OKR framework across 6 departments, improving quarterly goal attainment by 30%",
                 ],
-                skills: ["Strategic Leadership", "Operations Management", "Resource Planning", "Stakeholder Alignment", "Team Orchestration"],
+                skills: ["Strategic Leadership", "Operations Management", "Resource Planning", "OKRs & KPIs", "Stakeholder Alignment", "Process Optimization"],
               };
             case "navigators":
               return {
-                designation: "Data & Growth Strategist",
-                summary: "Intelligence analyst and growth specialist charting pathways through complex market terrains. Combines deep data analysis with growth execution to identify opportunities, decode competitor movements, and deliver measurable impact.",
-                experienceDescription: "Analyzed hyperspace route intelligence and led growth campaigns targeting emerging Outer Rim markets.",
+                designation: "Growth & Strategy Analyst",
+                summary: "Data-driven growth strategist with expertise in market analysis, campaign performance, and go-to-market execution. Transforms complex datasets into actionable insights that move revenue, market share, and brand awareness forward.",
+                experienceDescription: "Led growth marketing and data analysis initiatives for a venture-backed technology startup.",
                 highlights: [
-                  "Grew guild's new sector acquisition by 150% through targeted intelligence campaigns",
-                  "Built market analysis dashboards tracking 20+ KPIs across 5 key trade routes",
-                  "Advised guild leadership on market timing, leading to 3 successful new territory launches",
+                  "Grew organic user acquisition by 180% YoY through targeted SEO and content strategies",
+                  "Built executive-level dashboards tracking 25+ KPIs across marketing, sales, and product",
+                  "Launched 3 new market segments, contributing $1.2M in new ARR within the first two quarters",
                 ],
-                skills: ["Data Analysis", "Growth Marketing", "Market Research", "Financial Modeling", "Campaign Strategy"],
+                skills: ["Growth Marketing", "Data Analysis", "Market Research", "SQL", "A/B Testing", "Campaign Strategy"],
               };
             default:
               return {
-                designation: "Guild Professional",
-                summary: "Highly motivated professional seeking to contribute skills to a forward-thinking guild and expand capabilities through challenging projects.",
-                experienceDescription: "Completed general contracts and training missions under guild supervision.",
-                highlights: ["Accomplished mission targets under tight deadlines", "Collaborated with team members to resolve operational blockers"],
-                skills: ["Guild Operations", "Problem Solving", "Adaptability", "Collaboration"],
+                designation: "Professional",
+                summary: "Motivated and adaptable professional with a strong work ethic and a commitment to continuous learning. Eager to contribute to a high-performing team and deliver meaningful results.",
+                experienceDescription: "Contributed to cross-functional projects and operational initiatives within a dynamic team environment.",
+                highlights: ["Delivered key project milestones on schedule", "Collaborated with cross-functional teams to resolve operational blockers"],
+                skills: ["Project Coordination", "Problem Solving", "Adaptability", "Collaboration", "Communication"],
               };
           }
         })();
@@ -279,7 +342,7 @@ export const useForgeStore = create<ForgeState>()(
             experience: [
               {
                 id: "exp-1",
-                company: "The Outer Rim Guilds",
+                company: "Your Company Name",
                 role: `Senior ${designation}`,
                 startDate: "2021-01",
                 endDate: "",
@@ -291,13 +354,13 @@ export const useForgeStore = create<ForgeState>()(
             education: [
               {
                 id: "edu-1",
-                institution: "The Academy of Mandalore",
-                degree: "Sworn Adept",
-                field: "The Way of the Creed",
+                institution: "Your University",
+                degree: "Bachelor of Science",
+                field: "Your Field of Study",
                 startDate: "2015-09",
                 endDate: "2019-06",
                 current: false,
-                score: "A+",
+                score: "",
               }
             ],
             skills,
@@ -307,43 +370,60 @@ export const useForgeStore = create<ForgeState>()(
     }),
     {
       name: "forge-resume-storage",
-      version: 1, // Bump version to trigger migration
+      version: 2, // Bump version to force migration and purge fantasy placeholder data
       migrate: (persistedState: any, version: number) => {
-        if (version === 0) {
-          // Migration from version 0 (unversioned) to 1
-          // Automatically scrub out the bad "Original base: ..." AI artifacts
-          const state = persistedState as ForgeState;
-          
-          if (state?.resumeData) {
-            // Clean basic info summary
-            if (state.resumeData.basicInfo?.summary) {
-              state.resumeData.basicInfo.summary = state.resumeData.basicInfo.summary
-                .replace(/Original base:.*$/s, "")
-                .trim();
-            }
+        const state = persistedState as ForgeState;
 
-            // Clean experience descriptions and highlights
-            if (state.resumeData.experience) {
-              state.resumeData.experience = state.resumeData.experience.map(exp => {
-                const cleanedDescription = (exp.description || "")
-                  .replace(/Original base:.*$/s, "")
-                  .trim();
-                
-                const cleanedHighlights = (exp.highlights || []).map(hl => 
-                  hl.replace(/Original base:.*$/s, "").trim()
-                );
-
-                return {
-                  ...exp,
-                  description: cleanedDescription,
-                  highlights: cleanedHighlights
-                };
-              });
-            }
+        // Migration v0 → v1: scrub "Original base:" AI artifacts
+        if (version === 0 && state?.resumeData) {
+          if (state.resumeData.basicInfo?.summary) {
+            state.resumeData.basicInfo.summary = state.resumeData.basicInfo.summary
+              .replace(/Original base:.*$/s, "")
+              .trim();
           }
-          return state;
+          if (state.resumeData.experience) {
+            state.resumeData.experience = state.resumeData.experience.map(exp => ({
+              ...exp,
+              description: (exp.description || "").replace(/Original base:.*$/s, "").trim(),
+              highlights: (exp.highlights || []).map((hl: string) => hl.replace(/Original base:.*$/s, "").trim()),
+            }));
+          }
         }
-        return persistedState;
+
+        // Migration v1 → v2: purge all known Star Wars / onboarding fantasy placeholder data
+        if (version <= 1 && state?.resumeData) {
+          const PLACEHOLDER_COMPANIES = ['The Outer Rim Guilds', 'Your Company Name'];
+          const PLACEHOLDER_INSTITUTIONS = ['The Academy of Mandalore', 'Your University'];
+
+          // Scrub placeholder experience
+          if (state.resumeData.experience) {
+            state.resumeData.experience = state.resumeData.experience.filter(
+              (exp: any) => !PLACEHOLDER_COMPANIES.some(p => exp.company?.toLowerCase() === p.toLowerCase())
+            );
+          }
+
+          // Scrub placeholder education
+          if (state.resumeData.education) {
+            state.resumeData.education = state.resumeData.education.filter(
+              (edu: any) => !PLACEHOLDER_INSTITUTIONS.some(p => edu.institution?.toLowerCase() === p.toLowerCase())
+            );
+          }
+
+          // Scrub known placeholder skills
+          const PLACEHOLDER_SKILLS = new Set(['Freelance Consulting', 'Project Execution', 'Client Negotiation', 'Rapid Prototyping', 'Risk Mitigation', 'Contract Management']);
+          if (state.resumeData.skills) {
+            state.resumeData.skills = (state.resumeData.skills as string[]).filter(
+              (s: string) => !PLACEHOLDER_SKILLS.has(s)
+            );
+          }
+
+          // Scrub placeholder location / website that got mis-filled
+          if (state.resumeData.basicInfo?.location === 'Giga Valley, Mando Corp') {
+            state.resumeData.basicInfo.location = '';
+          }
+        }
+
+        return state;
       }
     }
   )

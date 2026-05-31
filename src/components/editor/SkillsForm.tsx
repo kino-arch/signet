@@ -5,7 +5,9 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { useForgeStore } from "@/store/useForgeStore";
-import { Code, X, Sparkles, Plus } from "lucide-react";
+import { Code, X, Sparkles, Plus, ChevronDown } from "lucide-react";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Button } from "@/components/ui/button";
 
 const SKILL_SUGGESTIONS = {
   "Languages": ["Python", "TypeScript", "Go", "Java", "C++", "Rust"],
@@ -70,49 +72,57 @@ export function SkillsForm() {
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
               onKeyDown={handleKeyDown}
-              placeholder={skills.length === 0 ? "React, TypeScript, Next.js..." : "Add more..."}
               className="flex-1 bg-transparent px-1 py-0.5 text-sm outline-none placeholder:text-muted-foreground min-w-[120px]"
             />
-          </div>
+            <Popover>
+                <PopoverTrigger asChild>
+                  <Button variant="outline" size="sm" className="h-8 gap-2 text-primary hover:text-primary hover:bg-primary/10 border-primary/20 bg-primary/5">
+                    <Sparkles className="h-3.5 w-3.5" />
+                    FAANG Suggestions
+                    <ChevronDown className="h-3 w-3 opacity-50" />
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent align="start" className="w-[450px] p-4">
+                  <div className="space-y-4">
+                    <div className="mb-2 flex items-center gap-2 border-b border-border/40 pb-2">
+                      <Sparkles className="h-4 w-4 text-primary" />
+                      <h5 className="text-sm font-semibold text-foreground">FAANG Core Competencies</h5>
+                    </div>
+                    
+                    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                      {Object.entries(SKILL_SUGGESTIONS).map(([category, items]) => (
+                        <div key={category} className="space-y-2">
+                          <h6 className="text-xs font-medium text-muted-foreground">{category}</h6>
+                          <div className="flex flex-wrap gap-1.5">
+                            {items.map((skill) => {
+                              const isAdded = skills.includes(skill);
+                              return (
+                                <button
+                                  key={skill}
+                                  disabled={isAdded}
+                                  onClick={() => updateSkills([...skills, skill])}
+                                  className={`inline-flex items-center rounded-md border px-2 py-0.5 text-[11px] transition-colors ${
+                                    isAdded
+                                      ? "border-transparent bg-secondary/50 text-muted-foreground opacity-50 cursor-not-allowed"
+                                      : "border-border bg-background text-muted-foreground hover:border-primary/50 hover:text-foreground"
+                                  }`}
+                                >
+                                  {!isAdded && <Plus className="mr-1 h-3 w-3" />}
+                                  {skill}
+                                </button>
+                              );
+                            })}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </PopoverContent>
+              </Popover>
+            </div>
           <p className="mt-2 text-xs text-muted-foreground">
             Type a skill and press <strong>Enter</strong> or <strong>Comma</strong> to add it. Backspace to delete.
           </p>
-
-          {/* FAANG Skill Suggestions */}
-          <div className="mt-6  border border-primary/20 bg-primary/5 p-4">
-            <div className="mb-4 flex items-center gap-2">
-              <Sparkles className="h-4 w-4 text-primary" />
-              <h5 className="text-sm font-semibold text-foreground">FAANG Core Competencies</h5>
-            </div>
-            
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-              {Object.entries(SKILL_SUGGESTIONS).map(([category, items]) => (
-                <div key={category} className="space-y-2">
-                  <h6 className="text-xs font-medium text-muted-foreground">{category}</h6>
-                  <div className="flex flex-wrap gap-1.5">
-                    {items.map((skill) => {
-                      const isAdded = skills.includes(skill);
-                      return (
-                        <button
-                          key={skill}
-                          disabled={isAdded}
-                          onClick={() => updateSkills([...skills, skill])}
-                          className={`inline-flex items-center rounded-full border px-2 py-0.5 text-[11px] transition-colors ${
-                            isAdded
-                              ? "border-transparent bg-secondary/50 text-muted-foreground opacity-50 cursor-not-allowed"
-                              : "border-border bg-background text-muted-foreground hover:border-primary/50 hover:text-foreground"
-                          }`}
-                        >
-                          {!isAdded && <Plus className="mr-1 h-3 w-3" />}
-                          {skill}
-                        </button>
-                      );
-                    })}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
         </div>
       </Card>
     </div>

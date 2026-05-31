@@ -67,7 +67,7 @@ export function BasicInfoForm() {
               name="firstName"
               value={basicInfo.firstName}
               onChange={handleChange}
-              placeholder="Din"
+              placeholder="Alex"
               className="bg-background/50"
             />
           </div>
@@ -78,7 +78,7 @@ export function BasicInfoForm() {
               name="lastName"
               value={basicInfo.lastName}
               onChange={handleChange}
-              placeholder="Djarin"
+              placeholder="Morgan"
               className="bg-background/50"
             />
           </div>
@@ -89,7 +89,7 @@ export function BasicInfoForm() {
               name="designation"
               value={basicInfo.designation}
               onChange={handleChange}
-              placeholder="Bounty Hunter"
+              placeholder="Software Engineer"
               className="bg-background/50"
             />
           </div>
@@ -101,7 +101,7 @@ export function BasicInfoForm() {
               type="email"
               value={basicInfo.email}
               onChange={handleChange}
-              placeholder="mando@covert.com"
+              placeholder="alex@example.com"
               className="bg-background/50"
             />
           </div>
@@ -123,7 +123,7 @@ export function BasicInfoForm() {
               name="location"
               value={basicInfo.location}
               onChange={handleChange}
-              placeholder="Mandalore Sector"
+              placeholder="San Francisco, CA"
               className="bg-background/50"
             />
           </div>
@@ -134,7 +134,7 @@ export function BasicInfoForm() {
               name="website"
               value={basicInfo.website}
               onChange={handleChange}
-              placeholder="guild.org"
+              placeholder="alexmorgan.dev"
               className="bg-background/50"
             />
           </div>
@@ -160,10 +160,10 @@ export function BasicInfoForm() {
             <PremiumRichTextEditor
               value={basicInfo.summary || ""}
               onChange={(value) => updateBasicInfo({ summary: value })}
-              placeholder="Experienced operator specializing in high-risk acquisitions..."
+              placeholder="Experienced engineer specializing in high-performance SaaS applications..."
             />
             <p className="mt-1 text-xs text-muted-foreground">
-              Keep it concise. The Armorer favors brevity.
+              Keep it concise. Hiring managers favor brevity.
             </p>
           </div>
         </div>

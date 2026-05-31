@@ -3,7 +3,7 @@
 import { motion, type Variants } from "framer-motion";
 import { useAuthStore } from "@/store/useAuthStore";
 import { useRewardsStore } from "@/store/useRewardsStore";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import {
   TrendingUp,
   TrendingDown,
@@ -12,7 +12,18 @@ import {
   Shield,
   Download,
   ArrowUpRight,
+  Crosshair,
 } from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { TargetLockPanel } from "./TargetLockPanel";
+import { Button } from "@/components/ui/button";
 import {
   Area,
   AreaChart,
@@ -184,6 +195,7 @@ interface DashboardOverviewProps {}
 export function DashboardOverview({}: DashboardOverviewProps) {
   const { } = useAuthStore();
   const { shields, getRank, processDailyCheckIn } = useRewardsStore();
+  const [targetLockOpen, setTargetLockOpen] = useState(false);
 
   useEffect(() => {
     // Award 5 Shields on first login of the day
@@ -202,17 +214,34 @@ export function DashboardOverview({}: DashboardOverviewProps) {
         <div className="flex flex-col gap-1.5">
           <div className="flex items-center gap-3">
             <h1 className="font-heading text-3xl font-bold tracking-tight text-foreground">
-              Bounty Analytics
+              Performance Analytics
             </h1>
             <span className="inline-flex items-center gap-1 rounded-full bg-primary/10 px-2.5 py-0.5 text-[10px] font-bold tracking-widest text-primary uppercase ring-1 ring-primary/20 ring-inset">
               Live
             </span>
           </div>
           <p className="text-sm text-muted-foreground">
-            Track the performance of your credentials across the Outer Rim.
+            Track the performance of your resume and applications.
           </p>
         </div>
 
+        <div>
+          <Dialog open={targetLockOpen} onOpenChange={setTargetLockOpen}>
+            <DialogTrigger asChild>
+              <Button variant="outline" className="border-primary/50 text-primary hover:bg-primary/10 gap-2">
+                <Crosshair className="w-4 h-4" />
+                Engage Target Lock
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="w-full max-w-5xl sm:max-w-5xl bg-background/95 backdrop-blur-xl border-primary/20 max-h-[85vh] overflow-y-auto overflow-x-hidden">
+              <DialogHeader>
+                <DialogTitle className="sr-only">Target Lock Intelligence</DialogTitle>
+                <DialogDescription className="sr-only">AI-powered company intelligence and resume strategy</DialogDescription>
+              </DialogHeader>
+              <TargetLockPanel onComplete={() => setTargetLockOpen(false)} />
+            </DialogContent>
+          </Dialog>
+        </div>
 
       </motion.div>
 
@@ -233,7 +262,7 @@ export function DashboardOverview({}: DashboardOverviewProps) {
           icon={<Download className="h-5 w-5" />}
         />
         <MetricCard
-          label="Active Contracts"
+          label="Active Applications"
           value="3"
           change="-1"
           trend="down"
@@ -331,8 +360,8 @@ export function DashboardOverview({}: DashboardOverviewProps) {
 
           <div className="relative space-y-6">
             <SectionHeader
-              title="Active Contracts"
-              subtitle="Weekly contract engagement"
+              title="Active Applications"
+              subtitle="Weekly application engagement"
             />
 
             <div className="h-[240px] w-full" style={{ minHeight: 240 }}>
@@ -395,14 +424,14 @@ export function DashboardOverview({}: DashboardOverviewProps) {
       >
         <div className="absolute inset-0  bg-gradient-to-br from-foreground/[0.015] via-transparent to-transparent" />
         <div className="relative px-6 py-5">
-          <SectionHeader title="Intel Log: ATS Scanners" subtitle="Recent data-slate analytics" />
+          <SectionHeader title="System Log: ATS Scanners" subtitle="Recent parsing analytics" />
         </div>
         <div className="relative divide-y divide-border/40">
           {[
-            { time: "Just now", event: "System Diagnostic: 0% data loss detected. Pure Beskar armor holding.", type: "update" },
-            { time: "2h ago", event: "Workday/Taleo filter bypass successful. 100% parse rate.", type: "view" },
-            { time: "5h ago", event: "Threat averted: 43% of two-column layouts rejected by Guild Scanners today.", type: "contract" },
-            { time: "1d ago", event: "Upgrade Prompt: Purchase Forge Tokens to unlock 'The FAANG Executive' tier.", type: "download" },
+            { time: "Just now", event: "System Diagnostic: 0% data loss detected. Structure integrity verified.", type: "update" },
+            { time: "2h ago", event: "Workday/Taleo parsing successful. 100% parse rate.", type: "view" },
+            { time: "5h ago", event: "Warning: 43% of two-column layouts rejected by legacy ATS systems today.", type: "contract" },
+            { time: "1d ago", event: "Upgrade Prompt: Purchase Signet Pro to unlock 'Executive' templates.", type: "download" },
           ].map((item, i) => (
             <div key={i} className="flex items-center gap-4 px-6 py-4 transition-colors hover:bg-muted/30">
               <div

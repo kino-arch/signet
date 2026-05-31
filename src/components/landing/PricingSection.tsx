@@ -11,55 +11,52 @@ import {
 } from "@/components/ui/card";
 import { NeonGradientCard } from "@/components/ui/neon-gradient-card";
 import { motion, useInView } from "framer-motion";
-import { Check } from "lucide-react";
+import { Check, Info } from "lucide-react";
 import { useRef } from "react";
 import { cn } from "@/lib/utils";
 import { useNavigate } from "react-router-dom";
 import { useAuthStore } from "@/store/useAuthStore";
+import { useLocalizedPricing, formatPrice } from "@/hooks/useLocalizedPricing";
 
 const plans = [
   {
     id: "foundling",
-    name: "Foundling Dossier",
-    price: "$5",
-    tokens: 1,
-    description: "Secure one full-access single-column resume export. Perfect for a targeted application.",
+    name: "Starter",
+    priceUsd: 3.99,
+    tokens: 2,
+    description: "Generate and export 2 targeted resumes. Perfect for a quick job hunt.",
     features: [
-      "1 Beskar Token (1 Full Export)",
-      "1 Dossier Forge Authorization",
-      "Pure Beskar layout template access",
+      "2 AI-Assisted Exports",
+      "Full template library access",
       "Standard PDF render download",
     ],
     popular: false,
   },
   {
     id: "guild",
-    name: "Guild Contractor",
-    price: "$15",
+    name: "Professional",
+    priceUsd: 7.99,
     tokens: 5,
-    description: "Receive 5 Beskar Tokens. Edit, iterate, and customize multiple sigil variations.",
+    description: "Receive 5 exports. Edit, iterate, and customize multiple variations.",
     features: [
-      "5 Beskar Tokens (5 Full Exports)",
-      "5 Dossier Forge Authorizations",
-      "Full chassis template library access",
-      "Advanced custom sigil support",
-      "Priority Holonet pipeline routing",
+      "5 AI-Assisted Exports",
+      "Full template library access",
+      "Advanced AI restructuring",
+      "Priority processing",
     ],
     popular: true,
   },
   {
     id: "syndicate",
-    name: "Mandalore Syndicate",
-    price: "$35",
-    tokens: 15,
-    description: "An unlimited tactical reserve of 15 Beskar Tokens. Command the hiring market.",
+    name: "Elite",
+    priceUsd: 9.99,
+    tokens: 10,
+    description: "A strategic reserve of 10 exports. Command the hiring market.",
     features: [
-      "15 Beskar Tokens (15 Full Exports)",
-      "15 Dossier Forge Authorizations",
-      "Full tactical template library access",
-      "Unlimited profile/sigil variations",
-      "Elite client-side profile parsing",
-      "Clan emblem watermark bypass",
+      "10 AI-Assisted Exports",
+      "Full template library access",
+      "Unlimited profile variations",
+      "Priority support",
     ],
     popular: false,
   },
@@ -70,6 +67,7 @@ export function PricingSection() {
   const isInView = useInView(ref, { once: true, margin: "-100px" });
   const navigate = useNavigate();
   const { user } = useAuthStore();
+  const localization = useLocalizedPricing();
 
   const handlePlanSelect = (planId: string) => {
     if (!user) {
@@ -95,17 +93,19 @@ export function PricingSection() {
         >
           <h2
             id="pricing-heading"
-            className="mb-3 font-heading text-3xl font-bold tracking-tight text-foreground sm:mb-4 sm:text-4xl md:text-5xl"
+            className="mb-3 font-heading text-3xl font-bold tracking-tight text-foreground sm:text-4xl md:text-5xl"
           >
-            The Bounty Exchange
+            Simple, Transparent Pricing
           </h2>
           <p className="mx-auto max-w-2xl px-4 text-base text-muted-foreground sm:text-lg">
-            Secure the assets you need to complete your mission.
+            Secure the assets you need to land your next role. One token = One final resume export.
           </p>
         </motion.div>
 
         <div className="grid grid-cols-1 gap-6 sm:gap-8 md:grid-cols-2 md:gap-6 lg:grid-cols-3">
           {plans.map((plan, index) => {
+            const displayPrice = formatPrice(plan.priceUsd, localization);
+            
             const cardContent = (
               <Card
                 className={cn(
@@ -133,7 +133,7 @@ export function PricingSection() {
                   </CardTitle>
                   <div className="mt-3 flex items-baseline gap-1.5 sm:mt-4">
                     <span className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
-                      {plan.price}
+                      {localization.loading ? "..." : displayPrice}
                     </span>
                     <span className="font-mono text-[11px] font-bold uppercase tracking-wider text-primary">
                       / {plan.tokens} {plan.tokens === 1 ? "token" : "tokens"}
@@ -174,9 +174,9 @@ export function PricingSection() {
                     )}
                     variant={plan.popular ? "default" : "outline"}
                     size="lg"
-                    aria-label={`Forge dossier with ${plan.name} for ${plan.price}`}
+                    aria-label={`Buy ${plan.name} plan`}
                   >
-                    Forge Dossier
+                    Select Plan
                   </Button>
                 </CardContent>
               </Card>
@@ -206,6 +206,17 @@ export function PricingSection() {
             );
           })}
         </div>
+        
+        {/* Localized Pricing Disclaimer */}
+        <motion.div 
+          initial={{ opacity: 0 }}
+          animate={isInView ? { opacity: 1 } : { opacity: 0 }}
+          transition={{ duration: 0.6, delay: 0.5 }}
+          className="mt-8 flex items-center justify-center text-xs text-muted-foreground gap-2"
+        >
+          <Info className="h-4 w-4" />
+          <span>Prices are estimates based on your location. Final exact pricing in your local currency is calculated securely at checkout.</span>
+        </motion.div>
       </div>
     </section>
   );

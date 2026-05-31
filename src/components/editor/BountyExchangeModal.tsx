@@ -4,18 +4,14 @@ import {
   X, 
   Coins, 
   ShieldCheck, 
-  Loader2, 
-  CreditCard, 
-  Terminal, 
-  Lock, 
-  Check, 
+  Loader2,
+  Lock,
   Sparkles,
-  ShieldAlert
+  ShieldAlert,
+  Zap
 } from "lucide-react";
 import { useAuthStore } from "@/store/useAuthStore";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/lib/supabase";
 
@@ -26,12 +22,10 @@ interface BountyExchangeModalProps {
   defaultPackageId?: string;
 }
 
-type ModalPhase = "packages" | "payment" | "processing" | "success";
-
 interface Package {
   id: string;
   name: string;
-  tokens: number;
+  credits: number;
   price: string;
   description: string;
   badge?: string;
@@ -41,27 +35,27 @@ interface Package {
 const PACKAGES: Package[] = [
   {
     id: "foundling",
-    name: "Foundling",
-    tokens: 1,
+    name: "Starter",
+    credits: 1,
     price: "$5",
-    description: "Single resume export.",
+    description: "Perfect for a single ATS-optimized resume.",
   },
   {
     id: "guild",
-    name: "Contractor",
-    tokens: 5,
+    name: "Professional",
+    credits: 5,
     price: "$15",
-    description: "Edit multiple variations.",
+    description: "Best for crafting multiple tailored resumes.",
     badge: "Best Value",
     popular: true,
   },
   {
     id: "syndicate",
-    name: "Syndicate",
-    tokens: 15,
+    name: "Elite",
+    credits: 15,
     price: "$35",
-    description: "Unlimited tactical reserve.",
-    badge: "Elite",
+    description: "Unlimited tactical reserve for active job seekers.",
+    badge: "Premium",
   },
 ];
 
@@ -72,38 +66,14 @@ const PRICE_CENTS: Record<string, number> = {
 };
 
 export function BountyExchangeModal({ isOpen, onClose, infoMessage, defaultPackageId }: BountyExchangeModalProps) {
-  const { addCredits } = useAuthStore();
-  const [phase, setPhase] = useState<ModalPhase>("packages");
   const [selectedPack, setSelectedPack] = useState<Package | null>(PACKAGES[1]);
   const [loadingStripe, setLoadingStripe] = useState(false);
   const [stripeError, setStripeError] = useState<string | null>(null);
 
-  // Form states
-  const [cardName, setCardName] = useState("");
-  const [cardNumber, setCardNumber] = useState("");
-  const [cardExpiry, setCardExpiry] = useState("");
-  const [cardCvc, setCardCvc] = useState("");
-  const [cardZip, setCardZip] = useState("");
-
-  // Terminal logging states
-  const [logs, setLogs] = useState<string[]>([]);
-  const [terminalProgress, setTerminalProgress] = useState(0);
-
-  // Active form field focus for card visual state
-  const [activeField, setActiveField] = useState<string | null>(null);
-
   useEffect(() => {
     if (isOpen) {
-      setPhase("packages");
       const matched = PACKAGES.find((p) => p.id === defaultPackageId);
       setSelectedPack(matched || PACKAGES[1]);
-      setCardName("");
-      setCardNumber("");
-      setCardExpiry("");
-      setCardCvc("");
-      setCardZip("");
-      setLogs([]);
-      setTerminalProgress(0);
       setLoadingStripe(false);
       setStripeError(null);
     }
@@ -115,7 +85,7 @@ export function BountyExchangeModal({ isOpen, onClose, infoMessage, defaultPacka
     try {
       const { user } = useAuthStore.getState();
       const stripeSecret = import.meta.env.VITE_STRIPE_SECRET_KEY;
-      const successUrl = `${window.location.origin}/editor?stripe_session_id={CHECKOUT_SESSION_ID}&tokens=${pkg.tokens}`;
+      const successUrl = `${window.location.origin}/editor?stripe_session_id={CHECKOUT_SESSION_ID}&credits=${pkg.credits}`;
       const cancelUrl = `${window.location.origin}/editor`;
       
       const priceCents = PRICE_CENTS[pkg.id] || 500;
@@ -123,11 +93,12 @@ export function BountyExchangeModal({ isOpen, onClose, infoMessage, defaultPacka
       const { data, error } = await supabase.functions.invoke("stripe-checkout", {
         body: {
           tierId: pkg.id,
-          tokens: pkg.tokens,
+          tokens: pkg.credits,
           priceCents,
           successUrl,
           cancelUrl,
           userId: user?.id,
+          email: user?.email, // Now passing email to pre-fill Stripe checkout
         },
         headers: {
           "x-stripe-secret-key": stripeSecret,
@@ -136,7 +107,7 @@ export function BountyExchangeModal({ isOpen, onClose, infoMessage, defaultPacka
 
       if (error || !data || !data.url) {
         console.error("Stripe checkout session creation failed:", error || data?.error);
-        setStripeError(error?.message || data?.error || "Failed to establish holonet stripe link.");
+        setStripeError(error?.message || data?.error || "Failed to initialize secure checkout.");
         setLoadingStripe(false);
         return;
       }
@@ -144,83 +115,19 @@ export function BountyExchangeModal({ isOpen, onClose, infoMessage, defaultPacka
       window.location.href = data.url;
     } catch (err: any) {
       console.error("Error during checkout invocation:", err);
-      setStripeError(err.message || "An unexpected Holonet connection failure occurred.");
+      setStripeError(err.message || "An unexpected checkout error occurred.");
       setLoadingStripe(false);
     }
   };
 
-  // Real-time card formatting
-  const handleCardNumberChange = (val: string) => {
-    const cleaned = val.replace(/\D/g, "");
-    const formatted = cleaned.match(/.{1,4}/g)?.join(" ") || cleaned;
-    setCardNumber(formatted.substring(0, 19));
-  };
-
-  const handleExpiryChange = (val: string) => {
-    const cleaned = val.replace(/\D/g, "");
-    let formatted = cleaned;
-    if (cleaned.length > 2) {
-      formatted = cleaned.substring(0, 2) + "/" + cleaned.substring(2, 4);
-    }
-    setCardExpiry(formatted.substring(0, 5));
-  };
-
-  const handleCvcChange = (val: string) => {
-    const cleaned = val.replace(/\D/g, "");
-    setCardCvc(cleaned.substring(0, 4));
-  };
-
-  const handleZipChange = (val: string) => {
-    const cleaned = val.replace(/\D/g, "");
-    setCardZip(cleaned.substring(0, 5));
-  };
-
-  // Run terminal sequence
-  const startTransaction = () => {
-    if (!selectedPack) return;
-    setPhase("processing");
-
-    const terminalSteps = [
-      { text: "ESTABLISHING HOLONET UPLINK PROTOCOLS...", delay: 200 },
-      { text: "CREATING SECURE DOUBLE-TUNNELED SYNDICATE TUNNEL...", delay: 600 },
-      { text: "LEDGER SYNCHRONIZATION: EXCHANGING CRYPTOGRAPHIC OATH KEYS...", delay: 1000 },
-      { text: `AUTHORIZING ${selectedPack.price.toUpperCase()} CREDIT DEBIT ROUTING...`, delay: 1500 },
-      { text: "VERIFYING BIOMETRICS AND ARMOR SIGNATURES...", delay: 2000 },
-      { text: "COMMITTING BESKAR LEDGER WRITES TO MAIN MAIN-FRAME...", delay: 2600 },
-      { text: "TRANSACTION SECURED BY THE ARMORER'S CREED.", delay: 3200 },
-    ];
-
-    terminalSteps.forEach((step) => {
-      setTimeout(() => {
-        setLogs((prev) => [...prev, `[SYS_LOG] ${step.text}`]);
-      }, step.delay);
-    });
-
-    const progressInterval = setInterval(() => {
-      setTerminalProgress((prev) => {
-        if (prev >= 100) {
-          clearInterval(progressInterval);
-          setTimeout(async () => {
-            // Credit the tokens
-            await addCredits(selectedPack.tokens);
-            setPhase("success");
-          }, 600);
-          return 100;
-        }
-        return prev + 5;
-      });
-    }, 180);
-  };
-
-  // Easing presets
   const overlayVariants: Variants = {
-    hidden: { opacity: 0 },
-    visible: { opacity: 1 },
+    hidden: { opacity: 0, backdropFilter: "blur(0px)" },
+    visible: { opacity: 1, backdropFilter: "blur(12px)", transition: { duration: 0.3 } },
   };
 
   const panelVariants: Variants = {
-    hidden: { opacity: 0, scale: 0.95, y: 15 },
-    visible: { opacity: 1, scale: 1, y: 0, transition: { type: "spring", duration: 0.4 } },
+    hidden: { opacity: 0, scale: 0.95, y: 20 },
+    visible: { opacity: 1, scale: 1, y: 0, transition: { type: "spring", damping: 25, stiffness: 300 } },
     exit: { opacity: 0, scale: 0.95, y: 10, transition: { duration: 0.2 } },
   };
 
@@ -229,14 +136,14 @@ export function BountyExchangeModal({ isOpen, onClose, infoMessage, defaultPacka
   return (
     <AnimatePresence>
       <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-        {/* Backdrop glass */}
+        {/* Backdrop */}
         <motion.div
           variants={overlayVariants}
           initial="hidden"
           animate="visible"
           exit="hidden"
-          onClick={() => phase !== "processing" && onClose()}
-          className="absolute inset-0 bg-background/80 backdrop-blur-md"
+          onClick={() => !loadingStripe && onClose()}
+          className="absolute inset-0 bg-background/60"
         />
 
         {/* Modal Window Container */}
@@ -245,383 +152,143 @@ export function BountyExchangeModal({ isOpen, onClose, infoMessage, defaultPacka
           initial="hidden"
           animate="visible"
           exit="exit"
-          className="relative z-10 w-full max-w-[480px] overflow-hidden  border border-border/80 bg-card p-5 shadow-2xl shadow-black/40"
+          className="relative z-10 w-full max-w-2xl overflow-hidden rounded-2xl border border-white/10 bg-zinc-950/80 p-8 shadow-2xl backdrop-blur-xl"
         >
-          {/* Cyber accents */}
-          <div className="absolute top-0 right-0 left-0 h-[2px] bg-gradient-to-r from-primary/30 via-primary to-primary/30" />
-          <div className="absolute inset-0 -z-10 bg-[radial-gradient(circle_at_50%_0%,color-mix(in_srgb,var(--color-primary)_8%,transparent),transparent_60%)]" />
+          {/* Subtle top gradient line */}
+          <div className="absolute top-0 right-0 left-0 h-[1px] bg-gradient-to-r from-transparent via-primary/50 to-transparent" />
+          
+          {/* Subtle background glow */}
+          <div className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(circle_at_50%_0%,rgba(var(--primary-rgb),0.08),transparent_50%)]" />
 
-          {/* Header row */}
-          <div className="mb-4 flex items-center justify-between">
-            <div className="flex items-center gap-2.5">
-              <div className="flex h-8 w-8 items-center justify-center  border border-primary/20 bg-primary/10 text-primary">
-                <Coins className="h-4 w-4" />
+          {/* Header */}
+          <div className="mb-8 flex items-start justify-between">
+            <div className="flex items-center gap-4">
+              <div className="flex h-12 w-12 items-center justify-center rounded-xl border border-primary/20 bg-primary/10 text-primary shadow-[0_0_15px_rgba(var(--primary-rgb),0.2)]">
+                <Sparkles className="h-6 w-6" />
               </div>
               <div>
-                <h2 className="font-heading text-base font-bold tracking-tight text-foreground leading-tight">
-                  The Bounty Exchange
+                <h2 className="text-2xl font-bold tracking-tight text-white">
+                  Unlock More Credits
                 </h2>
-                <p className="text-[10px] text-muted-foreground tracking-wide">Replenish your Beskar Token supply</p>
+                <p className="text-sm text-zinc-400 mt-1">Select a package to continue generating elite resumes.</p>
               </div>
             </div>
 
-            {phase !== "processing" && (
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={onClose}
-                className="h-7 w-7  text-muted-foreground hover:text-foreground"
-              >
-                <X className="h-3.5 w-3.5" />
-              </Button>
-            )}
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={onClose}
+              disabled={loadingStripe}
+              className="h-8 w-8 rounded-full text-zinc-400 hover:bg-white/10 hover:text-white transition-colors"
+            >
+              <X className="h-4 w-4" />
+            </Button>
           </div>
 
           {/* Info Alert Message */}
-          {infoMessage && phase === "packages" && (
-            <div className="mb-3.5 flex items-center gap-2  border border-primary/20 bg-primary/5 px-3 py-2 text-[11px] text-primary">
-              <Terminal className="h-3.5 w-3.5 shrink-0 animate-pulse" />
-              <p className="font-semibold leading-none truncate">{infoMessage}</p>
+          {infoMessage && (
+            <div className="mb-6 flex items-center gap-3 rounded-lg border border-primary/20 bg-primary/5 px-4 py-3 text-sm text-primary">
+              <Zap className="h-4 w-4 shrink-0" />
+              <p className="font-medium">{infoMessage}</p>
             </div>
           )}
 
-          {/* ──────────────────────────────────────────────────────── */}
-          {/* PHASE 1: PACKAGES SELECTOR                               */}
-          {/* ──────────────────────────────────────────────────────── */}
-          {phase === "packages" && (
-            <div className="space-y-4">
-              <div className="grid grid-cols-3 gap-3">
-                {PACKAGES.map((pkg) => {
-                  const isSelected = selectedPack?.id === pkg.id;
-                  return (
-                    <div
-                      key={pkg.id}
-                      onClick={() => {
-                        setSelectedPack(pkg);
-                        setStripeError(null);
-                      }}
-                      className={`group relative flex cursor-pointer flex-col items-center justify-center space-y-3  border p-4 text-center transition-all select-none ${
-                        isSelected
-                          ? "border-primary bg-primary/10 shadow-lg shadow-primary/10 ring-1 ring-primary/30 scale-[1.02]"
-                          : pkg.popular 
-                            ? "border-primary/30 bg-primary/5 hover:border-primary/50" 
-                            : "border-border/60 bg-background/50 hover:border-primary/40"
-                      }`}
-                    >
-                      {/* Top Badge */}
-                      <div className="flex h-6 items-center justify-center">
-                        <Badge variant={isSelected || pkg.popular ? "default" : "secondary"} className="text-[9px] uppercase font-black tracking-widest">
-                          {pkg.tokens} {pkg.tokens === 1 ? "TOKEN" : "TOKENS"}
-                        </Badge>
-                      </div>
-
-                      {/* Price Hero */}
-                      <div className="flex flex-col items-center justify-center">
-                        <span className={`font-heading text-3xl font-black leading-none ${isSelected ? "text-primary" : "text-foreground group-hover:text-primary transition-colors"}`}>
-                          {pkg.price}
-                        </span>
-                      </div>
-
-                      {/* Name & Desc */}
-                      <div className="flex flex-col items-center justify-center space-y-1">
-                        <span className="font-heading text-xs font-bold text-foreground">
-                          {pkg.name}
-                        </span>
-                        <p className="text-[9px] leading-tight text-muted-foreground px-1">
-                          {pkg.description}
-                        </p>
-                      </div>
-                      
-                      {isSelected && (
-                        <div className="absolute top-2 right-2">
-                          <ShieldCheck className="h-3.5 w-3.5 text-primary animate-pulse" />
-                        </div>
-                      )}
-                    </div>
-                  );
-                })}
-              </div>
-
-              {stripeError && (
-                <div className="flex items-center gap-2  border border-destructive/20 bg-destructive/5 px-3 py-2 text-[11px] text-destructive">
-                  <ShieldAlert className="h-3.5 w-3.5 shrink-0" />
-                  <p className="font-semibold leading-none">{stripeError}</p>
-                </div>
-              )}
-
-              <div className="flex gap-2.5 pt-1">
-                <Button
-                  type="button"
-                  variant="outline"
+          {/* Packages */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+            {PACKAGES.map((pkg) => {
+              const isSelected = selectedPack?.id === pkg.id;
+              return (
+                <div
+                  key={pkg.id}
                   onClick={() => {
-                    setPhase("payment");
+                    if (!loadingStripe) {
+                      setSelectedPack(pkg);
+                      setStripeError(null);
+                    }
                   }}
-                  disabled={loadingStripe || !selectedPack}
-                  className="w-1/2 h-9 gap-1.5 text-xs font-semibold"
+                  className={`group relative flex cursor-pointer flex-col items-center justify-center space-y-4 rounded-xl border p-6 text-center transition-all duration-200 select-none ${
+                    isSelected
+                      ? "border-primary bg-primary/10 shadow-[0_0_30px_rgba(var(--primary-rgb),0.15)] ring-1 ring-primary/30"
+                      : "border-white/10 bg-white/5 hover:border-white/20 hover:bg-white/10"
+                  } ${loadingStripe ? "pointer-events-none opacity-60" : ""}`}
                 >
-                  <Terminal className="h-3.5 w-3.5 text-muted-foreground" />
-                  Sandbox Demo
-                </Button>
+                  {/* Top Badge */}
+                  <div className="flex h-6 items-center justify-center">
+                    {(isSelected || pkg.popular) && (
+                      <Badge 
+                        variant={isSelected ? "default" : "secondary"} 
+                        className={`text-[10px] uppercase font-bold tracking-wider ${
+                          isSelected ? "bg-primary text-primary-foreground" : "bg-white/10 text-white"
+                        }`}
+                      >
+                        {pkg.badge || "Popular"}
+                      </Badge>
+                    )}
+                  </div>
 
-                <Button
-                  type="button"
-                  onClick={() => selectedPack && handleStripeCheckout(selectedPack)}
-                  disabled={loadingStripe || !selectedPack}
-                  className="w-1/2 h-9 gap-1.5 text-xs font-bold shadow-md shadow-primary/20 transition-all hover:shadow-primary/40"
-                >
-                  {loadingStripe ? (
-                    <Loader2 className="h-3.5 w-3.5 animate-spin" />
-                  ) : (
-                    <Lock className="h-3.5 w-3.5" />
+                  {/* Credits amount */}
+                  <div className="flex items-center gap-1.5">
+                    <Coins className={`h-4 w-4 ${isSelected ? "text-primary" : "text-zinc-400"}`} />
+                    <span className={`font-bold ${isSelected ? "text-primary" : "text-zinc-300"}`}>
+                      {pkg.credits} {pkg.credits === 1 ? "Credit" : "Credits"}
+                    </span>
+                  </div>
+
+                  {/* Price */}
+                  <div>
+                    <span className="text-4xl font-bold tracking-tighter text-white">
+                      {pkg.price}
+                    </span>
+                  </div>
+
+                  {/* Desc */}
+                  <p className="text-xs leading-relaxed text-zinc-400 px-2 h-10">
+                    {pkg.description}
+                  </p>
+                  
+                  {isSelected && (
+                    <div className="absolute top-3 right-3">
+                      <ShieldCheck className="h-4 w-4 text-primary" />
+                    </div>
                   )}
-                  Pay with Stripe
-                </Button>
-              </div>
+                </div>
+              );
+            })}
+          </div>
 
-              <p className="text-center font-mono text-[9px] text-muted-foreground leading-relaxed">
-                Secured by Stripe · Guild mainframe encrypted
-              </p>
+          {stripeError && (
+            <div className="mb-6 flex items-center gap-2 rounded-lg border border-red-500/20 bg-red-500/10 px-4 py-3 text-sm text-red-400">
+              <ShieldAlert className="h-4 w-4 shrink-0" />
+              <p className="font-medium">{stripeError}</p>
             </div>
           )}
 
-          {/* ──────────────────────────────────────────────────────── */}
-          {/* PHASE 2: PAYMENT FORM (THE INTEGRATION INTERFACE)        */}
-          {/* ──────────────────────────────────────────────────────── */}
-          {phase === "payment" && selectedPack && (
-            <div className="space-y-6">
-              {/* Visual payment card outline */}
-              <div className="relative overflow-hidden  border border-primary/20 bg-linear-to-br from-primary/10 via-secondary/20 to-background/50 p-5 shadow-inner">
-                {/* Visual card glow */}
-                <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,color-mix(in_srgb,var(--color-primary)_12%,transparent),transparent_50%)]" />
-                <div className="relative z-10 flex h-28 flex-col justify-between">
-                  <div className="flex items-start justify-between">
-                    <div className="flex flex-col">
-                      <span className="text-[9px] font-bold tracking-widest text-primary/70 uppercase">Guild Ledger slate</span>
-                      <span className="font-mono text-[11px] font-bold text-muted-foreground">SECURE NODE TERMINAL</span>
-                    </div>
-                    <CreditCard className="h-5 w-5 text-primary/60" />
-                  </div>
-
-                  <div className="space-y-1.5">
-                    <div className="font-mono text-sm tracking-[0.2em] font-semibold text-foreground">
-                      {cardNumber || "•••• •••• •••• ••••"}
-                    </div>
-
-                    <div className="flex justify-between">
-                      <div className="flex flex-col">
-                        <span className="text-[7px] text-muted-foreground tracking-widest uppercase">Operative Code</span>
-                        <span className="font-mono text-[10px] font-bold uppercase truncate max-w-[150px]">
-                          {cardName || "Din Djarin"}
-                        </span>
-                      </div>
-                      <div className="flex gap-4">
-                        <div className="flex flex-col items-end">
-                          <span className="text-[7px] text-muted-foreground tracking-widest uppercase">Expiry</span>
-                          <span className="font-mono text-[10px] font-bold">{cardExpiry || "MM/YY"}</span>
-                        </div>
-                        <div className="flex flex-col items-end">
-                          <span className="text-[7px] text-muted-foreground tracking-widest uppercase">Cvc</span>
-                          <span className="font-mono text-[10px] font-bold">{cardCvc || "•••"}</span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Checkout Form */}
-              <form
-                onSubmit={(e) => {
-                  e.preventDefault();
-                  startTransaction();
-                }}
-                className="space-y-3.5"
-              >
-                {/* Holder Name */}
-                <div className="space-y-1.5">
-                  <Label htmlFor="holder-name" className="text-xs">Sigil Name (Cardholder Name)</Label>
-                  <Input
-                    id="holder-name"
-                    required
-                    placeholder="Din Djarin"
-                    value={cardName}
-                    onChange={(e) => setCardName(e.target.value)}
-                    onFocus={() => setActiveField("name")}
-                    onBlur={() => setActiveField(null)}
-                    className={activeField === "name" ? "border-primary/60 ring-1 ring-primary/20" : ""}
-                  />
-                </div>
-
-                {/* Card Number */}
-                <div className="space-y-1.5">
-                  <Label htmlFor="card-number" className="text-xs">Galactic Vault Coordinate (Card Number)</Label>
-                  <Input
-                    id="card-number"
-                    required
-                    placeholder="4111 2222 3333 4444"
-                    value={cardNumber}
-                    onChange={(e) => handleCardNumberChange(e.target.value)}
-                    onFocus={() => setActiveField("number")}
-                    onBlur={() => setActiveField(null)}
-                    className={activeField === "number" ? "border-primary/60 ring-1 ring-primary/20" : ""}
-                  />
-                </div>
-
-                {/* Expiry, CVC, Zip row */}
-                <div className="grid grid-cols-3 gap-3">
-                  <div className="space-y-1.5">
-                    <Label htmlFor="card-expiry" className="text-xs">Expiry</Label>
-                    <Input
-                      id="card-expiry"
-                      required
-                      placeholder="MM/YY"
-                      value={cardExpiry}
-                      onChange={(e) => handleExpiryChange(e.target.value)}
-                      onFocus={() => setActiveField("expiry")}
-                      onBlur={() => setActiveField(null)}
-                      className={activeField === "expiry" ? "border-primary/60 ring-1 ring-primary/20" : ""}
-                    />
-                  </div>
-
-                  <div className="space-y-1.5">
-                    <Label htmlFor="card-cvc" className="text-xs">CVC</Label>
-                    <Input
-                      id="card-cvc"
-                      required
-                      placeholder="321"
-                      value={cardCvc}
-                      onChange={(e) => handleCvcChange(e.target.value)}
-                      onFocus={() => setActiveField("cvc")}
-                      onBlur={() => setActiveField(null)}
-                      className={activeField === "cvc" ? "border-primary/60 ring-1 ring-primary/20" : ""}
-                    />
-                  </div>
-
-                  <div className="space-y-1.5">
-                    <Label htmlFor="card-zip" className="text-xs">Zip</Label>
-                    <Input
-                      id="card-zip"
-                      required
-                      placeholder="90210"
-                      value={cardZip}
-                      onChange={(e) => handleZipChange(e.target.value)}
-                      onFocus={() => setActiveField("zip")}
-                      onBlur={() => setActiveField(null)}
-                      className={activeField === "zip" ? "border-primary/60 ring-1 ring-primary/20" : ""}
-                    />
-                  </div>
-                </div>
-
-                {/* Action Buttons */}
-                <div className="flex gap-3 pt-3">
-                  <Button
-                    type="button"
-                    variant="outline"
-                    onClick={() => setPhase("packages")}
-                    className="w-1/3"
-                  >
-                    Back
-                  </Button>
-
-                  <Button
-                    type="submit"
-                    className="w-2/3 gap-2 font-bold shadow-lg shadow-primary/25 hover:shadow-primary/45"
-                  >
-                    <Lock className="h-3.5 w-3.5" />
-                    Authorize {selectedPack.price}
-                  </Button>
-                </div>
-              </form>
-            </div>
-          )}
-
-          {/* ──────────────────────────────────────────────────────── */}
-          {/* PHASE 3: SECURE TRANSMISSION (THE MAINFRAME ENCRYPTOR)  */}
-          {/* ──────────────────────────────────────────────────────── */}
-          {phase === "processing" && (
-            <div className="space-y-6 py-4">
-              <div className="flex flex-col items-center justify-center space-y-4">
-                <Loader2 className="h-10 w-10 animate-spin text-primary" />
-                <span className="font-heading text-xs font-bold tracking-widest text-primary animate-pulse uppercase">
-                  TRANSMITTING ENCRYPTED LEDGER DATASATE...
-                </span>
-              </div>
-
-              {/* Logs block */}
-              <div className=" border border-border/80 bg-black/60 p-4.5 font-mono text-[10px] leading-relaxed text-primary/80 h-44 overflow-y-auto">
-                <div className="space-y-1.5">
-                  {logs.map((log, i) => (
-                    <div key={i} className="flex gap-2">
-                      <span className="text-primary shrink-0">&gt;</span>
-                      <span>{log}</span>
-                    </div>
-                  ))}
-                  <div className="flex h-1 w-1 animate-pulse bg-primary mt-1" />
-                </div>
-              </div>
-
-              {/* Progress bar */}
-              <div className="space-y-1">
-                <div className="flex justify-between font-mono text-[10px] text-muted-foreground">
-                  <span>SECURE TUNNEL UPLINK:</span>
-                  <span className="font-bold text-primary">{terminalProgress}%</span>
-                </div>
-                <div className="h-1.5 w-full overflow-hidden rounded-full bg-border">
-                  <div
-                    className="h-full bg-primary transition-all duration-300"
-                    style={{ width: `${terminalProgress}%` }}
-                  />
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* ──────────────────────────────────────────────────────── */}
-          {/* PHASE 4: SUCCESS CONFIRMED (LEDGER DEPOSITED)            */}
-          {/* ──────────────────────────────────────────────────────── */}
-          {phase === "success" && selectedPack && (
-            <div className="space-y-6 py-6 text-center">
-              <div className="flex flex-col items-center justify-center space-y-3">
-                <div className="relative flex h-16 w-16 items-center justify-center rounded-full border border-primary/30 bg-primary/10 text-primary">
-                  <ShieldCheck className="h-8 w-8" />
-                  <motion.div
-                    className="absolute inset-0 rounded-full border border-primary/50"
-                    animate={{ scale: [1, 1.4, 1], opacity: [0.6, 0, 0.6] }}
-                    transition={{ duration: 1.8, repeat: Infinity, ease: "easeInOut" }}
-                  />
-                </div>
-                <h3 className="font-heading text-lg font-bold tracking-tight text-foreground mt-2">
-                  Beskar Deposited
-                </h3>
-                <p className="text-xs text-muted-foreground max-w-sm leading-relaxed">
-                  Your credentials have been authenticated. The Armorer has credited your core ledger balance.
-                </p>
-              </div>
-
-              {/* Secure voucher widget */}
-              <div className="mx-auto max-w-xs  border border-primary/20 bg-primary/5 p-4 font-mono text-xs">
-                <div className="flex justify-between border-b border-border/50 pb-2 mb-2 text-muted-foreground">
-                  <span>VOUCHER HASH:</span>
-                  <span className="font-semibold text-primary">SEC-{Math.floor(100000 + Math.random() * 900000)}</span>
-                </div>
-                <div className="flex justify-between text-base font-bold text-foreground">
-                  <span>CREDIT ADDED:</span>
-                  <span className="text-primary flex items-center gap-1">
-                    <Sparkles className="h-4 w-4 fill-current text-primary" />
-                    +{selectedPack.tokens} {selectedPack.tokens === 1 ? "TOKEN" : "TOKENS"}
-                  </span>
-                </div>
-              </div>
-
-              <Button
-                onClick={onClose}
-                className="w-full h-11 font-bold shadow-lg shadow-primary/25 hover:shadow-primary/45"
-              >
-                Return to the Crucible <Check className="ml-2 h-4 w-4" />
-              </Button>
-            </div>
-          )}
-
+          {/* Action Footer */}
+          <div className="flex flex-col items-center gap-4">
+            <Button
+              size="lg"
+              onClick={() => selectedPack && handleStripeCheckout(selectedPack)}
+              disabled={loadingStripe || !selectedPack}
+              className="w-full sm:w-2/3 h-12 gap-2 text-sm font-bold shadow-lg shadow-primary/25 transition-all hover:shadow-primary/40 rounded-full"
+            >
+              {loadingStripe ? (
+                <>
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                  Initializing Secure Checkout...
+                </>
+              ) : (
+                <>
+                  <Lock className="h-4 w-4" />
+                  Checkout securely with Stripe
+                </>
+              )}
+            </Button>
+            
+            <p className="text-xs text-zinc-500 flex items-center gap-1.5">
+              <Lock className="h-3 w-3" />
+              Payments are secure and encrypted.
+            </p>
+          </div>
         </motion.div>
       </div>
     </AnimatePresence>

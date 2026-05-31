@@ -29,18 +29,18 @@ export function Features() {
 
   const features = [
     {
-      title: "The Armorer's Tongs",
-      description: "Extract the purest metals from your scattered history. We automatically parse your LinkedIn or old PDF resumes into raw data.",
+      title: "Smart Data Extraction",
+      description: "Extract the purest data from your scattered history. We automatically parse your LinkedIn profile or existing PDF resumes into structured formats.",
       image: "/tongs_anim.png",
     },
     {
-      title: "The Crucible",
-      description: "Melt down redundancies. Our AI assistant analyzes your experiences and suggests high-impact bullet points tailored to your target role.",
+      title: "AI-Powered Reforging",
+      description: "Melt down redundancies. Our AI analyzes your experiences and suggests high-impact bullet points tailored specifically to your target role.",
       image: "/crucible_anim.png",
     },
     {
-      title: "The Anvil",
-      description: "Strike it into shape. Our single-column 'Beskar' layouts are 100% compliant with Workday, Taleo, and Greenhouse ATS parsers.",
+      title: "ATS-Optimized Export",
+      description: "Strike it into shape. Our single-column Beskar-grade layouts are tested to be 100% compliant with Workday, Taleo, and Greenhouse parsers.",
       image: "/anvil_anim.png",
     },
   ];
@@ -62,7 +62,7 @@ export function Features() {
             The Tools of the Forge
           </h2>
           <p className="max-w-[700px] text-lg text-muted-foreground md:text-xl">
-            Everything you need to survive the corporate hiring matrix. Built for Earthlings applying to FAANG, Big Tech, and Global MNCs.
+            Everything you need to secure your next role. Built for professionals applying to competitive tech and corporate positions.
           </p>
         </motion.div>
         

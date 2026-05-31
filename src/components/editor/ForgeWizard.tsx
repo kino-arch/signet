@@ -3,7 +3,8 @@ import { motion, type Variants } from "framer-motion";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { ArrowLeft, ArrowRight, Check, Briefcase, GraduationCap, Code, User, Settings, ShieldAlert } from "lucide-react";
+import { ArrowLeft, ArrowRight, Check, Briefcase, GraduationCap, Code, User, Settings, ShieldAlert, Crosshair } from "lucide-react";
+import { useForgeStore } from "@/store/useForgeStore";
 import { BasicInfoForm } from "@/components/editor/BasicInfoForm";
 import { ExperienceForm } from "@/components/editor/ExperienceForm";
 import { EducationForm } from "@/components/editor/EducationForm";
@@ -91,6 +92,7 @@ function SidebarStep({ step, currentStep }: { step: (typeof STEPS)[0]; currentSt
 
 export function ForgeWizard({ onComplete }: { onComplete?: () => void }) {
   const [currentStep, setCurrentStep] = useState(1);
+  const targetLockCompany = useForgeStore(state => state.targetLockCompany);
 
   const handleNext = () => {
     if (currentStep < STEPS.length) {
@@ -114,6 +116,15 @@ export function ForgeWizard({ onComplete }: { onComplete?: () => void }) {
           <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-primary" />
           Data Injection Protocol
         </Badge>
+        {targetLockCompany && (
+          <Badge
+            variant="default"
+            className="mb-4 ml-2 inline-flex items-center gap-2 bg-primary/20 text-primary hover:bg-primary/30"
+          >
+            <Crosshair className="h-3 w-3" />
+            Target Locked: {targetLockCompany}
+          </Badge>
+        )}
         <h1 className="mb-3 text-3xl font-bold tracking-tight text-foreground md:text-4xl">
           The Crucible
         </h1>

@@ -6,11 +6,11 @@ export function AuthDivider({
 }: React.ComponentProps<"div">) {
 	return (
 		<div className="relative flex w-full items-center" {...props}>
-			<div className="w-full border-t" />
-			<div className="flex w-max justify-center text-nowrap px-2 text-muted-foreground text-xs">
-				{children}
+			<div className="w-full border-t border-border/40" />
+			<div className="flex w-max justify-center text-nowrap px-2 text-muted-foreground/60 text-[10px] font-mono tracking-widest uppercase">
+				[ {children} ]
 			</div>
-			<div className="w-full border-t" />
+			<div className="w-full border-t border-border/40" />
 		</div>
 	);
 }
