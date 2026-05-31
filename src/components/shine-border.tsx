@@ -40,7 +40,7 @@ export function ShineBorder({
   const colorString =
     Array.isArray(color) && color.length > 0 ? color.join(",") : String(color)
 
-  const rootStyle: React.CSSProperties = {
+  const rootStyle = {
     // Expose variables for internal CSS
     // Note: These are referenced by the <style> block below
     // for animation, masking, and layout.
@@ -49,7 +49,7 @@ export function ShineBorder({
     "--sb-border-radius": `${borderRadius}px`,
     "--sb-border-width": `${borderWidth}px`,
     "--sb-duration": `${duration}s`,
-  }
+  } as React.CSSProperties
 
   const overlayStyle: React.CSSProperties = {
     position: "absolute",
