@@ -46,7 +46,11 @@ export function OrbitalLoader({
   return (
     <div className={cn(orbitalLoaderVariants({ messagePlacement }))}>
       <div className={cn("relative w-24 h-24 flex items-center justify-center", className)} {...props}>
-        <LottieAnimation animationData={holoRingData} className="w-full h-full opacity-80" />
+        <LottieAnimation 
+          animationData={holoRingData} 
+          className="w-full h-full opacity-80" 
+          colorMode={color === "primary" ? "cyan-tint" : "original"}
+        />
       </div>
       {message && (
         <div className="font-mono text-xs font-bold tracking-widest text-muted-foreground uppercase">

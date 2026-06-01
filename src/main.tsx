@@ -7,7 +7,7 @@ import { useLocation, useNavigationType, createRoutesFromChildren, matchRoutes }
 
 Sentry.init({
   dsn: "https://922cd647efc30d02c620426427f831b0@o4511482474201088.ingest.de.sentry.io/4511482493206608",
-  tunnel: `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/sentry-tunnel`,
+  tunnel: import.meta.env.VITE_SUPABASE_URL ? `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/sentry-tunnel` : undefined,
   sendDefaultPii: true,
   integrations: [
     Sentry.reactRouterV7BrowserTracingIntegration({
