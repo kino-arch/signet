@@ -15,6 +15,11 @@ import { SettingsPage } from "@/pages/SettingsPage";
 import { DashboardLayout } from "@/components/layout/dashboard-layout";
 import { useAuthStore } from "@/store/useAuthStore";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import * as Sentry from "@sentry/react";
+import { LottieAnimation } from "@/components/ui/lottie-animation";
+import cyberLoadingData from "@/assets/animations/cyber_loading.json";
+
+const SentryRoutes = Sentry.withSentryReactRouterV7Routing(Routes);
 
 // ProtectedRoute ensures authentication and onboarding are completed before dashboard access
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
@@ -24,11 +29,11 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
   if (loading) {
     return (
       <div className="flex h-screen items-center justify-center bg-background">
-        <div className="text-center">
-          <div className="mb-3 animate-pulse font-heading text-lg font-bold tracking-widest text-primary">
+        <div className="flex flex-col items-center text-center">
+          <LottieAnimation animationData={cyberLoadingData} className="mb-2 h-20 w-20 opacity-80" />
+          <div className="animate-pulse font-heading text-lg font-bold tracking-widest text-primary">
             SIGNET
           </div>
-          <p className="text-sm text-muted-foreground">Authenticating…</p>
         </div>
       </div>
     );
@@ -66,7 +71,7 @@ export function App() {
       <TooltipProvider>
         <BrowserRouter>
           <AuthInitializer>
-            <Routes>
+            <SentryRoutes>
             <Route path="/" element={<LandingPage />} />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/ats-specs" element={<AtsSpecsPage />} />
@@ -148,7 +153,7 @@ export function App() {
                 </ProtectedRoute>
               }
             />
-          </Routes>
+          </SentryRoutes>
           </AuthInitializer>
         </BrowserRouter>
       </TooltipProvider>

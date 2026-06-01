@@ -6,6 +6,8 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/componen
 import { Button } from "@/components/ui/button"
 import { Skeleton } from "@/components/ui/skeleton"
 import { FileText, PlusCircle, ArrowRight } from "lucide-react"
+import { LottieAnimation } from "@/components/ui/lottie-animation"
+import floatingDroneData from "@/assets/animations/floating_drone.json"
 
 interface SlateMeta {
   id: string
@@ -88,7 +90,10 @@ export function SlatesPage() {
               <div className="h-64 w-64 animate-ping rounded-full bg-cyan-500/5 opacity-50 duration-1000"></div>
             </div>
             
-            <PlusCircle className="z-10 mb-6 h-16 w-16 text-cyan-500/50 transition-transform group-hover:scale-110 group-hover:text-cyan-400" />
+            <LottieAnimation 
+              animationData={floatingDroneData} 
+              className="z-10 mb-2 h-32 w-32 opacity-80 transition-all group-hover:scale-110 group-hover:opacity-100" 
+            />
             <h2 className="z-10 font-heading text-2xl font-bold tracking-widest text-zinc-200">AWAITING INTEL</h2>
             <p className="z-10 mt-2 font-mono text-sm text-zinc-500">CLICK TO INITIALIZE NEW SLATE</p>
             

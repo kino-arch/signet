@@ -7,6 +7,8 @@ import { generatePDF } from "@/lib/pdf";
 import { useAuthStore } from "@/store/useAuthStore";
 import { useForgeStore } from "@/store/useForgeStore";
 import { useRewardsStore } from "@/store/useRewardsStore";
+import { LottieAnimation } from "@/components/ui/lottie-animation";
+import laserScanData from "@/assets/animations/laser_scan.json";
 
 // ============================================================================
 // WEB AUDIO SCI-FI SOUND SYNTHESIS
@@ -285,6 +287,9 @@ export function SigilRetrieval({
                     <div className="flex justify-between font-mono text-[10px] font-bold tracking-widest text-muted-foreground uppercase">
                       <span>Tempering Beskar</span>
                       <span className="text-primary">{progress}%</span>
+                    </div>
+                    <div className="w-full h-8 overflow-hidden -mb-3 opacity-80 mix-blend-screen pointer-events-none">
+                      <LottieAnimation animationData={laserScanData} className="w-full h-full scale-x-150" />
                     </div>
                     <div className="h-1 w-full overflow-hidden rounded-full bg-border/40">
                       <motion.div

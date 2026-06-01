@@ -7,9 +7,11 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { PremiumRichTextEditor } from "@/components/editor/PremiumRichTextEditor";
 import { useForgeStore } from "@/store/useForgeStore";
 import type { Experience } from "@/store/useForgeStore";
-import { Briefcase, ChevronDown, ChevronUp, Plus, Trash2, ArrowUp, ArrowDown, Sparkles, Loader2 } from "lucide-react";
+import { Briefcase, ChevronDown, ChevronUp, Plus, Trash2, ArrowUp, ArrowDown, Sparkles } from "lucide-react";
 import { useAI } from "@/lib/useAI";
 import { ReforgeCompareModal } from "@/components/ui/ReforgeCompareModal";
+import { LottieAnimation } from "@/components/ui/lottie-animation";
+import techSpinnerData from "@/assets/animations/tech_spinner.json";
 
 const FAANG_SUGGESTIONS = [
   "Accomplished [X] as measured by [Y], by doing [Z]",
@@ -280,7 +282,7 @@ export function ExperienceForm() {
                         className="h-7 gap-1 px-2 text-[10px] font-bold tracking-wider uppercase"
                       >
                         {loadingDescId === exp.id ? (
-                          <Loader2 className="h-3 w-3 animate-spin" />
+                          <LottieAnimation animationData={techSpinnerData} className="h-4 w-4" />
                         ) : (
                           <Sparkles className="h-3 w-3 animate-pulse text-primary" />
                         )}
@@ -339,7 +341,7 @@ export function ExperienceForm() {
                               className="shrink-0"
                             >
                               {loadingBulletId === `${exp.id}-${idx}` ? (
-                                <Loader2 className="h-4 w-4 animate-spin" />
+                                <LottieAnimation animationData={techSpinnerData} className="h-4 w-4" />
                               ) : (
                                 <Sparkles className="h-4 w-4" />
                               )}

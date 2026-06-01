@@ -19,6 +19,9 @@ import { Input } from "@/components/ui/input";
 import { GoogleIcon } from "@/components/google-icon";
 import { useAuthStore } from "@/store/useAuthStore";
 import { motion, AnimatePresence, type Variants } from "framer-motion";
+import { LottieAnimation } from "@/components/ui/lottie-animation";
+import fingerprintData from "@/assets/animations/fingerprint.json";
+import securityLockData from "@/assets/animations/cyber_security_lock.json";
 
 type AuthMode = "sign-in" | "sign-up";
 
@@ -88,8 +91,9 @@ export function LoginForm({
           {/* Subtle top glow */}
           <div className="absolute top-0 left-1/2 h-1 w-3/4 -translate-x-1/2 bg-primary/20 blur-sm" />
 
-          <CardHeader className="px-6 pt-6 pb-4 text-center">
-            <motion.div variants={itemVariants}>
+          <CardHeader className="px-5 pt-5 pb-3 text-center">
+            <motion.div variants={itemVariants} className="flex flex-col items-center">
+              <LottieAnimation animationData={securityLockData} className="mb-2 h-16 w-16 opacity-80" />
               <CardTitle className="font-heading text-lg font-bold tracking-tight text-white">
                 {mode === "sign-in" ? "Access the Forge" : "Join the Guild"}
               </CardTitle>
@@ -101,7 +105,7 @@ export function LoginForm({
             </motion.div>
           </CardHeader>
 
-          <CardContent className="px-6 pb-6">
+          <CardContent className="px-5 pb-5">
             {/* Error Display */}
             <AnimatePresence>
               {error && (
@@ -119,7 +123,7 @@ export function LoginForm({
             </AnimatePresence>
 
             <form onSubmit={handleSubmit}>
-              <FieldGroup className="gap-4">
+              <FieldGroup className="gap-3">
                 <motion.div variants={itemVariants}>
                   <Field className="gap-1.5">
                     <FieldLabel htmlFor="email" className="font-mono text-[10px] tracking-widest text-muted-foreground uppercase">
@@ -174,7 +178,8 @@ export function LoginForm({
                     disabled={submitting || !email || !password}
                   >
                     {submitting ? (
-                      <span className="flex items-center gap-2">
+                      <span className="flex items-center justify-center gap-2">
+                        <LottieAnimation animationData={fingerprintData} className="h-6 w-6 mix-blend-screen" loop={true} />
                         <span className="animate-pulse">[ AUTHENTICATING_ ]</span>
                       </span>
                     ) : (
@@ -188,7 +193,7 @@ export function LoginForm({
                   </Button>
                 </motion.div>
 
-                <motion.div variants={itemVariants} className="py-2">
+                <motion.div variants={itemVariants} className="py-1.5">
                   <div className="w-full border-t border-border/40" />
                 </motion.div>
 
@@ -205,17 +210,6 @@ export function LoginForm({
                   </Button>
                 </motion.div>
 
-                <motion.div variants={itemVariants}>
-                  <Button
-                    variant="ghost"
-                    type="button"
-                    className="h-8 w-full rounded-sm font-mono text-xs tracking-widest text-muted-foreground uppercase hover:bg-white/5 hover:text-white"
-                    onClick={() => useAuthStore.getState().signInAsGuest()}
-                    disabled={submitting}
-                  >
-                    Enter as Guest / Demo Mode
-                  </Button>
-                </motion.div>
 
                 <motion.div variants={itemVariants}>
                   <FieldDescription className="mt-2 text-center">

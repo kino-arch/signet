@@ -1,11 +1,13 @@
 import { useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { CheckCircle2, XCircle, Loader2, Zap } from "lucide-react";
+import { XCircle, Loader2, Zap } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/lib/supabase";
 import { cn } from "@/lib/utils";
 import { useAI } from "@/lib/useAI";
 import { useAuthStore } from "@/store/useAuthStore";
+import { LottieAnimation } from "@/components/ui/lottie-animation";
+import cyberSuccessData from "@/assets/animations/cyber_success.json";
 
 interface ReforgeSummaryModalProps {
   isOpen: boolean;
@@ -215,7 +217,7 @@ export function ReforgeSummaryModal({
                 "bg-primary text-primary-foreground hover:bg-primary/90 shadow-[0_0_10px_rgba(var(--color-primary),0.3)]"
               )}
             >
-              <CheckCircle2 className="h-3.5 w-3.5" />
+              <LottieAnimation animationData={cyberSuccessData} className="h-4 w-4" />
               Accept Override
             </Button>
           </div>

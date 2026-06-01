@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Sparkles, Check, X } from "lucide-react";
+import { Sparkles, X } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -8,6 +8,8 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
+import { LottieAnimation } from "@/components/ui/lottie-animation";
+import cyberSuccessData from "@/assets/animations/cyber_success.json";
 
 interface ReforgeCompareModalProps {
   isOpen: boolean;
@@ -111,7 +113,7 @@ export function ReforgeCompareModal({
             onClick={handleAccept}
             className="flex items-center gap-1.5 shadow-lg shadow-primary/10 transition-all hover:scale-[1.02] hover:shadow-primary/25"
           >
-            <Check className="h-3.5 w-3.5" strokeWidth={3} />
+            <LottieAnimation animationData={cyberSuccessData} className="h-4 w-4" />
             Integrate Suggestion
           </Button>
         </div>

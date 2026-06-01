@@ -3,6 +3,8 @@
 import { ChartAreaInteractive } from "@/components/chart-area-interactive"
 import { DataTable } from "@/components/data-table"
 import { SectionCards } from "@/components/section-cards"
+import { LottieAnimation } from "@/components/ui/lottie-animation";
+import hudData from "@/assets/animations/Sci-fi_HUD.json";
 
 const data = [
   {
@@ -55,6 +57,9 @@ const data = [
 export function DashboardPage() {
   return (
     <div className="flex w-full flex-col gap-8 pt-2">
+      <div className="flex w-full items-center justify-center -mt-6 -mb-6 opacity-60 pointer-events-none mix-blend-screen overflow-hidden">
+        <LottieAnimation animationData={hudData} className="w-full max-w-4xl h-32" colorMode="cyan-tint" />
+      </div>
       <SectionCards />
       <div className="w-full px-4 lg:px-6">
         <ChartAreaInteractive />

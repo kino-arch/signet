@@ -26,6 +26,8 @@ import { useRewardsStore } from "@/store/useRewardsStore";
 import html2pdf from "html2pdf.js";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
+import { LottieAnimation } from "@/components/ui/lottie-animation";
+import dataProcessingData from "@/assets/animations/data_processing.json";
 
 export function EditorPage() {
   const { slateId } = useParams<{ slateId: string }>();
@@ -164,7 +166,7 @@ export function EditorPage() {
   if (isHydrating) {
     return (
       <div className="flex h-screen w-full flex-col items-center justify-center gap-3 bg-background">
-        <Loader2 className="h-6 w-6 animate-spin text-primary" />
+        <LottieAnimation animationData={dataProcessingData} className="h-12 w-12" />
         <p className="font-mono text-sm tracking-widest text-muted-foreground uppercase">
           Hydrating Forge…
         </p>
@@ -348,7 +350,7 @@ export function EditorPage() {
               className="h-9 gap-2 rounded-full px-4 font-mono text-[10px] tracking-widest uppercase hover:bg-muted/50"
               disabled={syncState === "SYNCING..."}
             >
-              {syncState === "SYNCING..." ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : "Save Draft"}
+              {syncState === "SYNCING..." ? <LottieAnimation animationData={dataProcessingData} className="h-4 w-4" /> : "Save Draft"}
             </Button>
 
             <Button

@@ -4,10 +4,12 @@ import { Label } from "@/components/ui/label";
 import { PremiumRichTextEditor } from "@/components/editor/PremiumRichTextEditor";
 import { useForgeStore } from "@/store/useForgeStore";
 import { Card } from "@/components/ui/card";
-import { User, Sparkles, Loader2 } from "lucide-react";
+import { User, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAI } from "@/lib/useAI";
 import { ReforgeCompareModal } from "@/components/ui/ReforgeCompareModal";
+import { LottieAnimation } from "@/components/ui/lottie-animation";
+import techSpinnerData from "@/assets/animations/tech_spinner.json";
 
 export function BasicInfoForm() {
   const { basicInfo } = useForgeStore((state) => state.resumeData);
@@ -150,7 +152,7 @@ export function BasicInfoForm() {
                 className="h-7 gap-1 px-2 text-[10px] font-bold tracking-wider uppercase"
               >
                 {loadingSummary ? (
-                  <Loader2 className="h-3 w-3 animate-spin" />
+                  <LottieAnimation animationData={techSpinnerData} className="h-4 w-4" />
                 ) : (
                   <Sparkles className="h-3 w-3 animate-pulse text-primary" />
                 )}

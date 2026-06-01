@@ -2,6 +2,8 @@ import { useTargetMatrixStore, KANBAN_COLUMNS } from "@/store/useTargetMatrixSto
 import { KanbanBoard } from "@/components/target-matrix/kanban-board";
 import { AddTargetDialog } from "@/components/target-matrix/add-target-dialog";
 import { Target, LayoutGrid } from "lucide-react";
+import { LottieAnimation } from "@/components/ui/lottie-animation";
+import emptyBoxTechData from "@/assets/animations/empty_box_tech.json";
 
 export function ApplicationsPage() {
   const { applications } = useTargetMatrixStore();
@@ -66,7 +68,16 @@ export function ApplicationsPage() {
             Deployment Grid
           </span>
         </div>
-        <KanbanBoard />
+        {applications.length === 0 ? (
+          <div className="flex h-64 flex-col items-center justify-center gap-4 rounded-xl border border-border/40 bg-card/20">
+            <LottieAnimation animationData={emptyBoxTechData} className="h-40 w-40 opacity-60" />
+            <p className="font-mono text-xs tracking-widest text-muted-foreground uppercase">
+              No targets in deployment grid
+            </p>
+          </div>
+        ) : (
+          <KanbanBoard />
+        )}
       </div>
     </div>
   );

@@ -1,5 +1,7 @@
 import { ArrowLeft } from "lucide-react";
 import { Link } from "react-router-dom";
+import { LottieAnimation } from "@/components/ui/lottie-animation";
+import biometricData from "@/assets/animations/biometric.json";
 
 export function TermsPage() {
   return (
@@ -15,6 +17,7 @@ export function TermsPage() {
 
         <div className="space-y-8">
           <div>
+            <LottieAnimation animationData={biometricData} className="h-16 w-16 mb-4 opacity-80" />
             <h1 className="font-heading text-4xl font-bold tracking-tight text-foreground sm:text-5xl">
               Terms of Service
             </h1>

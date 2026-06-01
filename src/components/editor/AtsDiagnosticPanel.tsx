@@ -1,9 +1,7 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
-  ShieldCheck, 
   ShieldAlert, 
-  ScanLine, 
   Loader2, 
   Sparkles, 
   CheckCircle,
@@ -16,6 +14,9 @@ import { Card } from "@/components/ui/card";
 import { useForgeStore } from "@/store/useForgeStore";
 import { useAI, type AtsDiagnosticResult } from "@/lib/useAI";
 import { ReforgeCompareModal } from "@/components/ui/ReforgeCompareModal";
+import { LottieAnimation } from "@/components/ui/lottie-animation";
+import radarScanData from "@/assets/animations/radar_scan.json";
+import neonCheckmarkData from "@/assets/animations/neon_checkmark.json";
 
 export function AtsDiagnosticPanel() {
   const { resumeData, updateBasicInfo, updateExperience } = useForgeStore();
@@ -117,11 +118,11 @@ export function AtsDiagnosticPanel() {
         
         <div className="relative z-10 flex flex-col items-center space-y-4 py-4 text-center">
           <div className="relative flex h-16 w-16 items-center justify-center rounded-full border border-primary/20 bg-muted/40">
-            <ScanLine className={`h-8 w-8 text-primary ${loading ? "animate-pulse" : ""}`} />
+            <LottieAnimation animationData={radarScanData} className={`h-8 w-8 ${loading ? "animate-pulse" : ""}`} />
             {diagnostics && (
               <div className="absolute -right-1 -bottom-1 flex h-6 w-6 items-center justify-center rounded-full border border-border bg-background">
                 {allResolved ? (
-                  <ShieldCheck className="h-4 w-4 text-primary" />
+                  <LottieAnimation animationData={neonCheckmarkData} className="h-4 w-4" />
                 ) : (
                   <ShieldAlert className="h-4 w-4 animate-bounce text-amber-500" />
                 )}
@@ -169,7 +170,7 @@ export function AtsDiagnosticPanel() {
                 </>
               ) : (
                 <>
-                  <ScanLine className="h-4 w-4 animate-pulse" />
+                  <LottieAnimation animationData={radarScanData} className="h-4 w-4" />
                   Run ATS Diagnostic
                 </>
               )}
@@ -196,7 +197,7 @@ export function AtsDiagnosticPanel() {
                 className=" border border-primary/25 bg-primary/5 p-4.5 text-center shadow-[0_0_15px_rgba(var(--primary),0.05)]"
               >
                 <div className="flex flex-col items-center space-y-2">
-                  <ShieldCheck className="h-7 w-7 animate-pulse text-primary" />
+                  <LottieAnimation animationData={neonCheckmarkData} className="h-10 w-10 -mt-2 -mb-2" />
                   <span className="font-heading text-sm font-bold tracking-wider text-foreground uppercase">
                     System Compliance: SECURED
                   </span>

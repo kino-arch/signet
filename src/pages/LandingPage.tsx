@@ -1,4 +1,6 @@
 import { Header } from "@/layout/header";
+import { LottieAnimation } from "@/components/ui/lottie-animation";
+import matrixCodeData from "@/assets/animations/matrix-code.json";
 
 // Registry Components
 import { HeroDemo } from "@/components/ui/hero-demo";
@@ -21,6 +23,11 @@ export function LandingPage() {
           {/* Vertical Borders */}
           <div className="absolute top-0 left-4 z-0 h-full w-px bg-muted sm:left-6 md:left-8 lg:left-0"></div>
           <div className="absolute top-0 right-4 z-0 h-full w-px bg-muted sm:right-6 md:right-8 lg:right-0"></div>
+
+          {/* Matrix Background — decorative only, GPU-promoted via will-change */}
+          <div className="absolute inset-0 z-0 overflow-hidden opacity-[0.05] pointer-events-none mix-blend-screen [contain:strict] [will-change:transform]">
+             <LottieAnimation animationData={matrixCodeData} className="w-full h-full scale-150" colorMode="cyan-tint" />
+          </div>
 
           <div className="relative z-10 flex flex-col items-center justify-center gap-4 self-stretch overflow-hidden border-x sm:gap-6 md:gap-8">
             <Header />

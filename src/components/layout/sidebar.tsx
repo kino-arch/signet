@@ -17,8 +17,8 @@ export function Sidebar({ className }: { className?: string }) {
         <Logo size="md" />
       </div>
       <div className="flex h-[calc(100vh-4rem)] flex-col justify-between p-4">
-        <nav className="space-y-2">
-          <div className="mb-4 px-2 font-mono text-[10px] tracking-widest text-zinc-500 uppercase">Primary Operations</div>
+        <nav className="space-y-2" aria-label="Primary Operations">
+          <div className="mb-4 px-2 font-mono text-[10px] tracking-widest text-zinc-400 uppercase">Primary Operations</div>
           {links.map((link) => {
             const Icon = link.icon
             return (
@@ -40,8 +40,8 @@ export function Sidebar({ className }: { className?: string }) {
           })}
         </nav>
         
-        <nav className="space-y-2">
-          <div className="mb-4 px-2 font-mono text-[10px] tracking-widest text-zinc-500 uppercase">System</div>
+        <nav className="space-y-2" aria-label="System">
+          <div className="mb-4 px-2 font-mono text-[10px] tracking-widest text-zinc-400 uppercase">System</div>
           <NavLink
             to="/settings"
             className={({ isActive }) =>

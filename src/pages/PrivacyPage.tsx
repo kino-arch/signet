@@ -1,5 +1,7 @@
 import { ArrowLeft } from "lucide-react";
 import { Link } from "react-router-dom";
+import { LottieAnimation } from "@/components/ui/lottie-animation";
+import shieldData from "@/assets/animations/shield_activate.json";
 
 export function PrivacyPage() {
   return (
@@ -15,6 +17,7 @@ export function PrivacyPage() {
 
         <div className="space-y-8">
           <div>
+            <LottieAnimation animationData={shieldData} className="h-16 w-16 mb-4 opacity-80" />
             <h1 className="font-heading text-4xl font-bold tracking-tight text-foreground sm:text-5xl">
               Privacy Policy
             </h1>

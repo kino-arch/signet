@@ -3,10 +3,24 @@ import ReactDOM from "react-dom"
 import { StrictMode } from "react"
 import { createRoot } from "react-dom/client"
 import * as Sentry from "@sentry/react"
+import { useLocation, useNavigationType, createRoutesFromChildren, matchRoutes } from "react-router-dom"
 
 Sentry.init({
   dsn: "https://922cd647efc30d02c620426427f831b0@o4511482474201088.ingest.de.sentry.io/4511482493206608",
-  sendDefaultPii: true
+  tunnel: `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/sentry-tunnel`,
+  sendDefaultPii: true,
+  integrations: [
+    Sentry.reactRouterV7BrowserTracingIntegration({
+      useEffect: React.useEffect,
+      useLocation,
+      useNavigationType,
+      createRoutesFromChildren,
+      matchRoutes,
+    }),
+    Sentry.consoleLoggingIntegration({ levels: ["log", "warn", "error"] }),
+  ],
+  tracesSampleRate: 1.0,
+  enableLogs: true,
 });
 
 import "./index.css"
