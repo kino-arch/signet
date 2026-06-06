@@ -1,6 +1,5 @@
-import CTASection from "@/components/cta-section"
-
-import FooterSection from "@/layout/footer"
+import { SignetCTA } from "@/components/sections/cta/SignetCTA"
+import { SignetFooter } from "@/components/sections/footer/SignetFooter"
 import { Header } from "@/layout/header"
 import HeroSection01 from "@/components/sections/hero/hero-01"
 import { SignetFeatureGrid } from "@/components/sections/bento-grid/SignetFeatureGrid"
@@ -53,9 +52,9 @@ export function LandingPage() {
                 <SignetFeatureGrid />
                 <SignetTestimonials />
                 <PricingSection03 />
-                <CTASection />
+                <SignetCTA />
               </main>
-              <FooterSection />
+              <SignetFooter />
             </div>
           </div>
         </div>
