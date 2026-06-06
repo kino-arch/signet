@@ -4,10 +4,12 @@ import { Diamond } from "lucide-react"
 import { SignetSection } from "@/components/layout/SignetSection"
 import { SignetWell } from "@/components/layout/SignetWell"
 import { cn } from "@/lib/utils"
+import { ForgeGlowBackground } from "@/components/forge/forge-glow"
 
 export default function HeroSection01() {
   return (
     <SignetSection variant="hero" className="bg-signet-hero-depth relative overflow-hidden flex items-center justify-center min-h-[80vh] py-24">
+      <ForgeGlowBackground />
       <SignetWell size="wide" className="relative z-10">
         <div className="flex flex-col text-center items-center justify-center">
           <motion.div

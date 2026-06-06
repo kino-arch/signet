@@ -6,29 +6,49 @@ export interface ForgeGlowProps {
   active?: boolean;
 }
 
-export function ForgeGlow({ children, active = true }: ForgeGlowProps) {
-  if (!active) return <>{children}</>;
-  
+import { useEffect, useState } from 'react';
+import { useReducedMotion } from '@/hooks/use-reduced-motion';
+
+export function ForgeGlowBackground() {
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const prefersReducedMotion = useReducedMotion();
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.matchMedia('(max-width: 768px)').matches);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
+  useEffect(() => {
+    if (prefersReducedMotion || isMobile) return;
+
+    const handleMouseMove = (e: MouseEvent) => {
+      // Calculate displacement from center (-20px to 20px)
+      const x = ((e.clientX / window.innerWidth) - 0.5) * 40;
+      const y = ((e.clientY / window.innerHeight) - 0.5) * 40;
+      setMousePosition({ x, y });
+    };
+
+    window.addEventListener('mousemove', handleMouseMove);
+    return () => window.removeEventListener('mousemove', handleMouseMove);
+  }, [prefersReducedMotion, isMobile]);
+
   return (
-    <div className="relative inline-block">
-      {/* Ambient background pulse */}
+    <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
       <motion.div
-        className="absolute inset-0 z-0 rounded-xl bg-signet-amber-500/20 blur-xl pointer-events-none"
+        className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--theme-primary)_0%,_transparent_70%)] opacity-15"
         animate={{
-          opacity: [0.5, 0.8, 0.5],
-          scale: [0.95, 1.05, 0.95],
+          x: mousePosition.x,
+          y: mousePosition.y,
         }}
         transition={{
-          duration: 3,
-          repeat: Infinity,
-          ease: 'easeInOut',
+          type: 'tween',
+          ease: 'easeOut',
+          duration: 0.3,
         }}
       />
-      
-      {/* Content wrapper */}
-      <div className="relative z-10">
-        {children}
-      </div>
     </div>
   );
 }
