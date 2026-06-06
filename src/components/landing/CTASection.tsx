@@ -1,28 +1,31 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { motion } from "framer-motion";
-import { ArrowRight, CheckCircle2, Flame, Shield } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
+import { useState } from "react"
+import { useNavigate } from "react-router-dom"
+import { motion } from "framer-motion"
+import { ArrowRight, CheckCircle2, Flame, Shield } from "lucide-react"
+import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
+import { Card } from "@/components/ui/card"
+import { Input } from "@/components/ui/input"
 
 const benefits = [
   "No Beskar Required (Free Tier)",
   "ATS Indestructible",
   "Instant Live Preview",
-];
+]
 
 export function CTASection() {
-  const [email, setEmail] = useState("");
-  const navigate = useNavigate();
+  const [email, setEmail] = useState("")
+  const navigate = useNavigate()
 
   const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    navigate("/login");
-  };
+    e.preventDefault()
+    navigate("/login")
+  }
   return (
-    <section id="forge" className="relative w-full overflow-hidden bg-background py-16 md:py-24 lg:py-32">
+    <section
+      id="forge"
+      className="relative w-full overflow-hidden bg-background py-16 md:py-24 lg:py-32"
+    >
       {/* Animated background elements */}
       <div className="absolute inset-0 -z-10 overflow-hidden">
         <motion.div
@@ -71,7 +74,10 @@ export function CTASection() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3 }}
             >
-              Survive the <span className="bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">Corporate Galaxy</span>
+              Survive the{" "}
+              <span className="bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
+                Corporate Galaxy
+              </span>
             </motion.h2>
 
             <motion.p
@@ -80,7 +86,9 @@ export function CTASection() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.4 }}
             >
-              Earthlings: Stop losing opportunities to automated filters. Step into the forge and construct an indestructible, FAANG-ready signet.
+              Earthlings: Stop losing opportunities to automated filters. Step
+              into the forge and construct an indestructible, FAANG-ready
+              signet.
             </motion.p>
 
             {/* Email signup form */}
@@ -90,7 +98,10 @@ export function CTASection() {
               transition={{ delay: 0.5 }}
               className="mb-6 md:mb-8"
             >
-              <form onSubmit={handleSubmit} className="flex flex-col gap-3 sm:flex-row">
+              <form
+                onSubmit={handleSubmit}
+                className="flex flex-col gap-3 sm:flex-row"
+              >
                 <Input
                   type="email"
                   placeholder="Enter your comm-link (email)"
@@ -99,7 +110,12 @@ export function CTASection() {
                   className="h-12 flex-1 text-base md:h-14"
                   required
                 />
-                <Button type="submit" variant="default" size="lg" className="group h-12 md:h-14">
+                <Button
+                  type="submit"
+                  variant="default"
+                  size="lg"
+                  className="group h-12 md:h-14"
+                >
                   Forge Corporate Resume
                   <motion.div
                     className="ml-2"
@@ -173,18 +189,16 @@ export function CTASection() {
             transition={{ duration: 0.8, ease: [0.6, 0.05, 0.01, 0.9] }}
             className="flex items-center justify-center"
           >
-            <motion.div
-              className="relative w-full max-w-lg"
-            >
+            <motion.div className="relative w-full max-w-lg">
               <Card className="relative overflow-hidden bg-background/50 p-4 shadow-2xl backdrop-blur-xl md:p-6">
                 <motion.div
-                  className="relative aspect-video overflow-hidden "
+                  className="relative aspect-video overflow-hidden"
                   whileHover={{ scale: 1.02 }}
                   transition={{ duration: 0.3 }}
                 >
                   {/* Image */}
-                  <img 
-                    src="/the_great_forge.png" 
+                  <img
+                    src="/the_great_forge.png"
                     alt="The Great Forge"
                     className="absolute inset-0 h-full w-full object-cover opacity-90 transition-opacity duration-300"
                   />
@@ -192,7 +206,7 @@ export function CTASection() {
 
                   {/* Floating elements */}
                   <motion.div
-                    className="absolute top-4 right-4  bg-background/80 p-2 shadow-lg backdrop-blur-sm md:p-3"
+                    className="absolute top-4 right-4 bg-background/80 p-2 shadow-lg backdrop-blur-sm md:p-3"
                     animate={{ y: [0, -10, 0] }}
                     transition={{ duration: 3, repeat: Infinity }}
                   >
@@ -200,7 +214,7 @@ export function CTASection() {
                   </motion.div>
 
                   <motion.div
-                    className="absolute bottom-4 left-4  bg-background/80 p-2 shadow-lg backdrop-blur-sm md:p-3"
+                    className="absolute bottom-4 left-4 bg-background/80 p-2 shadow-lg backdrop-blur-sm md:p-3"
                     animate={{ y: [0, 10, 0] }}
                     transition={{ duration: 3, repeat: Infinity, delay: 1 }}
                   >
@@ -228,7 +242,7 @@ export function CTASection() {
                         delay: 1.3 + index * 0.1,
                         type: "spring",
                       }}
-                      className=" bg-secondary/50 p-2 text-center backdrop-blur-sm md:p-3"
+                      className="bg-secondary/50 p-2 text-center backdrop-blur-sm md:p-3"
                     >
                       <div className="text-base font-bold md:text-lg">
                         {stat.value}
@@ -245,5 +259,5 @@ export function CTASection() {
         </div>
       </div>
     </section>
-  );
+  )
 }

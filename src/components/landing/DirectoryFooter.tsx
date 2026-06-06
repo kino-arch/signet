@@ -1,8 +1,8 @@
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { ArrowUp, Globe, Mail, Terminal } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { ArrowUp, Globe, Mail, Terminal } from "lucide-react"
+import { Link } from "react-router-dom"
 
 const footerLinks = [
   {
@@ -11,7 +11,7 @@ const footerLinks = [
       { name: "Templates", href: "#" },
       { name: "Pricing", href: "#" },
       { name: "API Specs", href: "/ats-specs" },
-      { name: "Documentation", href: "#" }
+      { name: "Documentation", href: "#" },
     ],
   },
   {
@@ -19,7 +19,7 @@ const footerLinks = [
     links: [
       { name: "About Us", href: "#" },
       { name: "Careers", href: "#" },
-      { name: "Manifesto", href: "#" }
+      { name: "Manifesto", href: "#" },
     ],
   },
   {
@@ -27,29 +27,33 @@ const footerLinks = [
     links: [
       { name: "Privacy Policy", href: "/privacy" },
       { name: "Terms of Service", href: "/terms" },
-      { name: "Cookie Policy", href: "#" }
+      { name: "Cookie Policy", href: "#" },
     ],
   },
-];
+]
 
 export function DirectoryFooter() {
   const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  };
+    window.scrollTo({ top: 0, behavior: "smooth" })
+  }
 
   return (
     <footer className="w-full border-t border-border/40 bg-card/50 py-16 backdrop-blur-sm md:py-24">
-      <div className="mx-auto w-full max-w-5xl px-4 sm:px-6 lg:px-8">
+      <div className="mx-auto w-full max-w-4xl px-4 sm:px-6 lg:px-8">
         <div className="grid gap-12 md:grid-cols-2 lg:grid-cols-5">
-          
           {/* Brand & Comm-Link */}
           <div className="lg:col-span-2">
             <div className="mb-4 flex items-center space-x-2">
-              <span className="font-heading text-2xl font-bold text-primary">Signet</span>
-              <Badge variant="outline" className="text-xs">Est. 2026</Badge>
+              <span className="font-heading text-2xl font-bold text-primary">
+                Signet
+              </span>
+              <Badge variant="outline" className="text-xs">
+                Est. 2026
+              </Badge>
             </div>
             <p className="mb-6 max-w-xs text-sm leading-relaxed text-muted-foreground">
-              Building professional resumes for the modern job market. Engineered to bypass Applicant Tracking Systems.
+              Building professional resumes for the modern job market.
+              Engineered to bypass Applicant Tracking Systems.
             </p>
 
             <div className="mb-4">
@@ -105,12 +109,19 @@ export function DirectoryFooter() {
 
         {/* Bottom Bar */}
         <div className="flex flex-col items-center justify-between gap-4 md:flex-row">
-          
           <div className="flex gap-4 text-muted-foreground">
-            <a href="#" className="transition-colors hover:text-primary" aria-label="Global Network">
+            <a
+              href="#"
+              className="transition-colors hover:text-primary"
+              aria-label="Global Network"
+            >
               <Globe className="h-5 w-5" />
             </a>
-            <a href="#" className="transition-colors hover:text-primary" aria-label="Developer Console">
+            <a
+              href="#"
+              className="transition-colors hover:text-primary"
+              aria-label="Developer Console"
+            >
               <Terminal className="h-5 w-5" />
             </a>
           </div>
@@ -131,5 +142,5 @@ export function DirectoryFooter() {
         </div>
       </div>
     </footer>
-  );
+  )
 }

@@ -1,38 +1,39 @@
-import { create } from "zustand";
-import { supabase } from "@/lib/supabase";
-import type { User, Session } from "@supabase/supabase-js";
+import { create } from "zustand"
+import { supabase } from "@/lib/supabase"
+import type { User, Session } from "@supabase/supabase-js"
 
 interface Profile {
-  id: string;
-  token_balance: number; // We keep the DB field name as token_balance to avoid DB migrations for now, but UI will show credits.
+  id: string
+  credits: number
 }
 
 interface OnboardingData {
-  role?: string;
-  [key: string]: unknown;
+  role?: string
+  [key: string]: unknown
 }
 
 interface AuthState {
-  user: User | null;
-  session: Session | null;
-  profile: Profile | null;
-  loading: boolean;
-  error: string | null;
-  onboardingCompleted: boolean;
-  /** Timestamp (ms) until which fetchProfile must NOT overwrite a local deduction */
-  _deductionLockUntil: number | null;
+  user: User | null
+  session: Session | null
+  profile: Profile | null
+  loading: boolean
+  error: string | null
+  onboardingCompleted: boolean
+  /** Timestamp (ms) until which fetchProfile must NOT overwrite local optimistic balance */
+  _optimisticLockUntil: number | null
   // Actions
-  signIn: (email: string, password: string) => Promise<void>;
-  signInWithGoogle: () => Promise<void>;
-  signUp: (email: string, password: string) => Promise<void>;
-  signOut: () => Promise<void>;
-  fetchProfile: () => Promise<void>;
-  initialize: () => () => void; // returns unsubscribe function
-  completeOnboarding: (data: OnboardingData) => Promise<void>;
-  clearError: () => void;
-  signInAsGuest: () => void;
-  addCredits: (amount: number) => Promise<void>;
-  deductCredit: () => Promise<boolean>;
+  signIn: (email: string, password: string) => Promise<void>
+  signInWithGoogle: () => Promise<void>
+  signUp: (email: string, password: string) => Promise<void>
+  signOut: () => Promise<void>
+  fetchProfile: () => Promise<void>
+  initialize: () => () => void // returns unsubscribe function
+  completeOnboarding: (data: OnboardingData) => Promise<void>
+  clearError: () => void
+  signInAsGuest: () => void
+  addCredits: (amount: number) => Promise<void>
+  addCreditsOptimistic: (amount: number) => void
+  deductCredit: () => Promise<boolean>
 }
 
 export const useAuthStore = create<AuthState>((set, get) => ({
@@ -42,150 +43,163 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   loading: true,
   error: null,
   onboardingCompleted: false,
-  _deductionLockUntil: null,
+  _optimisticLockUntil: null,
 
   clearError: () => set({ error: null }),
 
   fetchProfile: async () => {
-    const { user, _deductionLockUntil, profile } = get();
-    if (!user) return;
+    const { user, _optimisticLockUntil, profile } = get()
+    if (!user) return
 
     const { data, error } = await supabase
       .from("profiles")
-      .select("id, token_balance")
+      .select("id, credits")
       .eq("id", user.id)
-      .single();
+      .single()
 
     if (error) {
-      console.error("Error fetching profile:", error.message);
-      return;
+      console.error("Error fetching profile:", error.message)
+      return
     }
 
-    // If a credit was deducted locally in the last 60s, protect the local balance.
-    // The server balance may still be stale (RPC blocked by CORS / adblocker).
-    const isLocked = _deductionLockUntil !== null && Date.now() < _deductionLockUntil;
+    // If an optimistic update occurred recently, protect the local balance.
+    // The server balance may still be stale (e.g. webhook not finished).
+    const isLocked =
+      _optimisticLockUntil !== null && Date.now() < _optimisticLockUntil
     if (isLocked && profile) {
-      // Keep whichever balance is lower — the local optimistic one
-      set({ profile: { ...data, token_balance: Math.min(data.token_balance, profile.token_balance) } });
+      // Keep the local optimistic balance
+      set({ profile: { ...data, credits: profile.credits } })
     } else {
-      set({ profile: data, _deductionLockUntil: null });
+      set({ profile: data, _optimisticLockUntil: null })
     }
   },
 
   signInWithGoogle: async () => {
-    set({ loading: true, error: null });
+    set({ loading: true, error: null })
     const { error } = await supabase.auth.signInWithOAuth({
       provider: "google",
       options: {
         redirectTo: window.location.origin + "/editor",
       },
-    });
+    })
 
     if (error) {
-      set({ loading: false, error: error.message });
+      set({ loading: false, error: error.message })
     }
   },
 
   signIn: async (email: string, password: string) => {
-    set({ loading: true, error: null });
+    set({ loading: true, error: null })
     const { data, error } = await supabase.auth.signInWithPassword({
       email,
       password,
-    });
+    })
 
     if (error) {
-      set({ loading: false, error: error.message });
-      return;
+      set({ loading: false, error: error.message })
+      return
     }
 
-    const user = data.user;
-    const onboardingCompleted = user?.user_metadata?.onboarding_completed || 
-                                (user && localStorage.getItem(`onboarding_completed_${user.id}`) === "true") || 
-                                false;
+    const user = data.user
+    const onboardingCompleted =
+      user?.user_metadata?.onboarding_completed ||
+      (user &&
+        localStorage.getItem(`onboarding_completed_${user.id}`) === "true") ||
+      false
 
-    set({ 
-      user: data.user, 
-      session: data.session, 
+    set({
+      user: data.user,
+      session: data.session,
       loading: false,
-      onboardingCompleted: !!onboardingCompleted
-    });
-    await get().fetchProfile();
+      onboardingCompleted: !!onboardingCompleted,
+    })
+    await get().fetchProfile()
   },
 
   signUp: async (email: string, password: string) => {
-    set({ loading: true, error: null });
+    set({ loading: true, error: null })
     const { data, error } = await supabase.auth.signUp({
       email,
       password,
-    });
+    })
 
     if (error) {
-      set({ loading: false, error: error.message });
-      return;
+      set({ loading: false, error: error.message })
+      return
     }
 
-    set({ 
-      user: data.user, 
-      session: data.session, 
+    set({
+      user: data.user,
+      session: data.session,
       loading: false,
-      onboardingCompleted: false
-    });
+      onboardingCompleted: false,
+    })
 
     if (data.user) {
-      await get().fetchProfile();
+      await get().fetchProfile()
     }
   },
 
   signOut: async () => {
-    set({ loading: true, error: null });
-    await supabase.auth.signOut();
-    set({ user: null, session: null, profile: null, loading: false, onboardingCompleted: false });
+    set({ loading: true, error: null })
+    await supabase.auth.signOut()
+    set({
+      user: null,
+      session: null,
+      profile: null,
+      loading: false,
+      onboardingCompleted: false,
+    })
   },
 
   initialize: () => {
     // Fetch initial session
     supabase.auth.getSession().then(({ data: { session } }) => {
-      const user = session?.user ?? null;
-      const onboardingCompleted = user?.user_metadata?.onboarding_completed || 
-                                  (user && localStorage.getItem(`onboarding_completed_${user.id}`) === "true") || 
-                                  false;
+      const user = session?.user ?? null
+      const onboardingCompleted =
+        user?.user_metadata?.onboarding_completed ||
+        (user &&
+          localStorage.getItem(`onboarding_completed_${user.id}`) === "true") ||
+        false
       set({
         session,
         user,
         loading: false,
         onboardingCompleted: !!onboardingCompleted,
-      });
+      })
       if (session?.user) {
-        get().fetchProfile();
+        get().fetchProfile()
       }
-    });
+    })
 
     // Listen for auth state changes
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_event, session) => {
-      const user = session?.user ?? null;
-      const onboardingCompleted = user?.user_metadata?.onboarding_completed || 
-                                  (user && localStorage.getItem(`onboarding_completed_${user.id}`) === "true") || 
-                                  false;
+      const user = session?.user ?? null
+      const onboardingCompleted =
+        user?.user_metadata?.onboarding_completed ||
+        (user &&
+          localStorage.getItem(`onboarding_completed_${user.id}`) === "true") ||
+        false
       set({
         session,
         user,
         loading: false,
         onboardingCompleted: !!onboardingCompleted,
-      });
+      })
       if (session?.user) {
-        get().fetchProfile();
+        get().fetchProfile()
       } else {
-        set({ profile: null, onboardingCompleted: false });
+        set({ profile: null, onboardingCompleted: false })
       }
-    });
+    })
 
-    return () => subscription.unsubscribe();
+    return () => subscription.unsubscribe()
   },
 
   completeOnboarding: async (onboardingData: OnboardingData) => {
-    const { user } = get();
+    const { user } = get()
     if (user) {
       // If it's a real Supabase user, update user metadata
       if (!user.id.startsWith("guest_")) {
@@ -194,14 +208,14 @@ export const useAuthStore = create<AuthState>((set, get) => ({
             onboarding_completed: true,
             onboarding_data: onboardingData,
           },
-        });
+        })
         if (error) {
-          console.error("Error updating user metadata:", error.message);
+          console.error("Error updating user metadata:", error.message)
         }
       }
-      localStorage.setItem(`onboarding_completed_${user.id}`, "true");
+      localStorage.setItem(`onboarding_completed_${user.id}`, "true")
     }
-    set({ onboardingCompleted: true });
+    set({ onboardingCompleted: true })
   },
 
   signInAsGuest: () => {
@@ -212,8 +226,8 @@ export const useAuthStore = create<AuthState>((set, get) => ({
       app_metadata: {},
       aud: "authenticated",
       created_at: new Date().toISOString(),
-    } as unknown as User;
-    
+    } as unknown as User
+
     set({
       user: guestUser,
       session: {
@@ -227,72 +241,87 @@ export const useAuthStore = create<AuthState>((set, get) => ({
       onboardingCompleted: false,
       profile: {
         id: guestUser.id,
-        token_balance: 1,
+        credits: 1,
       },
-    });
+    })
   },
 
   addCredits: async (amount: number) => {
-    const { user, profile } = get();
-    if (!profile) return;
-    const nextBalance = (profile.token_balance || 0) + amount;
-    
+    const { user, profile } = get()
+    if (!profile) return
+    const nextBalance = (profile.credits || 0) + amount
+
     set({
       profile: {
         ...profile,
-        token_balance: nextBalance,
+        credits: nextBalance,
       },
-    });
+    })
 
     if (user && !user.id.startsWith("guest_")) {
       const { error } = await supabase
         .from("profiles")
-        .update({ token_balance: nextBalance })
-        .eq("id", user.id);
+        .update({ credits: nextBalance })
+        .eq("id", user.id)
       if (error) {
-        console.error("Error updating profile credits:", error.message);
+        console.error("Error updating profile credits:", error.message)
       }
     }
   },
 
+  addCreditsOptimistic: (amount: number) => {
+    const { profile } = get()
+    if (!profile) return
+    const nextBalance = (profile.credits || 0) + amount
+
+    set({
+      profile: {
+        ...profile,
+        credits: nextBalance,
+      },
+      // Lock for 15 seconds to give the Stripe webhook time to process
+      _optimisticLockUntil: Date.now() + 15_000,
+    })
+  },
+
   deductCredit: async () => {
-    const { user, profile } = get();
-    if (!profile || (profile.token_balance || 0) <= 0) return false;
-    
+    const { user, profile } = get()
+    if (!profile || (profile.credits || 0) <= 0) return false
+
     // OPTIMISTIC UPDATE: Deduct locally immediately so the UI reflects the change instantly.
-    const nextBalance = (profile.token_balance || 0) - 1;
-    // Lock for 60 seconds so that background auth token refreshes cannot
+    const nextBalance = (profile.credits || 0) - 1
+    // Lock for 15 seconds so that background auth token refreshes cannot
     // overwrite this local deduction with the stale server balance.
     set({
-      profile: { ...profile, token_balance: nextBalance },
-      _deductionLockUntil: Date.now() + 60_000,
-    });
+      profile: { ...profile, credits: nextBalance },
+      _optimisticLockUntil: Date.now() + 15_000,
+    })
 
     // For guest users, simulate the deduction locally only
     if (!user || user.id.startsWith("guest_")) {
-      return true;
+      return true
     }
 
     try {
       // For real users, sync to the server in the background.
       // We use a direct UPDATE instead of an RPC to avoid the RPC not existing.
       const { error } = await supabase
-        .from('profiles')
-        .update({ token_balance: nextBalance })
-        .eq('id', user.id);
-      
+        .from("profiles")
+        .update({ credits: nextBalance })
+        .eq("id", user.id)
+
       if (error) {
-        console.error("Network Error deducting credit:", error.message);
+        console.error("Network Error deducting credit:", error.message)
         // Local state already updated — lock stays active so refetch won't clobber it
-        return true;
+        return true
       }
-      
+
       // Success: server is now in sync, we can release the lock
-      set({ _deductionLockUntil: null });
-      return true;
+      set({ _optimisticLockUntil: null })
+      return true
     } catch (err) {
-      console.error("Exception in deductCredit:", err);
-      return true;
+      console.error("Exception in deductCredit:", err)
+      return true
     }
   },
-}));
+}))

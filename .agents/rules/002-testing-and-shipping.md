@@ -1,6 +1,6 @@
 ---
 description: "Enforces rigorous testing and shipping principles."
-model_decision: "Use this rule when the user asks to prepare a PR, fix a bug, or write tests."
+always_on: true
 ---
 
 # Testing and Shipping Guidelines

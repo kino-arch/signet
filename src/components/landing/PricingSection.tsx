@@ -1,22 +1,20 @@
-"use client";
-
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+﻿import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
-import { NeonGradientCard } from "@/components/ui/neon-gradient-card";
-import { motion, useInView } from "framer-motion";
-import { Check, Info } from "lucide-react";
-import { useRef } from "react";
-import { cn } from "@/lib/utils";
-import { useNavigate } from "react-router-dom";
-import { useAuthStore } from "@/store/useAuthStore";
-import { useLocalizedPricing, formatPrice } from "@/hooks/useLocalizedPricing";
+} from "@/components/ui/card"
+import { NeonGradientCard } from "@/components/ui/neon-gradient-card"
+import { motion, useInView } from "framer-motion"
+import { Check, Info } from "lucide-react"
+import { useRef } from "react"
+import { cn } from "@/lib/utils"
+import { useNavigate } from "react-router-dom"
+import { useAuthStore } from "@/store/useAuthStore"
+import { useLocalizedPricing, formatPrice } from "@/hooks/useLocalizedPricing"
 
 const plans = [
   {
@@ -24,7 +22,8 @@ const plans = [
     name: "Starter",
     priceUsd: 3.99,
     tokens: 2,
-    description: "Generate and export 2 targeted resumes. Perfect for a quick job hunt.",
+    description:
+      "Generate and export 2 targeted resumes. Perfect for a quick job hunt.",
     features: [
       "2 AI-Assisted Exports",
       "Full template library access",
@@ -37,7 +36,8 @@ const plans = [
     name: "Professional",
     priceUsd: 7.99,
     tokens: 5,
-    description: "Receive 5 exports. Edit, iterate, and customize multiple variations.",
+    description:
+      "Receive 5 exports. Edit, iterate, and customize multiple variations.",
     features: [
       "5 AI-Assisted Exports",
       "Full template library access",
@@ -51,7 +51,8 @@ const plans = [
     name: "Elite",
     priceUsd: 9.99,
     tokens: 10,
-    description: "A strategic reserve of 10 exports. Command the hiring market.",
+    description:
+      "A strategic reserve of 10 exports. Command the hiring market.",
     features: [
       "10 AI-Assisted Exports",
       "Full template library access",
@@ -60,31 +61,31 @@ const plans = [
     ],
     popular: false,
   },
-];
+]
 
 export function PricingSection() {
-  const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, margin: "-100px" });
-  const navigate = useNavigate();
-  const { user } = useAuthStore();
-  const localization = useLocalizedPricing();
+  const ref = useRef(null)
+  const isInView = useInView(ref, { once: true, margin: "-100px" })
+  const navigate = useNavigate()
+  const { user } = useAuthStore()
+  const localization = useLocalizedPricing()
 
   const handlePlanSelect = (planId: string) => {
     if (!user) {
-      navigate(`/login?redirect=/editor?buy_package=${planId}`);
+      navigate(`/login?redirect=/editor?buy_package=${planId}`)
     } else {
-      navigate(`/editor?buy_package=${planId}`);
+      navigate(`/editor?buy_package=${planId}`)
     }
-  };
+  }
 
   return (
     <section
       ref={ref}
       id="pricing"
-      className="w-full bg-background px-4 py-12 sm:py-16 md:py-20 lg:py-24"
+      className="w-full px-4 py-12 sm:py-16 md:py-20 lg:py-24"
       aria-labelledby="pricing-heading"
     >
-      <div className="mx-auto w-full max-w-5xl px-4 sm:px-6 lg:px-8">
+      <div className="mx-auto w-full max-w-4xl px-4 sm:px-6 lg:px-8">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
@@ -98,22 +99,25 @@ export function PricingSection() {
             Simple, Transparent Pricing
           </h2>
           <p className="mx-auto max-w-2xl px-4 text-base text-muted-foreground sm:text-lg">
-            Secure the assets you need to land your next role. One token = One final resume export.
+            Secure the assets you need to land your next role. One token = One
+            final resume export.
           </p>
         </motion.div>
 
         <div className="grid grid-cols-1 gap-6 sm:gap-8 md:grid-cols-2 md:gap-6 lg:grid-cols-3">
           {plans.map((plan, index) => {
-            const displayPrice = formatPrice(plan.priceUsd, localization);
-            
+            const displayPrice = formatPrice(plan.priceUsd, localization)
+
             const cardContent = (
               <Card
                 className={cn(
-                  "relative flex h-full w-full flex-col overflow-hidden transition-all duration-200",
-                  plan.popular ? "border-none bg-background " : "shadow-md hover:shadow-lg bg-background"
+                  "relative flex h-full w-full flex-col overflow-hidden border border-border/40 bg-background/60 backdrop-blur-md transition-all duration-200 hover:border-primary/30",
+                  plan.popular
+                    ? "border-none shadow-[0_0_30px_rgba(var(--primary),0.1)]"
+                    : "shadow-md hover:shadow-lg"
                 )}
                 role="article"
-                aria-label={`${plan.name} plan${plan.popular ? ', most popular' : ''}`}
+                aria-label={`${plan.name} plan${plan.popular ? ", most popular" : ""}`}
               >
                 {plan.popular && (
                   <div className="absolute top-3 right-3 z-10 sm:top-4 sm:right-4">
@@ -170,7 +174,9 @@ export function PricingSection() {
                     onClick={() => handlePlanSelect(plan.id)}
                     className={cn(
                       "w-full text-sm font-semibold transition-all sm:text-base",
-                      plan.popular ? "font-bold shadow-md shadow-primary/10 hover:shadow-primary/20" : ""
+                      plan.popular
+                        ? "font-bold shadow-md shadow-primary/10 hover:shadow-primary/20"
+                        : ""
                     )}
                     variant={plan.popular ? "default" : "outline"}
                     size="lg"
@@ -180,13 +186,15 @@ export function PricingSection() {
                   </Button>
                 </CardContent>
               </Card>
-            );
+            )
 
             return (
               <motion.div
                 key={plan.name}
                 initial={{ opacity: 0, y: 20 }}
-                animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+                animate={
+                  isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }
+                }
                 transition={{ duration: 0.4, delay: index * 0.1 }}
                 className="flex"
               >
@@ -195,7 +203,10 @@ export function PricingSection() {
                     className="w-full"
                     borderSize={2}
                     borderRadius={24}
-                    neonColors={{ firstColor: "hsl(var(--primary))", secondColor: "hsl(var(--primary) / 0.5)" }}
+                    neonColors={{
+                      firstColor: "oklch(0.55 0.22 285)",
+                      secondColor: "oklch(0.55 0.22 285 / 0.5)",
+                    }}
                   >
                     {cardContent}
                   </NeonGradientCard>
@@ -203,21 +214,24 @@ export function PricingSection() {
                   <div className="w-full">{cardContent}</div>
                 )}
               </motion.div>
-            );
+            )
           })}
         </div>
-        
+
         {/* Localized Pricing Disclaimer */}
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0 }}
           animate={isInView ? { opacity: 1 } : { opacity: 0 }}
           transition={{ duration: 0.6, delay: 0.5 }}
           className="mt-8 flex items-center justify-center gap-2 text-xs text-muted-foreground"
         >
           <Info className="h-4 w-4" />
-          <span>Prices are estimates based on your location. Final exact pricing in your local currency is calculated securely at checkout.</span>
+          <span>
+            Prices are estimates based on your location. Final exact pricing in
+            your local currency is calculated securely at checkout.
+          </span>
         </motion.div>
       </div>
     </section>
-  );
+  )
 }

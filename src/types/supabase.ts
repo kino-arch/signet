@@ -56,7 +56,7 @@ export type Database = {
           full_name: string | null
           id: string
           last_active_geo: string | null
-          token_balance: number
+          credits: number
           updated_at: string
         }
         Insert: {
@@ -65,7 +65,7 @@ export type Database = {
           full_name?: string | null
           id: string
           last_active_geo?: string | null
-          token_balance?: number
+          credits?: number
           updated_at?: string
         }
         Update: {
@@ -74,7 +74,7 @@ export type Database = {
           full_name?: string | null
           id?: string
           last_active_geo?: string | null
-          token_balance?: number
+          credits?: number
           updated_at?: string
         }
         Relationships: []
@@ -110,6 +110,38 @@ export type Database = {
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      slate_versions: {
+        Row: {
+          id: string
+          slate_id: string
+          version_number: number
+          snapshot_data: Json
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          slate_id: string
+          version_number: number
+          snapshot_data: Json
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          slate_id?: string
+          version_number?: number
+          snapshot_data?: Json
+          created_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "slate_versions_slate_id_fkey"
+            columns: ["slate_id"]
+            isOneToOne: false
+            referencedRelation: "data_slates"
             referencedColumns: ["id"]
           },
         ]

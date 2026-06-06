@@ -12,40 +12,40 @@ interface FAQItem {
 
 const faqData: FAQItem[] = [
   {
-    question: "What’s included in a token pack?",
+    question: "What’s included in each pricing plan?",
     answer:
-      "Each token allows you to generate and export one highly-optimized resume in PDF format. You maintain access to the digital version in the platform to edit anytime.",
+      "Each plan includes access to core features, regular updates, and dedicated support. Higher tiers unlock advanced automation, analytics, and priority assistance.",
   },
   {
-    question: "Do tokens expire?",
+    question: "Can I upgrade or downgrade anytime?",
     answer:
-      "No, your tokens act as a strategic reserve. They do not expire and will remain in your account until you deploy them for an export.",
+      "Yes. You can switch plans at any time. Upgrades take effect immediately, and downgrades apply at the start of your next billing cycle.",
   },
   {
-    question: "Can I build a resume for free?",
+    question: "Is there a free trial available?",
     answer:
-      "Absolutely. You can use the Signet editor, import data, and preview your forged resume entirely for free. You only need a token when you are ready to export the final ATS-optimized PDF.",
+      "Absolutely. We offer a free trial so you can explore all essential features before committing to a paid plan.",
   },
   {
-    question: "Are there subscription plans?",
+    question: "Do you offer discounts for annual billing?",
     answer:
-      "Signet operates strictly on a pay-per-export token system. We believe professionals shouldn't be trapped in monthly subscriptions when they only need to hunt for a job occasionally.",
+      "Yes. Annual plans come with a discounted rate compared to monthly billing, helping you save more as you scale.",
   },
   {
     question: "Is my data secure?",
     answer:
-      "Security is a top priority. We use industry-standard encryption and best practices to ensure your professional data remains protected at all times.",
+      "Security is a top priority. We use industry-standard encryption and best practices to ensure your data remains protected at all times.",
   },
   {
     question: "How do I get started?",
     answer:
-      "Simply create your account, connect your existing data or start from scratch, and begin forging your resume immediately.",
+      "Simply choose a plan that fits your needs, create your account, and you’ll be up and running in minutes.",
   },
 ]
 
-export function FAQSection() {
+export default function FAQSection() {
   return (
-    <div id="specs" className="flex w-full items-start justify-center">
+    <div className="flex w-full items-start justify-center">
       <div className="flex flex-1 flex-col gap-6 px-4 py-16 md:px-12 md:py-20 lg:flex-row lg:gap-12">
         <div className="flex w-full flex-col gap-4 lg:flex-1 lg:py-5">
           <h2 className="text-4xl leading-tight font-semibold tracking-tight">

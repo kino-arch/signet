@@ -1,0 +1,48 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Phoenix Dashboard</title>
+  <style>
+    body { font-family: system-ui, sans-serif; background: #0f172a; color: #f8fafc; padding: 2rem; }
+    h1 { color: #38bdf8; }
+    .card { background: #1e293b; padding: 1.5rem; border-radius: 0.5rem; margin-bottom: 1.5rem; }
+    .score { font-size: 3rem; font-weight: 800; color: #10b981; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; }
+  </style>
+</head>
+<body>
+  <h1>Phoenix Dashboard</h1>
+  <p>Last updated: 05/06/2026, 20:17:21</p>
+  
+  <div class="grid">
+    <div class="card">
+      <h2>Critical Layer Compliance</h2>
+      <div class="score">91.76%</div>
+      <p>Excludes isolated 3rd party code, only user-facing surfaces.</p>
+    </div>
+    
+    <div class="card">
+      <h2>Production Layer Compliance</h2>
+      <div class="score">35.43%</div>
+      <p>Excludes animate-ui and editor templates.</p>
+    </div>
+    
+    <div class="card">
+      <h2>Full Layer Compliance</h2>
+      <div class="score">34.59%</div>
+      <p>Entire src/ directory.</p>
+    </div>
+  </div>
+  
+  <div class="card">
+    <h2>Top Critical Violators</h2>
+    <ul>
+      <li><strong>src/pages/OnboardingPage.tsx</strong>: 2 violations</li><li><strong>src/pages/SlatesPage.tsx</strong>: 2 violations</li><li><strong>src/components/dashboard/ConstellationLines.tsx</strong>: 1 violations</li><li><strong>src/components/dashboard/GhostStar.tsx</strong>: 1 violations</li><li><strong>src/components/dashboard/ResumeConstellation.tsx</strong>: 1 violations</li><li><strong>src/components/dashboard/ViewModeToggle.tsx</strong>: 1 violations</li><li><strong>src/components/sections/pricing/pricing-03.tsx</strong>: 1 violations</li><li><strong>src/pages/AnalyticsPage.tsx</strong>: 1 violations</li><li><strong>src/pages/ApplicationsPage.tsx</strong>: 1 violations</li><li><strong>src/pages/AtsSpecsPage.tsx</strong>: 1 violations</li>
+    </ul>
+  </div>
+</body>
+</html>
+  

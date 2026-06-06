@@ -1,24 +1,25 @@
-import { motion } from "framer-motion";
-import { Sparkles, X } from "lucide-react";
+import DOMPurify from "dompurify"
+import { motion } from "framer-motion"
+import { Sparkles, X } from "lucide-react"
 import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import { LottieAnimation } from "@/components/ui/lottie-animation";
-import cyberSuccessData from "@/assets/animations/cyber_success.json";
+} from "@/components/ui/dialog"
+import { Button } from "@/components/ui/button"
+import { LottieAnimation } from "@/components/ui/lottie-animation"
+import cyberSuccessData from "@/assets/animations/cyber_success.json"
 
 interface ReforgeCompareModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  originalText: string;
-  reforgedText: string;
-  onAccept: (reforged: string) => void;
-  title?: string;
-  description?: string;
+  isOpen: boolean
+  onClose: () => void
+  originalText: string
+  reforgedText: string
+  onAccept: (reforged: string) => void
+  title?: string
+  description?: string
 }
 
 export function ReforgeCompareModal({
@@ -31,9 +32,9 @@ export function ReforgeCompareModal({
   description = "Compare original template with Beskar-grade optimizations before final integration.",
 }: ReforgeCompareModalProps) {
   const handleAccept = () => {
-    onAccept(reforgedText);
-    onClose();
-  };
+    onAccept(reforgedText)
+    onClose()
+  }
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
@@ -57,7 +58,7 @@ export function ReforgeCompareModal({
         {/* Comparison grid */}
         <div className="relative z-10 grid grid-cols-1 gap-4 py-4 md:grid-cols-2">
           {/* Original panel */}
-          <div className="flex flex-col  border border-border/40 bg-muted/20 p-4">
+          <div className="flex flex-col border border-border/40 bg-muted/20 p-4">
             <div className="mb-2 flex items-center justify-between border-b border-border/20 pb-1.5 font-mono text-[10px] text-muted-foreground">
               <span>RAW DATASTATE</span>
               <span className="flex items-center gap-1">
@@ -65,9 +66,11 @@ export function ReforgeCompareModal({
                 ORIGINAL
               </span>
             </div>
-            <div 
-              className="max-h-[220px] min-h-[120px] flex-1 overflow-y-auto text-xs/relaxed whitespace-pre-wrap text-muted-foreground"
-              dangerouslySetInnerHTML={{ __html: originalText }}
+            <div
+              className="max-h-[220px] min-h-32 flex-1 overflow-y-auto text-xs/relaxed whitespace-pre-wrap text-muted-foreground"
+              dangerouslySetInnerHTML={{
+                __html: DOMPurify.sanitize(originalText),
+              }}
             />
           </div>
 
@@ -76,10 +79,10 @@ export function ReforgeCompareModal({
             initial={{ scale: 0.98, opacity: 0.9 }}
             animate={{ scale: 1, opacity: 1 }}
             transition={{ type: "spring", stiffness: 300, damping: 20 }}
-            className="relative flex flex-col  border-2 border-primary/45 bg-primary/5 p-4 shadow-[0_0_15px_rgba(var(--primary),0.05)]"
+            className="relative flex flex-col border-2 border-primary/45 bg-primary/5 p-4 shadow-[0_0_15px_rgba(var(--primary),0.05)]"
           >
             {/* Ambient reforge glow */}
-            <div className="absolute inset-0 -z-10  bg-[radial-gradient(circle_at_50%_0%,color-mix(in_srgb,var(--color-primary)_12%,transparent),transparent_60%)]" />
+            <div className="absolute inset-0 -z-10 bg-[radial-gradient(circle_at_50%_0%,color-mix(in_srgb,var(--color-primary)_12%,transparent),transparent_60%)]" />
 
             <div className="mb-2 flex items-center justify-between border-b border-primary/20 pb-1.5 font-mono text-[10px] font-bold text-primary">
               <span className="flex items-center gap-1">
@@ -91,9 +94,11 @@ export function ReforgeCompareModal({
                 OPTIMIZED
               </span>
             </div>
-            <div 
-              className="max-h-[220px] min-h-[120px] flex-1 overflow-y-auto text-xs/relaxed whitespace-pre-wrap text-foreground"
-              dangerouslySetInnerHTML={{ __html: reforgedText }}
+            <div
+              className="max-h-[220px] min-h-32 flex-1 overflow-y-auto text-xs/relaxed whitespace-pre-wrap text-foreground"
+              dangerouslySetInnerHTML={{
+                __html: DOMPurify.sanitize(reforgedText),
+              }}
             />
           </motion.div>
         </div>
@@ -113,11 +118,15 @@ export function ReforgeCompareModal({
             onClick={handleAccept}
             className="flex items-center gap-1.5 shadow-lg shadow-primary/10 transition-all hover:scale-[1.02] hover:shadow-primary/25"
           >
-            <LottieAnimation animationData={cyberSuccessData} className="h-4 w-4" />
+            <LottieAnimation
+              animationData={cyberSuccessData}
+              className="h-4 w-4"
+              loop={false}
+            />
             Integrate Suggestion
           </Button>
         </div>
       </DialogContent>
     </Dialog>
-  );
+  )
 }

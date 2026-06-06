@@ -1,42 +1,54 @@
-import { useState } from "react";
+import { useState } from "react"
 import {
   DndContext,
   closestCenter,
   PointerSensor,
   useSensor,
   useSensors,
-} from "@dnd-kit/core";
-import type { DragEndEvent } from "@dnd-kit/core";
+} from "@dnd-kit/core"
+import type { DragEndEvent } from "@dnd-kit/core"
 import {
   SortableContext,
   useSortable,
   verticalListSortingStrategy,
-} from "@dnd-kit/sortable";
-import { CSS } from "@dnd-kit/utilities";
-import { GripVertical, ChevronDown, ChevronUp, Plus, Trash2 } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { useDataSlateStore } from "@/store/useDataSlateStore";
-import type { EducationEntry } from "@/store/useDataSlateStore";
-import { cn } from "@/lib/utils";
+} from "@dnd-kit/sortable"
+import { CSS } from "@dnd-kit/utilities"
+import {
+  GripVertical,
+  ChevronDown,
+  ChevronUp,
+  Plus,
+  Trash2,
+} from "lucide-react"
+import { Button } from "@/components/ui/button"
+import { DataStreamInput } from "@/components/editor/primitives/DataStreamInput"
+import { useDataSlateStore } from "@/store/useDataSlateStore"
+import type { EducationEntry } from "@/store/useDataSlateStore"
+import { cn } from "@/lib/utils"
 
 // ─── Single Sortable Education Block ──────────────────────────────────────────
 function EducationBlock({ entry }: { entry: EducationEntry }) {
-  const { updateEducationEntry, removeEducationEntry } = useDataSlateStore();
-  const [expanded, setExpanded] = useState(false);
+  const { updateEducationEntry, removeEducationEntry } = useDataSlateStore()
+  const [expanded, setExpanded] = useState(false)
 
-  const { attributes, listeners, setNodeRef, transform, transition, isDragging } =
-    useSortable({ id: entry.id });
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id: entry.id })
 
   const style = {
     transform: CSS.Transform.toString(transform),
     transition,
-  };
+  }
 
-  const displayTitle = entry.institution || entry.studyType
-    ? `${entry.studyType || "Degree"}${entry.institution ? ` · ${entry.institution}` : ""}`
-    : "New Education Entry";
+  const displayTitle =
+    entry.institution || entry.studyType
+      ? `${entry.studyType || "Degree"}${entry.institution ? ` · ${entry.institution}` : ""}`
+      : "New Education Entry"
 
   return (
     <div
@@ -45,7 +57,7 @@ function EducationBlock({ entry }: { entry: EducationEntry }) {
       className={cn(
         "rounded-lg border transition-all duration-200",
         isDragging
-          ? "border-primary/60 bg-primary/5 shadow-lg shadow-primary/10 opacity-90 z-50"
+          ? "z-50 border-primary/60 bg-primary/5 opacity-90 shadow-lg shadow-primary/10"
           : "border-border/40 bg-card/30 hover:border-border/70"
       )}
     >
@@ -65,13 +77,20 @@ function EducationBlock({ entry }: { entry: EducationEntry }) {
         </button>
 
         <div className="min-w-0 flex-1">
-          <span className="block truncate text-sm font-medium text-foreground">{displayTitle}</span>
+          <span className="block truncate text-sm font-medium text-foreground">
+            {displayTitle}
+          </span>
           {entry.area && (
-            <span className="font-mono text-[10px] text-muted-foreground">{entry.area}</span>
+            <span className="font-mono text-[10px] text-muted-foreground">
+              {entry.area}
+            </span>
           )}
         </div>
 
-        <div className="flex shrink-0 items-center gap-1" onClick={(e) => e.stopPropagation()}>
+        <div
+          className="flex shrink-0 items-center gap-1"
+          onClick={(e) => e.stopPropagation()}
+        >
           <button
             onClick={() => removeEducationEntry(entry.id)}
             className="rounded p-1.5 text-muted-foreground/50 transition-colors hover:text-destructive"
@@ -79,8 +98,15 @@ function EducationBlock({ entry }: { entry: EducationEntry }) {
           >
             <Trash2 className="h-3.5 w-3.5" />
           </button>
-          <button onClick={() => setExpanded((v) => !v)} className="p-1.5 text-muted-foreground/50 transition-colors hover:text-foreground">
-            {expanded ? <ChevronUp className="h-3.5 w-3.5" /> : <ChevronDown className="h-3.5 w-3.5" />}
+          <button
+            onClick={() => setExpanded((v) => !v)}
+            className="p-1.5 text-muted-foreground/50 transition-colors hover:text-foreground"
+          >
+            {expanded ? (
+              <ChevronUp className="h-3.5 w-3.5" />
+            ) : (
+              <ChevronDown className="h-3.5 w-3.5" />
+            )}
           </button>
         </div>
       </div>
@@ -90,93 +116,114 @@ function EducationBlock({ entry }: { entry: EducationEntry }) {
         <div className="animate-in space-y-3 border-t border-border/20 px-4 pt-1 pb-4 duration-150 slide-in-from-top-1">
           <div className="grid grid-cols-2 gap-3">
             <div className="space-y-1.5">
-              <Label className="text-[10px] tracking-widest text-muted-foreground uppercase">Institution</Label>
-              <Input
+              <DataStreamInput
+                label="Institution"
                 value={entry.institution}
-                onChange={(e) => updateEducationEntry(entry.id, { institution: e.target.value })}
-                className="h-8 bg-background/50 text-sm"
+                onChange={(e) =>
+                  updateEducationEntry(entry.id, {
+                    institution: e.target.value,
+                  })
+                }
+                unit="chars"
               />
             </div>
             <div className="space-y-1.5">
-              <Label className="text-[10px] tracking-widest text-muted-foreground uppercase">Degree Type</Label>
-              <Input
+              <DataStreamInput
+                label="Degree Type"
                 value={entry.studyType}
-                onChange={(e) => updateEducationEntry(entry.id, { studyType: e.target.value })}
+                onChange={(e) =>
+                  updateEducationEntry(entry.id, { studyType: e.target.value })
+                }
                 placeholder="Bachelor of Science"
-                className="h-8 bg-background/50 text-sm"
+                unit="chars"
               />
             </div>
             <div className="col-span-2 space-y-1.5">
-              <Label className="text-[10px] tracking-widest text-muted-foreground uppercase">Field of Study</Label>
-              <Input
+              <DataStreamInput
+                label="Field of Study"
                 value={entry.area}
-                onChange={(e) => updateEducationEntry(entry.id, { area: e.target.value })}
+                onChange={(e) =>
+                  updateEducationEntry(entry.id, { area: e.target.value })
+                }
                 placeholder="Computer Science"
-                className="h-8 bg-background/50 text-sm"
+                unit="chars"
               />
             </div>
             <div className="space-y-1.5">
-              <Label className="text-[10px] tracking-widest text-muted-foreground uppercase">Start Date</Label>
-              <Input
+              <DataStreamInput
+                label="Start Date"
                 value={entry.startDate}
-                onChange={(e) => updateEducationEntry(entry.id, { startDate: e.target.value })}
+                onChange={(e) =>
+                  updateEducationEntry(entry.id, { startDate: e.target.value })
+                }
                 placeholder="2015-09"
-                className="h-8 bg-background/50 text-sm"
+                unit={null}
               />
             </div>
             <div className="space-y-1.5">
-              <Label className="text-[10px] tracking-widest text-muted-foreground uppercase">End Date</Label>
-              <Input
+              <DataStreamInput
+                label="End Date"
                 value={entry.endDate}
-                onChange={(e) => updateEducationEntry(entry.id, { endDate: e.target.value })}
+                onChange={(e) =>
+                  updateEducationEntry(entry.id, { endDate: e.target.value })
+                }
                 placeholder="2019-06"
-                className="h-8 bg-background/50 text-sm"
+                unit={null}
               />
             </div>
             <div className="col-span-2 space-y-1.5">
-              <Label className="text-[10px] tracking-widest text-muted-foreground uppercase">GPA / Score (optional)</Label>
-              <Input
+              <DataStreamInput
+                label="GPA / Score (optional)"
                 value={entry.score}
-                onChange={(e) => updateEducationEntry(entry.id, { score: e.target.value })}
+                onChange={(e) =>
+                  updateEducationEntry(entry.id, { score: e.target.value })
+                }
                 placeholder="3.8 / 4.0"
-                className="h-8 bg-background/50 text-sm"
+                unit={null}
               />
             </div>
           </div>
         </div>
       )}
     </div>
-  );
+  )
 }
 
 // ─── Education Section ────────────────────────────────────────────────────────
 export function EducationArray() {
-  const { education, addEducationEntry, reorderEducationEntries, setSyncPaused } = useDataSlateStore();
+  const {
+    education,
+    addEducationEntry,
+    reorderEducationEntries,
+    setSyncPaused,
+  } = useDataSlateStore()
 
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 8 } })
-  );
+  )
 
   const handleDragStart = () => {
-    setSyncPaused(true);
-  };
+    setSyncPaused(true)
+  }
 
   const handleDragEnd = (e: DragEndEvent) => {
-    setSyncPaused(false);
-    const { active, over } = e;
+    setSyncPaused(false)
+    const { active, over } = e
     if (over && active.id !== over.id) {
-      reorderEducationEntries(String(active.id), String(over.id));
+      reorderEducationEntries(String(active.id), String(over.id))
     }
-  };
+  }
 
   const handleDragCancel = () => {
-    setSyncPaused(false);
-  };
+    setSyncPaused(false)
+  }
 
   return (
     <div className="space-y-3">
       <div className="flex items-center justify-between border-b border-border/20 pb-2">
-        <h3 className="text-sm font-bold tracking-widest text-primary uppercase">Education</h3>
+        <h3 className="text-sm font-bold tracking-widest text-primary uppercase">
+          Education
+        </h3>
         <Button
           variant="ghost"
           size="sm"
@@ -194,7 +241,9 @@ export function EducationArray() {
           onClick={addEducationEntry}
         >
           <Plus className="h-5 w-5 text-muted-foreground/50" />
-          <p className="text-xs text-muted-foreground">Add your first education entry</p>
+          <p className="text-xs text-muted-foreground">
+            Add your first education entry
+          </p>
         </div>
       )}
 
@@ -205,7 +254,10 @@ export function EducationArray() {
         onDragEnd={handleDragEnd}
         onDragCancel={handleDragCancel}
       >
-        <SortableContext items={education.map((e) => e.id)} strategy={verticalListSortingStrategy}>
+        <SortableContext
+          items={education.map((e) => e.id)}
+          strategy={verticalListSortingStrategy}
+        >
           <div className="space-y-2">
             {education.map((entry) => (
               <EducationBlock key={entry.id} entry={entry} />
@@ -214,5 +266,5 @@ export function EducationArray() {
         </SortableContext>
       </DndContext>
     </div>
-  );
+  )
 }

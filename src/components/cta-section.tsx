@@ -1,29 +1,54 @@
+import { Link } from "react-router-dom"
 import { Button } from "@/components/ui/button"
 
-export function CTASection() {
+export default function CTASection() {
   return (
-    <section id="comms" className="relative w-full overflow-hidden border-t">
-      {/* Subtle radial gradient — semantic tokens only */}
-      <div
-        className="absolute inset-0 -z-10"
-        style={{
-          background:
-            "radial-gradient(ellipse at 50% 100%, var(--primary) 0%, var(--background) 60%)",
-          opacity: 0.15,
-        }}
-      />
+    <div className="relative flex w-full flex-col items-center justify-center gap-2 overflow-hidden">
+      <div className="relative z-10 flex items-center justify-center gap-6 self-stretch border-t border-b px-6 py-12 md:px-24 md:py-12">
+        <div className="absolute inset-0 h-full w-full overflow-hidden">
+          <div
+            className="relative h-full w-full overflow-hidden"
+            style={{
+              background:
+                "linear-gradient(to bottom, var(--background) 0%, var(--background) 40%, rgba(255,255,255,0) 100%), radial-gradient(ellipse at 50% 120%, var(--primary) 0%, var(--background) 70%)",
+            }}
+          >
+            <div
+              style={{
+                WebkitMaskImage:
+                  "linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,0.6) 60%)",
+                backgroundImage:
+                  "repeating-conic-gradient(from 0deg at 50% 100%, var(--code) 0deg, var(--code) 2deg, transparent 2deg, transparent 10deg)",
+                bottom: "-20%",
+                height: "100%",
+                left: "50%",
+                maskImage:
+                  "linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,0.6) 100%)",
+                pointerEvents: "none",
+                position: "absolute",
+                transform: "translateX(-50%)",
+                width: "200%",
+              }}
+            />
+          </div>
+        </div>
 
-      <div className="mx-auto flex w-full max-w-3xl flex-col items-center gap-6 px-4 py-16 text-center sm:px-6 md:py-24">
-        <h2 className="text-3xl font-semibold tracking-tight md:text-5xl">
-          Ready to forge your legacy?
-        </h2>
-        <p className="max-w-lg text-base leading-7 text-muted-foreground">
-          Let's build professional narratives that command attention,
-          <br className="hidden sm:block" />
-          bypass filters, and land the interviews you deserve.
-        </p>
-        <Button size="lg">Start Forging Now</Button>
+        <div className="relative z-20 flex w-full max-w-3xl flex-col items-center justify-start gap-6 overflow-hidden px-6 py-5 md:py-8">
+          <div className="flex flex-col items-start justify-start gap-3 self-stretch">
+            <div className="flex flex-col justify-center self-stretch text-center text-3xl leading-tight font-semibold tracking-tight md:text-5xl">
+              Ready to land your dream job?
+            </div>
+            <div className="self-stretch text-center text-base leading-7 font-medium text-muted-foreground">
+              Build a professional, ATS-optimized resume in minutes
+              <br />
+              and stand out from the competition.
+            </div>
+          </div>
+          <Link to="/login">
+            <Button size={"lg"}>Build Your Resume</Button>
+          </Link>
+        </div>
       </div>
-    </section>
+    </div>
   )
 }

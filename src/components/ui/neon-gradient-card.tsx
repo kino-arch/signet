@@ -1,13 +1,5 @@
-import {
-  useEffect,
-  useRef,
-  useState,
-} from "react"
-import type {
-  CSSProperties,
-  ReactElement,
-  ReactNode,
-} from "react"
+import { useEffect, useRef, useState } from "react"
+import type { CSSProperties, ReactElement, ReactNode } from "react"
 
 import { cn } from "@/lib/utils"
 
@@ -71,8 +63,8 @@ export const NeonGradientCard: React.FC<NeonGradientCardProps> = ({
   borderSize = 2,
   borderRadius = 20,
   neonColors = {
-    firstColor: "#ff00aa",
-    secondColor: "#00FFF1",
+    firstColor: "var(--theme-accent)",
+    secondColor: "var(--theme-primary)",
   },
   ...props
 }) => {

@@ -5,13 +5,7 @@ import { useCallback, useEffect, useRef, useState } from "react"
 // types removed to bypass build error on embla-carousel package missing
 import Autoplay from "embla-carousel-autoplay"
 import useEmblaCarousel from "embla-carousel-react"
-import {
-  ChevronLeft,
-  ChevronRight,
-  Pause,
-  Play,
-  X,
-} from "lucide-react"
+import { ChevronLeft, ChevronRight, Pause, Play, X } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 
@@ -275,7 +269,9 @@ const Carousel: React.FC<PropType> = (props) => {
               variant={"secondary"}
               onClick={toggleAutoplay}
               type="button"
-              aria-label={autoplayIsPlaying ? "Pause autoplay" : "Start autoplay"}
+              aria-label={
+                autoplayIsPlaying ? "Pause autoplay" : "Start autoplay"
+              }
             >
               {autoplayIsPlaying ? (
                 <Pause fill="currentColor" />
@@ -382,8 +378,14 @@ const Lightbox: React.FC<LightboxProps> = ({
 }) => {
   const [current, setCurrent] = useState(initialIndex)
 
-  const prev = useCallback(() => setCurrent((c) => (c - 1 + slides.length) % slides.length), [slides.length])
-  const next = useCallback(() => setCurrent((c) => (c + 1) % slides.length), [slides.length])
+  const prev = useCallback(
+    () => setCurrent((c) => (c - 1 + slides.length) % slides.length),
+    [slides.length]
+  )
+  const next = useCallback(
+    () => setCurrent((c) => (c + 1) % slides.length),
+    [slides.length]
+  )
 
   useEffect(() => {
     const handleKey = (e: KeyboardEvent) => {
@@ -467,15 +469,21 @@ export const useDotButton = (
     [emblaApi]
   )
 
-  const onInit = useCallback((emblaApi: ReturnType<typeof useEmblaCarousel>[1]) => {
-    if (!emblaApi) return
-    setScrollSnaps(emblaApi.scrollSnapList())
-  }, [])
+  const onInit = useCallback(
+    (emblaApi: ReturnType<typeof useEmblaCarousel>[1]) => {
+      if (!emblaApi) return
+      setScrollSnaps(emblaApi.scrollSnapList())
+    },
+    []
+  )
 
-  const onSelect = useCallback((emblaApi: ReturnType<typeof useEmblaCarousel>[1]) => {
-    if (!emblaApi) return
-    setSelectedIndex(emblaApi.selectedScrollSnap())
-  }, [])
+  const onSelect = useCallback(
+    (emblaApi: ReturnType<typeof useEmblaCarousel>[1]) => {
+      if (!emblaApi) return
+      setSelectedIndex(emblaApi.selectedScrollSnap())
+    },
+    []
+  )
 
   useEffect(() => {
     if (!emblaApi) return
@@ -644,11 +652,14 @@ export const usePrevNextButtons = (
     emblaApi.scrollNext()
   }, [emblaApi])
 
-  const onSelect = useCallback((emblaApi: ReturnType<typeof useEmblaCarousel>[1]) => {
-    if (!emblaApi) return
-    setPrevBtnDisabled(!emblaApi.canScrollPrev())
-    setNextBtnDisabled(!emblaApi.canScrollNext())
-  }, [])
+  const onSelect = useCallback(
+    (emblaApi: ReturnType<typeof useEmblaCarousel>[1]) => {
+      if (!emblaApi) return
+      setPrevBtnDisabled(!emblaApi.canScrollPrev())
+      setNextBtnDisabled(!emblaApi.canScrollNext())
+    },
+    []
+  )
 
   useEffect(() => {
     if (!emblaApi) return

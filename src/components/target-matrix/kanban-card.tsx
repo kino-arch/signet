@@ -1,18 +1,29 @@
-import { useSortable } from "@dnd-kit/sortable";
-import { CSS } from "@dnd-kit/utilities";
-import { GripVertical, Trash2, Building2, MapPin, DollarSign, ExternalLink } from "lucide-react";
-import { motion } from "framer-motion";
-import { cn } from "@/lib/utils";
-import type { Application } from "@/store/useTargetMatrixStore";
-import { useTargetMatrixStore } from "@/store/useTargetMatrixStore";
+import { useSortable } from "@dnd-kit/sortable"
+import { CSS } from "@dnd-kit/utilities"
+import {
+  GripVertical,
+  Trash2,
+  Building2,
+  MapPin,
+  DollarSign,
+  ExternalLink,
+} from "lucide-react"
+import { motion } from "framer-motion"
+import { cn } from "@/lib/utils"
+import type { Application } from "@/store/useTargetMatrixStore"
+import { useTargetMatrixStore } from "@/store/useTargetMatrixStore"
+import { MatchAnalysisDialog } from "./match-analysis-dialog"
 
 interface KanbanCardProps {
-  application: Application;
-  isDragOverlay?: boolean;
+  application: Application
+  isDragOverlay?: boolean
 }
 
-export function KanbanCard({ application, isDragOverlay = false }: KanbanCardProps) {
-  const { deleteApplication } = useTargetMatrixStore();
+export function KanbanCard({
+  application,
+  isDragOverlay = false,
+}: KanbanCardProps) {
+  const { deleteApplication } = useTargetMatrixStore()
 
   const {
     setNodeRef,
@@ -27,17 +38,20 @@ export function KanbanCard({ application, isDragOverlay = false }: KanbanCardPro
       type: "card",
       application,
     },
-  });
+  })
 
   const style = {
     transform: CSS.Transform.toString(transform),
     transition,
-  };
+  }
 
-  const formattedDate = new Date(application.dateAdded).toLocaleDateString("en-US", {
-    month: "short",
-    day: "numeric",
-  });
+  const formattedDate = new Date(application.dateAdded).toLocaleDateString(
+    "en-US",
+    {
+      month: "short",
+      day: "numeric",
+    }
+  )
 
   return (
     <div
@@ -46,7 +60,7 @@ export function KanbanCard({ application, isDragOverlay = false }: KanbanCardPro
       className={cn(
         "relative",
         isDragging && "opacity-30",
-        isDragOverlay && "rotate-1 scale-[1.02]"
+        isDragOverlay && "scale-[1.02] rotate-1"
       )}
     >
       <motion.div
@@ -57,7 +71,7 @@ export function KanbanCard({ application, isDragOverlay = false }: KanbanCardPro
         className={cn(
           "group relative flex flex-col gap-3 rounded-lg border border-border/50 bg-card p-3.5 shadow-sm transition-all duration-150",
           "hover:border-primary/40 hover:shadow-md hover:shadow-primary/5",
-          isDragOverlay && "shadow-2xl shadow-primary/10 border-primary/30"
+          isDragOverlay && "border-primary/30 shadow-2xl shadow-primary/10"
         )}
       >
         {/* Drag handle + delete row */}
@@ -118,11 +132,16 @@ export function KanbanCard({ application, isDragOverlay = false }: KanbanCardPro
         </div>
 
         {/* Footer */}
-        <div className="flex items-center gap-1.5 border-t border-border/30 pt-2.5">
-          <Building2 className="size-2.5 shrink-0 text-muted-foreground/40" />
-          <span className="text-[10px] text-muted-foreground/60">Added {formattedDate}</span>
+        <div className="flex flex-col gap-2 border-t border-border/30 pt-2.5">
+          <div className="flex items-center gap-1.5">
+            <Building2 className="size-2.5 shrink-0 text-muted-foreground/40" />
+            <span className="text-[10px] text-muted-foreground/60">
+              Added {formattedDate}
+            </span>
+          </div>
+          <MatchAnalysisDialog application={application} />
         </div>
       </motion.div>
     </div>
-  );
+  )
 }

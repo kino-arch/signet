@@ -1,12 +1,20 @@
-import { motion, type Variants } from "framer-motion";
-import { Link, useNavigate } from "react-router-dom";
-import { ArrowLeft, ShieldAlert, CheckCircle2, XCircle, FileText, LayoutTemplate, Database } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
-import { Card, CardContent } from "@/components/ui/card";
-import { RippleButton } from "@/components/ui/ripple-button";
+import { motion, type Variants } from "framer-motion"
+import { Link, useNavigate } from "react-router-dom"
+import {
+  ArrowLeft,
+  ShieldAlert,
+  CheckCircle2,
+  XCircle,
+  FileText,
+  LayoutTemplate,
+  Database,
+} from "lucide-react"
+import { Badge } from "@/components/ui/badge"
+import { Card, CardContent } from "@/components/ui/card"
+import { RippleButton } from "@/components/ui/ripple-button"
 
 export function AtsSpecsPage() {
-  const navigate = useNavigate();
+  const navigate = useNavigate()
 
   const containerVariants: Variants = {
     hidden: { opacity: 0 },
@@ -14,7 +22,7 @@ export function AtsSpecsPage() {
       opacity: 1,
       transition: { staggerChildren: 0.1, delayChildren: 0.1 },
     },
-  };
+  }
 
   const itemVariants: Variants = {
     hidden: { opacity: 0, y: 20 },
@@ -23,14 +31,17 @@ export function AtsSpecsPage() {
       y: 0,
       transition: { duration: 0.5, ease: [0.6, 0.05, 0.01, 0.9] },
     },
-  };
+  }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-safe bg-background">
       {/* Navigation */}
       <nav className="fixed inset-x-0 top-0 z-50 border-b border-border/40 bg-background/80 backdrop-blur-md">
         <div className="container mx-auto flex h-14 items-center justify-between px-4">
-          <Link to="/" className="flex items-center gap-2 text-sm font-semibold text-muted-foreground transition-colors hover:text-foreground">
+          <Link
+            to="/"
+            className="flex items-center gap-2 text-sm font-semibold text-muted-foreground transition-colors hover:text-foreground"
+          >
             <ArrowLeft className="h-4 w-4" />
             Back to Base
           </Link>
@@ -50,16 +61,28 @@ export function AtsSpecsPage() {
           {/* Header */}
           <div className="space-y-4 text-center">
             <motion.div variants={itemVariants}>
-              <Badge variant="destructive" className="mb-4 px-4 py-1 tracking-widest uppercase">
+              <Badge
+                variant="destructive"
+                className="mb-4 px-4 py-1 tracking-widest uppercase"
+              >
                 <ShieldAlert className="mr-2 h-3.5 w-3.5" />
                 Intelligence Report: CRITICAL
               </Badge>
             </motion.div>
-            <motion.h1 variants={itemVariants} className="font-heading text-4xl font-bold tracking-tight md:text-5xl lg:text-7xl">
+            <motion.h1
+              variants={itemVariants}
+              className="font-heading text-4xl font-bold tracking-tight md:text-5xl lg:text-7xl"
+            >
               The 43% Failure Rate
             </motion.h1>
-            <motion.p variants={itemVariants} className="mx-auto max-w-2xl text-lg text-muted-foreground md:text-xl">
-              Corporate Applicant Tracking Systems (ATS) like Workday, Taleo, and Greenhouse use legacy parsers that destroy complex layouts. Here is why flashy resumes fail, and how "The FAANG Executive" data-slate guarantees survival.
+            <motion.p
+              variants={itemVariants}
+              className="mx-auto max-w-2xl text-lg text-muted-foreground md:text-xl"
+            >
+              Corporate Applicant Tracking Systems (ATS) like Workday, Taleo,
+              and Greenhouse use legacy parsers that destroy complex layouts.
+              Here is why flashy resumes fail, and how "The FAANG Executive"
+              data-slate guarantees survival.
             </motion.p>
           </div>
 
@@ -75,19 +98,32 @@ export function AtsSpecsPage() {
                   <div className="mb-6 flex h-14 w-14 items-center justify-center bg-destructive/10 text-destructive shadow-inner">
                     <XCircle className="h-7 w-7" />
                   </div>
-                  <h2 className="mb-4 font-heading text-2xl font-bold text-foreground">The "Flashy" Two-Column</h2>
+                  <h2 className="mb-4 font-heading text-2xl font-bold text-foreground">
+                    The "Flashy" Two-Column
+                  </h2>
                   <ul className="space-y-4 text-base text-muted-foreground">
                     <li className="flex items-start gap-3">
                       <LayoutTemplate className="mt-1 h-5 w-5 shrink-0 text-destructive/70" />
-                      <span>Columns are read left-to-right, blending job titles with sidebar skills.</span>
+                      <span>
+                        Columns are read left-to-right, blending job titles with
+                        sidebar skills.
+                      </span>
                     </li>
                     <li className="flex items-start gap-3">
                       <FileText className="mt-1 h-5 w-5 shrink-0 text-destructive/70" />
-                      <span>Icons and skill progress bars are completely invisible to text parsers.</span>
+                      <span>
+                        Icons and skill progress bars are completely invisible
+                        to text parsers.
+                      </span>
                     </li>
                     <li className="flex items-start gap-3">
                       <Database className="mt-1 h-5 w-5 shrink-0 text-destructive/70" />
-                      <span><strong className="font-semibold text-foreground">Result:</strong> Profile is marked "Incomplete" and instantly archived.</span>
+                      <span>
+                        <strong className="font-semibold text-foreground">
+                          Result:
+                        </strong>{" "}
+                        Profile is marked "Incomplete" and instantly archived.
+                      </span>
                     </li>
                   </ul>
                 </CardContent>
@@ -104,19 +140,32 @@ export function AtsSpecsPage() {
                   <div className="mb-6 flex h-14 w-14 items-center justify-center bg-primary/15 text-primary shadow-inner">
                     <CheckCircle2 className="h-7 w-7" />
                   </div>
-                  <h2 className="mb-4 font-heading text-2xl font-bold text-foreground">The FAANG Executive</h2>
+                  <h2 className="mb-4 font-heading text-2xl font-bold text-foreground">
+                    The FAANG Executive
+                  </h2>
                   <ul className="space-y-4 text-base text-muted-foreground">
                     <li className="flex items-start gap-3">
                       <LayoutTemplate className="mt-1 h-5 w-5 shrink-0 text-primary/70" />
-                      <span>Strict top-to-bottom hierarchy guarantees 100% accurate data extraction.</span>
+                      <span>
+                        Strict top-to-bottom hierarchy guarantees 100% accurate
+                        data extraction.
+                      </span>
                     </li>
                     <li className="flex items-start gap-3">
                       <FileText className="mt-1 h-5 w-5 shrink-0 text-primary/70" />
-                      <span>Pure text content styled with high-end Inter and DM Sans typography.</span>
+                      <span>
+                        Pure text content styled with high-end Inter and DM Sans
+                        typography.
+                      </span>
                     </li>
                     <li className="flex items-start gap-3">
                       <Database className="mt-1 h-5 w-5 shrink-0 text-primary/70" />
-                      <span><strong className="font-semibold text-foreground">Result:</strong> Parsed flawlessly. Ranked as top candidate match.</span>
+                      <span>
+                        <strong className="font-semibold text-foreground">
+                          Result:
+                        </strong>{" "}
+                        Parsed flawlessly. Ranked as top candidate match.
+                      </span>
                     </li>
                   </ul>
                 </CardContent>
@@ -125,11 +174,16 @@ export function AtsSpecsPage() {
           </div>
 
           {/* CTA */}
-          <motion.div variants={itemVariants} className="flex flex-col items-center justify-center pt-10 text-center">
-            <h2 className="mb-8 font-heading text-3xl font-bold md:text-4xl">Ready to bypass the filter?</h2>
-            <RippleButton 
-              size="lg" 
-              className="w-full text-base font-semibold shadow-lg shadow-primary/25 transition-all hover:shadow-primary/40 sm:w-auto sm:px-12 sm:py-6" 
+          <motion.div
+            variants={itemVariants}
+            className="flex flex-col items-center justify-center pt-10 text-center"
+          >
+            <h2 className="mb-8 font-heading text-3xl font-bold md:text-4xl">
+              Ready to bypass the filter?
+            </h2>
+            <RippleButton
+              size="lg"
+              className="w-full text-base font-semibold shadow-lg shadow-primary/25 transition-all hover:shadow-primary/40 sm:w-auto sm:px-12 sm:py-6"
               onClick={() => navigate("/editor")}
             >
               Equip The FAANG Executive Data-Slate
@@ -138,5 +192,5 @@ export function AtsSpecsPage() {
         </motion.div>
       </main>
     </div>
-  );
+  )
 }

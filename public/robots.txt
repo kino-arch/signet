@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+Disallow: /forge/
+Disallow: /dashboard/
+Disallow: /settings/
+
+Sitemap: https://signet.app/sitemap.xml

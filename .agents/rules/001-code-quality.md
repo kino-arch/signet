@@ -1,6 +1,6 @@
 ---
 description: "Enforces gstack-style high code quality, typing, and slop-scan rules."
-glob: "**/*.{ts,tsx,js,jsx}"
+always_on: true
 ---
 
 # Code Quality Guidelines

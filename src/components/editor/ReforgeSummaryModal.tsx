@@ -1,24 +1,25 @@
-import { useEffect, useRef } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { XCircle, Loader2, Zap } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { supabase } from "@/lib/supabase";
-import { cn } from "@/lib/utils";
-import { useAI } from "@/lib/useAI";
-import { useAuthStore } from "@/store/useAuthStore";
-import { LottieAnimation } from "@/components/ui/lottie-animation";
-import cyberSuccessData from "@/assets/animations/cyber_success.json";
+import { useEffect, useRef } from "react"
+import { motion, AnimatePresence } from "framer-motion"
+import { XCircle, Loader2, Zap } from "lucide-react"
+import { Button } from "@/components/ui/button"
+import { cn } from "@/lib/utils"
+import { useForgeStore } from "@/store/useForgeStore"
+import { useDataSlateStore } from "@/store/useDataSlateStore"
+import { LottieAnimation } from "@/components/ui/lottie-animation"
+import cyberSuccessData from "@/assets/animations/cyber_success.json"
+import { checkExportStatus } from "@/lib/export-guard"
+import { AutopsyBullet } from "./AutopsyBullet"
 
 interface ReforgeSummaryModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  rawText: string;
-  targetRole?: string;
-  onAccept: (newText: string) => void;
-  proposal: string;
-  setProposal: (text: string) => void;
-  isLoading: boolean;
-  setIsLoading: (loading: boolean) => void;
+  isOpen: boolean
+  onClose: () => void
+  rawText: string
+  targetRole?: string
+  onAccept: (newText: string) => void
+  proposal: string
+  setProposal: (text: string) => void
+  isLoading: boolean
+  setIsLoading: (loading: boolean) => void
 }
 
 export function ReforgeSummaryModal({
@@ -30,141 +31,91 @@ export function ReforgeSummaryModal({
   proposal,
   setProposal,
   isLoading,
-  setIsLoading
+  setIsLoading,
 }: ReforgeSummaryModalProps) {
-  const proposalRef = useRef("");
-  const { reforgeSummary } = useAI();
-  const { user } = useAuthStore();
+  const proposalRef = useRef("")
+  const targetLockBriefing = useForgeStore((s) => s.targetLockBriefing)
 
   useEffect(() => {
-    if (!isOpen || !isLoading) return;
+    if (!isOpen || !isLoading) return
 
-    proposalRef.current = "";
-    setProposal("");
-    
-    let isMounted = true;
-    
+    proposalRef.current = ""
+    setProposal("")
+
+    let isMounted = true
+
     const streamData = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      const isGuest = user?.id?.startsWith("guest_");
-      
-      // ── Guest / Expired Session Fallback ─────────────────────────────────
-      // If the user has no valid session or is a guest, skip the Edge Function entirely
-      // and use the client-side OpenRouter path which doesn't require auth.
-      if (isGuest || !session?.access_token) {
-        try {
-          const result = await reforgeSummary(rawText, targetRole || "Professional");
-          if (isMounted) {
-            setProposal(result);
-            setIsLoading(false);
-          }
-        } catch (err: unknown) {
-          if (isMounted) {
-            setProposal(`⚠️ Reforge failed: ${(err as Error).message}`);
-            setIsLoading(false);
-          }
-        }
-        return;
-      }
+      const apiUrl = "/ai/reforge"
+      const userKey = localStorage.getItem("openrouter_api_key") || ""
 
-      // ── Authenticated Path: Stream from Supabase Edge Function ───────────
-      const supabaseUrl = import.meta.env.VITE_SUPABASE_URL as string;
-      const edgeUrl = `${supabaseUrl}/functions/v1/reforge-datacore`;
-      
       try {
-        const response = await fetch(edgeUrl, {
+        const response = await fetch(apiUrl, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${session.access_token}`,
-            apikey: import.meta.env.VITE_SUPABASE_ANON_KEY as string,
+            "x-user-api-key": userKey,
           },
           body: JSON.stringify({
             rawSummary: rawText,
             targetRole: targetRole || "Professional",
             targetCompany: "Any",
+            targetLock: targetLockBriefing,
+            industry: localStorage.getItem("user_industry") || "",
+            tone: localStorage.getItem("user_tone") || "Professional",
+            enableLanguageTool:
+              localStorage.getItem("enable_language_tool") !== "false",
+            userId: localStorage.getItem("sb-vslbiwubtcynvfytwcbr-auth-token")
+              ? JSON.parse(
+                  localStorage.getItem("sb-vslbiwubtcynvfytwcbr-auth-token") ||
+                    "{}"
+                )?.user?.id
+              : undefined,
+            slateId: useDataSlateStore.getState().activeSlateId,
           }),
-        });
+        })
 
         if (!response.ok) {
-          const text = await response.text();
+          const text = await response.text()
           if (isMounted) {
-            // If Edge Function auth fails mid-flight (e.g. token expired during editing),
-            // fall back to client-side OpenRouter instead of showing a raw 401 error.
-            if (response.status === 401) {
-              try {
-                const fallbackResult = await reforgeSummary(rawText, targetRole || "Professional");
-                setProposal(fallbackResult);
-              } catch {
-                setProposal(`⚠️ Forge error ${response.status}: ${text}`);
-              }
-            } else {
-              setProposal(`⚠️ Forge error ${response.status}: ${text}`);
-            }
-            setIsLoading(false);
+            setProposal(
+              JSON.stringify({
+                error: `Forge error ${response.status}: ${text}`,
+              })
+            )
+            setIsLoading(false)
           }
-          return;
+          return
         }
 
-        if (!response.body) {
-          if (isMounted) {
-            setProposal("⚠️ No response body from edge function.");
-            setIsLoading(false);
-          }
-          return;
+        const data = await response.json()
+        if (isMounted) {
+          // Serialize it so the parent can handle it, or we could lift the state type.
+          // Since proposal is just a string, we can JSON.stringify it for now to avoid refactoring the entire parent component's state.
+          // Or better yet, we can render the JSON here.
+          setProposal(JSON.stringify(data))
+          setIsLoading(false)
         }
-
-        const reader = response.body.getReader();
-        const decoder = new TextDecoder();
-        let buffer = "";
-
-        while (true) {
-          const { done, value } = await reader.read();
-          if (done) break;
-
-          buffer += decoder.decode(value, { stream: true });
-          const lines = buffer.split("\n");
-          buffer = lines.pop() ?? "";
-
-          for (const line of lines) {
-            if (!line.startsWith("data: ")) continue;
-            const data = line.slice(6).trim();
-            if (data === "[DONE]") {
-              if (isMounted) setIsLoading(false);
-              return;
-            }
-            try {
-              const parsed = JSON.parse(data);
-              const delta = parsed?.choices?.[0]?.delta?.content;
-              const reasoning = parsed?.choices?.[0]?.delta?.reasoning_content || parsed?.choices?.[0]?.delta?.reasoning;
-              
-              if (delta !== undefined && delta !== null && isMounted) {
-                proposalRef.current += delta;
-                setProposal(proposalRef.current);
-              } else if (reasoning && !proposalRef.current && isMounted) {
-                setProposal("Analyzing trajectory and calculating optimal rewrite vectors...");
-              }
-            } catch {
-              // skip unparseable lines
-            }
-          }
-        }
-        if (isMounted) setIsLoading(false);
       } catch (err: unknown) {
         if (isMounted) {
-          setProposal(`⚠️ Reforge failed: ${(err as Error).message}`);
-          setIsLoading(false);
+          setProposal(
+            JSON.stringify({
+              error: `Reforge failed: ${(err as Error).message}`,
+            })
+          )
+          setIsLoading(false)
         }
       }
-    };
+    }
 
-    streamData();
+    streamData()
 
-    return () => { isMounted = false; };
+    return () => {
+      isMounted = false
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isOpen, isLoading, rawText, targetRole]);
+  }, [isOpen, isLoading, rawText, targetRole])
 
-  if (!isOpen) return null;
+  if (!isOpen) return null
 
   return (
     <AnimatePresence>
@@ -185,14 +136,91 @@ export function ReforgeSummaryModal({
           {isLoading && (
             <div className="flex items-center gap-1.5 text-amber-500">
               <Loader2 className="h-3.5 w-3.5 animate-spin" />
-              <span className="font-mono text-[10px] tracking-widest uppercase">Processing</span>
+              <span className="font-mono text-[10px] tracking-widest uppercase">
+                Processing
+              </span>
             </div>
           )}
         </div>
 
         <div className="my-2 ml-4 border-l-2 border-primary/40 p-4 pl-4 font-mono text-sm leading-relaxed whitespace-pre-wrap text-foreground/90">
-          {proposal || (isLoading ? "Connecting to Datacore..." : "")}
+          {(() => {
+            if (isLoading) return "Connecting to Datacore..."
+            if (!proposal) return ""
+            try {
+              const parsed = JSON.parse(proposal)
+              if (parsed.error)
+                return <span className="text-destructive">{parsed.error}</span>
+              if (parsed.bullets) {
+                return (
+                  <div className="mt-2 space-y-3">
+                    {parsed.bullets.map((b: any, idx: number) => (
+                      <AutopsyBullet
+                        key={idx}
+                        bullet={b}
+                        onUpdate={(updatedBullet) => {
+                          const newProposal = { ...parsed }
+                          if (updatedBullet === null) {
+                            newProposal.bullets.splice(idx, 1)
+                          } else {
+                            newProposal.bullets[idx] = updatedBullet
+                          }
+                          setProposal(JSON.stringify(newProposal))
+                        }}
+                      />
+                    ))}
+                  </div>
+                )
+              }
+              return proposal
+            } catch (e) {
+              return proposal
+            }
+          })()}
         </div>
+
+        {/* Status Messages */}
+        {!isLoading && proposal && (
+          <div className="border-t border-border/20 bg-muted/20 px-4 py-2">
+            {(() => {
+              try {
+                const parsed = JSON.parse(proposal)
+                if (parsed.bullets) {
+                  const status = checkExportStatus(parsed.bullets)
+                  if (status.blockers.length > 0) {
+                    return (
+                      <div className="flex flex-col gap-1 text-xs font-medium text-red-500">
+                        {status.blockers.map((b, i) => (
+                          <span key={i}>• {b}</span>
+                        ))}
+                      </div>
+                    )
+                  }
+                  if (status.warnings.length > 0) {
+                    return (
+                      <div className="flex flex-col gap-1 text-xs font-medium text-amber-500">
+                        {status.warnings.map((w, i) => (
+                          <span key={i}>• {w}</span>
+                        ))}
+                      </div>
+                    )
+                  }
+                  return (
+                    <div className="text-xs font-medium text-green-500">
+                      • Ready to integrate
+                    </div>
+                  )
+                }
+              } catch (e) {
+                console.error(
+                  "[ReforgeSummaryModal] Failed to parse proposal status:",
+                  e
+                )
+              }
+              return null
+            })()}
+          </div>
+        )}
 
         {!isLoading && proposal && (
           <div className="flex items-center justify-end gap-2 border-t border-border/40 bg-secondary/30 px-4 py-3">
@@ -208,21 +236,46 @@ export function ReforgeSummaryModal({
             <Button
               variant="default"
               size="sm"
+              disabled={(() => {
+                try {
+                  const p = JSON.parse(proposal)
+                  if (p.bullets) {
+                    const status = checkExportStatus(p.bullets)
+                    return !status.allowed
+                  }
+                  return false
+                } catch {
+                  return false
+                }
+              })()}
               onClick={() => {
-                onAccept(proposal);
-                onClose();
+                let finalSummary = proposal
+                try {
+                  const p = JSON.parse(proposal)
+                  if (p.bullets) {
+                    finalSummary = p.bullets
+                      .map((b: any) => "- " + b.text)
+                      .join("\n  // constellation-override: forge-bot-auto-migration\n")
+                  }
+                } catch {}
+                onAccept(finalSummary)
+                onClose()
               }}
               className={cn(
-                "h-8 gap-1.5 text-xs font-mono uppercase tracking-wider",
-                "bg-primary text-primary-foreground hover:bg-primary/90 shadow-[0_0_10px_rgba(var(--color-primary),0.3)]"
+                "h-8 gap-1.5 font-mono text-xs tracking-wider uppercase",
+                "bg-primary text-primary-foreground shadow-[0_0_10px_rgba(var(--color-primary),0.3)] hover:bg-primary/90"
               )}
             >
-              <LottieAnimation animationData={cyberSuccessData} className="h-4 w-4" />
+              <LottieAnimation
+                animationData={cyberSuccessData}
+                className="h-4 w-4"
+                loop={false}
+              />
               Accept Override
             </Button>
           </div>
         )}
       </motion.div>
     </AnimatePresence>
-  );
+  )
 }

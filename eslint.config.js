@@ -13,6 +13,57 @@ import { dirname, resolve } from 'path'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
 
+const constellationPlugin = {
+  rules: {
+    'no-arbitrary-tailwind': {
+      meta: {
+        type: 'problem',
+        docs: {
+          description: 'Disallow arbitrary Tailwind values',
+        },
+      },
+      create(context) {
+        return {
+          Literal(node) {
+            if (typeof node.value === 'string' && node.value.includes('-[')) {
+              const line = node.loc.start.line;
+              const sourceCode = context.sourceCode || context.getSourceCode();
+              const comments = sourceCode.getAllComments();
+              const hasOverride = comments.some(comment => 
+                comment.loc.end.line === line - 1 && 
+                comment.value.includes('constellation-override:')
+              );
+              if (!hasOverride) {
+                context.report({
+                  node,
+                  message: "Arbitrary Tailwind values (e.g. -[...]) are prohibited. Emergency bypass: // constellation-override: <reason>",
+                });
+              }
+            }
+          },
+          TemplateElement(node) {
+            if (node.value.raw.includes('-[')) {
+              const line = node.loc.start.line;
+              const sourceCode = context.sourceCode || context.getSourceCode();
+              const comments = sourceCode.getAllComments();
+              const hasOverride = comments.some(comment => 
+                comment.loc.end.line === line - 1 && 
+                comment.value.includes('constellation-override:')
+              );
+              if (!hasOverride) {
+                context.report({
+                  node,
+                  message: "Arbitrary Tailwind values (e.g. -[...]) are prohibited. Emergency bypass: // constellation-override: <reason>",
+                });
+              }
+            }
+          }
+        };
+      }
+    }
+  }
+};
+
 export default defineConfig([globalIgnores(['dist']), {
   files: ['**/*.{ts,tsx}'],
   ignores: ['src/components/carousel.tsx'],
@@ -23,24 +74,19 @@ export default defineConfig([globalIgnores(['dist']), {
     reactRefresh.configs.vite,
     ...tailwindcss.configs['flat/recommended'],
   ],
+  plugins: {
+    'constellation': constellationPlugin,
+  },
   languageOptions: {
     globals: globals.browser,
   },
   settings: {
     tailwindcss: {
-      // tailwind-api-utils auto-detects Tailwind v4 and reads the config path
-      // as a CSS file. Point it at src/index.css (the actual v4 entry point
-      // with @theme inline) so it can resolve custom design tokens.
       config: resolve(__dirname, 'src/index.css'),
       callees: ["classnames", "clsx", "ctl", "cva", "tv"],
       whitelist: [
-        // Font utility defined via @theme inline (--font-heading)
         "font-heading",
-        // Allow arbitrary value / selector classes like [&_svg]:size-4
-        "^\\[.*\\]",
-        // Allow group/peer variant utilities
         "^(group|peer)(-.*)?$",
-        // tw-animate-css utility classes (includes custom animate-reverse-spin)
         "^animate-",
       ],
     },
@@ -50,5 +96,7 @@ export default defineConfig([globalIgnores(['dist']), {
       "warn",
       { allowConstantExport: true },
     ],
+    "tailwindcss/no-custom-classname": "error",
+    "constellation/no-arbitrary-tailwind": "error",
   },
 }, ...storybook.configs["flat/recommended"]])

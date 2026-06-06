@@ -1,10 +1,160 @@
-<!doctype html>
-<html lang="en">
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
   <head>
+    <!-- THEME SCRIPT FIRST — before anything else to prevent FOUC -->
+    <script>
+      (function() {
+        try {
+          var stored = localStorage.getItem('signet-theme');
+          var themeId = 'cosmic'; // Safe default
+          
+          if (stored) {
+            try {
+              var parsed = JSON.parse(stored);
+              themeId = parsed.state?.activeThemeId || 'cosmic';
+            } catch (e) {
+              // Corrupted storage, use default
+            }
+          }
+          
+          var themeColors = {
+            cosmic: {
+              '--app-bg': 'oklch(0.12 0.04 264)',
+              '--app-primary': 'oklch(0.75 0.24 220)',
+              '--app-coral': 'oklch(0.65 0.24 15)',
+              '--app-violet': 'oklch(0.55 0.20 280)',
+              '--app-amber': 'oklch(0.70 0.20 80)',
+              '--app-foreground': 'oklch(0.94 0.005 285.823)',
+              '--app-card': 'oklch(0.16 0.05 264)',
+              '--app-border': 'oklch(0.28 0.08 264)',
+              '--app-muted': 'oklch(0.55 0.08 264)',
+              '--app-secondary': 'oklch(0.22 0.06 264)',
+            },
+            urban: {
+              '--app-bg': 'oklch(0.10 0.03 220)',
+              '--app-primary': 'oklch(0.75 0.20 80)',
+              '--app-coral': 'oklch(0.70 0.22 15)',
+              '--app-violet': 'oklch(0.60 0.18 280)',
+              '--app-amber': 'oklch(0.72 0.18 150)',
+              '--app-foreground': 'oklch(0.92 0.005 285)',
+              '--app-card': 'oklch(0.14 0.04 230)',
+              '--app-border': 'oklch(0.28 0.06 240)',
+              '--app-muted': 'oklch(0.55 0.06 250)',
+              '--app-secondary': 'oklch(0.20 0.05 235)',
+            }
+          };
+
+          var themeModes = {
+            cosmic: {
+              landing: {
+                '--theme-bg-start': '#0a0e27',
+                '--theme-bg-end': '#0f172a',
+                '--signet-glow': '#00f0ff',
+                '--signet-accent': '#ffb800',
+                '--signet-grain-opacity': '0.04'
+              },
+              functional: {
+                '--theme-bg-start': '#0f172a',
+                '--theme-bg-end': '#0f172a',
+                '--signet-glow': '#00f0ff33',
+                '--signet-accent': '#ffb800',
+                '--signet-grain-opacity': '0.01'
+              }
+            },
+            urban: {
+              landing: {
+                '--theme-bg-start': '#1a0b1f',
+                '--theme-bg-end': '#2d1b2e',
+                '--signet-glow': '#ff0055',
+                '--signet-accent': '#ffb800',
+                '--signet-grain-opacity': '0.05'
+              },
+              functional: {
+                '--theme-bg-start': '#1a0b1f',
+                '--theme-bg-end': '#1a0b1f',
+                '--signet-glow': '#ff005533',
+                '--signet-accent': '#ffb800',
+                '--signet-grain-opacity': '0.02'
+              }
+            }
+          };
+          
+          var colors = themeColors[themeId] || themeColors.cosmic;
+          var modes = themeModes[themeId] || themeModes.cosmic;
+          
+          var isLanding = window.location.pathname === '/' || window.location.pathname === '/login';
+          var modeColors = isLanding ? modes.landing : modes.functional;
+          var root = document.documentElement;
+          
+          Object.keys(colors).forEach(function(key) {
+            root.style.setProperty(key, colors[key]);
+          });
+          Object.keys(modeColors).forEach(function(key) {
+            root.style.setProperty(key, modeColors[key]);
+          });
+          
+          root.setAttribute('data-theme', themeId);
+          document.body.classList.add('theme-' + themeId);
+        } catch (e) {
+          console.error('Theme init failed:', e);
+        }
+      })();
+    </script>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Signet - Forge Your Identity</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
+
+    <!-- Preconnects -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="dns-prefetch" href="https://api.supabase.co" />
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <meta name="theme-color" content="#0A0A0F" />
+
+    <!-- Primary Meta Tags -->
+    <title>Signet — Forge Your Identity | AI-Powered Resume Builder</title>
+    <meta name="title" content="Signet — Forge Your Identity | AI-Powered Resume Builder" />
+    <meta name="description" content="Transform scattered experience into a polished, ATS-optimized resume. AI-powered resume builder for professionals who want to stand out." />
+    <meta name="keywords" content="resume builder, AI resume, ATS optimization, CV builder, professional resume" />
+    <meta name="author" content="Signet" />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://signet.app" />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://signet.app" />
+    <meta property="og:title" content="Signet — Forge Your Identity" />
+    <meta property="og:description" content="Transform scattered experience into a polished, ATS-optimized resume." />
+    <meta property="og:image" content="https://signet.app/og-image.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:site_name" content="Signet" />
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:url" content="https://signet.app" />
+    <meta property="twitter:title" content="Signet — Forge Your Identity" />
+    <meta property="twitter:description" content="Transform scattered experience into a polished, ATS-optimized resume." />
+    <meta property="twitter:image" content="https://signet.app/twitter-card.png" />
+
+    <!-- Structured Data (JSON-LD) -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "name": "Signet",
+      "description": "AI-powered resume builder",
+      "applicationCategory": "BusinessApplication",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      }
+    }
+    </script>
   </head>
   <body>
     <div id="root"></div>

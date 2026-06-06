@@ -1,0 +1,14 @@
+{
+  "component": {
+    "button": {
+      "primary": {
+        "bg": {
+          "value": "{color.action.primary}"
+        },
+        "text": {
+          "value": "{color.surface.base}"
+        }
+      }
+    }
+  }
+}

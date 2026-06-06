@@ -1,113 +1,46 @@
-# Storybook Testing & Documentation Setup
+# UI Component Testing (Storybook & Playwright)
 
-This document outlines the testing strategy, setup, and usage guidelines for Storybook-driven testing in the **Signet** application.
+## Overview
+Signet v2.0 relies on an arsenal of dense, interactive UI components. Because the `EditorPage` and individual `Template` chassis are highly complex, we advocate for Component-Driven Development (CDD).
 
----
+While we currently build within Vite, implementing Storybook is highly recommended for future scaling.
 
-## 1. Testing Strategy Overview
+## Recommended Storybook Setup
+1. Initialize Storybook in the root: `npx storybook@latest init`
+2. Create stories for isolated atomic components first (e.g., `Button.stories.tsx`, `TargetLockPanel.stories.tsx`).
+3. Use Storybook Controls to simulate different data payloads being injected into the Template Chassis components (`ModernTemplate.stories.tsx`).
 
-Signet uses a three-tier testing strategy integrated directly into the component development workflow:
+## Testing the Templates
+Since templates accept a standardized `SlateData` payload, testing them is incredibly straightforward:
 
-1. **Interaction Testing:** Validates component state changes, user input, and behaviors in a real headless browser using **Vitest** and **Playwright**.
-2. **Accessibility (a11y) Audits:** Runs automated accessibility checks (using Axe-core) on every story, failing builds automatically if a11y violations are introduced.
-3. **Visual Regression Testing:** Detects visual modifications or layout shifts across viewports and browsers using **Chromatic**.
-
----
-
-## 2. Interaction & Unit Testing
-
-Interaction tests are written directly inside Storybook files (`.stories.tsx`) using the `play` function. The `play` function simulates user actions when the story renders.
-
-### Writing Interaction Tests
-
-We use `@storybook/test` to query elements (`within`), simulate events (`userEvent`), and assert outcomes (`expect`).
-
-Example from [Button.stories.tsx](file:///c:/cv/signet/src/components/ui/Button.stories.tsx):
 ```tsx
-import { expect, userEvent, within } from "@storybook/test";
+import type { Meta, StoryObj } from '@storybook/react';
+import { ModernTemplate } from './ModernTemplate';
+import { mockSlateData } from './__mocks__/slateData';
 
-export const ClickInteraction: Story = {
-  name: "Interaction — Click fires handler",
-  args: { children: "Click me" },
-  play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement);
-    const btn = canvas.getByRole("button", { name: /click me/i });
-
-    let clicked = false;
-    btn.addEventListener("click", () => { clicked = true; });
-
-    await userEvent.click(btn);
-    expect(clicked).toBe(true);
-  },
+const meta: Meta<typeof ModernTemplate> = {
+  title: 'Chassis/ModernTemplate',
+  component: ModernTemplate,
 };
-```
 
----
+export default meta;
+type Story = StoryObj<typeof ModernTemplate>;
 
-## 3. Automated Accessibility Testing
-
-The `@storybook/addon-a11y` addon performs real-time WCAG accessibility audits. It has been integrated into our test runner to fail CI/CD pipelines when accessibility errors occur.
-
-In [.storybook/preview.tsx](file:///c:/cv/signet/.storybook/preview.tsx), the default check behavior is set to `"error"`:
-
-```tsx
-a11y: {
-  test: "error", // Fails Vitest/CI on any accessibility violation
-}
-```
-
-### Excluding Intentional Violations
-If a story is designed to demonstrate a state that intentionally fails a11y checks (e.g. for demo purposes), add the `!test` tag to exclude it from automated testing runs:
-
-```tsx
-export const IconNoAriaLabel: Story = {
+export const Default: Story = {
   args: {
-    size: "icon",
-    children: <Mail className="h-4 w-4" />,
+    data: mockSlateData,
   },
-  tags: ["!test"], // Excludes this story from the automated test run
 };
 ```
 
----
+## E2E Testing (Playwright)
+To verify the critical path (Auth -> Token Purchase -> Editor -> Export), we recommend Playwright.
 
-## 4. Visual Regression Testing with Chromatic
-
-Visual regression testing is powered by **Chromatic** (the official Storybook cloud platform).
-
-### How It Works
-1. Chromatic builds the Storybook workspace statically.
-2. It captures cloud-based screenshots of every story across targeted browsers (Chrome, Firefox, Safari).
-3. On future builds, it compares new screenshots to baseline screenshots and notifies you of differences.
-
-### Running Visual Tests
-To run visual testing, you need to publish your Storybook to Chromatic:
-
-1. **Get a Project Token** from your Chromatic dashboard.
-2. **Execute the Chromatic CLI** to build and upload:
-   ```bash
-   npx chromatic --project-token=<your-chromatic-project-token>
-   ```
-
-To streamline this, you can add a script to `package.json`:
-```json
-"chromatic": "npx chromatic"
-```
-
----
-
-## 5. How to Run Tests Locally
-
-| Command | Purpose |
-| :--- | :--- |
-| `pnpm run storybook` | Starts the local interactive Storybook server on port `6006` |
-| `npx vitest --project=storybook` | Runs all interaction and a11y tests in a headless Chromium instance (Watch mode) |
-| `npx vitest --project=storybook run` | Executes all story-based tests once and exits (CI mode) |
-| `pnpm run build-storybook` | Compiles Storybook into a static bundle in `storybook-static/` |
-
-### Adding a Test Script
-To make testing easier, the following script can be run:
 ```bash
-pnpm test:storybook
+npm init playwright@latest
 ```
-*(Runs storybook tests once via Vitest)*
+
+Key E2E Scenarios to Automate:
+1. **The Guest Flow:** User selects "Enter as Guest", bypasses auth, interacts with the editor, and is blocked at export (prompted to sign in).
+2. **The Target Lock Flow:** User inputs a Job Description, fires the Edge Function, and verifies the UI updates with the XYZ scores and gap analysis.
+3. **The Data Sync Flow:** User updates the "BasicInfoForm", the `useAutoSave` debounce fires, and a network request to `upsert` the `slate_sections` table is verified.

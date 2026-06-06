@@ -1,0 +1,57 @@
+name: Phoenix Dashboard
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:  # Manual trigger for testing
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Generate Dashboard
+        run: node scripts/generate-dashboard.js
+        
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: dashboard-staging
+          path: public/phoenix/
+
+  deploy-staging:
+    needs: build
+    runs-on: ubuntu-latest
+    environment: staging
+    steps:
+      - name: Download Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: dashboard-staging
+          path: public/phoenix/
+          
+      - name: Deploy to Staging
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./public/phoenix
+          destination_dir: staging
+
+  deploy-production:
+    needs: deploy-staging
+    runs-on: ubuntu-latest
+    environment: production  # Requires manual approval
+    steps:
+      - name: Download Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: dashboard-staging
+          path: public/phoenix/
+          
+      - name: Deploy to Production
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./public/phoenix
+          destination_dir: .

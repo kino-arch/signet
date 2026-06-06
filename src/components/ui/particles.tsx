@@ -1,37 +1,9 @@
-import React, {
-  useEffect,
-  useRef,
-  useState,
-  type ComponentPropsWithoutRef,
-} from "react"
+import React, { useEffect, useRef, type ComponentPropsWithoutRef } from "react"
 
 import { cn } from "@/lib/utils"
 
-interface MousePosition {
-  x: number
-  y: number
-}
-
-function MousePosition(): MousePosition {
-  const [mousePosition, setMousePosition] = useState<MousePosition>({
-    x: 0,
-    y: 0,
-  })
-
-  useEffect(() => {
-    const handleMouseMove = (event: MouseEvent) => {
-      setMousePosition({ x: event.clientX, y: event.clientY })
-    }
-
-    window.addEventListener("mousemove", handleMouseMove)
-
-    return () => {
-      window.removeEventListener("mousemove", handleMouseMove)
-    }
-  }, [])
-
-  return mousePosition
-}
+// Mouse position hook removed for performance.
+// We handle mouse movement directly inside the component without triggering React state updates.
 
 interface ParticlesProps extends ComponentPropsWithoutRef<"div"> {
   className?: string
@@ -91,14 +63,13 @@ export const Particles: React.FC<ParticlesProps> = ({
   const canvasContainerRef = useRef<HTMLDivElement>(null)
   const context = useRef<CanvasRenderingContext2D | null>(null)
   const circles = useRef<Circle[]>([])
-  const mousePosition = MousePosition()
   const mouse = useRef<{ x: number; y: number }>({ x: 0, y: 0 })
   const canvasSize = useRef<{ w: number; h: number }>({ w: 0, h: 0 })
+  const canvasRect = useRef<DOMRect | null>(null)
   const dpr = typeof window !== "undefined" ? window.devicePixelRatio : 1
   const rafID = useRef<number | null>(null)
   const resizeTimeout = useRef<NodeJS.Timeout | null>(null)
   const initCanvasRef = useRef<() => void>(() => {})
-  const onMouseMoveRef = useRef<() => void>(() => {})
   const animateRef = useRef<() => void>(() => {})
 
   useEffect(() => {
@@ -131,8 +102,25 @@ export const Particles: React.FC<ParticlesProps> = ({
   }, [color])
 
   useEffect(() => {
-    onMouseMoveRef.current()
-  }, [mousePosition.x, mousePosition.y])
+    const handleMouseMove = (event: MouseEvent) => {
+      if (canvasRect.current) {
+        const { w, h } = canvasSize.current
+        const x = event.clientX - canvasRect.current.left - w / 2
+        const y = event.clientY - canvasRect.current.top - h / 2
+        const inside = x < w / 2 && x > -w / 2 && y < h / 2 && y > -h / 2
+        if (inside) {
+          mouse.current.x = x
+          mouse.current.y = y
+        }
+      }
+    }
+
+    window.addEventListener("mousemove", handleMouseMove)
+
+    return () => {
+      window.removeEventListener("mousemove", handleMouseMove)
+    }
+  }, [])
 
   useEffect(() => {
     initCanvasRef.current()
@@ -142,24 +130,11 @@ export const Particles: React.FC<ParticlesProps> = ({
     resizeCanvas()
   }
 
-  const onMouseMove = () => {
-    if (canvasRef.current) {
-      const rect = canvasRef.current.getBoundingClientRect()
-      const { w, h } = canvasSize.current
-      const x = mousePosition.x - rect.left - w / 2
-      const y = mousePosition.y - rect.top - h / 2
-      const inside = x < w / 2 && x > -w / 2 && y < h / 2 && y > -h / 2
-      if (inside) {
-        mouse.current.x = x
-        mouse.current.y = y
-      }
-    }
-  }
-
   const resizeCanvas = () => {
     if (canvasContainerRef.current && canvasRef.current && context.current) {
       canvasSize.current.w = canvasContainerRef.current.offsetWidth
       canvasSize.current.h = canvasContainerRef.current.offsetHeight
+      canvasRect.current = canvasRef.current.getBoundingClientRect()
 
       canvasRef.current.width = canvasSize.current.w * dpr
       canvasRef.current.height = canvasSize.current.h * dpr
@@ -230,8 +205,6 @@ export const Particles: React.FC<ParticlesProps> = ({
     }
   }
 
-
-
   const remapValue = (
     value: number,
     start1: number,
@@ -296,7 +269,6 @@ export const Particles: React.FC<ParticlesProps> = ({
 
   React.useLayoutEffect(() => {
     initCanvasRef.current = initCanvas
-    onMouseMoveRef.current = onMouseMove
     animateRef.current = animate
   })
 

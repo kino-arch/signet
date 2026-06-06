@@ -1,25 +1,32 @@
-import { useDroppable } from "@dnd-kit/core";
-import { SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
-import { cn } from "@/lib/utils";
-import type { Application, KanbanColumn as KanbanColumnDef } from "@/store/useTargetMatrixStore";
-import { KanbanCard } from "./kanban-card";
+import { useDroppable } from "@dnd-kit/core"
+import { SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable"
+import { cn } from "@/lib/utils"
+import type {
+  Application,
+  KanbanColumn as KanbanColumnDef,
+} from "@/store/useTargetMatrixStore"
+import { KanbanCard } from "./kanban-card"
 
 interface KanbanColumnProps {
-  column: KanbanColumnDef;
-  applications: Application[];
-  isOver?: boolean;
+  column: KanbanColumnDef
+  applications: Application[]
+  isOver?: boolean
 }
 
-export function KanbanColumn({ column, applications, isOver }: KanbanColumnProps) {
+export function KanbanColumn({
+  column,
+  applications,
+  isOver,
+}: KanbanColumnProps) {
   const { setNodeRef } = useDroppable({
     id: column.id,
     data: { type: "column", status: column.id },
-  });
+  })
 
-  const ids = applications.map((a) => a.id);
+  const ids = applications.map((a) => a.id)
 
   return (
-    <div className="flex w-[280px] shrink-0 flex-col gap-0">
+    <div className="flex w-64 shrink-0 flex-col gap-0">
       {/* Column Header */}
       <div className="mb-3 flex items-center justify-between px-0.5">
         <div className="flex items-center gap-2">
@@ -48,7 +55,7 @@ export function KanbanColumn({ column, applications, isOver }: KanbanColumnProps
       <div
         ref={setNodeRef}
         className={cn(
-          "flex min-h-[200px] flex-col gap-2.5 rounded-xl border border-dashed border-border/40 p-2.5 transition-all duration-150",
+          "flex min-h-48 flex-col gap-2.5 rounded-xl border border-dashed border-border/40 p-2.5 transition-all duration-150",
           isOver && "border-primary/50 bg-primary/[0.03] shadow-inner"
         )}
       >
@@ -67,5 +74,5 @@ export function KanbanColumn({ column, applications, isOver }: KanbanColumnProps
         )}
       </div>
     </div>
-  );
+  )
 }

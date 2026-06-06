@@ -4,8 +4,8 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
-import { motion, type Variants } from "framer-motion";
+} from "@/components/ui/card"
+import { motion, type Variants } from "framer-motion"
 
 export function Features() {
   const containerVariants: Variants = {
@@ -16,7 +16,7 @@ export function Features() {
         staggerChildren: 0.2,
       },
     },
-  };
+  }
 
   const itemVariants: Variants = {
     hidden: { opacity: 0, y: 30 },
@@ -25,33 +25,39 @@ export function Features() {
       y: 0,
       transition: { duration: 0.6, ease: "easeOut" },
     },
-  };
+  }
 
   const features = [
     {
       title: "Smart Data Extraction",
-      description: "Extract the purest data from your scattered history. We automatically parse your LinkedIn profile or existing PDF resumes into structured formats.",
+      description:
+        "Extract the purest data from your scattered history. We automatically parse your LinkedIn profile or existing PDF resumes into structured formats.",
       image: "/tongs_anim.png",
     },
     {
       title: "AI-Powered Reforging",
-      description: "Melt down redundancies. Our AI analyzes your experiences and suggests high-impact bullet points tailored specifically to your target role.",
+      description:
+        "Melt down redundancies. Our AI analyzes your experiences and suggests high-impact bullet points tailored specifically to your target role.",
       image: "/crucible_anim.png",
     },
     {
       title: "ATS-Optimized Export",
-      description: "Strike it into shape. Our single-column Beskar-grade layouts are tested to be 100% compliant with Workday, Taleo, and Greenhouse parsers.",
+      description:
+        "Strike it into shape. Our single-column Beskar-grade layouts are tested to be 100% compliant with Workday, Taleo, and Greenhouse parsers.",
       image: "/anvil_anim.png",
     },
-  ];
+  ]
 
   return (
-    <section id="features" className="relative w-full overflow-hidden bg-background py-24 md:py-32">
+    <section
+      id="features"
+      className="relative w-full overflow-hidden bg-background py-24 md:py-32"
+    >
       {/* Subtle background glow to match the glassmorphism theme */}
-      <div className="pointer-events-none absolute top-1/2 left-1/2 h-[500px] w-[800px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary/5 blur-[120px]"></div>
+      <div className="pointer-events-none absolute top-1/2 left-1/2 h-[32rem] w-[800px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary/5 blur-32"></div>
 
       <div className="relative z-10 mx-auto w-full max-w-5xl px-4 sm:px-6 lg:px-8">
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-100px" }}
@@ -62,11 +68,12 @@ export function Features() {
             The Tools of the Forge
           </h2>
           <p className="max-w-[700px] text-lg text-muted-foreground md:text-xl">
-            Everything you need to secure your next role. Built for professionals applying to competitive tech and corporate positions.
+            Everything you need to secure your next role. Built for
+            professionals applying to competitive tech and corporate positions.
           </p>
         </motion.div>
-        
-        <motion.div 
+
+        <motion.div
           variants={containerVariants}
           initial="hidden"
           whileInView="visible"
@@ -77,8 +84,12 @@ export function Features() {
             <motion.div key={i} variants={itemVariants}>
               <Card className="group h-full cursor-pointer border-border/50 bg-background/50 p-6 backdrop-blur-xl transition-all duration-500 hover:border-primary/50 hover:shadow-xl hover:shadow-primary/5 md:p-8">
                 <CardHeader className="p-0">
-                  <div className="mx-auto mb-8 flex h-24 w-24 items-center justify-center  border border-primary/10 bg-primary/5 transition-all duration-500 group-hover:scale-110 group-hover:border-primary/30 group-hover:bg-primary/10 group-hover:shadow-[0_0_20px_rgba(var(--color-primary),0.2)] md:mx-0">
-                    <img src={feature.image} alt={feature.title} className="h-16 w-16 object-contain" />
+                  <div className="mx-auto mb-8 flex h-24 w-24 items-center justify-center border border-primary/10 bg-primary/5 transition-all duration-500 group-hover:scale-110 group-hover:border-primary/30 group-hover:bg-primary/10 group-hover:shadow-[0_0_20px_rgba(var(--color-primary),0.2)] md:mx-0">
+                    <img
+                      src={feature.image}
+                      alt={feature.title}
+                      className="h-16 w-16 object-contain"
+                    />
                   </div>
                   <CardTitle className="mb-4 text-center text-2xl font-bold tracking-tight md:text-left">
                     {feature.title}
@@ -95,5 +106,5 @@ export function Features() {
         </motion.div>
       </div>
     </section>
-  );
+  )
 }

@@ -1,29 +1,34 @@
-import { create } from "zustand";
-import { persist } from "zustand/middleware";
+import { create } from "zustand"
+import { persist } from "zustand/middleware"
 
-export type UserTier = "Initiate" | "Apprentice" | "Journeyman" | "Forgemaster" | "Alor";
+export type UserTier =
+  | "Initiate"
+  | "Apprentice"
+  | "Journeyman"
+  | "Forgemaster"
+  | "Alor"
 
 export interface RewardsState {
-  shields: number;
-  lastCheckInDate: string | null;
-  hasCompletedIdentityCore: boolean;
-  hasForgedFirstSigil: boolean;
+  shields: number
+  lastCheckInDate: string | null
+  hasCompletedIdentityCore: boolean
+  hasForgedFirstSigil: boolean
 
   // Actions
-  addShields: (amount: number) => void;
-  processDailyCheckIn: () => { awarded: boolean; amount: number };
-  completeIdentityCore: () => { awarded: boolean; amount: number };
-  forgeFirstSigil: () => { awarded: boolean; amount: number };
-  getRank: () => UserTier;
+  addShields: (amount: number) => void
+  processDailyCheckIn: () => { awarded: boolean; amount: number }
+  completeIdentityCore: () => { awarded: boolean; amount: number }
+  forgeFirstSigil: () => { awarded: boolean; amount: number }
+  getRank: () => UserTier
 }
 
 const getRankFromShields = (shields: number): UserTier => {
-  if (shields >= 500) return "Alor";
-  if (shields >= 250) return "Forgemaster";
-  if (shields >= 100) return "Journeyman";
-  if (shields >= 25) return "Apprentice";
-  return "Initiate";
-};
+  if (shields >= 500) return "Alor"
+  if (shields >= 250) return "Forgemaster"
+  if (shields >= 100) return "Journeyman"
+  if (shields >= 25) return "Apprentice"
+  return "Initiate"
+}
 
 export const useRewardsStore = create<RewardsState>()(
   persist(
@@ -33,47 +38,48 @@ export const useRewardsStore = create<RewardsState>()(
       hasCompletedIdentityCore: false,
       hasForgedFirstSigil: false,
 
-      addShields: (amount) => set((state) => ({ shields: state.shields + amount })),
+      addShields: (amount) =>
+        set((state) => ({ shields: state.shields + amount })),
 
       processDailyCheckIn: () => {
-        const today = new Date().toDateString();
-        const { lastCheckInDate, shields } = get();
+        const today = new Date().toDateString()
+        const { lastCheckInDate, shields } = get()
 
         if (lastCheckInDate !== today) {
-          const rewardAmount = 5;
+          const rewardAmount = 5
           set({
             lastCheckInDate: today,
             shields: shields + rewardAmount,
-          });
-          return { awarded: true, amount: rewardAmount };
+          })
+          return { awarded: true, amount: rewardAmount }
         }
-        return { awarded: false, amount: 0 };
+        return { awarded: false, amount: 0 }
       },
 
       completeIdentityCore: () => {
-        const { hasCompletedIdentityCore, shields } = get();
+        const { hasCompletedIdentityCore, shields } = get()
         if (!hasCompletedIdentityCore) {
-          const rewardAmount = 10;
+          const rewardAmount = 10
           set({
             hasCompletedIdentityCore: true,
             shields: shields + rewardAmount,
-          });
-          return { awarded: true, amount: rewardAmount };
+          })
+          return { awarded: true, amount: rewardAmount }
         }
-        return { awarded: false, amount: 0 };
+        return { awarded: false, amount: 0 }
       },
 
       forgeFirstSigil: () => {
-        const { hasForgedFirstSigil, shields } = get();
+        const { hasForgedFirstSigil, shields } = get()
         if (!hasForgedFirstSigil) {
-          const rewardAmount = 20;
+          const rewardAmount = 20
           set({
             hasForgedFirstSigil: true,
             shields: shields + rewardAmount,
-          });
-          return { awarded: true, amount: rewardAmount };
+          })
+          return { awarded: true, amount: rewardAmount }
         }
-        return { awarded: false, amount: 0 };
+        return { awarded: false, amount: 0 }
       },
 
       getRank: () => getRankFromShields(get().shields),
@@ -82,4 +88,4 @@ export const useRewardsStore = create<RewardsState>()(
       name: "signet-rewards-storage",
     }
   )
-);
+)

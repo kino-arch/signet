@@ -1,0 +1,12 @@
+{
+  "landing": {
+    "total": 80000,
+    "chunks": {
+      "vendor": 35000,
+      "ali-imam": 25000,
+      "signet-primitives": 10000,
+      "theme-store": 5000,
+      "analytics": 5000
+    }
+  }
+}

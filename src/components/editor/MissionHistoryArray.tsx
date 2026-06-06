@@ -1,53 +1,69 @@
-import { useState } from "react";
+import { useState } from "react"
 import {
   DndContext,
   closestCenter,
   PointerSensor,
   useSensor,
   useSensors,
-} from "@dnd-kit/core";
-import type { DragEndEvent } from "@dnd-kit/core";
+} from "@dnd-kit/core"
+import type { DragEndEvent } from "@dnd-kit/core"
 import {
   SortableContext,
   useSortable,
   verticalListSortingStrategy,
-} from "@dnd-kit/sortable";
-import { CSS } from "@dnd-kit/utilities";
-import { GripVertical, ChevronDown, ChevronUp, Plus, Trash2, Wand2 } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { useDataSlateStore } from "@/store/useDataSlateStore";
-import type { WorkEntry } from "@/store/useDataSlateStore";
-import { ReforgeModal } from "@/components/editor/ReforgeModal";
-import { cn } from "@/lib/utils";
+} from "@dnd-kit/sortable"
+import { CSS } from "@dnd-kit/utilities"
+import {
+  GripVertical,
+  ChevronDown,
+  ChevronUp,
+  Plus,
+  Trash2,
+  Wand2,
+} from "lucide-react"
+import { Button } from "@/components/ui/button"
+import { DataStreamInput } from "@/components/editor/primitives/DataStreamInput"
+import { HolographicTextarea } from "@/components/editor/primitives/HolographicTextarea"
+import { useDataSlateStore } from "@/store/useDataSlateStore"
+import type { WorkEntry } from "@/store/useDataSlateStore"
+import { ReforgeModal } from "@/components/editor/ReforgeModal"
+import { HighlightsEditor } from "@/components/editor/HighlightsEditor"
+import { ImpactScorePanel } from "@/components/editor/ImpactScorePanel"
+import { cn } from "@/lib/utils"
 
 // ─── Single Sortable Work Block ───────────────────────────────────────────────
 function WorkBlock({ entry }: { entry: WorkEntry }) {
-  const { updateWorkEntry, removeWorkEntry, setAiLoading } = useDataSlateStore();
-  const [expanded, setExpanded] = useState(false);
+  const { updateWorkEntry, removeWorkEntry, setAiLoading } = useDataSlateStore()
+  const [expanded, setExpanded] = useState(false)
 
-  const { attributes, listeners, setNodeRef, transform, transition, isDragging } =
-    useSortable({ id: entry.id });
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id: entry.id })
 
   const style = {
     transform: CSS.Transform.toString(transform),
     transition,
-  };
+  }
 
-  const displayTitle = entry.position || entry.name
-    ? `${entry.position || "Untitled Role"}${entry.name ? ` · ${entry.name}` : ""}`
-    : "New Mission Entry";
+  const displayTitle =
+    entry.position || entry.name
+      ? `${entry.position || "Untitled Role"}${entry.name ? ` · ${entry.name}` : ""}`
+      : "New Mission Entry"
 
   return (
     <div
       ref={setNodeRef}
       style={style}
       className={cn(
-        "rounded-lg border transition-all duration-200",
+        "rounded-lg border transition-all duration-300",
         isDragging
-          ? "border-primary/60 bg-primary/5 shadow-lg shadow-primary/10 opacity-90 z-50"
-          : "border-border/40 bg-card/30 hover:border-border/70"
+          ? "z-50 border-primary/60 bg-primary/10 opacity-90 shadow-[0_0_30px_rgba(var(--primary),0.2)] ring-1 ring-primary/50"
+          : "border-white/10 bg-black/40 hover:border-white/20 hover:bg-black/60 hover:shadow-xl hover:ring-1 hover:ring-primary/30"
       )}
     >
       {/* Collapsed Header Row */}
@@ -68,16 +84,22 @@ function WorkBlock({ entry }: { entry: WorkEntry }) {
 
         {/* Title */}
         <div className="min-w-0 flex-1">
-          <span className="block truncate text-sm font-medium text-foreground">{displayTitle}</span>
+          <span className="block truncate text-sm font-medium text-foreground">
+            {displayTitle}
+          </span>
           {(entry.startDate || entry.endDate) && (
             <span className="font-mono text-[10px] text-muted-foreground">
-              {entry.startDate} {entry.endDate ? `→ ${entry.endDate}` : "→ Present"}
+              {entry.startDate}{" "}
+              {entry.endDate ? `→ ${entry.endDate}` : "→ Present"}
             </span>
           )}
         </div>
 
         {/* Actions */}
-        <div className="flex shrink-0 items-center gap-1" onClick={(e) => e.stopPropagation()}>
+        <div
+          className="flex shrink-0 items-center gap-1"
+          onClick={(e) => e.stopPropagation()}
+        >
           <button
             onClick={() => removeWorkEntry(entry.id)}
             className="rounded p-1.5 text-muted-foreground/50 transition-colors hover:text-destructive"
@@ -85,8 +107,15 @@ function WorkBlock({ entry }: { entry: WorkEntry }) {
           >
             <Trash2 className="h-3.5 w-3.5" />
           </button>
-          <button onClick={() => setExpanded((v) => !v)} className="p-1.5 text-muted-foreground/50 transition-colors hover:text-foreground">
-            {expanded ? <ChevronUp className="h-3.5 w-3.5" /> : <ChevronDown className="h-3.5 w-3.5" />}
+          <button
+            onClick={() => setExpanded((v) => !v)}
+            className="p-1.5 text-muted-foreground/50 transition-colors hover:text-foreground"
+          >
+            {expanded ? (
+              <ChevronUp className="h-3.5 w-3.5" />
+            ) : (
+              <ChevronDown className="h-3.5 w-3.5" />
+            )}
           </button>
         </div>
       </div>
@@ -96,99 +125,120 @@ function WorkBlock({ entry }: { entry: WorkEntry }) {
         <div className="animate-in space-y-3 border-t border-border/20 px-4 pt-1 pb-4 duration-150 slide-in-from-top-1">
           <div className="grid grid-cols-2 gap-3">
             <div className="space-y-1.5">
-              <Label className="text-[10px] tracking-widest text-muted-foreground uppercase">Company</Label>
-              <Input
+              <DataStreamInput
+                label="Company"
                 value={entry.name}
-                onChange={(e) => updateWorkEntry(entry.id, { name: e.target.value })}
-                className="h-8 bg-background/50 text-sm"
+                onChange={(e) =>
+                  updateWorkEntry(entry.id, { name: e.target.value })
+                }
+                unit="chars"
               />
             </div>
             <div className="space-y-1.5">
-              <Label className="text-[10px] tracking-widest text-muted-foreground uppercase">Role / Title</Label>
-              <Input
+              <DataStreamInput
+                label="Role / Title"
                 value={entry.position}
-                onChange={(e) => updateWorkEntry(entry.id, { position: e.target.value })}
-                className="h-8 bg-background/50 text-sm"
+                onChange={(e) =>
+                  updateWorkEntry(entry.id, { position: e.target.value })
+                }
+                unit="chars"
               />
             </div>
             <div className="space-y-1.5">
-              <Label className="text-[10px] tracking-widest text-muted-foreground uppercase">Start Date</Label>
-              <Input
+              <DataStreamInput
+                label="Start Date"
                 value={entry.startDate}
-                onChange={(e) => updateWorkEntry(entry.id, { startDate: e.target.value })}
+                onChange={(e) =>
+                  updateWorkEntry(entry.id, { startDate: e.target.value })
+                }
                 placeholder="2022-01"
-                className="h-8 bg-background/50 text-sm"
+                unit={null}
               />
             </div>
             <div className="space-y-1.5">
-              <Label className="text-[10px] tracking-widest text-muted-foreground uppercase">End Date</Label>
-              <Input
+              <DataStreamInput
+                label="End Date"
                 value={entry.endDate}
-                onChange={(e) => updateWorkEntry(entry.id, { endDate: e.target.value })}
+                onChange={(e) =>
+                  updateWorkEntry(entry.id, { endDate: e.target.value })
+                }
                 placeholder="Present"
-                className="h-8 bg-background/50 text-sm"
+                unit={null}
               />
             </div>
           </div>
 
           <div className="space-y-1.5">
-            <Label className="text-[10px] tracking-widest text-muted-foreground uppercase">Summary</Label>
-            <textarea
+            <HolographicTextarea
+              label="Summary (Paragraph)"
               value={entry.summary}
-              onChange={(e) => updateWorkEntry(entry.id, { summary: e.target.value })}
-              className="min-h-[80px] w-full resize-none rounded-md border border-input bg-background/50 p-2.5 text-sm text-foreground focus-visible:ring-1 focus-visible:ring-ring focus-visible:outline-none"
-              placeholder="Describe your responsibilities and impact..."
+              onChange={(e) =>
+                updateWorkEntry(entry.id, { summary: e.target.value })
+              }
+              placeholder="Brief overview of the role..."
+              unit="words"
+              minRows={2}
+              maxRows={6}
             />
           </div>
 
+          <HighlightsEditor entry={entry} />
+
+          <ImpactScorePanel entry={entry} />
+
           {/* AI Reforge Button */}
-          <Button
-            variant="outline"
-            size="sm"
-            disabled={entry.ai_loading}
-            onClick={() => setAiLoading(entry.id, true)}
-            className="w-full gap-2 border-primary/30 font-mono text-xs tracking-widest text-primary uppercase hover:border-primary/60 hover:bg-primary/10"
-          >
-            <Wand2 className="h-3.5 w-3.5" />
-            {entry.ai_loading ? "Reforging..." : "Reforge with AI"}
-          </Button>
+          <div className="group/reforge relative">
+            <div className="absolute -inset-0.5 rounded-md bg-gradient-to-r from-emerald-500/0 via-primary/50 to-emerald-500/0 opacity-0 blur transition duration-500 group-hover/reforge:opacity-100" />
+            <Button
+              variant="outline"
+              size="sm"
+              disabled={entry.ai_loading}
+              onClick={() => setAiLoading(entry.id, true)}
+              className="relative w-full gap-2 border-primary/30 bg-black/50 font-mono text-xs tracking-widest text-primary uppercase transition-all duration-300 hover:border-primary/60 hover:bg-primary/20 hover:text-primary-foreground hover:shadow-[0_0_20px_rgba(var(--primary),0.3)]"
+            >
+              <Wand2 className="h-3.5 w-3.5" />
+              {entry.ai_loading ? "Reforging..." : "Reforge with AI"}
+            </Button>
+          </div>
 
           {/* System Override Modal — inline streaming comparison */}
           <ReforgeModal entry={entry} />
         </div>
       )}
     </div>
-  );
+  )
 }
 
 // ─── Mission History Section ──────────────────────────────────────────────────
 export function MissionHistoryArray() {
-  const { work, addWorkEntry, reorderWorkEntries, setSyncPaused } = useDataSlateStore();
-
+  const { work, addWorkEntry, reorderWorkEntries, setSyncPaused } =
+    useDataSlateStore()
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 8 } })
-  );
+  )
 
   const handleDragStart = () => {
-    setSyncPaused(true);
-  };
+    setSyncPaused(true)
+  }
 
   const handleDragEnd = (e: DragEndEvent) => {
-    setSyncPaused(false);
-    const { active, over } = e;
+    setSyncPaused(false)
+    const { active, over } = e
     if (over && active.id !== over.id) {
-      reorderWorkEntries(String(active.id), String(over.id));
+      reorderWorkEntries(String(active.id), String(over.id))
     }
-  };
+  }
 
   const handleDragCancel = () => {
-    setSyncPaused(false);
-  };
+    setSyncPaused(false)
+  }
 
   return (
     <div className="space-y-3">
       <div className="flex items-center justify-between border-b border-border/20 pb-2">
-        <h3 className="text-sm font-bold tracking-widest text-primary uppercase">Mission History</h3>
+        <h3 className="text-sm font-bold tracking-widest text-primary uppercase">
+          {"Experience"}
+        </h3>
         <Button
           variant="ghost"
           size="sm"
@@ -206,7 +256,9 @@ export function MissionHistoryArray() {
           onClick={addWorkEntry}
         >
           <Plus className="h-5 w-5 text-muted-foreground/50" />
-          <p className="text-xs text-muted-foreground">Add your first mission entry</p>
+          <p className="text-xs text-muted-foreground">
+            Add your first mission entry
+          </p>
         </div>
       )}
 
@@ -217,7 +269,10 @@ export function MissionHistoryArray() {
         onDragEnd={handleDragEnd}
         onDragCancel={handleDragCancel}
       >
-        <SortableContext items={work.map((e) => e.id)} strategy={verticalListSortingStrategy}>
+        <SortableContext
+          items={work.map((e) => e.id)}
+          strategy={verticalListSortingStrategy}
+        >
           <div className="space-y-2">
             {work.map((entry) => (
               <WorkBlock key={entry.id} entry={entry} />
@@ -226,5 +281,5 @@ export function MissionHistoryArray() {
         </SortableContext>
       </DndContext>
     </div>
-  );
+  )
 }

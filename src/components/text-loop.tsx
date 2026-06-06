@@ -1,25 +1,18 @@
-"use client";
-
-import { useEffect, useState } from "react";
-import {
-  LazyMotion,
-  domAnimation,
-  m,
-  AnimatePresence,
-} from "framer-motion";
-import type { Transition } from "framer-motion";
-import { cn } from "@/lib/utils";
+﻿import { useEffect, useState } from "react"
+import { LazyMotion, domAnimation, m, AnimatePresence } from "framer-motion"
+import type { Transition } from "framer-motion"
+import { cn } from "@/lib/utils"
 
 interface TextLoopProps {
-  staticText?: string;
-  rotatingTexts?: string[];
-  className?: string;
-  interval?: number;
-  transition?: Transition;
-  staticTextClassName?: string;
-  rotatingTextClassName?: string;
-  backgroundClassName?: string;
-  cursorClassName?: string;
+  staticText?: string
+  rotatingTexts?: string[]
+  className?: string
+  interval?: number
+  transition?: Transition
+  staticTextClassName?: string
+  rotatingTextClassName?: string
+  backgroundClassName?: string
+  cursorClassName?: string
 }
 
 export default function TextLoop({
@@ -33,20 +26,20 @@ export default function TextLoop({
   backgroundClassName,
   cursorClassName,
 }: TextLoopProps) {
-  const [index, setIndex] = useState(0);
+  const [index, setIndex] = useState(0)
 
   useEffect(() => {
     const timer = setInterval(() => {
-      setIndex((prev) => (prev + 1) % rotatingTexts.length);
-    }, interval);
-    return () => clearInterval(timer);
-  }, [rotatingTexts.length, interval]);
+      setIndex((prev) => (prev + 1) % rotatingTexts.length)
+    }, interval)
+    return () => clearInterval(timer)
+  }, [rotatingTexts.length, interval])
 
   return (
     <LazyMotion features={domAnimation}>
       <div
         className={cn(
-          "flex flex-row items-center justify-start w-fit text-4xl md:text-7xl font-medium tracking-tight",
+          "flex w-fit flex-row items-center justify-start text-4xl font-medium tracking-tight md:text-7xl",
           className
         )}
       >
@@ -77,7 +70,7 @@ export default function TextLoop({
                 className={cn(
                   "relative bg-clip-text text-transparent",
                   "bg-gradient-to-r from-violet-400 to-violet-800",
-                  "dark:bg-gradient-to-r from-violet-400 to-violet-600 pr-1",
+                  "from-violet-400 to-violet-600 pr-1 dark:bg-gradient-to-r",
                   rotatingTextClassName
                 )}
               >
@@ -89,7 +82,7 @@ export default function TextLoop({
           {/* Cursor Line */}
           <m.div
             className={cn(
-              "w-[3px] md:w-[4px] bg-violet-500 h-[1.10em] sm:h-[1em]",
+              "h-[1.10em] w-[3px] bg-violet-500 sm:h-[1em] md:w-1",
               cursorClassName
             )}
             animate={{ opacity: [1, 0.5] }}
@@ -102,5 +95,5 @@ export default function TextLoop({
         </div>
       </div>
     </LazyMotion>
-  );
+  )
 }

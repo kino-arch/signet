@@ -1,12 +1,44 @@
-Signet: Project Blueprint & Antigravity AI Execution Plan1. Project Overview & LoreSignet is a premium, Mandalorian-themed resume builder application. It transforms the mundane task of building a resume into an elite, sci-fi ritual where professionals "forge" their identities to win corporate bounties.The App (Signet): The final professional resume.The Builder (The Foundry): The editor interface where users input their career history.The Currency (Beskar Tokens): A transactional token system used to export completed Signets.1.1 Tech StackFrontend Core: Vite.js, React, Tailwind CSS.UI Architecture: 100% shadcn/ui (Strict adherence; all custom layouts must wrap shadcn primitives natively).Database & Auth: Supabase (PostgreSQL, OAuth/Email, Row Level Security).Edge & Analytics: Firebase (Performance Monitoring, Analytics for funnel conversion).Animations: Framer Motion (leveraged within specific resume components).2. The Beskar Token EconomySignet bypasses traditional subscriptions in favor of a transactional token economy. Users purchase tokens upfront via Stripe, which are stored as a token_balance integer in the Supabase profiles table.TierPriceRewardCost Per SignetLore PlacementFoundling Pack$53 Resumes$1.66 / eaFor those entering their first guild contracts.Hunter Bounty$107 Resumes$1.42 / eaFor active mercenaries optimizing for multiple career tracks.Clan Chieftain$2015 Resumes$1.33 / eaElite contractors commanding an entire fleet.3. Resume Component SpecificationsThe Foundry offers 4 battle-tested chassis (templates) built on @uitripled shadcn variants:Interactive Resume Card (The Holocron): Framer-motion powered, interactive states. Ideal for tech creatives.Professional Resume (The Beskar Plate): Clean, formal, corporate-compliant layout optimized for ATS scanning.Minimal Resume (The Stealth Shroud): Vercel-inspired, typography-focused grid layout.Standard Resume (The Guild Standard): Professional sidebar layout suitable for most industries.4. Antigravity AI Master Initialization PromptTo be injected into the Antigravity Agent Manager to initialize the coding swarm.Markdown# Antigravity Master Prompt: Project Signet
+# Signet: Project Blueprint & Execution Plan (v2.0)
 
-**Role:** Lead Autonomous Software Engineer operating within Google Antigravity.
-**Mission:** Architect and implement "Signet", a Vite + React application.
+## 1. Project Overview & Lore
+Signet is a premium, Mandalorian-themed resume builder application. It transforms the mundane task of building a resume into an elite, sci-fi ritual where professionals "forge" their identities to win corporate bounties.
 
-**Strict Directives:**
-1. **100% shadcn/ui Constraint:** You are forbidden from using external UI libraries or writing raw HTML components from scratch if a shadcn primitive exists. All cards, inputs, and layouts must be constructed using native shadcn CLI commands (e.g., `npx shadcn@latest add card`).
-2. **Theme Enforcement:** Default to dark mode. Use semantic tokens like `bg-background` for backgrounds, `text-primary` for forge glowing accents, and `text-accent` for terminal data fields, defining their values in `tailwind.config.js`.
-3. **Ignore Scaffold Warnings:** When running `pnpm dlx shadcn@latest init`, ignore the `node-domexception@1.0.0` deprecation warning. It is a non-blocking subdependency of the CLI.
-4. **Agentic Delegation:** Divide tasks into decoupled chunks (Supabase DB, Frontend UI, Firebase config) and execute them in parallel sub-agents.
-5. **Artifact Generation:** Produce a visual browser walkthrough (using the Browser Agent) after completing the Token Paywall flow to verify Stripe/Supabase webhook integration.
-5. Agentic Execution Plan (Task Chunks)This roadmap divides the ultimate goal into isolated chunks for Antigravity AI parallel execution.Phase 1: The Foundation (Single Agent)Task 1.1: Environment Setup:Initialize the Vite project using pnpm dlx shadcn@latest init --preset b2HRtJbF9k --template vite. Configure Tailwind CSS variables to match the "Great Forge" dark/amber theme.Task 1.2: Database Modeling:Write the Supabase SQL DDL schema. Create the profiles table (linked to auth.users) with a token_balance column. Create the resumes table with a JSONB column to store user input data before rendering.Phase 2: Landing Page & Paywall (UI Swarm Agent)Task 2.1: The Cinematic Hook:Build the hero section using strictly shadcn typography and buttons. Implement the copy: "FORGE YOUR SIGNET. COMMAND THE GALAXY."Task 2.2: The Chassis Showcase:Create a grid of shadcn Card components displaying the 4 resume templates.Task 2.3: Authentication & Stripe Gate:Implement Supabase Auth. Route unauthenticated users attempting to access /foundry to the Beskar Token pricing cards.Phase 3: The Foundry Editor (Parallel Frontend Agent)Task 3.1: Form Layout:Build the data-entry side of the editor using shadcn Form, Input, and Textarea primitives. Label sections using the lore (e.g., "Guild Contracts" for Experience).Task 3.2: Component Injection:Install the 4 proprietary resume components via CLI (e.g., npx shadcn@latest add @uitripled/interactive-resume-card-shadcnui).Task 3.3: Real-time Preview:Map the React state from the Foundry form directly into the props of the selected <Resume/> component to show a live preview.Phase 4: Forge & Export (Backend / Edge Agent)Task 4.1: Token Decrement Logic:Write a secure Supabase RPC (Remote Procedure Call) that checks if token_balance > 0. If true, subtract 1 token and return a success boolean.Task 4.2: Export Engine:Trigger the PDF render or Framer Motion finalization only if the RPC returns true.Task 4.3: Analytics:Initialize Firebase Performance Monitoring on the export function to ensure the PDF compilation does not exceed latency budgets, and track paywall bounce rates.
+- **The App (Signet):** The final professional resume.
+- **The Builder (The Forge):** The editor interface where users input their career history.
+- **The Currency (Beskar Tokens):** A transactional token system used to export completed Signets.
+
+### 1.1 Tech Stack (v2.0 AI Upgrade)
+- **Frontend Core:** Vite.js, React, TypeScript, Tailwind CSS.
+- **UI Architecture:** 100% shadcn/ui.
+- **Database & Auth:** Supabase (PostgreSQL, OAuth/Email, Row Level Security).
+- **AI Integration (Deep Moat):** Supabase Edge Functions orchestrating a cascading fallback chain (NVIDIA, Gemini Pro, OpenAI) for high-availability AI generation.
+- **State Management:** Zustand (`useDataSlateStore` as the Single Source of Truth).
+- **Animations:** Framer Motion.
+
+## 2. The Beskar Token Economy
+Signet bypasses traditional subscriptions in favor of a transactional token economy. Users purchase tokens upfront via Stripe, which are stored as a `credit_balance` integer in the `profiles` table. Token deduction occurs via secure Edge Functions (`deduct-credit`).
+
+| Tier | Price | Reward | Cost Per Signet | Lore Placement |
+|---|---|---|---|---|
+| Foundling Pack | $5 | 3 Resumes | $1.66 / ea | For those entering their first guild contracts. |
+| Hunter Bounty | $10 | 7 Resumes | $1.42 / ea | For active mercenaries optimizing for multiple career tracks. |
+| Clan Chieftain | $20 | 15 Resumes | $1.33 / ea | Elite contractors commanding an entire fleet. |
+
+## 3. Resume Component Specifications (The 6 Industry Standards)
+The Forge offers 6 meticulously crafted chassis (templates) designed for 100% ATS readability via linear CSS Grid DOM structures:
+
+1. **Heavy Infantry (Classic/Standard):** Traditional left-aligned, highly professional. (ATS: 100%)
+2. **Datacore (Technical):** Specialized for engineers. Pushes skills and tech stack to the absolute top. (ATS: 100%)
+3. **Ghost (Minimal):** Clean, elegant, typography-focused with ample whitespace. (ATS: 98%)
+4. **Vanguard (Modern):** Two-column visual layout engineered linearly for perfect ATS parsing. (ATS: 100%)
+5. **Imperial (Executive):** Serif fonts, centered headings, authoritative and premium. (ATS: 95%)
+6. **Rebel (Creative):** Vibrant, bold, high visual impact. (ATS: 60% — Design-focused, warnings applied for ATS portals).
+
+## 4. AI Core Features (The Deep Moat)
+Signet goes beyond formatting to provide true tactical advantages through Agentic workflows:
+
+- **Target Lock Engine:** Analyzes a specific Job Description and rewrites the user's resume to match required competencies and culture.
+- **XYZ Impact Scoring:** Evaluates individual bullet points against the FAANG XYZ formula (Accomplishment/Metric/Method), offering automated rewrites.
+- **Reverse-ATS Match Engine:** Semantically compares the current resume slate against a Job Description, outputting a match percentage and missing keyword gap analysis.
+- **Competency Distillation:** Automatically extracts and structures ATS-optimized keywords directly from the user's raw experience blocks.
+- **Open-Standard Export:** Supports mapping the internal data slate to the open-source JSON Resume standard (v1.0.0) for maximum data portability.

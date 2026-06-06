@@ -1,0 +1,10 @@
+{
+  "fontSizes": {
+    "body": {
+      "value": "1rem"
+    },
+    "sm": {
+      "value": "0.875rem"
+    }
+  }
+}

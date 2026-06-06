@@ -1,0 +1,13 @@
+{
+  "name": "@signet/design-tokens",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "main": "dist/tailwind.json",
+  "scripts": {
+    "build": "node ./build/style-dictionary.config.js"
+  },
+  "dependencies": {
+    "style-dictionary": "^4.0.0-prerelease.26"
+  }
+}

@@ -1,46 +1,25 @@
 /**
- * PDF Generation via html2canvas + jsPDF.
+ * PDF Generation via native Web-to-PDF pipeline.
  *
- * Captures the hidden off-screen resume element and downloads it directly
- * as a PDF — no browser print dialog.
+ * Triggers the browser's native print dialogue to generate a highly-optimized
+ * Vector PDF. Text remains highlightable and parseable for ATS systems.
+ * UI is hidden via @media print CSS rules.
  */
 
-export async function generatePDF(elementId = "resume-document", filename = "resume.pdf") {
-  // Small delay to let any pending React state flush
-  await new Promise((resolve) => setTimeout(resolve, 150));
+export async function generatePDF(
+  _elementId = "resume-document",
+  filename = "resume.pdf"
+) {
+  // Temporarily change the document title so the default save filename is correct
+  const originalTitle = document.title
+  const printTitle = filename.replace(/\.pdf$/i, "")
+  document.title = printTitle
 
-  const { toJpeg } = await import("html-to-image");
-  const { default: jsPDF } = await import("jspdf");
+  // Small delay to ensure any dynamic rendering is complete before printing
+  await new Promise((resolve) => setTimeout(resolve, 150))
 
-  const element = document.getElementById(elementId);
-  if (!element) {
-    throw new Error(`[generatePDF] Element #${elementId} not found.`);
-  }
+  window.print()
 
-  try {
-    // html-to-image uses SVG foreignObject, which natively supports modern CSS like oklch()
-    const imgData = await toJpeg(element, {
-      quality: 0.95,
-      pixelRatio: 2, // 2x for crisp high-DPI output
-      backgroundColor: "#ffffff",
-      skipFonts: true, // Bypass Firefox strict mode font CORS blocks which cause blank SVGs
-      cacheBust: true, // Ensure fresh rendering
-    });
-
-    // A4 dimensions in mm
-    const pdfWidth = 210;
-    const pdfHeight = 297;
-
-    const pdf = new jsPDF({
-      orientation: "portrait",
-      unit: "mm",
-      format: "a4",
-    });
-
-    pdf.addImage(imgData, "JPEG", 0, 0, pdfWidth, pdfHeight);
-    pdf.save(filename);
-  } catch (error) {
-    console.error("[generatePDF] html-to-image error:", error);
-    throw error;
-  }
+  // Restore the original title
+  document.title = originalTitle
 }

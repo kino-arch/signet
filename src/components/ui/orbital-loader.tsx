@@ -1,6 +1,4 @@
-"use client"
-
-import React from "react"
+﻿import React from "react"
 import { cva } from "class-variance-authority"
 
 import { LottieAnimation } from "@/components/ui/lottie-animation"
@@ -30,7 +28,7 @@ export interface OrbitalLoaderProps {
    */
   messagePlacement?: "top" | "bottom" | "left" | "right"
   /**
-   * Ring colour — use "primary" for the brand teal/blue accent, "foreground" for white.
+   * Ring colour â€” use "primary" for the brand teal/blue accent, "foreground" for white.
    * @default "foreground"
    */
   color?: "primary" | "foreground"
@@ -45,10 +43,16 @@ export function OrbitalLoader({
 }: React.ComponentProps<"div"> & OrbitalLoaderProps) {
   return (
     <div className={cn(orbitalLoaderVariants({ messagePlacement }))}>
-      <div className={cn("relative w-24 h-24 flex items-center justify-center", className)} {...props}>
-        <LottieAnimation 
-          animationData={holoRingData} 
-          className="w-full h-full opacity-80" 
+      <div
+        className={cn(
+          "relative flex h-24 w-24 items-center justify-center",
+          className
+        )}
+        {...props}
+      >
+        <LottieAnimation
+          animationData={holoRingData}
+          className="h-full w-full opacity-80"
           colorMode={color === "primary" ? "cyan-tint" : "original"}
         />
       </div>

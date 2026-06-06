@@ -1,14 +1,14 @@
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
+import { Card } from "@/components/ui/card"
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from "@/components/ui/accordion";
-import { motion } from "framer-motion";
-import { HelpCircle, MessageCircle } from "lucide-react";
+} from "@/components/ui/accordion"
+import { motion } from "framer-motion"
+import { HelpCircle, MessageCircle } from "lucide-react"
 
 const faqs = [
   {
@@ -36,7 +36,7 @@ const faqs = [
     answer:
       "We operate under a strict code. Your data is encrypted, and we do not sell your history or contact information to third-party recruiters.",
   },
-];
+]
 
 export function FAQ() {
   return (
@@ -58,7 +58,8 @@ export function FAQ() {
             Frequently Asked Questions
           </h2>
           <p className="mx-auto max-w-2xl text-base text-muted-foreground md:text-lg">
-            Answers to common questions from professionals seeking to upgrade their career assets.
+            Answers to common questions from professionals seeking to upgrade
+            their career assets.
           </p>
         </motion.div>
 
@@ -99,7 +100,8 @@ export function FAQ() {
               Still have questions?
             </h3>
             <p className="mb-6 text-sm text-muted-foreground md:text-base">
-              If you didn't find the answer you need, transmit a signal to our support team.
+              If you didn't find the answer you need, transmit a signal to our
+              support team.
             </p>
             <div className="flex flex-col justify-center gap-3 sm:flex-row">
               <Button asChild size="lg" variant="default">
@@ -110,5 +112,5 @@ export function FAQ() {
         </motion.div>
       </div>
     </section>
-  );
+  )
 }

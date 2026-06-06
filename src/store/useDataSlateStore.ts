@@ -1,5 +1,8 @@
 import { create } from "zustand";
 import { supabase } from "@/lib/supabase";
+import { vanillaTrpc } from "@/providers/trpc";
+import { LooseSnapshotSchema } from "@/lib/db-validators";
+import { useThemeStore } from "@/store/useThemeStore";
 
 export type SyncState = "IDLE" | "SYNCING..." | "SECURED" | "ERROR";
 
@@ -28,7 +31,8 @@ export interface WorkEntry {
   endDate: string;
   summary: string;
   highlights: string[];
-  ai_proposal?: string;       // volatile — never persisted to DB
+  ghostBullets?: import("@/lib/ghost-schema").GhostBullet[];
+  ai_proposal?: any;          // volatile — never persisted to DB
   ai_loading?: boolean;       // streaming in progress
 }
 
@@ -83,7 +87,7 @@ interface DataSlateStore {
   updateWorkEntry: (id: string, updates: Partial<Omit<WorkEntry, "id">>) => void;
   reorderWorkEntries: (activeId: string, overId: string) => void;
   // AI Proposal actions
-  setAiProposal: (id: string, text: string) => void;
+  setAiProposal: (id: string, text: any) => void;
   setAiLoading: (id: string, loading: boolean) => void;
   acceptProposal: (id: string) => void;
   discardProposal: (id: string) => void;
@@ -110,7 +114,9 @@ interface DataSlateStore {
   // Lifecycle
   initializeSlate: (slateId: string) => Promise<void>;
   createDefaultSlate: () => Promise<string | null>;
-  forceSyncSection: (sectionType: "basics" | "work" | "skills" | "education" | "certifications") => Promise<void>;
+  createNewSlate: () => Promise<string | null>;
+  saveSnapshot: (type?: "draft" | "publish") => Promise<void>;
+  baseVersion: number;
   /** Emergency flush — called on beforeunload to drain all pending debounces */
   flushAllPending: () => void;
 }
@@ -165,29 +171,22 @@ function stripVolatileFields<T extends Record<string, unknown>>(
 
 // ─── Store Factory ────────────────────────────────────────────────────────────
 export const useDataSlateStore = create<DataSlateStore>((set, get) => {
-  const debounceTimers: Record<string, ReturnType<typeof setTimeout>> = {};
   let syncPaused = false;
   // Track which sections have pending debounced writes
-  const pendingSections = new Set<"basics" | "work" | "skills" | "education" | "certifications">();
-
-  const scheduleSync = (sectionType: "basics" | "work" | "skills" | "education" | "certifications") => {
+  let globalDebounceTimer: ReturnType<typeof setTimeout> | null = null;
+  const scheduleSync = (_sectionType?: string) => {
     if (syncPaused) return;
-    pendingSections.add(sectionType);
     set({ syncState: "SYNCING...", hasPendingMutations: true });
 
-    if (debounceTimers[sectionType]) clearTimeout(debounceTimers[sectionType]);
-    debounceTimers[sectionType] = setTimeout(() => {
-      pendingSections.delete(sectionType);
-      get().forceSyncSection(sectionType);
-      // Update hasPendingMutations based on remaining pending sections
-      if (pendingSections.size === 0) {
-        set({ hasPendingMutations: false });
-      }
-    }, 800);
+    if (globalDebounceTimer) clearTimeout(globalDebounceTimer);
+    globalDebounceTimer = setTimeout(() => {
+      get().saveSnapshot('draft');
+    }, 2000);
   };
 
   return {
     activeSlateId: null,
+    baseVersion: 0,
     syncState: "IDLE",
     isDragging: false,
     isHydrating: false,
@@ -406,132 +405,65 @@ export const useDataSlateStore = create<DataSlateStore>((set, get) => {
     },
 
     // ── Sync (Hardened) ──────────────────────────────────────────────────────
-    forceSyncSection: async (sectionType) => {
-      const { activeSlateId, basics, work, skills, education, certifications } = get();
-      if (!activeSlateId) return;
+    saveSnapshot: async (type = 'draft') => {
+      const state = get()
+      if (!state.activeSlateId) return
 
-      // Guest mode: no Supabase session — data lives in-memory only, skip DB sync
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session?.user) {
-        set({ syncState: "SECURED" });
-        return;
-      }
-
-      // VECTOR 3 DEFENSE: Ensure session is fresh before any DB write
-      const sessionAlive = await ensureFreshSession();
+      // Vector 3 Defense
+      const sessionAlive = await ensureFreshSession()
       if (!sessionAlive) {
-        console.error("Session expired — sync aborted. User must re-authenticate.");
-        set({ syncState: "ERROR" });
-        return;
+        set({ syncState: "ERROR" })
+        return
       }
 
-      // VECTOR 4 DEFENSE: Strip volatile fields (id, ai_proposal, ai_loading)
-      const payload =
-        sectionType === "basics"
-          ? basics
-          : sectionType === "work"
-          ? stripVolatileFields(work as unknown as Record<string, unknown>[])
-          : sectionType === "skills"
-          ? stripVolatileFields(skills as unknown as Record<string, unknown>[])
-          : sectionType === "education"
-          ? stripVolatileFields(education as unknown as Record<string, unknown>[])
-          : stripVolatileFields(certifications as unknown as Record<string, unknown>[]);
+      set({ syncState: "SYNCING..." })
+
+      // Assemble payload
+      const payload = {
+        version: state.baseVersion,
+        basics: state.basics,
+        work: stripVolatileFields(state.work as any),
+        skills: stripVolatileFields(state.skills as any),
+        education: stripVolatileFields(state.education as any),
+        certifications: stripVolatileFields(state.certifications as any),
+        theme: useThemeStore.getState().activeThemeId || "cosmic"
+      }
+
+      const parsed = LooseSnapshotSchema.safeParse(payload)
+      if (!parsed.success) {
+        console.error("Zod Validation Failed", parsed.error)
+        set({ syncState: "ERROR" })
+        return
+      }
 
       try {
-        const { data: existing } = await supabase
-          .from("slate_sections")
-          .select("id")
-          .eq("slate_id", activeSlateId)
-          .eq("section_type", sectionType)
-          .maybeSingle();
+        const res = await vanillaTrpc.slate.saveSnapshot.mutate({
+          slateId: state.activeSlateId,
+          snapshot: parsed.data,
+          type,
+          baseVersion: state.baseVersion
+        })
 
-        if (existing) {
-          const { error } = await supabase
-            .from("slate_sections")
-            .update({ raw_content: payload as unknown as Record<string, unknown>, updated_at: new Date().toISOString() })
-            .eq("id", existing.id);
-          if (error) throw error;
-        } else {
-          const { error } = await supabase.from("slate_sections").insert({
-            slate_id: activeSlateId,
-            section_type: sectionType,
-            raw_content: payload as unknown as Record<string, unknown>,
-          });
-          if (error) throw error;
+        if (res.success) {
+          set({ syncState: "SECURED", baseVersion: res.version, hasPendingMutations: false })
+          setTimeout(() => {
+            if (get().syncState === "SECURED") set({ syncState: "IDLE" })
+          }, 2000)
         }
-
-        set({ syncState: "SECURED" });
-        setTimeout(() => {
-          if (get().syncState === "SECURED") set({ syncState: "IDLE" });
-        }, 2000);
-      } catch (err: unknown) {
-        const error = err as Error;
-        console.error(`Sync failed for ${sectionType}:`, error?.message || err);
-        set({ syncState: "ERROR" });
-
-        // Retry once after 3 seconds for transient failures
-        setTimeout(() => {
-          if (get().syncState === "ERROR") {
-            get().forceSyncSection(sectionType);
-          }
-        }, 3000);
+      } catch (err: any) {
+        if (err.message?.includes('CONFLICT')) {
+           console.error("Conflict detected:", err.message)
+           set({ syncState: "ERROR" })
+        } else {
+           console.error("Save snapshot failed:", err)
+           set({ syncState: "ERROR" })
+        }
       }
     },
 
     // ── Emergency Flush (beforeunload) ────────────────────────────────────────
     flushAllPending: () => {
-      // Drain all pending debounce timers synchronously
-      for (const key of Object.keys(debounceTimers)) {
-        clearTimeout(debounceTimers[key]);
-        delete debounceTimers[key];
-      }
-
-      const { activeSlateId, basics, work, skills, education, certifications } = get();
-      if (!activeSlateId) return;
-
-      // Use navigator.sendBeacon for guaranteed delivery during page unload.
-      // We build the payloads and fire one beacon per pending section.
-      const supabaseUrl = import.meta.env.VITE_SUPABASE_URL as string;
-
-      // We can only send simple POST requests via sendBeacon, so we use the
-      // Supabase REST API directly (PostgREST). This is a fire-and-forget flush.
-      for (const sectionType of ["basics", "work", "skills", "education", "certifications"] as const) {
-        const sectionPayload =
-          sectionType === "basics"
-            ? basics
-            : sectionType === "work"
-            ? stripVolatileFields(work as unknown as Record<string, unknown>[])
-            : sectionType === "skills"
-            ? stripVolatileFields(skills as unknown as Record<string, unknown>[])
-            : sectionType === "education"
-            ? stripVolatileFields(education as unknown as Record<string, unknown>[])
-            : stripVolatileFields(certifications as unknown as Record<string, unknown>[]);
-
-        // Build a PostgREST PATCH body using the RPC workaround:
-        // We send the full payload as a JSON body to an upsert-style endpoint.
-        // Since sendBeacon only supports POST, we use the Supabase Edge Function
-        // approach for an emergency sync.
-        const beaconBody = JSON.stringify({
-          slate_id: activeSlateId,
-          section_type: sectionType,
-          raw_content: sectionPayload,
-        });
-
-        try {
-          // Attempt sendBeacon to a lightweight edge function
-          const beaconUrl = `${supabaseUrl}/functions/v1/emergency-sync`;
-          navigator.sendBeacon(
-            beaconUrl,
-            new Blob([beaconBody], { type: "application/json" })
-          );
-        } catch {
-          // sendBeacon is best-effort — if it fails, data was already in local state
-          console.warn(`Emergency flush failed for ${sectionType}`);
-        }
-      }
-
-      pendingSections.clear();
-      set({ hasPendingMutations: false });
+      // With explicit saves, flushAllPending is no longer attempting to drain a debouncer.
     },
 
     // ── Lifecycle (Hardened) ──────────────────────────────────────────────────
@@ -560,6 +492,50 @@ export const useDataSlateStore = create<DataSlateStore>((set, get) => {
       const { data, error } = await supabase
         .from("data_slates")
         .insert({ user_id: session.user.id, title: "New Data Slate" })
+        .select()
+        .single();
+
+      if (error) {
+        console.error("Failed to create slate:", error);
+        return null;
+      }
+      return data.id;
+    },
+
+    createNewSlate: async () => {
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+
+      // Reset local state to empty
+      const emptyState = {
+        basics: {
+          name: "",
+          label: "",
+          email: "",
+          phone: "",
+          url: "",
+          summary: "",
+          location: { city: "", countryCode: "", region: "" },
+          profiles: [],
+        },
+        work: [],
+        skills: [],
+        education: [],
+        certifications: [],
+        baseVersion: 0
+      };
+      set(emptyState);
+
+      if (!session?.user) {
+        const guestSlateId = uuid();
+        set({ activeSlateId: guestSlateId });
+        return guestSlateId;
+      }
+
+      const { data, error } = await supabase
+        .from("data_slates")
+        .insert({ user_id: session.user.id, title: "New Data Slate", status: "Draft" })
         .select()
         .single();
 
@@ -605,52 +581,61 @@ export const useDataSlateStore = create<DataSlateStore>((set, get) => {
       // Slate exists and the user has read access (RLS enforced) — proceed
       set({ activeSlateId: slateId });
 
-      const { data: sections, error } = await supabase
-        .from("slate_sections")
-        .select("section_type, raw_content")
-        .eq("slate_id", slateId);
+      try {
+        // Fetch latest version
+        const { data: versionRow, error: fetchErr } = await supabase
+          .from("slate_versions")
+          .select("snapshot_data, version_number")
+          .eq("slate_id", slateId)
+          .order("version_number", { ascending: false })
+          .limit(1)
+          .maybeSingle();
 
-      if (error) {
-        console.error("Failed to fetch slate sections:", error);
+        if (fetchErr) throw fetchErr;
+
+        if (versionRow && versionRow.snapshot_data) {
+          // Parse with permissive Zod schema
+          const parsed = LooseSnapshotSchema.parse(versionRow.snapshot_data);
+          
+          // Reattach ephemeral DnD IDs to lists
+          const patch: any = {
+            baseVersion: versionRow.version_number
+          };
+
+          if (parsed.basics) patch.basics = parsed.basics;
+          if (parsed.work) patch.work = parsed.work.map((e: any) => ({ ...e, id: uuid() }));
+          if (parsed.skills) patch.skills = parsed.skills.map((e: any) => ({ ...e, id: uuid() }));
+          if (parsed.education) patch.education = parsed.education.map((e: any) => ({ ...e, id: uuid() }));
+          if (parsed.certifications) patch.certifications = parsed.certifications.map((e: any) => ({ ...e, id: uuid() }));
+
+          set(patch);
+          
+          if (parsed.theme) {
+             useThemeStore.getState().setTheme(parsed.theme as any);
+          }
+
+          // Cache backup
+          if (typeof window !== "undefined") {
+            window.localStorage.setItem(`slate_backup_${slateId}`, JSON.stringify(patch));
+          }
+        }
+        set({ isHydrating: false, hydrationError: null });
+      } catch (err) {
+        console.error("Hydration failed, attempting fallback:", err);
+        // Fallback to localStorage
+        if (typeof window !== "undefined") {
+          const backup = window.localStorage.getItem(`slate_backup_${slateId}`);
+          if (backup) {
+            try {
+              const parsedBackup = JSON.parse(backup);
+              set({ ...parsedBackup, isHydrating: false, hydrationError: null, syncState: "ERROR" });
+              console.warn("Restored from local backup");
+              return;
+            } catch (e) {}
+          }
+        }
         set({ hydrationError: "FETCH_FAILED", isHydrating: false });
-        return;
       }
-
-      const patch: Partial<Pick<DataSlateStore, "basics" | "work" | "skills" | "education" | "certifications">> = {};
-
-      for (const s of sections ?? []) {
-        if (s.section_type === "basics" && s.raw_content) {
-          patch.basics = s.raw_content as unknown as Basics;
-        }
-        if (s.section_type === "work" && Array.isArray(s.raw_content)) {
-          // Re-attach ephemeral IDs for DnD
-          patch.work = (s.raw_content as unknown as Omit<WorkEntry, "id">[]).map((e) => ({
-            ...e,
-            id: uuid(),
-          }));
-        }
-        if (s.section_type === "skills" && Array.isArray(s.raw_content)) {
-          patch.skills = (s.raw_content as unknown as Omit<SkillEntry, "id">[]).map((e) => ({
-            ...e,
-            id: uuid(),
-          }));
-        }
-        if (s.section_type === "education" && Array.isArray(s.raw_content)) {
-          patch.education = (s.raw_content as unknown as Omit<EducationEntry, "id">[]).map((e) => ({
-            ...e,
-            id: uuid(),
-          }));
-        }
-        if (s.section_type === "certifications" && Array.isArray(s.raw_content)) {
-          patch.certifications = (s.raw_content as unknown as Omit<CertificationEntry, "id">[]).map((e) => ({
-            ...e,
-            id: uuid(),
-          }));
-        }
-      }
-
-      if (Object.keys(patch).length > 0) set(patch);
-      set({ isHydrating: false, hydrationError: null });
     },
   };
 });

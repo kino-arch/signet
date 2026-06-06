@@ -1,0 +1,15 @@
+{
+  "color": {
+    "action": {
+      "primary": {
+        "value": "{signet.cyan.400}"
+      },
+      "secondary": {
+        "value": "{signet.navy.800}"
+      },
+      "danger": {
+        "value": "{signet.red.500}"
+      }
+    }
+  }
+}

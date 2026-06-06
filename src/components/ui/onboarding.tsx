@@ -1,5 +1,3 @@
-"use client"
-
 import type * as React from "react"
 import {
   createContext,
@@ -32,7 +30,7 @@ const stepDotVariants = cva("rounded-full transition-all duration-300", {
     variant: {
       dots: "size-2 data-[state=active]:size-2.5 data-[state=active]:bg-primary data-[state=active]:shadow-[0_0_8px_var(--color-primary)] data-[state=completed]:bg-primary/60 data-[state=inactive]:bg-border",
       pills:
-        "h-[2px] flex-1 rounded-full data-[state=active]:bg-primary data-[state=active]:shadow-[0_0_8px_color-mix(in_srgb,var(--color-primary)_40%,transparent)] data-[state=completed]:bg-primary/60 data-[state=inactive]:bg-border",
+        "h-0.5 flex-1 rounded-full data-[state=active]:bg-primary data-[state=active]:shadow-[0_0_8px_color-mix(in_srgb,var(--color-primary)_40%,transparent)] data-[state=completed]:bg-primary/60 data-[state=inactive]:bg-border",
     },
   },
   defaultVariants: {
@@ -41,7 +39,8 @@ const stepDotVariants = cva("rounded-full transition-all duration-300", {
 })
 
 export interface StepIndicatorProps
-  extends React.ComponentPropsWithoutRef<"div">,
+  extends
+    React.ComponentPropsWithoutRef<"div">,
     VariantProps<typeof stepIndicatorVariants>,
     VariantProps<typeof stepDotVariants> {
   currentStep: number
@@ -123,7 +122,8 @@ function useOnboarding() {
 // ============================================================================
 
 export interface OnboardingRootProps
-  extends PropsWithChildren,
+  extends
+    PropsWithChildren,
     Omit<React.ComponentPropsWithoutRef<"div">, "children"> {
   value?: number
   defaultValue?: number
@@ -165,7 +165,9 @@ function OnboardingRoot({
   })
 
   const maxStepValue = controlledMaxStepValue ?? 0
-  const canGoNext = canGoNextFn ? canGoNextFn(currentStep ?? 1, stepValue ?? 0) : true
+  const canGoNext = canGoNextFn
+    ? canGoNextFn(currentStep ?? 1, stepValue ?? 0)
+    : true
   const canGoBack = (currentStep ?? 1) > 1 || (stepValue ?? 0) > 0
 
   const handleNext = useCallback(() => {
@@ -175,7 +177,14 @@ function OnboardingRoot({
       setStepValueState(0)
       setCurrentStep((prev) => (prev ?? 1) + 1)
     }
-  }, [currentStep, stepValue, maxStepValue, totalSteps, setStepValueState, setCurrentStep])
+  }, [
+    currentStep,
+    stepValue,
+    maxStepValue,
+    totalSteps,
+    setStepValueState,
+    setCurrentStep,
+  ])
 
   const handleBack = useCallback(() => {
     if (currentStep === 1 && (stepValue ?? 0) > 0) {
@@ -197,8 +206,12 @@ function OnboardingRoot({
       currentStep: currentStep ?? 1,
       totalSteps,
       stepValue: stepValue ?? 0,
-      setStep: setCurrentStep as unknown as (step: number | ((prev: number) => number)) => void,
-      setStepValue: setStepValueState as unknown as (value: number | ((prev: number) => number)) => void,
+      setStep: setCurrentStep as unknown as (
+        step: number | ((prev: number) => number)
+      ) => void,
+      setStepValue: setStepValueState as unknown as (
+        value: number | ((prev: number) => number)
+      ) => void,
       maxStepValue,
       canGoNext,
       canGoBack,
@@ -226,10 +239,7 @@ function OnboardingRoot({
   return (
     <OnboardingContext.Provider value={contextValue}>
       <div
-        className={cn(
-          "flex flex-col w-full",
-          className
-        )}
+        className={cn("flex w-full flex-col", className)}
         data-slot="onboarding"
         data-state={`step-${currentStep}`}
         {...props}
@@ -244,8 +254,7 @@ function OnboardingRoot({
 // Step
 // ============================================================================
 
-export interface OnboardingStepProps
-  extends React.ComponentPropsWithoutRef<"div"> {
+export interface OnboardingStepProps extends React.ComponentPropsWithoutRef<"div"> {
   step: number
 }
 
@@ -264,7 +273,10 @@ function OnboardingStep({
 
   return (
     <div
-      className={cn("animate-in fade-in slide-in-from-bottom-2 duration-300", className)}
+      className={cn(
+        "animate-in duration-300 fade-in slide-in-from-bottom-2",
+        className
+      )}
       data-slot="onboarding-step"
       data-state="active"
       {...props}
@@ -278,7 +290,10 @@ function OnboardingStep({
 // StepIndicator Context Wrapper
 // ============================================================================
 
-export type OnboardingStepIndicatorProps = Omit<React.ComponentProps<typeof StepIndicator>, "currentStep" | "totalSteps">
+export type OnboardingStepIndicatorProps = Omit<
+  React.ComponentProps<typeof StepIndicator>,
+  "currentStep" | "totalSteps"
+>
 
 function OnboardingStepIndicator(props: OnboardingStepIndicatorProps) {
   const { currentStep, totalSteps } = useOnboarding()
@@ -295,8 +310,7 @@ function OnboardingStepIndicator(props: OnboardingStepIndicatorProps) {
 // Header
 // ============================================================================
 
-export interface OnboardingHeaderProps
-  extends React.ComponentPropsWithoutRef<"div"> {
+export interface OnboardingHeaderProps extends React.ComponentPropsWithoutRef<"div"> {
   title?: string
   description?: string
   stepTitle?: string
@@ -335,12 +349,18 @@ function OnboardingHeader({
         </p>
       )}
       {title != null && (
-        <h2 className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl" data-slot="onboarding-title">
+        <h2
+          className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl"
+          data-slot="onboarding-title"
+        >
           {title}
         </h2>
       )}
       {description && (
-        <p className="mt-2 text-sm text-muted-foreground" data-slot="onboarding-description">
+        <p
+          className="mt-2 text-sm text-muted-foreground"
+          data-slot="onboarding-description"
+        >
           {description}
         </p>
       )}
@@ -352,8 +372,7 @@ function OnboardingHeader({
 // Navigation
 // ============================================================================
 
-export interface OnboardingNavigationProps
-  extends React.ComponentPropsWithoutRef<"fieldset"> {
+export interface OnboardingNavigationProps extends React.ComponentPropsWithoutRef<"fieldset"> {
   backLabel?: string
   nextLabel?: string
   completeLabel?: string
@@ -469,8 +488,10 @@ function useChoiceGroup() {
   return ctx
 }
 
-export interface ChoiceGroupProps
-  extends Omit<React.ComponentPropsWithoutRef<"div">, "defaultValue"> {
+export interface ChoiceGroupProps extends Omit<
+  React.ComponentPropsWithoutRef<"div">,
+  "defaultValue"
+> {
   value?: string | null
   defaultValue?: string | null
   onValueChange?: (value: string) => void
@@ -531,8 +552,7 @@ function ChoiceGroupRoot({
 // ChoiceGroup.Item
 // ============================================================================
 
-export interface ChoiceGroupItemProps
-  extends React.ComponentPropsWithoutRef<"label"> {
+export interface ChoiceGroupItemProps extends React.ComponentPropsWithoutRef<"label"> {
   value: string
   title?: string
   subtitle?: string
@@ -567,9 +587,10 @@ function ChoiceGroupItemComponent({
   return (
     <label
       className={cn(
-        "group relative flex cursor-pointer flex-col gap-3 rounded-xl border p-5 text-left transition-all duration-200 select-none",
+        "group glass-panel relative flex cursor-pointer flex-col gap-3 rounded-xl border p-5 text-left transition-all duration-200 select-none",
+        "has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-primary has-[:focus-visible]:ring-offset-2 has-[:focus-visible]:ring-offset-background",
         isSelected
-          ? "border-primary/60 bg-primary/5 shadow-[0_0_20px_rgba(0,0,0,0.1)] -translate-y-0.5"
+          ? "-translate-y-0.5 border-primary/60 bg-primary/5 shadow-[0_0_20px_rgba(var(--color-primary),0.1)]"
           : "border-border/50 bg-card/40 hover:border-primary/30 hover:bg-card/70",
         className
       )}
@@ -585,29 +606,39 @@ function ChoiceGroupItemComponent({
         type="radio"
         value={itemValue}
       />
-      
+
       {/* Visual Dot */}
-      <div className={cn(
-        "absolute right-3 top-3 h-2 w-2 rounded-full border transition-all duration-200",
-        isSelected ? "border-primary bg-primary" : "border-border"
-      )} />
+      <div
+        className={cn(
+          "absolute top-3 right-3 h-2 w-2 rounded-full border transition-all duration-200",
+          isSelected ? "border-primary bg-primary" : "border-border"
+        )}
+      />
 
       {/* Content Injection or Custom Children */}
-      {children ? children : (
+      {children ? (
+        children
+      ) : (
         <>
-          <div className={cn(
-            "inline-flex h-9 w-9 items-center justify-center rounded-lg border transition-colors duration-200",
-            isSelected ? "border-primary/30 bg-primary/10 text-primary" : "border-border/50 bg-muted/30 text-muted-foreground"
-          )}>
+          <div
+            className={cn(
+              "inline-flex h-9 w-9 items-center justify-center rounded-lg border transition-colors duration-200",
+              isSelected
+                ? "border-primary/30 bg-primary/10 text-primary"
+                : "border-border/50 bg-muted/30 text-muted-foreground"
+            )}
+          >
             {icon}
           </div>
           <div>
             <p className="text-sm font-semibold text-foreground">{title}</p>
             {subtitle && (
-              <p className={cn(
-                "mt-0.5 text-[10px] font-mono font-medium tracking-wider uppercase transition-colors",
-                isSelected ? "text-primary" : "text-muted-foreground/70"
-              )}>
+              <p
+                className={cn(
+                  "mt-0.5 font-mono text-[10px] font-medium tracking-wider uppercase transition-colors",
+                  isSelected ? "text-primary" : "text-muted-foreground/70"
+                )}
+              >
                 {subtitle}
               </p>
             )}

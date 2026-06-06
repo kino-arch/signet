@@ -1,11 +1,11 @@
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import { motion } from "framer-motion";
-import { Mail, MessageSquare, Send } from "lucide-react";
+import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
+import { Card, CardContent } from "@/components/ui/card"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { Textarea } from "@/components/ui/textarea"
+import { motion } from "framer-motion"
+import { Mail, MessageSquare, Send } from "lucide-react"
 
 export function Contact() {
   return (
@@ -26,7 +26,8 @@ export function Contact() {
             Get in Touch
           </h2>
           <p className="mx-auto max-w-2xl text-base text-muted-foreground md:text-lg">
-            Whether you're looking for an enterprise plan or need technical assistance with your resume, our team is ready to help.
+            Whether you're looking for an enterprise plan or need technical
+            assistance with your resume, our team is ready to help.
           </p>
         </motion.div>
 
@@ -40,12 +41,15 @@ export function Contact() {
             className="flex flex-col justify-center space-y-6"
           >
             <Card className="border-border/50 bg-card p-6 shadow-md">
-              <div className="mb-4 inline-flex  bg-secondary p-3">
+              <div className="mb-4 inline-flex bg-secondary p-3">
                 <MessageSquare className="h-6 w-6 text-foreground" />
               </div>
-              <h3 className="mb-2 text-xl font-bold text-foreground">Support</h3>
+              <h3 className="mb-2 text-xl font-bold text-foreground">
+                Support
+              </h3>
               <p className="mb-4 text-sm text-muted-foreground">
-                For immediate assistance or technical queries regarding the platform.
+                For immediate assistance or technical queries regarding the
+                platform.
               </p>
               <div className="font-mono text-sm text-primary">
                 support@signet.com
@@ -53,10 +57,12 @@ export function Contact() {
             </Card>
 
             <Card className="border-border/50 bg-card p-6 shadow-md">
-              <div className="mb-4 inline-flex  bg-secondary p-3">
+              <div className="mb-4 inline-flex bg-secondary p-3">
                 <Mail className="h-6 w-6 text-foreground" />
               </div>
-              <h3 className="mb-2 text-xl font-bold text-foreground">Enterprise Sales</h3>
+              <h3 className="mb-2 text-xl font-bold text-foreground">
+                Enterprise Sales
+              </h3>
               <p className="mb-4 text-sm text-muted-foreground">
                 For bulk licenses or custom ATS integrations for your company.
               </p>
@@ -75,29 +81,40 @@ export function Contact() {
           >
             <Card className="border-border/50 bg-card shadow-md">
               <CardContent className="p-6 md:p-8">
-                <form 
+                <form
                   className="space-y-6"
                   onSubmit={(e) => {
-                    e.preventDefault();
+                    e.preventDefault()
                     // In a real implementation, this would send to an API.
                     // For now, we alert to show it's wired up.
-                    alert("Message sent to our team.");
+                    alert("Message sent to our team.")
                   }}
                 >
                   <div className="space-y-2">
                     <Label htmlFor="name">Name</Label>
-                    <Input id="name" placeholder="John Doe" className="bg-background/50" required />
+                    <Input
+                      id="name"
+                      placeholder="John Doe"
+                      className="bg-background/50"
+                      required
+                    />
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="email">Email Address</Label>
-                    <Input id="email" type="email" placeholder="john@example.com" className="bg-background/50" required />
+                    <Input
+                      id="email"
+                      type="email"
+                      placeholder="john@example.com"
+                      className="bg-background/50"
+                      required
+                    />
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="message">Message</Label>
-                    <Textarea 
-                      id="message" 
-                      placeholder="Enter your message..." 
-                      className="min-h-[120px] bg-background/50"
+                    <Textarea
+                      id="message"
+                      placeholder="Enter your message..."
+                      className="min-h-32 bg-background/50"
                       required
                     />
                   </div>
@@ -112,5 +129,5 @@ export function Contact() {
         </div>
       </div>
     </section>
-  );
+  )
 }
