@@ -13,6 +13,7 @@ import {
 export const profiles = pgTable("profiles", {
   id: uuid("id").primaryKey(),
   credits: integer("credits").notNull().default(0),
+  stripeCustomerId: text("stripe_customer_id"),
 })
 
 export const dataSlates = pgTable("data_slates", {

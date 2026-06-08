@@ -5,14 +5,14 @@ import { config } from "dotenv"
 config({ path: ".env.local" })
 
 const secretKey =
-  (import.meta as unknown as { env?: Record<string, string> }).env?.VITE_STRIPE_SECRET_KEY ||
-  process.env.VITE_STRIPE_SECRET_KEY ||
+  process.env.STRIPE_SECRET_KEY ||
   process.env.SECRET_KEY
 
 if (!secretKey) {
   console.warn("Missing Stripe secret key. Stripe features will be disabled.")
 }
 
+// This module is server-side only. Never import from client code.
 export const stripe = new Stripe(secretKey || "dummy-key", {
   apiVersion: "2023-10-16",
   appInfo: {

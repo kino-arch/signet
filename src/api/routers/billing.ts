@@ -2,6 +2,9 @@ import { router, protectedProcedure } from "../trpc"
 import { TRPCError } from "@trpc/server"
 import { stripe } from "../../lib/stripe"
 import { logger } from "../../lib/logger"
+import { db } from "../../db"
+import { profiles } from "../../db/schema"
+import { eq } from "drizzle-orm"
 
 export const billingRouter = router({
   createPortalSession: protectedProcedure.mutation(async ({ ctx }) => {
@@ -18,26 +21,41 @@ export const billingRouter = router({
     try {
       let customerId: string | undefined
 
-      // 1. Try to find existing Stripe customer by email
-      const existingCustomers = await stripe.customers.list({
-        email: user.email,
-        limit: 1,
-      })
+      // 1. Check DB for existing stripe_customer_id
+      const [profile] = await db
+        .select({ stripeCustomerId: profiles.stripeCustomerId })
+        .from(profiles)
+        .where(eq(profiles.id, userId))
+        .limit(1)
 
-      if (existingCustomers.data.length > 0) {
-        customerId = existingCustomers.data[0].id
-      }
-
-      // 2. If no stripe customer id, create one lazily
-      if (!customerId) {
-        const customer = await stripe.customers.create({
+      if (profile?.stripeCustomerId) {
+        customerId = profile.stripeCustomerId
+      } else {
+        // Fallback: try email or create new
+        const existingCustomers = await stripe.customers.list({
           email: user.email,
-          metadata: {
-            supabase_uid: userId,
-          },
+          limit: 1,
         })
 
-        customerId = customer.id
+        if (existingCustomers.data.length > 0) {
+          customerId = existingCustomers.data[0].id
+        } else {
+          const customer = await stripe.customers.create({
+            email: user.email,
+            metadata: {
+              supabase_uid: userId,
+            },
+          })
+          customerId = customer.id
+        }
+
+        // Save back to DB
+        if (customerId) {
+          await db
+            .update(profiles)
+            .set({ stripeCustomerId: customerId })
+            .where(eq(profiles.id, userId))
+        }
       }
 
       // 3. Create Stripe Customer Portal session
