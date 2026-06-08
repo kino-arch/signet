@@ -1,8 +1,8 @@
-import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
-import Stripe from "npm:stripe@^14.0.0"
-import { createClient } from "npm:@supabase/supabase-js@2.39.3"
+import "jsr:@supabase/functions-js/edge-runtime.d.ts"
+import Stripe from "stripe"
+import { createClient } from "@supabase/supabase-js"
 
-serve(async (req: Request) => {
+Deno.serve(async (req: Request) => {
   try {
     const signature = req.headers.get("stripe-signature")
     if (!signature) {
@@ -26,9 +26,10 @@ serve(async (req: Request) => {
 
     try {
       event = stripe.webhooks.constructEvent(body, signature, webhookSecret)
-    } catch (err: any) {
-      console.error(`Webhook signature verification failed: ${err.message}`)
-      return new Response(`Webhook Error: ${err.message}`, { status: 400 })
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : String(err)
+      console.error(`Webhook signature verification failed: ${errorMessage}`)
+      return new Response(`Webhook Error: ${errorMessage}`, { status: 400 })
     }
 
     if (event.type === "checkout.session.completed") {
@@ -77,8 +78,9 @@ serve(async (req: Request) => {
       headers: { "Content-Type": "application/json" },
       status: 200,
     })
-  } catch (err: any) {
+  } catch (err: unknown) {
+    const errorMessage = err instanceof Error ? err.message : String(err)
     console.error("Webhook error:", err)
-    return new Response(JSON.stringify({ error: err.message }), { status: 500 })
+    return new Response(JSON.stringify({ error: errorMessage }), { status: 500 })
   }
 })
