@@ -138,5 +138,14 @@
     "vite": "^8",
     "vitest": "^4.1.7",
     "vitest-axe": "^0.1.0"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "@bundled-es-modules/glob",
+      "core-js",
+      "esbuild",
+      "msw",
+      "style-dictionary"
+    ]
   }
 }
