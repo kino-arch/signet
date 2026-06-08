@@ -52,19 +52,6 @@
       "verifiedBy": "color-guard"
     },
     {
-      "name": "SignetFeatureGrid",
-      "path": "src/components/sections/bento-grid/SignetFeatureGrid.tsx",
-      "origin": "signet-native",
-      "status": "certified",
-      "certifiedDate": "2026-06-05",
-      "certifiedBy": "design-lead",
-      "violations": {
-        "spatial": 0,
-        "color": 0,
-        "typography": 0
-      }
-    },
-    {
       "name": "SignetTestimonials",
       "path": "src/components/sections/testimonials/SignetTestimonials.tsx",
       "origin": "signet-native",

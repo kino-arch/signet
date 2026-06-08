@@ -45,7 +45,7 @@ const sizeClasses: Record<SizeVariant, string> = {
 
 const colorClasses: Record<ColorVariant, string> = {
   default: "text-foreground",
-  primary: "text-blue-600 dark:text-blue-400",
+  primary: "text-nordic-accent-hover dark:text-nordic-accent",
   secondary: "text-gray-600 dark:text-gray-400",
   success: "text-green-600 dark:text-green-400",
   warning: "text-yellow-600 dark:text-yellow-400",

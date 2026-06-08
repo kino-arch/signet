@@ -33,7 +33,7 @@ export function SignetShowcase() {
                 <li key={point} className="flex items-center gap-3 text-nordic-text-secondary">
                   <span
                     className="flex h-5 w-5 shrink-0 items-center justify-center rounded-none text-xs font-bold text-white"
-                    style={{ background: "linear-gradient(135deg, #3B82F6, #818CF8)" }}
+                    style={{ background: "linear-gradient(135deg, var(--color-nordic-accent), var(--color-nordic-accent-hover))" }}
                   >
                     ✓
                   </span>

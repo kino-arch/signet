@@ -6,19 +6,24 @@ import { slateRouter } from "./routers/slate"
 import { aiRouter } from "./routers/ai"
 import { templateRouter } from "./routers/template"
 import { jobTrackerRouter } from "./routers/jobTracker"
+import { billingRouter } from "./routers/billing"
 
 export const appRouter = router({
   skills: skillsRouter,
   slate: slateRouter,
   template: templateRouter,
   jobTracker: jobTrackerRouter,
+  billing: billingRouter,
 })
 
 export type AppRouter = typeof appRouter
 
+import { stripeWebhooks } from "./routers/stripeWebhooks"
+
 const app = new Hono()
 
 app.route("/ai", aiRouter)
+app.route("/webhooks", stripeWebhooks)
 
 app.use(
   "/trpc/*",

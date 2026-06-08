@@ -47,7 +47,7 @@ export function NordicHero() {
               <span
                 className="bg-clip-text text-transparent"
                 style={{
-                  backgroundImage: "linear-gradient(135deg, #60A5FA 0%, #3B82F6 50%, #818CF8 100%)",
+                  backgroundImage: "linear-gradient(135deg, var(--color-nordic-accent-hover) 0%, var(--color-nordic-accent) 50%, var(--color-nordic-accent-hover) 100%)",
                 }}
               >
                 for ATS.

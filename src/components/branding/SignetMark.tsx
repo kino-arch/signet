@@ -31,7 +31,7 @@ export function SignetMark({ className, size = 32 }: SignetMarkProps) {
         fillOpacity="0.9"
       />
       {/* Center punch / seal dot */}
-      <circle cx="16" cy="16" r="3" fill="#020617" />
+      <circle cx="16" cy="16" r="3" fill="var(--color-nordic-bg)" />
     </svg>
   );
 }

@@ -41,8 +41,8 @@ export function AddTargetDialog() {
   const [open, setOpen] = useState(false)
   const { addApplicationLocal } = useTargetMatrixStore()
   const addApplicationMutation = trpc.jobTracker.addApplication.useMutation({
-    onSuccess: (data: any) => {
-      addApplicationLocal(data as any)
+    onSuccess: (data: unknown) => {
+      addApplicationLocal(data as Parameters<typeof addApplicationLocal>[0])
       reset()
       setOpen(false)
     }

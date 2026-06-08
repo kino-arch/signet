@@ -22,8 +22,8 @@ export default defineConfig({
     devServer({
       entry: "src/api/router.ts",
       exclude: [
-        // Exclude everything EXCEPT /ai/* and /trpc/* — those go to Hono
-        /^(?!\/(ai|trpc)(\/|$)).*/,
+        // Exclude everything EXCEPT /ai/*, /trpc/*, and /webhooks/* — those go to Hono
+        /^(?!\/(ai|trpc|webhooks)(\/|$)).*/,
       ],
       injectClientScript: false,
     }),

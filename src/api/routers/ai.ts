@@ -224,8 +224,9 @@ aiRouter.post("/reforge", async (c: Context) => {
 
     try {
       await deductCreditAtomic(user.id)
-    } catch (e: any) {
-      return c.json({ error: e.message }, 402)
+    } catch (e: unknown) {
+      const err = e instanceof Error ? e : new Error(String(e))
+      return c.json({ error: err.message }, 402)
     }
 
     const reforgeData = await reforgeAccomplishment(

@@ -34,7 +34,7 @@ export async function exportPDF(
   // Wrap in strict mode to match app behavior
   root.render(
     createElement(StrictMode, null,
-      createElement('div', { style: { width: '8.5in', background: '#fff' } },
+      createElement('div', { style: { width: '8.5in', background: 'var(--color-nordic-text)' } },
         createElement(template.component, { data, schema: template.schema })
       )
     )
@@ -50,14 +50,14 @@ export async function exportPDF(
     scale: 2,           // Retina
     useCORS: true,
     allowTaint: true,
-    backgroundColor: '#ffffff',
+    backgroundColor: 'var(--color-nordic-text)',
     logging: false,
     onclone: (clonedDoc) => {
       // Ensure glassmorphism doesn't leak into capture
       const glassElements = clonedDoc.querySelectorAll('.living-glass-surface');
       glassElements.forEach(el => {
         (el as HTMLElement).style.backdropFilter = 'none';
-        (el as HTMLElement).style.background = '#ffffff';
+        (el as HTMLElement).style.background = 'var(--color-nordic-text)';
       });
     }
   });

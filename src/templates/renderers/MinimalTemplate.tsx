@@ -15,8 +15,8 @@ export function MinimalTemplate({ data, schema, preview }: MinimalTemplateProps)
       className="template-minimal"
       style={{ 
         fontFamily: typography.bodyFont || 'serif',
-        color: '#1a1a1a',
-        background: '#ffffff',
+        color: 'var(--color-nordic-surface)',
+        background: 'var(--color-nordic-text)',
         padding: '48px',
         maxWidth: '8.5in',
         margin: '0 auto',
@@ -31,7 +31,7 @@ export function MinimalTemplate({ data, schema, preview }: MinimalTemplateProps)
       <header style={{ 
         textAlign: 'center', 
         marginBottom: '32px',
-        borderBottom: '1px solid #e5e5e5',
+        borderBottom: '1px solid var(--color-nordic-border)',
         paddingBottom: '24px',
       }}>
         <h1 style={{ 
@@ -40,20 +40,20 @@ export function MinimalTemplate({ data, schema, preview }: MinimalTemplateProps)
           fontWeight: 700,
           marginBottom: '8px',
           letterSpacing: '-0.02em',
-          color: '#000',
+          color: 'var(--color-nordic-bg)',
         }}>
           {data.identity?.name || 'Your Name'}
         </h1>
         <p style={{ 
           fontSize: '16px', 
-          color: '#666',
+          color: 'var(--color-nordic-text-secondary)',
           marginBottom: '12px',
         }}>
           {data.identity?.title || 'Professional Title'}
         </p>
         <div style={{ 
           fontSize: '13px', 
-          color: '#888',
+          color: 'var(--color-nordic-text-secondary)',
           display: 'flex',
           justifyContent: 'center',
           gap: '16px',
@@ -97,9 +97,9 @@ function MinimalSection({ section, config, typography }: {
         fontWeight: 600,
         textTransform: 'uppercase',
         letterSpacing: '0.08em',
-        color: '#000',
+        color: 'var(--color-nordic-bg)',
         marginBottom: '16px',
-        borderBottom: '2px solid #000',
+        borderBottom: '2px solid var(--color-nordic-bg)',
         paddingBottom: '4px',
       }}>
         {config.label}
@@ -109,14 +109,14 @@ function MinimalSection({ section, config, typography }: {
         <div key={i} style={{ marginBottom: '16px' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px' }}>
             <h3 style={{ fontWeight: 600, fontSize: '15px' }}>{entry.title}</h3>
-            <span style={{ fontSize: '13px', color: '#666' }}>{entry.dateRange}</span>
+            <span style={{ fontSize: '13px', color: 'var(--color-nordic-text-secondary)' }}>{entry.dateRange}</span>
           </div>
           {entry.subtitle && (
-            <div style={{ fontSize: '14px', fontStyle: 'italic', color: '#444', marginBottom: '4px' }}>
+            <div style={{ fontSize: '14px', fontStyle: 'italic', color: 'var(--color-nordic-text-tertiary)', marginBottom: '4px' }}>
               {entry.subtitle}
             </div>
           )}
-          <p style={{ fontSize: '14px', color: '#555', lineHeight: 1.6 }}>{entry.description}</p>
+          <p style={{ fontSize: '14px', color: 'var(--color-nordic-text-tertiary)', lineHeight: 1.6 }}>{entry.description}</p>
         </div>
       ))}
     </section>

@@ -22,7 +22,7 @@ export async function exportResumeToPDF(
     scale, // Explicitly set, don't rely on default
     useCORS: true,
     logging: false,
-    backgroundColor: "#ffffff", // Force white background for print
+    backgroundColor: "var(--color-nordic-text)", // Force white background for print
     // width and height can be explicitly set if needed:
     // width: options.width || element.offsetWidth,
     // height: options.height || element.offsetHeight,

@@ -4,13 +4,13 @@ import type { MinimalTemplateProps } from './MinimalTemplate';
 
 export function CreativeTemplate({ data, schema, preview }: MinimalTemplateProps) {
   const { typography } = schema;
-  const accentColor = typography.accentColor || '#3b82f6';
+  const accentColor = typography.accentColor || 'var(--color-nordic-accent)';
   
   return (
     <div style={{
       fontFamily: typography.bodyFont || 'sans-serif',
-      color: '#1a1a1a',
-      background: '#ffffff',
+      color: 'var(--color-nordic-surface)',
+      background: 'var(--color-nordic-text)',
       padding: '0',
       maxWidth: '8.5in',
       margin: '0 auto',
@@ -39,8 +39,8 @@ export function CreativeTemplate({ data, schema, preview }: MinimalTemplateProps
       
       {/* Bold header with accent bar */}
       <header style={{
-        background: '#0f172a',
-        color: '#fff',
+        background: 'var(--color-nordic-surface-hover)',
+        color: 'var(--color-nordic-text)',
         padding: '64px 48px',
         marginBottom: '48px',
         position: 'relative',
@@ -128,25 +128,25 @@ function CreativeSection({ section, config, typography, accentColor }: {
             <h3 style={{ 
               fontWeight: 700, 
               fontSize: '18px', 
-              color: '#0f172a',
+              color: 'var(--color-nordic-surface-hover)',
               marginBottom: '4px'
             }}>
               {entry.title}
             </h3>
             <div style={{ display: 'flex', gap: '12px', alignItems: 'center', marginBottom: '12px' }}>
               {entry.subtitle && (
-                <span style={{ fontSize: '15px', color: '#334155', fontWeight: 500 }}>
+                <span style={{ fontSize: '15px', color: 'var(--color-nordic-text-tertiary)', fontWeight: 500 }}>
                   {entry.subtitle}
                 </span>
               )}
               {entry.subtitle && entry.dateRange && (
-                <span style={{ color: '#cbd5e1' }}>|</span>
+                <span style={{ color: 'var(--color-nordic-text-secondary)' }}>|</span>
               )}
-              <span style={{ fontSize: '14px', color: '#64748b', fontWeight: 600 }}>
+              <span style={{ fontSize: '14px', color: 'var(--color-nordic-text-secondary)', fontWeight: 600 }}>
                 {entry.dateRange}
               </span>
             </div>
-            <p style={{ fontSize: '15px', color: '#475569', lineHeight: 1.7 }}>{entry.description}</p>
+            <p style={{ fontSize: '15px', color: 'var(--color-nordic-text-tertiary)', lineHeight: 1.7 }}>{entry.description}</p>
           </div>
         ))}
       </div>

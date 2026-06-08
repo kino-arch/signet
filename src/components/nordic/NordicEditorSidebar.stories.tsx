@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from "@storybook/react"
+import type { Meta, StoryObj } from "@storybook/react-vite"
 import { NordicEditorSidebar } from "./NordicEditorSidebar"
 import { BrowserRouter } from "react-router-dom"
 

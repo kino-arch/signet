@@ -32,11 +32,11 @@ export interface KanbanColumn {
 }
 
 export const KANBAN_COLUMNS: KanbanColumn[] = [
-  { id: "lead", label: "Leads", accent: "#52525B" },          // nordic-text-tertiary
-  { id: "applied", label: "Applied", accent: "#3B82F6" },      // nordic-accent
-  { id: "interviewing", label: "Interviewing", accent: "#60A5FA" }, // lighter blue
-  { id: "offer", label: "Offer", accent: "#22C55E" },           // nordic-success
-  { id: "rejected", label: "Rejected", accent: "#EF4444" },     // nordic-error
+  { id: "lead", label: "Leads", accent: "var(--color-nordic-text-tertiary)" },          // nordic-text-tertiary
+  { id: "applied", label: "Applied", accent: "var(--color-nordic-accent)" },      // nordic-accent
+  { id: "interviewing", label: "Interviewing", accent: "var(--color-nordic-accent-hover)" }, // lighter blue
+  { id: "offer", label: "Offer", accent: "var(--color-nordic-success)" },           // nordic-success
+  { id: "rejected", label: "Rejected", accent: "var(--color-nordic-error)" },     // nordic-error
 ]
 
 interface TargetMatrixState {

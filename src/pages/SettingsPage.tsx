@@ -13,6 +13,7 @@ import {
   Loader2,
 } from "lucide-react"
 import { logger } from "@/lib/logger"
+import { trpc } from "@/providers/trpc"
 
 interface SettingsSection {
   id: string
@@ -38,6 +39,16 @@ export function SettingsPage() {
   const [isChangingPassword, setIsChangingPassword] = useState(false)
   const [isDeletingAccount, setIsDeletingAccount] = useState(false)
   const [deleteConfirm, setDeleteConfirm] = useState("")
+
+  const { mutate: createPortalSession, isPending: isCreatingSession } = trpc.billing.createPortalSession.useMutation({
+    onSuccess: (data) => {
+      window.location.href = data.url
+    },
+    onError: (error) => {
+      logger.error("Failed to redirect to billing portal", error)
+      toast.error("Failed to open billing portal")
+    },
+  })
 
   const handleSaveProfile = async () => {
     if (!displayName.trim()) return
@@ -426,9 +437,14 @@ export function SettingsPage() {
                     <button
                       id="settings-buy-credits"
                       className="nordic-btn-primary"
-                      onClick={() => toast.info("Billing portal coming soon.")}
+                      onClick={() => createPortalSession()}
+                      disabled={isCreatingSession}
                     >
-                      <CreditCard className="h-4 w-4" />
+                      {isCreatingSession ? (
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                      ) : (
+                        <CreditCard className="h-4 w-4" />
+                      )}
                       Manage Billing
                     </button>
                   </div>

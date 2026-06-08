@@ -31,7 +31,7 @@ export function AnalyticsPage() {
 
   useEffect(() => {
     if (serverApps) {
-      setApplications(serverApps as any[])
+      setApplications(serverApps as Parameters<typeof setApplications>[0])
     }
   }, [serverApps, setApplications])
 
@@ -43,10 +43,10 @@ export function AnalyticsPage() {
   }
 
   const funnel = [
-    { stage: "Leads", count: counts.lead, color: "#3B82F6" },
-    { stage: "Applied", count: counts.applied, color: "#2563EB" },
-    { stage: "Interview", count: counts.interviewing, color: "#60A5FA" },
-    { stage: "Offer", count: counts.offer, color: "#93C5FD" },
+    { stage: "Leads", count: counts.lead, color: "var(--color-nordic-accent)" },
+    { stage: "Applied", count: counts.applied, color: "var(--color-nordic-accent-hover)" },
+    { stage: "Interview", count: counts.interviewing, color: "var(--color-nordic-accent-hover)" },
+    { stage: "Offer", count: counts.offer, color: "var(--color-nordic-accent-soft)" },
   ]
 
   const totalActive = counts.applied + counts.interviewing + counts.offer
@@ -100,24 +100,24 @@ export function AnalyticsPage() {
               <AreaChart data={atsTrend}>
                 <defs>
                   <linearGradient id="colorScore" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#2563EB" stopOpacity={0.1} />
-                    <stop offset="95%" stopColor="#2563EB" stopOpacity={0} />
+                    <stop offset="5%" stopColor="var(--color-nordic-accent-hover)" stopOpacity={0.1} />
+                    <stop offset="95%" stopColor="var(--color-nordic-accent-hover)" stopOpacity={0} />
                   </linearGradient>
                 </defs>
                 <CartesianGrid
                   strokeDasharray="3 3"
-                  stroke="#E4E4E7"
+                  stroke="var(--color-nordic-border)"
                   vertical={false}
                 />
                 <XAxis
                   dataKey="day"
-                  stroke="#A1A1AA"
+                  stroke="var(--color-nordic-text-secondary)"
                   fontSize={12}
                   tickLine={false}
                   axisLine={false}
                 />
                 <YAxis
-                  stroke="#A1A1AA"
+                  stroke="var(--color-nordic-text-secondary)"
                   fontSize={12}
                   tickLine={false}
                   axisLine={false}
@@ -125,8 +125,8 @@ export function AnalyticsPage() {
                 />
                 <Tooltip
                   contentStyle={{
-                    backgroundColor: "#FFFFFF",
-                    border: "1px solid #E4E4E7",
+                    backgroundColor: "var(--color-nordic-text)",
+                    border: "1px solid var(--color-nordic-border)",
                     borderRadius: "8px",
                     boxShadow: "0 4px 6px -1px rgb(0 0 0 / 0.06)",
                   }}
@@ -134,7 +134,7 @@ export function AnalyticsPage() {
                 <Area
                   type="monotone"
                   dataKey="score"
-                  stroke="#2563EB"
+                  stroke="var(--color-nordic-accent-hover)"
                   fill="url(#colorScore)"
                   strokeWidth={2}
                 />
@@ -155,12 +155,12 @@ export function AnalyticsPage() {
               <BarChart data={funnel} layout="vertical">
                 <CartesianGrid
                   strokeDasharray="3 3"
-                  stroke="#E4E4E7"
+                  stroke="var(--color-nordic-border)"
                   horizontal={false}
                 />
                 <XAxis
                   type="number"
-                  stroke="#A1A1AA"
+                  stroke="var(--color-nordic-text-secondary)"
                   fontSize={12}
                   tickLine={false}
                   axisLine={false}
@@ -168,17 +168,17 @@ export function AnalyticsPage() {
                 <YAxis
                   dataKey="stage"
                   type="category"
-                  stroke="#52525B"
+                  stroke="var(--color-nordic-text-tertiary)"
                   fontSize={12}
                   tickLine={false}
                   axisLine={false}
                   width={80}
                 />
                 <Tooltip
-                  cursor={{ fill: "#F4F4F5" }}
+                  cursor={{ fill: "var(--color-nordic-border-subtle)" }}
                   contentStyle={{
-                    backgroundColor: "#FFFFFF",
-                    border: "1px solid #E4E4E7",
+                    backgroundColor: "var(--color-nordic-text)",
+                    border: "1px solid var(--color-nordic-border)",
                     borderRadius: "8px",
                   }}
                 />

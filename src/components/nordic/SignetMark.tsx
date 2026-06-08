@@ -17,9 +17,9 @@ export function SignetMark({ className, size = 32 }: SignetMarkProps) {
     >
       <defs>
         <linearGradient id="signetGlow" x1="0" y1="0" x2="32" y2="32" gradientUnits="userSpaceOnUse">
-          <stop stopColor="#60A5FA" />
-          <stop offset="0.5" stopColor="#3B82F6" />
-          <stop offset="1" stopColor="#818CF8" />
+          <stop stopColor="var(--color-nordic-accent-hover)" />
+          <stop offset="0.5" stopColor="var(--color-nordic-accent)" />
+          <stop offset="1" stopColor="var(--color-nordic-accent-hover)" />
         </linearGradient>
       </defs>
       
@@ -41,7 +41,7 @@ export function SignetMark({ className, size = 32 }: SignetMarkProps) {
         d="M16 8L18 14L24 16L18 18L16 24L14 18L8 16L14 14Z"
         fill="url(#signetGlow)"
       />
-      <circle cx="16" cy="16" r="2" fill="#FFFFFF" />
+      <circle cx="16" cy="16" r="2" fill="var(--color-nordic-text)" />
     </svg>
   );
 }

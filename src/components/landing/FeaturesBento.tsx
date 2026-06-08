@@ -130,9 +130,9 @@ export function FeaturesBento() {
             <div className="relative h-full min-h-[440px] w-full overflow-hidden rounded-none border border-nordic-border bg-nordic-surface shadow-nordic-lg">
               {/* Window chrome bar */}
               <div className="flex items-center gap-2 border-b border-nordic-border bg-nordic-surface-hover px-5 py-3">
-                <div className="h-2.5 w-2.5 rounded-none bg-[#FF5F57]" aria-hidden="true" />
-                <div className="h-2.5 w-2.5 rounded-none bg-[#FEBC2E]" aria-hidden="true" />
-                <div className="h-2.5 w-2.5 rounded-none bg-[#28C840]" aria-hidden="true" />
+                <div className="h-2.5 w-2.5 rounded-none bg-[var(--color-nordic-error)]" aria-hidden="true" />
+                <div className="h-2.5 w-2.5 rounded-none bg-[var(--color-nordic-warning)]" aria-hidden="true" />
+                <div className="h-2.5 w-2.5 rounded-none bg-[var(--color-nordic-success)]" aria-hidden="true" />
                 <span className="ml-3 text-xs font-mono text-nordic-text-tertiary">
                   {features.find((f) => f.id === activeFeature)?.title}
                 </span>

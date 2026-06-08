@@ -14,7 +14,7 @@ type HoleBackgroundProps = React.ComponentProps<"div"> & {
 }
 
 function HoleBackground({
-  strokeColor = "#737373",
+  strokeColor = "var(--color-nordic-text-tertiary)",
   numberOfLines = 50,
   numberOfDiscs = 50,
   particleRGBColor = [255, 255, 255],

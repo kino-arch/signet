@@ -1,3 +1,4 @@
+// @origin signet-native
 import { SignetSection } from '@/components/layout/SignetSection';
 import { SignetWell } from '@/components/layout/SignetWell';
 import { SignetCard } from '@/components/primitives/SignetCard';

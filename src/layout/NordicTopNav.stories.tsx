@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from "@storybook/react"
+import type { Meta, StoryObj } from "@storybook/react-vite"
 import { NordicTopNav } from "./NordicTopNav"
 import { BrowserRouter } from "react-router-dom"
 

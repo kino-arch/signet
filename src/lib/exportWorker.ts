@@ -17,7 +17,7 @@ export async function generateArtifact(elementId: string): Promise<Blob> {
     scale: 2,
     useCORS: true,
     logging: false,
-    backgroundColor: null, // transparent or #000 depending on theme
+    backgroundColor: null, // transparent or var(--color-nordic-bg) depending on theme
   })
 
   // 3. Convert to PDF

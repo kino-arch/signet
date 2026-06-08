@@ -15,7 +15,7 @@ export function ApplicationsPage() {
 
   useEffect(() => {
     if (serverApps) {
-      setApplications(serverApps as any[])
+      setApplications(serverApps as Parameters<typeof setApplications>[0])
     }
   }, [serverApps, setApplications])
 

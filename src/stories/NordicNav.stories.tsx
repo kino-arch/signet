@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/react-vite";
 import { NordicNav } from "../layout/NordicNav";
 
 const meta: Meta<typeof NordicNav> = {

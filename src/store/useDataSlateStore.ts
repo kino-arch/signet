@@ -176,6 +176,7 @@ export const useDataSlateStore = create<DataSlateStore>((set, get) => {
   let syncPaused = false;
   // Track which sections have pending debounced writes
   let globalDebounceTimer: ReturnType<typeof setTimeout> | null = null;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const scheduleSync = (_source?: string) => {
     if (syncPaused) return;
     set({ syncState: "SYNCING...", hasPendingMutations: true });

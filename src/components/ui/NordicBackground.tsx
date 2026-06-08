@@ -20,7 +20,7 @@ export function NordicBackground() {
         aria-hidden="true"
         className="pointer-events-none absolute -top-40 left-1/2 z-0 h-[600px] w-[900px] -translate-x-1/2 rounded-full opacity-20"
         style={{
-          background: "radial-gradient(ellipse, #3B82F6 0%, transparent 65%)",
+          background: "radial-gradient(ellipse, var(--color-nordic-accent) 0%, transparent 65%)",
           filter: "blur(40px)",
         }}
       />

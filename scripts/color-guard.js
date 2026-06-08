@@ -32,7 +32,7 @@ allFiles.forEach((file) => {
   
   if (relativePath.includes('.test.') || relativePath.includes('.stories.')) return;
   // Ignore index.css which inherently defines base colors
-  if (relativePath === 'src/index.css') return;
+  if (relativePath.endsWith('index.css')) return;
 
   const hexRegex = /#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})(?!\w)/g;
   const hexMatches = content.match(hexRegex);

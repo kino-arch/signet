@@ -34,7 +34,6 @@ export function LoginForm({
 
   useEffect(() => {
     clearError()
-    setValidationError("")
   }, [mode, clearError])
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -67,6 +66,8 @@ export function LoginForm({
     setPassword("")
     setFirstName("")
     setLastName("")
+    clearError()
+    setValidationError("")
   }
 
   const containerVariants: Variants = {

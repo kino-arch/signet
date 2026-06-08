@@ -47,11 +47,11 @@ export function tokenizeColor(hex: string): string {
   
   // Exact matches for known defaults
   const exactMap: Record<string, string> = {
-    '#0a0e27': 'var(--app-bg)',           // Navy 900
-    '#00d9ff': 'var(--theme-primary)',    // Cyan 500
-    '#f59e0b': 'var(--theme-secondary)',  // Amber 500
-    '#000000': 'var(--app-bg)',
-    '#ffffff': 'var(--app-fg)',
+    'var(--color-nordic-bg)': 'var(--app-bg)',           // Navy 900
+    'var(--color-nordic-accent)': 'var(--theme-primary)',    // Cyan 500
+    'var(--color-nordic-warning)': 'var(--theme-secondary)',  // Amber 500
+    'var(--color-nordic-bg)': 'var(--app-bg)',
+    'var(--color-nordic-text)': 'var(--app-fg)',
   };
   
   if (exactMap[normalized]) return exactMap[normalized];

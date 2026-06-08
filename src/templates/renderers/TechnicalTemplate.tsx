@@ -8,8 +8,8 @@ export function TechnicalTemplate({ data, schema, preview }: MinimalTemplateProp
   return (
     <div style={{
       fontFamily: typography.bodyFont || 'sans-serif',
-      color: '#1a1a1a',
-      background: '#fafafa',
+      color: 'var(--color-nordic-surface)',
+      background: 'var(--color-nordic-text)',
       padding: '40px',
       maxWidth: '8.5in',
       margin: '0 auto',
@@ -45,12 +45,12 @@ export function TechnicalTemplate({ data, schema, preview }: MinimalTemplateProp
             fontFamily: typography.headingFont || 'sans-serif',
             fontSize: '28px',
             fontWeight: 700,
-            color: '#0f172a',
+            color: 'var(--color-nordic-surface-hover)',
             marginBottom: '4px',
           }}>
             {data.identity?.name || 'Your Name'}
           </h1>
-          <p style={{ fontSize: '15px', color: '#475569' }}>{data.identity?.title || 'Professional Title'}</p>
+          <p style={{ fontSize: '15px', color: 'var(--color-nordic-text-tertiary)' }}>{data.identity?.title || 'Professional Title'}</p>
         </header>
         
         {/* Experience, Projects, etc. */}
@@ -64,8 +64,8 @@ export function TechnicalTemplate({ data, schema, preview }: MinimalTemplateProp
       </div>
       
       {/* Sidebar column */}
-      <div style={{ borderLeft: '1px solid #e2e8f0', paddingLeft: '24px', zIndex: 1 }}>
-        <div style={{ marginBottom: '24px', fontSize: '13px', color: '#475569' }}>
+      <div style={{ borderLeft: '1px solid var(--color-nordic-border)', paddingLeft: '24px', zIndex: 1 }}>
+        <div style={{ marginBottom: '24px', fontSize: '13px', color: 'var(--color-nordic-text-tertiary)' }}>
           {data.identity?.email && <div style={{ marginBottom: '8px' }}>{data.identity.email}</div>}
           {data.identity?.phone && <div style={{ marginBottom: '8px' }}>{data.identity.phone}</div>}
           {data.identity?.location && <div style={{ marginBottom: '8px' }}>{data.identity.location}</div>}
@@ -95,10 +95,10 @@ function TechnicalMainSection({ section, config, typography }: {
         fontFamily: typography.headingFont || 'sans-serif',
         fontSize: '16px',
         fontWeight: 700,
-        color: '#0f172a',
+        color: 'var(--color-nordic-surface-hover)',
         marginBottom: '16px',
         paddingBottom: '8px',
-        borderBottom: '1px solid #cbd5e1',
+        borderBottom: '1px solid var(--color-nordic-text-secondary)',
       }}>
         {config.label}
       </h2>
@@ -106,15 +106,15 @@ function TechnicalMainSection({ section, config, typography }: {
       {section.entries?.map((entry, i) => (
         <div key={i} style={{ marginBottom: '20px' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px', alignItems: 'baseline' }}>
-            <h3 style={{ fontWeight: 600, fontSize: '15px', color: '#1e293b' }}>{entry.title}</h3>
-            <span style={{ fontSize: '13px', color: '#64748b', fontWeight: 500 }}>{entry.dateRange}</span>
+            <h3 style={{ fontWeight: 600, fontSize: '15px', color: 'var(--color-nordic-surface-hover)' }}>{entry.title}</h3>
+            <span style={{ fontSize: '13px', color: 'var(--color-nordic-text-secondary)', fontWeight: 500 }}>{entry.dateRange}</span>
           </div>
           {entry.subtitle && (
-            <div style={{ fontSize: '14px', color: '#334155', fontWeight: 500, marginBottom: '8px' }}>
+            <div style={{ fontSize: '14px', color: 'var(--color-nordic-text-tertiary)', fontWeight: 500, marginBottom: '8px' }}>
               {entry.subtitle}
             </div>
           )}
-          <p style={{ fontSize: '14px', color: '#475569', lineHeight: 1.6 }}>{entry.description}</p>
+          <p style={{ fontSize: '14px', color: 'var(--color-nordic-text-tertiary)', lineHeight: 1.6 }}>{entry.description}</p>
         </div>
       ))}
     </section>
@@ -132,7 +132,7 @@ function TechnicalSidebarSection({ section, config, typography }: {
         fontFamily: typography.headingFont || 'sans-serif',
         fontSize: '14px',
         fontWeight: 700,
-        color: '#0f172a',
+        color: 'var(--color-nordic-surface-hover)',
         marginBottom: '12px',
         textTransform: 'uppercase',
         letterSpacing: '0.05em'
@@ -143,9 +143,9 @@ function TechnicalSidebarSection({ section, config, typography }: {
       <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
         {section.entries?.map((entry, i) => (
           <div key={i}>
-            <h3 style={{ fontWeight: 600, fontSize: '13px', color: '#1e293b', marginBottom: '2px' }}>{entry.title}</h3>
+            <h3 style={{ fontWeight: 600, fontSize: '13px', color: 'var(--color-nordic-surface-hover)', marginBottom: '2px' }}>{entry.title}</h3>
             {entry.subtitle && (
-              <div style={{ fontSize: '12px', color: '#64748b', marginBottom: '4px' }}>
+              <div style={{ fontSize: '12px', color: 'var(--color-nordic-text-secondary)', marginBottom: '4px' }}>
                 {entry.subtitle}
               </div>
             )}
@@ -155,8 +155,8 @@ function TechnicalSidebarSection({ section, config, typography }: {
                   <span key={j} style={{ 
                     fontSize: '11px', 
                     padding: '2px 6px', 
-                    background: '#e2e8f0', 
-                    color: '#334155',
+                    background: 'var(--color-nordic-border)', 
+                    color: 'var(--color-nordic-text-tertiary)',
                     borderRadius: '4px'
                   }}>
                     {kw}
@@ -165,7 +165,7 @@ function TechnicalSidebarSection({ section, config, typography }: {
               </div>
             )}
             {entry.description && !entry.keywords && (
-              <p style={{ fontSize: '12px', color: '#475569', lineHeight: 1.5 }}>{entry.description}</p>
+              <p style={{ fontSize: '12px', color: 'var(--color-nordic-text-tertiary)', lineHeight: 1.5 }}>{entry.description}</p>
             )}
           </div>
         ))}

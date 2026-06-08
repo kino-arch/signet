@@ -1,16 +1,79 @@
 {
-  "timestamp": "2026-06-06T00:23:45.374Z",
+  "timestamp": "2026-06-08T03:44:30.662Z",
   "layers": {
     "full": {
-      "totalFiles": 234,
+      "totalFiles": 236,
       "violations": {
-        "spatial": 132,
-        "color": 12,
-        "typography": 5
+        "spatial": 128,
+        "color": 87,
+        "typography": 3
       },
       "topViolators": [
         {
-          "file": "src/components/shine-border.tsx",
+          "file": "src/pages/AnalyticsPage.tsx",
+          "violations": 18,
+          "details": {
+            "spatial": 0,
+            "color": 18,
+            "typography": 0
+          }
+        },
+        {
+          "file": "src/templates/renderers/TechnicalTemplate.tsx",
+          "violations": 18,
+          "details": {
+            "spatial": 0,
+            "color": 18,
+            "typography": 0
+          }
+        },
+        {
+          "file": "src/templates/renderers/MinimalTemplate.tsx",
+          "violations": 11,
+          "details": {
+            "spatial": 0,
+            "color": 11,
+            "typography": 0
+          }
+        },
+        {
+          "file": "src/components/templates/TemplateContext.tsx",
+          "violations": 10,
+          "details": {
+            "spatial": 0,
+            "color": 10,
+            "typography": 0
+          }
+        },
+        {
+          "file": "src/templates/renderers/CreativeTemplate.tsx",
+          "violations": 10,
+          "details": {
+            "spatial": 0,
+            "color": 10,
+            "typography": 0
+          }
+        },
+        {
+          "file": "src/components/landing/FeaturesBento.tsx",
+          "violations": 4,
+          "details": {
+            "spatial": 1,
+            "color": 3,
+            "typography": 0
+          }
+        },
+        {
+          "file": "src/components/nordic/NordicHero.tsx",
+          "violations": 4,
+          "details": {
+            "spatial": 1,
+            "color": 3,
+            "typography": 0
+          }
+        },
+        {
+          "file": "src/components/nordic/SignetMark.tsx",
           "violations": 4,
           "details": {
             "spatial": 0,
@@ -28,90 +91,90 @@
           }
         },
         {
-          "file": "src/app/login/page.tsx",
-          "violations": 2,
+          "file": "src/components/landing/SignetShowcase.tsx",
+          "violations": 3,
           "details": {
             "spatial": 1,
-            "color": 0,
-            "typography": 1
-          }
-        },
-        {
-          "file": "src/components/auth-divider.tsx",
-          "violations": 2,
-          "details": {
-            "spatial": 2,
-            "color": 0,
-            "typography": 0
-          }
-        },
-        {
-          "file": "src/components/chart-area-interactive.tsx",
-          "violations": 2,
-          "details": {
-            "spatial": 2,
-            "color": 0,
-            "typography": 0
-          }
-        },
-        {
-          "file": "src/components/counter-number.tsx",
-          "violations": 2,
-          "details": {
-            "spatial": 0,
             "color": 2,
-            "typography": 0
-          }
-        },
-        {
-          "file": "src/components/editor/ImpactScorePanel.tsx",
-          "violations": 2,
-          "details": {
-            "spatial": 2,
-            "color": 0,
-            "typography": 0
-          }
-        },
-        {
-          "file": "src/components/editor/MissionHistoryArray.tsx",
-          "violations": 2,
-          "details": {
-            "spatial": 2,
-            "color": 0,
-            "typography": 0
-          }
-        },
-        {
-          "file": "src/components/editor/PremiumRichTextEditor.tsx",
-          "violations": 2,
-          "details": {
-            "spatial": 2,
-            "color": 0,
-            "typography": 0
-          }
-        },
-        {
-          "file": "src/components/editor/primitives/DataStreamInput.tsx",
-          "violations": 2,
-          "details": {
-            "spatial": 2,
-            "color": 0,
             "typography": 0
           }
         }
       ],
-      "complianceScore": 36.07
+      "complianceScore": 33.14
     },
     "production": {
-      "totalFiles": 223,
+      "totalFiles": 225,
       "violations": {
-        "spatial": 126,
-        "color": 10,
-        "typography": 5
+        "spatial": 122,
+        "color": 85,
+        "typography": 3
       },
       "topViolators": [
         {
-          "file": "src/components/shine-border.tsx",
+          "file": "src/pages/AnalyticsPage.tsx",
+          "violations": 18,
+          "details": {
+            "spatial": 0,
+            "color": 18,
+            "typography": 0
+          }
+        },
+        {
+          "file": "src/templates/renderers/TechnicalTemplate.tsx",
+          "violations": 18,
+          "details": {
+            "spatial": 0,
+            "color": 18,
+            "typography": 0
+          }
+        },
+        {
+          "file": "src/templates/renderers/MinimalTemplate.tsx",
+          "violations": 11,
+          "details": {
+            "spatial": 0,
+            "color": 11,
+            "typography": 0
+          }
+        },
+        {
+          "file": "src/components/templates/TemplateContext.tsx",
+          "violations": 10,
+          "details": {
+            "spatial": 0,
+            "color": 10,
+            "typography": 0
+          }
+        },
+        {
+          "file": "src/templates/renderers/CreativeTemplate.tsx",
+          "violations": 10,
+          "details": {
+            "spatial": 0,
+            "color": 10,
+            "typography": 0
+          }
+        },
+        {
+          "file": "src/components/landing/FeaturesBento.tsx",
+          "violations": 4,
+          "details": {
+            "spatial": 1,
+            "color": 3,
+            "typography": 0
+          }
+        },
+        {
+          "file": "src/components/nordic/NordicHero.tsx",
+          "violations": 4,
+          "details": {
+            "spatial": 1,
+            "color": 3,
+            "typography": 0
+          }
+        },
+        {
+          "file": "src/components/nordic/SignetMark.tsx",
           "violations": 4,
           "details": {
             "spatial": 0,
@@ -129,99 +192,36 @@
           }
         },
         {
-          "file": "src/app/login/page.tsx",
-          "violations": 2,
+          "file": "src/components/landing/SignetShowcase.tsx",
+          "violations": 3,
           "details": {
             "spatial": 1,
-            "color": 0,
-            "typography": 1
-          }
-        },
-        {
-          "file": "src/components/auth-divider.tsx",
-          "violations": 2,
-          "details": {
-            "spatial": 2,
-            "color": 0,
-            "typography": 0
-          }
-        },
-        {
-          "file": "src/components/chart-area-interactive.tsx",
-          "violations": 2,
-          "details": {
-            "spatial": 2,
-            "color": 0,
-            "typography": 0
-          }
-        },
-        {
-          "file": "src/components/counter-number.tsx",
-          "violations": 2,
-          "details": {
-            "spatial": 0,
             "color": 2,
-            "typography": 0
-          }
-        },
-        {
-          "file": "src/components/editor/ImpactScorePanel.tsx",
-          "violations": 2,
-          "details": {
-            "spatial": 2,
-            "color": 0,
-            "typography": 0
-          }
-        },
-        {
-          "file": "src/components/editor/MissionHistoryArray.tsx",
-          "violations": 2,
-          "details": {
-            "spatial": 2,
-            "color": 0,
-            "typography": 0
-          }
-        },
-        {
-          "file": "src/components/editor/PremiumRichTextEditor.tsx",
-          "violations": 2,
-          "details": {
-            "spatial": 2,
-            "color": 0,
-            "typography": 0
-          }
-        },
-        {
-          "file": "src/components/editor/primitives/DataStreamInput.tsx",
-          "violations": 2,
-          "details": {
-            "spatial": 2,
-            "color": 0,
             "typography": 0
           }
         }
       ],
-      "complianceScore": 36.99
+      "complianceScore": 33.96
     },
     "critical": {
-      "totalFiles": 24,
+      "totalFiles": 16,
       "violations": {
-        "spatial": 15,
-        "color": 0,
-        "typography": 2
+        "spatial": 11,
+        "color": 18,
+        "typography": 0
       },
       "topViolators": [
         {
-          "file": "src/pages/OnboardingPage.tsx",
-          "violations": 2,
+          "file": "src/pages/AnalyticsPage.tsx",
+          "violations": 18,
           "details": {
-            "spatial": 1,
-            "color": 0,
-            "typography": 1
+            "spatial": 0,
+            "color": 18,
+            "typography": 0
           }
         },
         {
-          "file": "src/pages/SlatesPage.tsx",
+          "file": "src/components/dashboard/stats-card.tsx",
           "violations": 2,
           "details": {
             "spatial": 2,
@@ -239,52 +239,7 @@
           }
         },
         {
-          "file": "src/components/dashboard/GhostStar.tsx",
-          "violations": 1,
-          "details": {
-            "spatial": 1,
-            "color": 0,
-            "typography": 0
-          }
-        },
-        {
-          "file": "src/components/dashboard/ResumeConstellation.tsx",
-          "violations": 1,
-          "details": {
-            "spatial": 1,
-            "color": 0,
-            "typography": 0
-          }
-        },
-        {
           "file": "src/components/dashboard/ViewModeToggle.tsx",
-          "violations": 1,
-          "details": {
-            "spatial": 1,
-            "color": 0,
-            "typography": 0
-          }
-        },
-        {
-          "file": "src/components/sections/pricing/pricing-03.tsx",
-          "violations": 1,
-          "details": {
-            "spatial": 0,
-            "color": 0,
-            "typography": 1
-          }
-        },
-        {
-          "file": "src/pages/AnalyticsPage.tsx",
-          "violations": 1,
-          "details": {
-            "spatial": 1,
-            "color": 0,
-            "typography": 0
-          }
-        },
-        {
-          "file": "src/pages/ApplicationsPage.tsx",
           "violations": 1,
           "details": {
             "spatial": 1,
@@ -300,9 +255,54 @@
             "color": 0,
             "typography": 0
           }
+        },
+        {
+          "file": "src/pages/ForgotPasswordPage.tsx",
+          "violations": 1,
+          "details": {
+            "spatial": 1,
+            "color": 0,
+            "typography": 0
+          }
+        },
+        {
+          "file": "src/pages/NordicEditorPage.tsx",
+          "violations": 1,
+          "details": {
+            "spatial": 1,
+            "color": 0,
+            "typography": 0
+          }
+        },
+        {
+          "file": "src/pages/OnboardingPage.tsx",
+          "violations": 1,
+          "details": {
+            "spatial": 1,
+            "color": 0,
+            "typography": 0
+          }
+        },
+        {
+          "file": "src/pages/PrivacyPage.tsx",
+          "violations": 1,
+          "details": {
+            "spatial": 1,
+            "color": 0,
+            "typography": 0
+          }
+        },
+        {
+          "file": "src/pages/SettingsPage.tsx",
+          "violations": 1,
+          "details": {
+            "spatial": 1,
+            "color": 0,
+            "typography": 0
+          }
         }
       ],
-      "complianceScore": 91.67
+      "complianceScore": 93.37
     }
   },
   "adaptations": [

@@ -114,7 +114,7 @@ const columns: ColumnDef<DataSlate>[] = [
       let colorClass
       if (score >= 90) colorClass = "text-primary"
       else if (score >= 70) colorClass = "text-green-500"
-      else colorClass = "text-orange-500"
+      else colorClass = "text-nordic-warning"
 
       return <div className={`font-mono font-bold ${colorClass}`}>{score}%</div>
     },

@@ -135,17 +135,17 @@ export const themes: Record<ThemeId, Theme> = {
       },
     },
     landing: {
-      bgStart: "#0a0e27",
-      bgEnd: "#0f172a",
-      glowColor: "#00f0ff",
-      accentColor: "#ffb800",
+      bgStart: "var(--color-nordic-bg)",
+      bgEnd: "var(--color-nordic-surface-hover)",
+      glowColor: "var(--color-nordic-accent)",
+      accentColor: "var(--color-nordic-warning)",
       grainOpacity: 0.04,
     },
     functional: {
-      bgStart: "#0f172a",
-      bgEnd: "#0f172a",
+      bgStart: "var(--color-nordic-surface-hover)",
+      bgEnd: "var(--color-nordic-surface-hover)",
       glowColor: "#00f0ff33", // Reduced glow for dashboard
-      accentColor: "#ffb800",
+      accentColor: "var(--color-nordic-warning)",
       grainOpacity: 0.01,
     },
   },
@@ -212,17 +212,17 @@ export const themes: Record<ThemeId, Theme> = {
       },
     },
     landing: {
-      bgStart: "#1a0b1f",
-      bgEnd: "#2d1b2e",
-      glowColor: "#ff0055", // Solar flare / Urban amber-red equivalent
-      accentColor: "#ffb800",
+      bgStart: "var(--color-nordic-bg)",
+      bgEnd: "var(--color-nordic-surface)",
+      glowColor: "var(--color-nordic-error)", // Solar flare / Urban amber-red equivalent
+      accentColor: "var(--color-nordic-warning)",
       grainOpacity: 0.05,
     },
     functional: {
-      bgStart: "#1a0b1f",
-      bgEnd: "#1a0b1f",
+      bgStart: "var(--color-nordic-bg)",
+      bgEnd: "var(--color-nordic-bg)",
       glowColor: "#ff005533", // Reduced glow
-      accentColor: "#ffb800",
+      accentColor: "var(--color-nordic-warning)",
       grainOpacity: 0.02,
     },
   },

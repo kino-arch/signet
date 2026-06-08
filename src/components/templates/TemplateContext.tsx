@@ -4,18 +4,18 @@ export type TemplateTheme = "light" | "dark"
 
 export const templateTokens = {
   light: {
-    pageBg: "#FFFFFF",
-    textPrimary: "#18181B",
-    textSecondary: "#52525B",
-    accent: "#2563EB",
-    border: "#E4E4E7",
+    pageBg: "var(--color-nordic-text)",
+    textPrimary: "var(--color-nordic-surface)",
+    textSecondary: "var(--color-nordic-text-tertiary)",
+    accent: "var(--color-nordic-accent-hover)",
+    border: "var(--color-nordic-border)",
   },
   dark: {
-    pageBg: "#0F172A",
-    textPrimary: "#F8FAFC",
-    textSecondary: "#94A3B8",
-    accent: "#3B82F6",
-    border: "#1E293B",
+    pageBg: "var(--color-nordic-surface-hover)",
+    textPrimary: "var(--color-nordic-text)",
+    textSecondary: "var(--color-nordic-text-secondary)",
+    accent: "var(--color-nordic-accent)",
+    border: "var(--color-nordic-surface-hover)",
   },
 }
 

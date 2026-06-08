@@ -23,7 +23,7 @@ export function OperativeTemplate({ data }: TemplateProps) {
   const fullName = basics.name.trim()
   
   // Example of using the tokenizer for a user-defined color (defaulting to a dark navy)
-  const accentColor = tokenizeColor('#1a1a2e')
+  const accentColor = tokenizeColor('var(--color-nordic-bg)')
 
   return (
     <SignetWell size="narrow" className="print:max-w-none print:p-0 print:m-0">
