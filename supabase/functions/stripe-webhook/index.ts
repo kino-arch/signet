@@ -1,3 +1,4 @@
+// deno-lint-ignore no-import-prefix no-unversioned-import
 import "jsr:@supabase/functions-js/edge-runtime.d.ts"
 import Stripe from "stripe"
 import { createClient } from "@supabase/supabase-js"
@@ -33,7 +34,7 @@ Deno.serve(async (req: Request) => {
     }
 
     if (event.type === "checkout.session.completed") {
-      const session = event.data.object as any
+      const session = event.data.object as Stripe.Checkout.Session
       const userId = session.metadata?.userId
       const credits = parseInt(session.metadata?.credits || "0", 10)
 
