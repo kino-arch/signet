@@ -1,4 +1,7 @@
-﻿import * as React from "react"
+import * as React from "react"
+import { useNavigate } from "react-router-dom"
+import { supabase } from "@/lib/supabase"
+import { toast } from "sonner"
 import {
   IconChevronLeft,
   IconChevronRight,
@@ -108,7 +111,7 @@ const columns: ColumnDef<DataSlate>[] = [
     header: "ATS Match",
     cell: ({ row }) => {
       const score = row.original.atsScore
-      let colorClass = "text-muted-foreground"
+      let colorClass
       if (score >= 90) colorClass = "text-primary"
       else if (score >= 70) colorClass = "text-green-500"
       else colorClass = "text-orange-500"
@@ -184,8 +187,12 @@ const columns: ColumnDef<DataSlate>[] = [
             >
               Open Editor
             </DropdownMenuItem>
-            <DropdownMenuItem>Clone Slate</DropdownMenuItem>
-            <DropdownMenuItem>Download PDF</DropdownMenuItem>
+            <DropdownMenuItem onClick={() => toast("Cloning slate...")}>
+              Clone Slate
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => toast("Generating PDF...")}>
+              Download PDF
+            </DropdownMenuItem>
             <DropdownMenuSeparator className="bg-primary/20" />
             <DropdownMenuItem
               variant="destructive"
@@ -201,8 +208,6 @@ const columns: ColumnDef<DataSlate>[] = [
   },
 ]
 
-import { useNavigate } from "react-router-dom"
-import { supabase } from "@/lib/supabase"
 
 export function DataTable({
   data,
@@ -283,7 +288,9 @@ export function DataTable({
                         column.toggleVisibility(!!value)
                       }
                     >
-                      {column.id}
+                      {typeof column.columnDef.header === "string"
+                        ? column.columnDef.header
+                        : column.id}
                     </DropdownMenuCheckboxItem>
                   )
                 })}
@@ -302,33 +309,35 @@ export function DataTable({
 
       <div className="overflow-hidden rounded-lg border border-primary/20 bg-card/40 backdrop-blur-sm">
         <Table>
-          <TableHeader className="bg-muted/50">
-            {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow
-                key={headerGroup.id}
-                className="border-primary/20 hover:bg-transparent"
-              >
-                {headerGroup.headers.map((header) => {
-                  return (
-                    <TableHead
-                      key={header.id}
-                      colSpan={header.colSpan}
-                      className="text-muted-foreground"
-                    >
-                      {header.isPlaceholder ? (
-                        <span className="sr-only">Placeholder</span>
-                      ) : (
-                        flexRender(
-                          header.column.columnDef.header,
-                          header.getContext()
-                        )
-                      )}
-                    </TableHead>
-                  )
-                })}
-              </TableRow>
-            ))}
-          </TableHeader>
+          {table.getRowModel().rows?.length > 0 && (
+            <TableHeader className="bg-muted/50">
+              {table.getHeaderGroups().map((headerGroup) => (
+                <TableRow
+                  key={headerGroup.id}
+                  className="border-primary/20 hover:bg-transparent"
+                >
+                  {headerGroup.headers.map((header) => {
+                    return (
+                      <TableHead
+                        key={header.id}
+                        colSpan={header.colSpan}
+                        className="text-muted-foreground"
+                      >
+                        {header.isPlaceholder ? (
+                          <span className="sr-only">Placeholder</span>
+                        ) : (
+                          flexRender(
+                            header.column.columnDef.header,
+                            header.getContext()
+                          )
+                        )}
+                      </TableHead>
+                    )
+                  })}
+                </TableRow>
+              ))}
+            </TableHeader>
+          )}
           <TableBody>
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (

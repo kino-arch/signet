@@ -23,13 +23,15 @@ async function migrate() {
   console.log(`Fetched ${sections.length} legacy sections.`)
 
   // 2. Group by slate_id
-  const grouped = new Map<string, any>()
+  const grouped = new Map<string, Record<string, unknown>>()
   for (const s of sections) {
     if (!grouped.has(s.slate_id)) {
       grouped.set(s.slate_id, {})
     }
     const slateData = grouped.get(s.slate_id)
-    slateData[s.section_type] = s.raw_content
+    if (slateData) {
+      slateData[s.section_type] = s.raw_content
+    }
   }
 
   console.log(`Found ${grouped.size} unique slates to migrate.`)
@@ -71,8 +73,8 @@ async function migrate() {
       if (errPub) throw errPub
 
       console.log(`Migrated slate_id: ${slateId}`)
-    } catch (e: any) {
-      console.error(`Error migrating slate_id ${slateId}:`, e.message)
+    } catch (e: unknown) {
+      console.error(`Error migrating slate_id ${slateId}:`, (e as Error).message)
     }
   }
 

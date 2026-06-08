@@ -1,24 +1,24 @@
 import { z } from "zod"
-import { router, publicProcedure } from "../trpc"
+import { router, protectedProcedure } from "../trpc"
 import { TRPCError } from "@trpc/server"
 import { db } from "../../db"
 import { profiles, userTemplates } from "../../db/schema"
 import { eq, and, sql } from "drizzle-orm"
 
 export const templateRouter = router({
-  unlockAndExport: publicProcedure
+  unlockAndExport: protectedProcedure
     .input(
       z.object({
-        userId: z.string().uuid(),
         templateId: z.string(),
         slateId: z.string().uuid(),
       })
     )
-    .mutation(async ({ input }) => {
+    .mutation(async ({ ctx, input }) => {
+      const userId = ctx.userId
       return await db.transaction(async (tx) => {
         // 1. Lock the user's profile credit row
         const userProfile = await tx.query.profiles.findFirst({
-          where: eq(profiles.id, input.userId),
+          where: eq(profiles.id, userId),
           // row-level lock using raw SQL is possible, or assume it's atomic if we use UPDATE WHERE credits > 0
           // For now we'll do standard findFirst then atomic UPDATE
         })
@@ -33,7 +33,7 @@ export const templateRouter = router({
         // 2. Check if already unlocked (idempotency)
         const existing = await tx.query.userTemplates.findFirst({
           where: and(
-            eq(userTemplates.userId, input.userId),
+            eq(userTemplates.userId, userId),
             eq(userTemplates.templateId, input.templateId)
           ),
         })
@@ -51,7 +51,7 @@ export const templateRouter = router({
         const [updatedProfile] = await tx
           .update(profiles)
           .set({ credits: sql`${profiles.credits} - 1` })
-          .where(and(eq(profiles.id, input.userId), sql`${profiles.credits} > 0`))
+          .where(and(eq(profiles.id, userId), sql`${profiles.credits} > 0`))
           .returning()
 
         if (!updatedProfile) {
@@ -62,7 +62,7 @@ export const templateRouter = router({
         }
 
         await tx.insert(userTemplates).values({
-          userId: input.userId,
+          userId: userId,
           templateId: input.templateId,
         })
 

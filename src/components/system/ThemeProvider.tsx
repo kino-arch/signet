@@ -16,7 +16,6 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
           isFirstRender.current = false
           return
         }
-        // @ts-ignore
         setAnnouncement(`Theme changed to ${themes[state.activeThemeId]?.name || state.activeThemeId}`)
       }
     )
@@ -71,7 +70,7 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
         const theme = window.localStorage.getItem('theme_sync_value')
         const currentThemeId = useThemeStore.getState().activeThemeId
         if (theme && theme !== currentThemeId) {
-          // @ts-ignore
+          // @ts-expect-error - localStorage theme string is untyped
           useThemeStore.getState().setTheme(theme)
         }
       }

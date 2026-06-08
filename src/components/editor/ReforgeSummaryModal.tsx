@@ -7,6 +7,7 @@ import { useForgeStore } from "@/store/useForgeStore"
 import { useDataSlateStore } from "@/store/useDataSlateStore"
 import { LottieAnimation } from "@/components/ui/lottie-animation"
 import cyberSuccessData from "@/assets/animations/cyber_success.json"
+import type { GhostBullet } from "@/lib/ghost-schema"
 import { checkExportStatus } from "@/lib/export-guard"
 import { AutopsyBullet } from "./AutopsyBullet"
 
@@ -147,14 +148,21 @@ export function ReforgeSummaryModal({
           {(() => {
             if (isLoading) return "Connecting to Datacore..."
             if (!proposal) return ""
+            
+            let parsed = null
             try {
-              const parsed = JSON.parse(proposal)
+              parsed = JSON.parse(proposal)
+            } catch {
+              // Not JSON
+            }
+
+            if (parsed) {
               if (parsed.error)
                 return <span className="text-destructive">{parsed.error}</span>
               if (parsed.bullets) {
                 return (
                   <div className="mt-2 space-y-3">
-                    {parsed.bullets.map((b: any, idx: number) => (
+                    {parsed.bullets.map((b: GhostBullet, idx: number) => (
                       <AutopsyBullet
                         key={idx}
                         bullet={b}
@@ -172,10 +180,8 @@ export function ReforgeSummaryModal({
                   </div>
                 )
               }
-              return proposal
-            } catch (e) {
-              return proposal
             }
+            return proposal
           })()}
         </div>
 
@@ -254,10 +260,12 @@ export function ReforgeSummaryModal({
                   const p = JSON.parse(proposal)
                   if (p.bullets) {
                     finalSummary = p.bullets
-                      .map((b: any) => "- " + b.text)
+                      .map((b: GhostBullet) => "- " + b.text)
                       .join("\n  // constellation-override: forge-bot-auto-migration\n")
                   }
-                } catch {}
+                } catch {
+                  // Ignore JSON parse errors and use raw proposal
+                }
                 onAccept(finalSummary)
                 onClose()
               }}

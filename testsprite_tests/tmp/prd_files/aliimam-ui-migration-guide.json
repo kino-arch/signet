@@ -1,0 +1,1408 @@
+{
+  "document_metadata": {
+    "title": "Ali Imam UI - Complete Migration & Implementation Guide",
+    "subtitle": "Vite.js to Ali Imam UI Component System",
+    "registry": "@aliimam",
+    "registry_url": "https://aliimam.in/r/{name}.json",
+    "version": "1.0",
+    "date": "June 2025",
+    "author": "Ali Imam",
+    "author_title": "Design Engineer and Ambassador at 21st.dev",
+    "total_pages": 22
+  },
+  "table_of_contents": [
+    {
+      "section": "1. Executive Summary",
+      "page": 4
+    },
+    {
+      "section": "2. Understanding Ali Imam UI",
+      "page": 4,
+      "subsections": [
+        {
+          "title": "2.1 What is Ali Imam UI",
+          "page": 4
+        },
+        {
+          "title": "2.2 shadcn/ui Architecture",
+          "page": 5
+        },
+        {
+          "title": "2.3 Registry System",
+          "page": 5
+        },
+        {
+          "title": "2.4 MCP Server Integration",
+          "page": 5
+        }
+      ]
+    },
+    {
+      "section": "3. Complete Inventory",
+      "page": 6,
+      "subsections": [
+        {
+          "title": "3.1 Effect Components",
+          "page": 6
+        },
+        {
+          "title": "3.2 UI Primitives",
+          "page": 7
+        },
+        {
+          "title": "3.3 Marketing Blocks",
+          "page": 7
+        },
+        {
+          "title": "3.4 Page Templates",
+          "page": 8
+        },
+        {
+          "title": "3.5 Icons & Logos",
+          "page": 8
+        },
+        {
+          "title": "3.6 Background Patterns",
+          "page": 9
+        },
+        {
+          "title": "3.7 WebGL Shaders",
+          "page": 9
+        }
+      ]
+    },
+    {
+      "section": "4. Pre-Migration Checklist",
+      "page": 9
+    },
+    {
+      "section": "5. Step-by-Step Migration",
+      "page": 10,
+      "subsections": [
+        {
+          "title": "5.1 Registry Configuration",
+          "page": 10
+        },
+        {
+          "title": "5.2 Installing Components",
+          "page": 11
+        },
+        {
+          "title": "5.3 Theme & Color Setup",
+          "page": 11
+        },
+        {
+          "title": "5.4 Font Configuration",
+          "page": 13
+        },
+        {
+          "title": "5.5 Block Installation Workflow",
+          "page": 13
+        },
+        {
+          "title": "5.6 Vite-Specific Adjustments",
+          "page": 14
+        }
+      ]
+    },
+    {
+      "section": "6. Theme System Deep Dive",
+      "page": 15,
+      "subsections": [
+        {
+          "title": "6.1 18 Theme Presets",
+          "page": 15
+        },
+        {
+          "title": "6.2 18 Color Schemes",
+          "page": 16
+        },
+        {
+          "title": "6.3 33 Font Families",
+          "page": 17
+        },
+        {
+          "title": "6.4 Border Radius Control",
+          "page": 17
+        }
+      ]
+    },
+    {
+      "section": "7. Using MCP for AI-Driven Installation",
+      "page": 18
+    },
+    {
+      "section": "8. Component Usage Patterns",
+      "page": 19,
+      "subsections": [
+        {
+          "title": "8.1 Block Naming Convention",
+          "page": 19
+        },
+        {
+          "title": "8.2 Code Structure Analysis",
+          "page": 19
+        },
+        {
+          "title": "8.3 CSS Variable Mapping",
+          "page": 20
+        }
+      ]
+    },
+    {
+      "section": "9. Troubleshooting",
+      "page": 20
+    },
+    {
+      "section": "10. Quick Reference Card",
+      "page": 21
+    }
+  ],
+  "sections": {
+    "1_executive_summary": {
+      "title": "Executive Summary",
+      "page": 4,
+      "content": {
+        "description": "This guide provides a complete migration path from a standard Vite.js + React project to one that uses Ali Imam UI as its exclusive component system. Ali Imam UI is a third-party registry for shadcn/ui that provides production-ready marketing blocks, effect components, UI primitives, icons, and background patterns.",
+        "key_facts": {
+          "registry_url": "https://aliimam.in/r/{name}.json",
+          "namespace": "@aliimam",
+          "base": "shadcn/ui with Tailwind CSS v4",
+          "icons": "Lucide React",
+          "total_components": "50+ effect/UI components, 60+ blocks, 5 page templates, 1700+ icons, 350+ patterns"
+        },
+        "registry_configuration_note": "Your existing project already has the correct registry configuration in components.json: \"registries\": {\"@aliimam\": \"https://aliimam.in/r/{name}.json\"}",
+        "guide_coverage": [
+          "Complete component inventory",
+          "Step-by-step installation",
+          "Theme configuration (18 presets, 18 colors, 33 fonts)",
+          "MCP server setup for AI-driven component installation",
+          "Troubleshooting common issues"
+        ]
+      }
+    },
+    "2_understanding_ali_imam_ui": {
+      "title": "Understanding Ali Imam UI",
+      "page_start": 4,
+      "page_end": 5,
+      "subsections": {
+        "2_1_what_is_ali_imam_ui": {
+          "title": "What is Ali Imam UI",
+          "page": 4,
+          "content": {
+            "description": "Ali Imam UI is a design system and component registry created by Ali Imam, a Design Engineer and Ambassador at 21st.dev. It extends shadcn/ui with specialized marketing blocks, visual effect components, and a comprehensive icon/pattern library.",
+            "tech_stack": [
+              "React 19+ TypeScript for component development",
+              "Tailwind CSS v4 for utility-first styling",
+              "Radix UI primitives for accessible UI components",
+              "Lucide React for iconography",
+              "Framer Motion for animations (in blocks)"
+            ]
+          }
+        },
+        "2_2_shadcn_ui_architecture": {
+          "title": "shadcn/ui Architecture",
+          "page": 5,
+          "content": {
+            "description": "shadcn/ui is not a traditional component library. Instead of installing an NPM package, you install the source code of components directly into your project.",
+            "key_principles": [
+              {
+                "name": "Open Code",
+                "description": "Full ownership and ability to customize any component"
+              },
+              {
+                "name": "Composition",
+                "description": "Every component uses a common, composable interface"
+              },
+              {
+                "name": "Distribution",
+                "description": "Flat-file schema for easy sharing via registries"
+              },
+              {
+                "name": "Beautiful Defaults",
+                "description": "Carefully chosen default styles"
+              },
+              {
+                "name": "AI-Ready",
+                "description": "Open code that LLMs can read, understand, and improve"
+              }
+            ]
+          }
+        },
+        "2_3_registry_system": {
+          "title": "Registry System",
+          "page": 5,
+          "content": {
+            "description": "The shadcn/ui registry system uses a JSON schema that defines how components are distributed. The Ali Imam registry follows this schema.",
+            "registry_entry_point": "https://aliimam.in/r/{name}.json",
+            "examples": [
+              {
+                "url": "https://aliimam.in/r/hero-01.json",
+                "description": "Hero block #1"
+              },
+              {
+                "url": "https://aliimam.in/r/bento-grid-02.json",
+                "description": "Bento grid block #2"
+              },
+              {
+                "url": "https://aliimam.in/r/marquee.json",
+                "description": "Marquee component"
+              }
+            ],
+            "cli_installation_process": [
+              "Reads components.json to find the @aliimam registry URL",
+              "Fetches the component definition from https://aliimam.in/r/hero-01.json",
+              "Downloads all files (component code, dependencies, CSS)",
+              "Installs any required NPM dependencies",
+              "Places the component in your configured directory"
+            ],
+            "example_command": "pnpm dlx shadcn add @aliimam/hero-01"
+          }
+        },
+        "2_4_mcp_server_integration": {
+          "title": "MCP Server Integration",
+          "page": 5,
+          "content": {
+            "description": "The Model Context Protocol (MCP) server enables AI assistants to browse, search, and install components from registries using natural language.",
+            "supported_tools": [
+              "Claude Code",
+              "Cursor",
+              "VS Code (GitHub Copilot)",
+              "Codex"
+            ],
+            "configuration": "pnpm dlx shadcn mcp init",
+            "example_commands": [
+              "Add a hero section with gradient background",
+              "Install a pricing table with three pricing tiers"
+            ]
+          }
+        }
+      }
+    },
+    "3_complete_inventory": {
+      "title": "Complete Inventory",
+      "page_start": 6,
+      "page_end": 9,
+      "subsections": {
+        "3_1_effect_components": {
+          "title": "Effect Components (15)",
+          "page": 6,
+          "description": "Specialized visual effect components for creating stunning interfaces.",
+          "components": [
+            {
+              "name": "Attraction",
+              "description": "Magnetic particle attraction effect",
+              "install_command": "pnpm dlx shadcn add @aliimam/attraction"
+            },
+            {
+              "name": "Bento",
+              "description": "Responsive bento grid layout system",
+              "install_command": "pnpm dlx shadcn add @aliimam/bento"
+            },
+            {
+              "name": "Book",
+              "description": "3D book/page flip animation",
+              "install_command": "pnpm dlx shadcn add @aliimam/book"
+            },
+            {
+              "name": "Border Glow",
+              "description": "Animated glowing border effect",
+              "install_command": "pnpm dlx shadcn add @aliimam/border-glow"
+            },
+            {
+              "name": "Carousel",
+              "description": "Embla-based carousel/slider",
+              "install_command": "pnpm dlx shadcn add @aliimam/carousel"
+            },
+            {
+              "name": "Counter Number",
+              "description": "Animated number counter",
+              "install_command": "pnpm dlx shadcn add @aliimam/counter-number"
+            },
+            {
+              "name": "Device",
+              "description": "Device mockup frames (phone, tablet, desktop)",
+              "install_command": "pnpm dlx shadcn add @aliimam/device"
+            },
+            {
+              "name": "Dot Pattern",
+              "description": "SVG dot pattern backgrounds",
+              "install_command": "pnpm dlx shadcn add @aliimam/dot-pattern"
+            },
+            {
+              "name": "Gauge",
+              "description": "Circular gauge/progress indicator",
+              "install_command": "pnpm dlx shadcn add @aliimam/gauge"
+            },
+            {
+              "name": "Gradient Bars",
+              "description": "Animated gradient bar chart",
+              "install_command": "pnpm dlx shadcn add @aliimam/gradient-bars"
+            },
+            {
+              "name": "Grid Pattern",
+              "description": "SVG grid line backgrounds",
+              "install_command": "pnpm dlx shadcn add @aliimam/grid-pattern"
+            },
+            {
+              "name": "Marquee",
+              "description": "Infinite scrolling marquee",
+              "install_command": "pnpm dlx shadcn add @aliimam/marquee"
+            },
+            {
+              "name": "Render Canvas",
+              "description": "Canvas-based rendering utility",
+              "install_command": "pnpm dlx shadcn add @aliimam/render-canvas"
+            },
+            {
+              "name": "Scroll Progress",
+              "description": "Reading progress indicator",
+              "install_command": "pnpm dlx shadcn add @aliimam/scroll-progress"
+            },
+            {
+              "name": "Shine Border",
+              "description": "Animated shine sweep effect on borders",
+              "install_command": "pnpm dlx shadcn add @aliimam/shine-border"
+            },
+            {
+              "name": "Typewriter",
+              "description": "Typewriter text effect",
+              "install_command": "pnpm dlx shadcn add @aliimam/typewriter"
+            }
+          ]
+        },
+        "3_2_ui_primitives": {
+          "title": "UI Primitives (2)",
+          "page": 7,
+          "description": "Extended UI primitive components.",
+          "components": [
+            {
+              "name": "Accordion",
+              "description": "Collapsible content sections",
+              "install_command": "pnpm dlx shadcn add @aliimam/ui/accordion"
+            },
+            {
+              "name": "Button",
+              "description": "Extended button variants",
+              "install_command": "pnpm dlx shadcn add @aliimam/ui/button"
+            }
+          ],
+          "note": "For standard UI primitives (Dialog, Card, Input, Select, etc.), use the base shadcn/ui registry: pnpm dlx shadcn add dialog card input select. Ali Imam UI focuses on effect components and marketing blocks."
+        },
+        "3_3_marketing_blocks": {
+          "title": "Marketing Blocks (12 Categories, 60+ Variants)",
+          "page": 7,
+          "description": "Complete page sections ready to drop into your project.",
+          "categories": [
+            {
+              "category": "Header",
+              "variants": 6,
+              "example_install": "pnpm dlx shadcn add @aliimam/header-01"
+            },
+            {
+              "category": "Footer",
+              "variants": 6,
+              "example_install": "pnpm dlx shadcn add @aliimam/footer-01"
+            },
+            {
+              "category": "Hero",
+              "variants": 12,
+              "example_install": "pnpm dlx shadcn add @aliimam/hero-01"
+            },
+            {
+              "category": "Logos",
+              "variants": 5,
+              "example_install": "pnpm dlx shadcn add @aliimam/logos-01"
+            },
+            {
+              "category": "Bento",
+              "variants": 5,
+              "example_install": "pnpm dlx shadcn add @aliimam/bento-grid-01"
+            },
+            {
+              "category": "Feature",
+              "variants": 3,
+              "example_install": "pnpm dlx shadcn add @aliimam/feature-01"
+            },
+            {
+              "category": "Book Demo",
+              "variants": 4,
+              "example_install": "pnpm dlx shadcn add @aliimam/book-demo-01"
+            },
+            {
+              "category": "Download",
+              "variants": 2,
+              "example_install": "pnpm dlx shadcn add @aliimam/download-01"
+            },
+            {
+              "category": "CTA",
+              "variants": 2,
+              "example_install": "pnpm dlx shadcn add @aliimam/cta-01"
+            },
+            {
+              "category": "Pricing",
+              "variants": 4,
+              "example_install": "pnpm dlx shadcn add @aliimam/pricing-01"
+            },
+            {
+              "category": "Stats",
+              "variants": 5,
+              "example_install": "pnpm dlx shadcn add @aliimam/stats-01"
+            },
+            {
+              "category": "Login",
+              "variants": 2,
+              "example_install": "pnpm dlx shadcn add @aliimam/login-01"
+            },
+            {
+              "category": "Testimonials",
+              "variants": 5,
+              "example_install": "pnpm dlx shadcn add @aliimam/testimonials-01"
+            },
+            {
+              "category": "FAQ",
+              "variants": 2,
+              "example_install": "pnpm dlx shadcn add @aliimam/faq-01"
+            }
+          ]
+        },
+        "3_4_page_templates": {
+          "title": "Page Templates (5 Types)",
+          "page": 8,
+          "templates": [
+            {
+              "page_type": "Home",
+              "description": "Complete homepage layout",
+              "install_command": "pnpm dlx shadcn add @aliimam/home-01"
+            },
+            {
+              "page_type": "Landing",
+              "description": "Single-product landing page",
+              "install_command": "pnpm dlx shadcn add @aliimam/landing-01"
+            },
+            {
+              "page_type": "Blogs",
+              "description": "Blog listing page",
+              "install_command": "pnpm dlx shadcn add @aliimam/blogs-01"
+            },
+            {
+              "page_type": "About",
+              "description": "About/team page",
+              "install_command": "pnpm dlx shadcn add @aliimam/about-01"
+            },
+            {
+              "page_type": "Contact Us",
+              "description": "Contact form page",
+              "install_command": "pnpm dlx shadcn add @aliimam/contact-us-01"
+            }
+          ]
+        },
+        "3_5_icons_and_logos": {
+          "title": "Icons & Logos",
+          "page": 8,
+          "icons": {
+            "count": "1,703+ custom icons",
+            "categories_count": "30+ categories",
+            "categories_list": [
+              "Align",
+              "Animal",
+              "App",
+              "Arrows",
+              "Badge",
+              "Book",
+              "Building",
+              "Calendar",
+              "Chart",
+              "Circle",
+              "Clock",
+              "Cloud",
+              "Code",
+              "Cursor",
+              "Design",
+              "Device",
+              "Emoji",
+              "File",
+              "Finance",
+              "Folder",
+              "Food",
+              "Health",
+              "Home",
+              "Layout",
+              "List",
+              "Mail",
+              "Math",
+              "Message",
+              "Monitor",
+              "Multimedia",
+              "Nature",
+              "Navigation",
+              "Network",
+              "Notification",
+              "Panel",
+              "Scan",
+              "Security",
+              "Shapes",
+              "Shield",
+              "Square",
+              "Table",
+              "Text",
+              "Time",
+              "Transport",
+              "User",
+              "Weather"
+            ],
+            "variants": [
+              "Outline (default)",
+              "Filled",
+              "Rounded",
+              "Doodle"
+            ],
+            "usage_example": "<DIcons name=\"spade\" variant=\"outline\" />"
+          },
+          "logos": {
+            "count": "5,000+ brand/tech logos",
+            "examples": [
+              "Google Cloud",
+              "PostHog",
+              "Apple",
+              "Express.js",
+              "MariaDB",
+              "React",
+              "Stripe",
+              "Nuxt",
+              "Django"
+            ],
+            "format": "SVG"
+          },
+          "vectors": {
+            "description": "Abstract shapes, scribbles, peeps, geometric forms for decorative use"
+          }
+        },
+        "3_6_background_patterns": {
+          "title": "Background Patterns (350+)",
+          "page": 9,
+          "categories": [
+            {
+              "category": "Gradients",
+              "count": 51,
+              "description": "Smooth gradient backgrounds"
+            },
+            {
+              "category": "Mesh",
+              "count": 100,
+              "description": "Mesh gradient patterns"
+            },
+            {
+              "category": "Layered",
+              "count": 100,
+              "description": "Multi-layer gradient compositions"
+            },
+            {
+              "category": "Lines",
+              "count": 57,
+              "description": "Line-based geometric patterns"
+            },
+            {
+              "category": "Dots",
+              "count": 56,
+              "description": "Dot grid and point patterns"
+            },
+            {
+              "category": "Abstract",
+              "count": 88,
+              "description": "Organic abstract shapes"
+            }
+          ]
+        },
+        "3_7_webgl_shaders": {
+          "title": "WebGL Shaders (4)",
+          "page": 9,
+          "shaders": [
+            {
+              "name": "Dithered Swirl",
+              "effect": "Dithered noise swirl animation",
+              "install_command": "pnpm dlx shadcn add @aliimam/dithered-swirl"
+            },
+            {
+              "name": "Liquid Wave",
+              "effect": "Fluid liquid wave distortion",
+              "install_command": "pnpm dlx shadcn add @aliimam/liquid-wave"
+            },
+            {
+              "name": "PixelGrid Shader",
+              "effect": "Pixelated grid effect",
+              "install_command": "pnpm dlx shadcn add @aliimam/pixelgrid-shader"
+            },
+            {
+              "name": "Ripple Shader",
+              "effect": "Water ripple distortion",
+              "install_command": "pnpm dlx shadcn add @aliimam/ripple-shader"
+            }
+          ]
+        }
+      }
+    },
+    "4_pre_migration_checklist": {
+      "title": "Pre-Migration Checklist",
+      "page": 9,
+      "description": "Before starting the migration, verify your project meets these requirements.",
+      "checklist": [
+        {
+          "number": 1,
+          "check": "Node.js 18+",
+          "how_to_verify": "node --version",
+          "required_action": "Upgrade if below v18"
+        },
+        {
+          "number": 2,
+          "check": "React 18+",
+          "how_to_verify": "Check package.json",
+          "required_action": "Ali Imam UI requires React 18+"
+        },
+        {
+          "number": 3,
+          "check": "TypeScript 5+",
+          "how_to_verify": "npx tsc --version",
+          "required_action": "Install if using JS"
+        },
+        {
+          "number": 4,
+          "check": "Tailwind CSS v4",
+          "how_to_verify": "npx tailwindcss --version",
+          "required_action": "Upgrade from v3 if needed"
+        },
+        {
+          "number": 5,
+          "check": "Vite 5+",
+          "how_to_verify": "Check package.json",
+          "required_action": "Upgrade if needed"
+        },
+        {
+          "number": 6,
+          "check": "shadcn/ui initialized",
+          "how_to_verify": "components.json exists",
+          "required_action": "Run pnpm dlx shadcn@latest init"
+        },
+        {
+          "number": 7,
+          "check": "Registry configured",
+          "how_to_verify": "@aliimam in components.json",
+          "required_action": "Add registry URL"
+        },
+        {
+          "number": 8,
+          "check": "Path aliases set",
+          "how_to_verify": "@/components resolves",
+          "required_action": "Configure tsconfig.json"
+        },
+        {
+          "number": 9,
+          "check": "Lucide React installed",
+          "how_to_verify": "npm list lucide-react",
+          "required_action": "pnpm add lucide-react"
+        },
+        {
+          "number": 10,
+          "check": "Base shadcn components",
+          "how_to_verify": "src/components/ui/ exists",
+          "required_action": "Install button base first"
+        }
+      ]
+    },
+    "5_step_by_step_migration": {
+      "title": "Step-by-Step Migration",
+      "page_start": 10,
+      "page_end": 14,
+      "subsections": {
+        "5_1_registry_configuration": {
+          "title": "Registry Configuration",
+          "page": 10,
+          "content": {
+            "description": "Your components.json must include the Ali Imam registry.",
+            "components_json_example": {
+              "$schema": "https://ui.shadcn.com/schema.json",
+              "style": "new-york",
+              "rsc": false,
+              "tsx": true,
+              "tailwind": {
+                "config": "tailwind.config.js",
+                "css": "src/index.css",
+                "baseColor": "zinc",
+                "cssVariables": true
+              },
+              "aliases": {
+                "components": "@/components",
+                "utils": "@/lib/utils",
+                "ui": "@/components/ui",
+                "lib": "@/lib",
+                "hooks": "@/hooks"
+              },
+              "iconLibrary": "lucide",
+              "registries": {
+                "@aliimam": "https://aliimam.in/r/{name}.json"
+              }
+            },
+            "vite_specific_note": "For Vite projects, set \"rsc\": false as React Server Components are not supported outside Next.js. Also ensure your tsconfig.json includes the @/* path alias pointing to src/."
+          }
+        },
+        "5_2_installing_components": {
+          "title": "Installing Components",
+          "page": 11,
+          "methods": {
+            "method_a_cli": {
+              "name": "CLI Installation (Recommended)",
+              "examples": [
+                {
+                  "command": "pnpm dlx shadcn add @aliimam/hero-01",
+                  "description": "Install a marketing block"
+                },
+                {
+                  "command": "pnpm dlx shadcn add @aliimam/marquee",
+                  "description": "Install an effect component"
+                },
+                {
+                  "command": "pnpm dlx shadcn add @aliimam/dithered-swirl",
+                  "description": "Install a WebGL shader"
+                },
+                {
+                  "command": "pnpm dlx shadcn add @aliimam/hero-01 @aliimam/pricing-01 @aliimam/faq-01",
+                  "description": "Install multiple at once"
+                }
+              ]
+            },
+            "method_b_mcp": {
+              "name": "MCP Natural Language (AI-Driven)",
+              "setup": "pnpm dlx shadcn mcp init",
+              "example_commands": [
+                "Add a hero section with dark gradient background",
+                "Install a pricing table with three pricing tiers",
+                "Add a testimonials carousel with auto-play"
+              ]
+            },
+            "method_c_manual": {
+              "name": "Manual Copy from Website",
+              "instructions": "Visit aliimam.in/blocks, preview any block, click the Code tab, and copy the component files directly into your src/components/"
+            }
+          }
+        },
+        "5_3_theme_and_color_setup": {
+          "title": "Theme & Color Setup",
+          "page": 11,
+          "content": {
+            "description": "Ali Imam UI components use CSS custom properties for theming. Your src/index.css must define these variables.",
+            "css_example": "@import \"tailwindcss\";\n@plugin 'tailwindcss-animate';\n@custom-variant dark (&:is(.dark *));\n\n:root {\n  --background: 0 0% 100%;\n  --foreground: 240 10% 3.9%;\n  --card: 0 0% 100%;\n  --card-foreground: 240 10% 3.9%;\n  --popover: 0 0% 100%;\n  --popover-foreground: 240 10% 3.9%;\n  --primary: 240 5.9% 10%;\n  --primary-foreground: 0 0% 98%;\n  --secondary: 240 4.8% 95.9%;\n  --secondary-foreground: 240 5.9% 10%;\n  --muted: 240 4.8% 95.9%;\n  --muted-foreground: 240 3.8% 46.1%;\n  --accent: 240 4.8% 95.9%;\n  --accent-foreground: 240 5.9% 10%;\n  --destructive: 0 84.2% 60.2%;\n  --destructive-foreground: 0 0% 98%;\n  --border: 240 5.9% 90%;\n  --input: 240 5.9% 90%;\n  --ring: 240 5.9% 10%;\n  --radius: 0.5rem;\n  --chart-1: 12 76% 61%;\n  --chart-2: 173 58% 39%;\n  --chart-3: 197 37% 24%;\n  --chart-4: 43 74% 66%;\n  --chart-5: 27 87% 67%;\n  --sidebar-background: 0 0% 98%;\n  --sidebar-foreground: 240 5.3% 26.1%;\n  --sidebar-primary: 240 5.9% 10%;\n  --sidebar-primary-foreground: 0 0% 98%;\n  --sidebar-accent: 240 4.8% 95.9%;\n  --sidebar-accent-foreground: 240 5.9% 10%;\n  --sidebar-border: 220 13% 91%;\n  --sidebar-ring: 217.2 91.2% 59.8%;\n}\n\n.dark {\n  --background: 240 10% 3.9%;\n  --foreground: 0 0% 98%;\n  --card: 240 10% 3.9%;\n  --card-foreground: 0 0% 98%;\n  --popover: 240 10% 3.9%;\n  --popover-foreground: 0 0% 98%;\n  --primary: 0 0% 98%;\n  --primary-foreground: 240 5.9% 10%;\n  --secondary: 240 3.7% 15.9%;\n  --secondary-foreground: 0 0% 98%;\n  --muted: 240 ...",
+            "changing_base_color": "To switch to a different color scheme (e.g., Blue), update the --primary values. Use the Ali Imam website theme selector at aliimam.in/blocks to preview colors, then apply the generated CSS."
+          }
+        },
+        "5_4_font_configuration": {
+          "title": "Font Configuration",
+          "page": 13,
+          "content": {
+            "html_import": "<link rel=\"preconnect\" href=\"https://fonts.googleapis.com\">\n<link rel=\"preconnect\" href=\"https://fonts.gstatic.com\" crossorigin>\n<link href=\"https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap\" rel=\"stylesheet\">",
+            "tailwind_config": "// tailwind.config.js\nexport default {\n  theme: {\n    extend: {\n      fontFamily: {\n        sans: ['Inter', 'system-ui', 'sans-serif'],\n      },\n    },\n  },\n}"
+          }
+        },
+        "5_5_block_installation_workflow": {
+          "title": "Block Installation Workflow",
+          "page": 13,
+          "workflow_steps": [
+            "Plan your page structure - Identify which blocks you need (Header, Hero, Features, Pricing, CTA, Footer)",
+            "Preview blocks - Visit aliimam.in/blocks to preview variants",
+            "Use the theme selector - Choose preset, color, font, and radius at the bottom of the page",
+            "Copy generated code - Click 'Copy Code' to get themed component code",
+            "Paste into your project - Place in src/components/sections/",
+            "Customize content - Replace placeholder text, images, and links"
+          ]
+        },
+        "5_6_vite_specific_adjustments": {
+          "title": "Vite-Specific Adjustments",
+          "page": 14,
+          "content": {
+            "path_aliases": {
+              "tsconfig_json": {
+                "compilerOptions": {
+                  "baseUrl": ".",
+                  "paths": {
+                    "@/*": [
+                      "./src/*"
+                    ]
+                  }
+                }
+              },
+              "vite_config_ts": "import { defineConfig } from 'vite'\nimport react from '@vitejs/plugin-react'\nimport path from 'path'\n\nexport default defineConfig({\n  plugins: [react()],\n  resolve: {\n    alias: {\n      \"@\": path.resolve(__dirname, \"./src\"),\n    },\n  },\n})"
+            },
+            "dark_mode_setup": {
+              "description": "For Vite projects, use the next-themes approach adapted for client-side routing.",
+              "theme_provider_code": "// src/components/theme-provider.tsx\nimport { createContext, useContext, useEffect, useState } from \"react\"\n\ntype Theme = \"dark\" | \"light\" | \"system\"\n\nconst ThemeProviderContext = createContext<{\n  theme: Theme\n  setTheme: (theme: Theme) => void\n}>({ theme: \"system\", setTheme: () => null })\n\nexport function ThemeProvider({ children }: { children: React.ReactNode }) {\n  const [theme, setTheme] = useState<Theme>(\"system\")\n\n  useEffect(() => {\n    const root = window.document.documentElement\n    root.classList.remove(\"light\", \"dark\")\n    const systemTheme = window.matchMedia(\"(prefers-color-scheme: dark)\").matches ? \"dark\" : \"light\"\n    root.classList.add(theme === \"system\" ? systemTheme : theme)\n  }, [theme])\n\n  return (\n    <ThemeProviderContext.Provider value={{ theme, setTheme }}>\n      {children}\n    </ThemeProviderContext.Provider>\n  )\n}\n\nexport const useTheme = () => useContext(ThemeProviderContext)"
+            }
+          }
+        }
+      }
+    },
+    "6_theme_system_deep_dive": {
+      "title": "Theme System Deep Dive",
+      "page_start": 15,
+      "page_end": 17,
+      "description": "The Ali Imam website features a powerful theme selector at the bottom of the Blocks and Pages pages. This section documents all available options.",
+      "subsections": {
+        "6_1_theme_presets": {
+          "title": "18 Theme Presets",
+          "page": 15,
+          "description": "Each preset is a complete pre-configured combination of colors, fonts, and styling.",
+          "presets": [
+            {
+              "name": "Default",
+              "character": "Clean, minimal, professional",
+              "best_for": "General purpose"
+            },
+            {
+              "name": "Soft",
+              "character": "Gentle curves, warm tones",
+              "best_for": "Healthcare, wellness"
+            },
+            {
+              "name": "Sharp",
+              "character": "High contrast, crisp edges",
+              "best_for": "Tech, developer tools"
+            },
+            {
+              "name": "Playful",
+              "character": "Vibrant colors, rounded",
+              "best_for": "Consumer apps, games"
+            },
+            {
+              "name": "Candy",
+              "character": "Pastel colors, friendly",
+              "best_for": "Children, education"
+            },
+            {
+              "name": "Vibrant",
+              "character": "Bold saturated colors",
+              "best_for": "Creative agencies"
+            },
+            {
+              "name": "Elegant",
+              "character": "Refined typography, spacing",
+              "best_for": "Luxury, fashion"
+            },
+            {
+              "name": "Editorial",
+              "character": "Magazine-style layouts",
+              "best_for": "Content, publishing"
+            },
+            {
+              "name": "Luxury",
+              "character": "Gold accents, serif fonts",
+              "best_for": "High-end brands"
+            },
+            {
+              "name": "SaaS Blue",
+              "character": "Corporate blue palette",
+              "best_for": "B2B software"
+            },
+            {
+              "name": "Startup",
+              "character": "Energetic, modern",
+              "best_for": "Startups, MVPs"
+            },
+            {
+              "name": "Corporate",
+              "character": "Conservative, trustworthy",
+              "best_for": "Enterprise"
+            },
+            {
+              "name": "Developer",
+              "character": "Monospace, dark-friendly",
+              "best_for": "Dev tools, docs"
+            },
+            {
+              "name": "Terminal",
+              "character": "Hacker aesthetic",
+              "best_for": "CLI tools, security"
+            },
+            {
+              "name": "Friendly",
+              "character": "Approachable, warm",
+              "best_for": "Community, social"
+            },
+            {
+              "name": "Calm",
+              "character": "Muted, serene",
+              "best_for": "Meditation, focus"
+            },
+            {
+              "name": "Hero",
+              "character": "Large type, dramatic",
+              "best_for": "Portfolios, landing"
+            },
+            {
+              "name": "Poster",
+              "character": "Bold display typography",
+              "best_for": "Marketing, events"
+            }
+          ]
+        },
+        "6_2_color_schemes": {
+          "title": "18 Color Schemes",
+          "page": 16,
+          "colors": [
+            {
+              "color": "Blue",
+              "tailwind_key": "blue",
+              "hex_approx": "#3b82f6",
+              "mood": "Trustworthy, corporate"
+            },
+            {
+              "color": "Green",
+              "tailwind_key": "green",
+              "hex_approx": "#22c55e",
+              "mood": "Growth, nature"
+            },
+            {
+              "color": "Red",
+              "tailwind_key": "red",
+              "hex_approx": "#ef4444",
+              "mood": "Energy, urgency"
+            },
+            {
+              "color": "Yellow",
+              "tailwind_key": "yellow",
+              "hex_approx": "#eab308",
+              "mood": "Optimism, creativity"
+            },
+            {
+              "color": "Amber",
+              "tailwind_key": "amber",
+              "hex_approx": "#f59e0b",
+              "mood": "Warmth, caution"
+            },
+            {
+              "color": "Orange",
+              "tailwind_key": "orange",
+              "hex_approx": "#f97316",
+              "mood": "Enthusiasm"
+            },
+            {
+              "color": "Rose",
+              "tailwind_key": "rose",
+              "hex_approx": "#f43f5e",
+              "mood": "Romance, bold"
+            },
+            {
+              "color": "Pink",
+              "tailwind_key": "pink",
+              "hex_approx": "#ec4899",
+              "mood": "Playful, feminine"
+            },
+            {
+              "color": "Purple",
+              "tailwind_key": "purple",
+              "hex_approx": "#a855f7",
+              "mood": "Creative, luxury"
+            },
+            {
+              "color": "Violet",
+              "tailwind_key": "violet",
+              "hex_approx": "#8b5cf6",
+              "mood": "Wisdom, premium"
+            },
+            {
+              "color": "Fuchsia",
+              "tailwind_key": "fuchsia",
+              "hex_approx": "#d946ef",
+              "mood": "Vibrant, youthful"
+            },
+            {
+              "color": "Indigo",
+              "tailwind_key": "indigo",
+              "hex_approx": "#6366f1",
+              "mood": "Professional"
+            },
+            {
+              "color": "Teal",
+              "tailwind_key": "teal",
+              "hex_approx": "#14b8a6",
+              "mood": "Calm, modern"
+            },
+            {
+              "color": "Cyan",
+              "tailwind_key": "cyan",
+              "hex_approx": "#06b6d4",
+              "mood": "Tech, clarity"
+            },
+            {
+              "color": "Emerald",
+              "tailwind_key": "emerald",
+              "hex_approx": "#10b981",
+              "mood": "Prosperity, fresh"
+            },
+            {
+              "color": "Slate",
+              "tailwind_key": "slate",
+              "hex_approx": "#64748b",
+              "mood": "Neutral, balanced"
+            },
+            {
+              "color": "Zinc",
+              "tailwind_key": "zinc",
+              "hex_approx": "#71717a",
+              "mood": "Clean, minimal"
+            },
+            {
+              "color": "Neutral",
+              "tailwind_key": "neutral",
+              "hex_approx": "#737373",
+              "mood": "Universal"
+            }
+          ]
+        },
+        "6_3_font_families": {
+          "title": "33 Font Families",
+          "page": 17,
+          "categories": {
+            "sans_serif": {
+              "count": 14,
+              "fonts": [
+                "Geist",
+                "Inter",
+                "Roboto",
+                "Lato",
+                "Montserrat",
+                "Poppins",
+                "Nunito",
+                "Raleway",
+                "Ubuntu",
+                "Work Sans",
+                "DM Sans",
+                "Plus Jakarta Sans",
+                "Manrope"
+              ]
+            },
+            "serif": {
+              "count": 8,
+              "fonts": [
+                "Playfair Display",
+                "Merriweather",
+                "Lora",
+                "PT Serif",
+                "Crimson Text",
+                "EB Garamond",
+                "Libre Baskerville",
+                "Source Serif 4"
+              ]
+            },
+            "monospace": {
+              "count": 6,
+              "fonts": [
+                "Geist Mono",
+                "JetBrains Mono",
+                "Source Code Pro",
+                "IBM Plex Mono",
+                "Inconsolata",
+                "Fira Code"
+              ]
+            },
+            "display": {
+              "count": 5,
+              "fonts": [
+                "Bebas Neue",
+                "Righteous",
+                "Pacifico",
+                "Dancing Script",
+                "Sora"
+              ]
+            }
+          }
+        },
+        "6_4_border_radius_control": {
+          "title": "Border Radius Control",
+          "page": 17,
+          "content": {
+            "description": "The radius slider on the Ali Imam website controls the --radius CSS variable. Range: 0 to 1 (rem).",
+            "css_examples": [
+              {
+                "value": "0.5rem",
+                "description": "Default: medium rounding"
+              },
+              {
+                "value": "0rem",
+                "description": "Sharp: no rounding"
+              },
+              {
+                "value": "1rem",
+                "description": "Maximum rounding"
+              }
+            ]
+          }
+        }
+      }
+    },
+    "7_using_mcp": {
+      "title": "Using MCP for AI-Driven Installation",
+      "page": 18,
+      "content": {
+        "description": "The Model Context Protocol enables AI assistants to install components.",
+        "setup": "pnpm dlx shadcn mcp init",
+        "supported_commands_examples": [
+          "Install a hero section with a gradient background and centered text",
+          "Add a bento grid with 6 cards showing our product features",
+          "Create a pricing section with 3 tiers: Starter, Pro, Enterprise",
+          "Add an FAQ accordion with 5 common questions",
+          "Install a testimonials carousel with auto-play",
+          "Add a footer with 4 link columns and social icons"
+        ],
+        "mcp_server_process": [
+          "Search the Ali Imam registry for matching components",
+          "Show previews of available options",
+          "Install the selected component with all dependencies",
+          "Configure the component in your project"
+        ],
+        "compatible_ai_tools": [
+          {
+            "tool": "Claude Code",
+            "setup": "Built-in MCP support"
+          },
+          {
+            "tool": "Cursor",
+            "setup": "Settings > MCP Servers"
+          },
+          {
+            "tool": "VS Code Copilot",
+            "setup": "Extensions > MCP"
+          },
+          {
+            "tool": "Codex (OpenAI)",
+            "setup": "CLI with --mcp flag"
+          }
+        ]
+      }
+    },
+    "8_component_usage_patterns": {
+      "title": "Component Usage Patterns",
+      "page_start": 19,
+      "page_end": 20,
+      "subsections": {
+        "8_1_block_naming_convention": {
+          "title": "Block Naming Convention",
+          "page": 19,
+          "pattern": "{category}-{number}",
+          "examples": [
+            {
+              "pattern": "hero-01, hero-02, ... hero-12",
+              "description": "12 hero variants"
+            },
+            {
+              "pattern": "pricing-01, pricing-02, ... pricing-04",
+              "description": "4 pricing variants"
+            },
+            {
+              "pattern": "footer-01, footer-02, ... footer-06",
+              "description": "6 footer variants"
+            }
+          ]
+        },
+        "8_2_code_structure_analysis": {
+          "title": "Code Structure Analysis",
+          "page": 19,
+          "description": "When you install a block, it generates code with this structure.",
+          "example_code": "\"use client\"\nimport Link from \"next/link\" // Next.js link (replace with react-router)\nimport { Button } from \"@/components/ui/button\" // shadcn button\n\nexport function HeroSection01() { // Named export, PascalCase\n  return (\n    <div className=\"relative flex h-screen items-center justify-center\">\n      {/* Background using CSS variables */}\n      <div\n        className=\"absolute inset-0 z-0\"\n        style={{\n          background: \"radial-gradient(125% 125% at 50% 10%, ... var(--primary))\"\n        }}\n      />\n      {/* Content */}\n      <div className=\"relative z-10\">\n        <h1>Title</h1>\n        <p>Description</p>\n        <Button>CTA</Button>\n      </div>\n    </div>\n  )\n}",
+          "key_patterns": [
+            "Components use 'use client' directive for client-side interactivity",
+            "Styling uses Tailwind classes + CSS variables (var(--primary))",
+            "Dark mode uses dark: Tailwind prefix",
+            "Blocks import from @/components/ui/ for base UI elements",
+            "Named exports follow pattern: {Category}Section{Number}"
+          ]
+        },
+        "8_3_css_variable_mapping": {
+          "title": "CSS Variable Mapping",
+          "page": 20,
+          "description": "Components use these CSS custom properties that you must define in src/index.css.",
+          "variables": [
+            {
+              "variable": "--primary",
+              "usage": "Main accent color",
+              "example_value": "hsl(240 5.9% 10%)"
+            },
+            {
+              "variable": "--background",
+              "usage": "Page background",
+              "example_value": "hsl(0 0% 100%)"
+            },
+            {
+              "variable": "--foreground",
+              "usage": "Text color",
+              "example_value": "hsl(240 10% 3.9%)"
+            },
+            {
+              "variable": "--border",
+              "usage": "Border color",
+              "example_value": "hsl(240 5.9% 90%)"
+            },
+            {
+              "variable": "--radius",
+              "usage": "Border radius",
+              "example_value": "0.5rem"
+            },
+            {
+              "variable": "--muted",
+              "usage": "Subtle backgrounds",
+              "example_value": "hsl(240 4.8% 95.9%)"
+            },
+            {
+              "variable": "--accent",
+              "usage": "Highlight elements",
+              "example_value": "hsl(240 4.8% 95.9%)"
+            }
+          ]
+        }
+      }
+    },
+    "9_troubleshooting": {
+      "title": "Troubleshooting",
+      "page": 20,
+      "issues": [
+        {
+          "issue": "Cannot find module '@/components/ui/button'",
+          "cause": "Path alias not configured",
+          "solution": "Check tsconfig.json and vite.config.ts path aliases"
+        },
+        {
+          "issue": "Unknown at rule @tailwind",
+          "cause": "Tailwind CSS v4 syntax issue",
+          "solution": "Ensure Tailwind v4 is installed: npm list tailwindcss"
+        },
+        {
+          "issue": "Dark mode not working",
+          "cause": "dark class not on html",
+          "solution": "Add class=\"dark\" to <html> element"
+        },
+        {
+          "issue": "Icons not displaying",
+          "cause": "Lucide React not installed",
+          "solution": "pnpm add lucide-react"
+        },
+        {
+          "issue": "CSS variables not defined",
+          "cause": "Outdated shadcn CLI",
+          "solution": "Copy full CSS variable block to src/index.css"
+        },
+        {
+          "issue": "Component styles missing",
+          "cause": "registries is not allowed",
+          "solution": "Update: pnpm dlx shadcn@latest init"
+        },
+        {
+          "issue": "Font not applying",
+          "cause": "Google Fonts not imported",
+          "solution": "Add <link> tag in index.html"
+        },
+        {
+          "issue": "Canvas/WebGL not supported",
+          "cause": "Used in non-Next.js project",
+          "solution": "Add fallback: <div> with static gradient background"
+        },
+        {
+          "issue": "WebGL shader not rendering",
+          "cause": "\"use client\" directive error",
+          "solution": "Remove \"use client\" lines (safe in Vite)"
+        }
+      ]
+    },
+    "10_quick_reference_card": {
+      "title": "Quick Reference Card",
+      "page_start": 21,
+      "page_end": 22,
+      "content": {
+        "essential_commands": [
+          {
+            "command": "pnpm dlx shadcn add @aliimam/{name}",
+            "description": "Install any component/block"
+          },
+          {
+            "command": "pnpm dlx shadcn add @aliimam/hero-01",
+            "description": "Example: Install hero block"
+          },
+          {
+            "command": "pnpm dlx shadcn add @aliimam/pricing-03",
+            "description": "Example: Install pricing block"
+          },
+          {
+            "command": "pnpm dlx shadcn add @aliimam/marquee @aliimam/bento",
+            "description": "Example: Install multiple effect components"
+          },
+          {
+            "command": "pnpm dlx shadcn mcp init",
+            "description": "Setup MCP"
+          },
+          {
+            "command": "pnpm dlx shadcn add button card input dialog",
+            "description": "Install base shadcn UI primitives"
+          }
+        ],
+        "registry_url": "https://aliimam.in/r/{name}.json",
+        "key_urls": [
+          {
+            "resource": "Main Website",
+            "url": "aliimam.in"
+          },
+          {
+            "resource": "Blocks Gallery",
+            "url": "aliimam.in/blocks"
+          },
+          {
+            "resource": "Pages Gallery",
+            "url": "aliimam.in/pages"
+          },
+          {
+            "resource": "Icons Library",
+            "url": "aliimam.in/icons"
+          },
+          {
+            "resource": "Patterns Library",
+            "url": "aliimam.in/patterns"
+          },
+          {
+            "resource": "Documentation",
+            "url": "aliimam.in/docs"
+          },
+          {
+            "resource": "Registry Docs",
+            "url": "aliimam.in/docs/registry"
+          },
+          {
+            "resource": "LLMs.txt",
+            "url": "aliimam.in/llms.txt"
+          },
+          {
+            "resource": "GitHub",
+            "url": "github.com/aliimam-in"
+          }
+        ],
+        "complete_block_install_reference": {
+          "core_page_structure": [
+            "pnpm dlx shadcn add @aliimam/header-01",
+            "pnpm dlx shadcn add @aliimam/hero-01",
+            "pnpm dlx shadcn add @aliimam/logos-01",
+            "pnpm dlx shadcn add @aliimam/feature-01",
+            "pnpm dlx shadcn add @aliimam/pricing-01",
+            "pnpm dlx shadcn add @aliimam/faq-01",
+            "pnpm dlx shadcn add @aliimam/footer-01"
+          ],
+          "optional_sections": [
+            "pnpm dlx shadcn add @aliimam/bento-grid-01",
+            "pnpm dlx shadcn add @aliimam/stats-01",
+            "pnpm dlx shadcn add @aliimam/testimonials-01",
+            "pnpm dlx shadcn add @aliimam/cta-01",
+            "pnpm dlx shadcn add @aliimam/book-demo-01"
+          ],
+          "effect_components": [
+            "pnpm dlx shadcn add @aliimam/marquee @aliimam/dot-pattern",
+            "pnpm dlx shadcn add @aliimam/scroll-progress @aliimam/shine-border"
+          ]
+        },
+        "pro_tip": "Visit aliimam.in/blocks and use the theme selector at the bottom of the page to preview all theme presets, colors, and fonts in real-time before applying them to your project."
+      }
+    }
+  }
+}

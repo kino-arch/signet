@@ -8,6 +8,7 @@ export const ClientOnly = ({ children, fallback = null, minLevel = 1 }: { childr
   const [level, setLevel] = useState<0 | 1 | 2>(0)
   
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setMounted(true)
     setLevel(getEnhancementLevel())
   }, [])

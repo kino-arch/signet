@@ -1,11 +1,11 @@
 /// <reference types="vite/client" />
-/// <reference types="vitest" />
 
 import 'vitest';
-import type { AxeResults } from 'vitest-axe';
 
 declare module 'vitest' {
-  interface Assertion<T = any> {
+  // Extends vitest's matcher interface with the custom axe accessibility assertion.
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  interface Assertion<R = unknown> {
     toHaveNoViolations(): Promise<void>;
   }
   interface AsymmetricMatchersContaining {

@@ -21,10 +21,12 @@ import {
 } from "@/store/useTargetMatrixStore"
 import { KanbanColumn } from "./kanban-column"
 import { KanbanCard } from "./kanban-card"
+import { trpc } from "@/providers/trpc"
 
 export function KanbanBoard() {
-  const { applications, moveApplication, reorderApplications } =
+  const { applications, moveApplicationLocal, reorderApplicationsLocal } =
     useTargetMatrixStore()
+  const updateApplicationMutation = trpc.jobTracker.updateApplication.useMutation()
   const [activeApplication, setActiveApplication] =
     useState<Application | null>(null)
   const [overId, setOverId] = useState<string | null>(null)
@@ -76,7 +78,8 @@ export function KanbanBoard() {
 
       if (targetStatus !== activeApp.status) {
         // Move to a different column
-        moveApplication(activeApp.id, targetStatus)
+        moveApplicationLocal(activeApp.id, targetStatus)
+        updateApplicationMutation.mutate({ id: activeApp.id, patch: { status: targetStatus } })
       } else if (!overIsColumn && overApp && active.id !== over.id) {
         // Reorder within the same column
         const colApps = applications
@@ -86,11 +89,11 @@ export function KanbanBoard() {
         const toIdx = colApps.indexOf(String(over.id))
         if (fromIdx !== -1 && toIdx !== -1) {
           const reordered = arrayMove(colApps, fromIdx, toIdx)
-          reorderApplications(activeApp.status, reordered)
+          reorderApplicationsLocal(activeApp.status, reordered)
         }
       }
     },
-    [applications, moveApplication, reorderApplications]
+    [applications, moveApplicationLocal, reorderApplicationsLocal, updateApplicationMutation]
   )
 
   const getColumnApplications = (status: ApplicationStatus) =>

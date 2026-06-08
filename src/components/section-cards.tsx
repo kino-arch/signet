@@ -7,7 +7,6 @@ import { m } from "framer-motion"
 import { useReducedMotion } from "@/hooks/use-reduced-motion"
 import { CounterNumber } from "@/components/counter-number"
 import { GridPattern } from "@/components/grid-pattern"
-import { BentoGrid, BentoGridItem } from "@/components/bento"
 
 export function SectionCards({ slates = [] }: { slates?: DataSlate[] }) {
   const { user } = useAuthStore()
@@ -58,16 +57,9 @@ export function SectionCards({ slates = [] }: { slates?: DataSlate[] }) {
       animate="show"
       className="w-full px-4 lg:px-6"
     >
-      <BentoGrid
-        cols={{ base: 1, sm: 2, lg: 4 }}
-        gap={4}
-        rowHeight={{ base: "140px", md: "160px" }}
-      >
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 auto-rows-[140px] md:auto-rows-[160px]">
         {/* Active Modules Card */}
-        <BentoGridItem
-          colSpan={1}
-          className="group relative flex flex-col justify-between overflow-hidden border-border/40 bg-card/50 p-0 shadow-sm backdrop-blur-sm hover:shadow-md"
-        >
+        <div className="col-span-1 group relative flex flex-col justify-between overflow-hidden rounded-xl border border-border/40 bg-card/50 p-0 shadow-sm backdrop-blur-sm hover:shadow-md">
           <div className="absolute -top-10 -right-10 h-32 w-32 rounded-full bg-primary/10 blur-3xl transition-all duration-500 group-hover:bg-primary/20" />
           <GridPattern
             variant="small"
@@ -93,13 +85,10 @@ export function SectionCards({ slates = [] }: { slates?: DataSlate[] }) {
               </p>
             </div>
           </div>
-        </BentoGridItem>
+        </div>
 
         {/* Average Match Score Card */}
-        <BentoGridItem
-          colSpan={1}
-          className="group relative flex flex-col justify-between overflow-hidden border-border/40 bg-card/50 p-0 shadow-sm backdrop-blur-sm hover:shadow-md"
-        >
+        <div className="col-span-1 group relative flex flex-col justify-between overflow-hidden rounded-xl border border-border/40 bg-card/50 p-0 shadow-sm backdrop-blur-sm hover:shadow-md">
           <div className="absolute -top-10 -right-10 h-32 w-32 rounded-full bg-primary/10 blur-3xl transition-all duration-500 group-hover:bg-primary/20" />
           <GridPattern
             variant="small"
@@ -126,13 +115,10 @@ export function SectionCards({ slates = [] }: { slates?: DataSlate[] }) {
               </p>
             </div>
           </div>
-        </BentoGridItem>
+        </div>
 
         {/* Total Audits Card */}
-        <BentoGridItem
-          colSpan={1}
-          className="group relative flex flex-col justify-between overflow-hidden border-border/40 bg-card/50 p-0 shadow-sm backdrop-blur-sm hover:shadow-md"
-        >
+        <div className="col-span-1 group relative flex flex-col justify-between overflow-hidden rounded-xl border border-border/40 bg-card/50 p-0 shadow-sm backdrop-blur-sm hover:shadow-md">
           <div className="absolute -top-10 -right-10 h-32 w-32 rounded-full bg-primary/10 blur-3xl transition-all duration-500 group-hover:bg-primary/20" />
           <GridPattern
             variant="small"
@@ -156,13 +142,10 @@ export function SectionCards({ slates = [] }: { slates?: DataSlate[] }) {
               </p>
             </div>
           </div>
-        </BentoGridItem>
+        </div>
 
         {/* System Status Card */}
-        <BentoGridItem
-          colSpan={1}
-          className="group relative flex flex-col justify-between overflow-hidden border-border/40 bg-card/50 p-0 shadow-sm backdrop-blur-sm hover:shadow-md"
-        >
+        <div className="col-span-1 group relative flex flex-col justify-between overflow-hidden rounded-xl border border-border/40 bg-card/50 p-0 shadow-sm backdrop-blur-sm hover:shadow-md">
           <div className="absolute -top-10 -right-10 h-32 w-32 rounded-full bg-primary/10 blur-3xl transition-all duration-500 group-hover:bg-primary/20" />
           <GridPattern
             variant="small"
@@ -187,8 +170,8 @@ export function SectionCards({ slates = [] }: { slates?: DataSlate[] }) {
               </p>
             </div>
           </div>
-        </BentoGridItem>
-      </BentoGrid>
+        </div>
+      </div>
     </m.div>
   )
 }

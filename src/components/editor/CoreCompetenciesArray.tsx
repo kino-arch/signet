@@ -32,7 +32,7 @@ import {
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { HolographicTextarea } from "@/components/editor/primitives/HolographicTextarea"
+
 import { Badge } from "@/components/ui/badge"
 import { useDataSlateStore } from "@/store/useDataSlateStore"
 import type { SkillEntry } from "@/store/useDataSlateStore"
@@ -73,29 +73,33 @@ function SkillInput({
   }
 
   return (
-    <div className="space-y-3 rounded-lg border border-primary/20 bg-primary/[0.03] p-4">
+    <div 
+      className="space-y-3 rounded-lg border border-primary/20 p-4"
+      style={{ backgroundColor: "rgba(var(--primary), 0.03)" }}
+    >
       <div className="flex items-center gap-2">
         <Sparkles className="h-4 w-4 text-primary" />
         <Label className="text-xs font-bold tracking-widest text-primary uppercase">
           AI Skills Assistant
         </Label>
       </div>
-      <p className="text-[11px] leading-relaxed text-muted-foreground">
+      <p 
+        className="leading-relaxed text-muted-foreground"
+        style={{ fontSize: "11px" }}
+      >
         Tell me what you are good at! You can type a few lines or paste your
         current resume skills section, and I will organize them for you.
       </p>
       <div className="relative">
-        <HolographicTextarea
-          label="Skills Description"
+        <textarea
+          className="nordic-input w-full resize-none text-sm"
           value={text}
+          rows={4}
           onChange={(e) => setText(e.target.value)}
           disabled={isLoading}
           placeholder={
-            "e.g. Node.js, React, and Python.\n  // constellation-override: forge-bot-auto-migration\nOr: I'm a product manager with experience in Agile and Jira."
+            "e.g. Node.js, React, and Python.\nOr: I'm a product manager with experience in Agile and Jira."
           }
-          minRows={3}
-          maxRows={6}
-          unit="words"
           onKeyDown={(e) => {
             if (e.key === "Enter" && !e.shiftKey) {
               e.preventDefault()
@@ -178,14 +182,17 @@ function AiSuggestionPanel({
   const totalAccepted = totalSuggested - totalRejected
 
   return (
-    <div className="animate-in space-y-4 rounded-lg border border-primary/30 bg-gradient-to-b from-primary/[0.06] to-transparent p-4 duration-300 fade-in slide-in-from-top-2">
+    <div 
+      className="animate-in space-y-4 rounded-lg border border-primary/30 bg-gradient-to-b to-transparent p-4 duration-300 fade-in slide-in-from-top-2"
+      style={{ "--tw-gradient-from": "rgba(var(--primary), 0.06)" } as React.CSSProperties}
+    >
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <CheckCheck className="h-4 w-4 text-primary" />
           <Label className="text-xs font-bold tracking-widest text-primary uppercase">
             AI Suggestions
           </Label>
-          <Badge variant="secondary" className="text-[10px]">
+          <Badge variant="secondary" style={{ fontSize: "10px" }}>
             {totalAccepted} of {totalSuggested} selected
           </Badge>
         </div>
@@ -203,7 +210,10 @@ function AiSuggestionPanel({
           const state = selectionState[cat.name] || { rejected: new Set() }
           return (
             <div key={cat.name} className="space-y-1.5">
-              <span className="text-[11px] font-semibold tracking-wide text-foreground/80">
+              <span 
+                className="font-semibold tracking-wide text-foreground/80"
+                style={{ fontSize: "11px" }}
+              >
                 {cat.name}
               </span>
               <div className="flex flex-wrap gap-1.5">
@@ -398,7 +408,8 @@ function AcceptedCategory({
           <Badge
             key={kw}
             variant="secondary"
-            className="gap-1 py-0.5 text-[11px] font-normal"
+            className="gap-1 py-0.5 font-normal"
+            style={{ fontSize: "11px" }}
           >
             {kw}
             <button
@@ -422,7 +433,8 @@ function AcceptedCategory({
               }
             }}
             placeholder="+ add"
-            className="h-6 w-16 border-0 bg-transparent text-[11px] text-muted-foreground transition-all placeholder:text-muted-foreground/30 focus:w-24 focus:outline-none"
+            className="h-6 w-16 border-0 bg-transparent text-muted-foreground transition-all placeholder:text-muted-foreground/30 focus:w-24 focus:outline-none"
+            style={{ fontSize: "11px" }}
           />
         </div>
       </div>

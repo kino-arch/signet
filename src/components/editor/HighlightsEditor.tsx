@@ -1,5 +1,4 @@
 import { Button } from "@/components/ui/button"
-import { HolographicTextarea } from "@/components/editor/primitives/HolographicTextarea"
 import { Label } from "@/components/ui/label"
 import { Plus, Trash2 } from "lucide-react"
 import type { WorkEntry } from "@/store/useDataSlateStore"
@@ -110,19 +109,18 @@ export function HighlightsEditor({ entry }: HighlightsEditorProps) {
                 }}
               >
                 {isEditing ? (
-                  <HolographicTextarea
-                    label="Highlight"
-                    value={bullet.text}
-                    onChange={(e) =>
-                      handleManualTextUpdate(idx, e.target.value)
-                    }
-                    onBlur={() => setEditingIdx(null)}
-                    autoFocus={editingIdx === idx}
-                    placeholder="E.g., Increased conversion by 15%..."
-                    unit="words"
-                    minRows={2}
-                    maxRows={4}
-                  />
+                    <textarea
+                      className="nordic-input w-full resize-none text-sm"
+                      value={bullet.text}
+                      rows={2}
+                      onChange={(e) =>
+                        handleManualTextUpdate(idx, e.target.value)
+                      }
+                      onBlur={() => setEditingIdx(null)}
+                      autoFocus={editingIdx === idx}
+                      placeholder="E.g., Increased conversion by 15%..."
+                      aria-label="Edit highlight bullet"
+                    />
                 ) : (
                   <AutopsyBullet
                     bullet={bullet}

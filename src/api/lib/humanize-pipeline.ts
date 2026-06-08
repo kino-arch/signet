@@ -18,14 +18,14 @@ export async function runHumanizePipeline(
 ): Promise<HumanizeResult> {
   const atsResult = validateATS(content, options?.scope || "full_resume")
   let grammarErrors = 0
-  let finalContent = content // For now we won't auto-correct grammar, just score/flag it or we could fix it if we wanted.
+  const finalContent = content // For now we won't auto-correct grammar, just score/flag it or we could fix it if we wanted.
 
   if (options?.enableLanguageTool) {
     try {
       const controller = new AbortController()
       const timeoutId = setTimeout(() => controller.abort(), 1500) // 1.5s timeout
 
-      const url = "http://localhost:8010/v2/check"
+      const url = process.env.VITE_LANGUAGE_TOOL_URL || process.env.LANGUAGE_TOOL_URL || "http://localhost:8010/v2/check"
       const response = await fetch(url, {
         method: "POST",
         headers: {
@@ -52,7 +52,7 @@ export async function runHumanizePipeline(
           atsResult.score = Math.max(0, atsResult.score - grammarErrors * 2)
         }
       }
-    } catch (error) {
+    } catch {
       console.warn(
         "LanguageTool sidecar unavailable or timed out. Skipping grammar check."
       )

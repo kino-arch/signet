@@ -15,6 +15,7 @@ import type { Application } from "@/store/useTargetMatrixStore"
 import { supabase } from "@/lib/supabase"
 import { toast } from "sonner"
 import { cn } from "@/lib/utils"
+import { trpc } from "@/providers/trpc"
 
 interface MatchAnalysisDialogProps {
   application: Application
@@ -27,8 +28,9 @@ export function MatchAnalysisDialog({ application }: MatchAnalysisDialogProps) {
   )
   const [isAnalyzing, setIsAnalyzing] = useState(false)
 
-  const { updateApplication } = useTargetMatrixStore()
+  const { updateApplicationLocal } = useTargetMatrixStore()
   const dataSlate = useDataSlateStore()
+  const updateApplicationMutation = trpc.jobTracker.updateApplication.useMutation()
 
   const handleAnalyze = async () => {
     if (!jobDescription.trim()) {
@@ -39,13 +41,19 @@ export function MatchAnalysisDialog({ application }: MatchAnalysisDialogProps) {
     setIsAnalyzing(true)
 
     // Save JD
-    updateApplication(application.id, { jobDescription })
+    updateApplicationLocal(application.id, { jobDescription })
+    updateApplicationMutation.mutate({ id: application.id, patch: { jobDescription } })
 
     try {
       const {
         data: { session },
       } = await supabase.auth.getSession()
-      const token = session?.access_token || "mock-token"
+      
+      if (!session?.access_token || session.access_token === "mock-token") {
+        throw new Error("You must be logged in with a real account to run the Target Engine.")
+      }
+      
+      const token = session.access_token
 
       // Build resume payload
       const resumeData = {
@@ -59,8 +67,9 @@ export function MatchAnalysisDialog({ application }: MatchAnalysisDialogProps) {
         skills: dataSlate.skills.map((s) => s.keywords).flat(),
       }
 
+      const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || "https://dummy.supabase.co"
       const res = await fetch(
-        "https://vslbiwubtcynvfytwcbr.supabase.co/functions/v1/match-score",
+        `${supabaseUrl}/functions/v1/match-score`,
         {
           method: "POST",
           headers: {
@@ -79,17 +88,19 @@ export function MatchAnalysisDialog({ application }: MatchAnalysisDialogProps) {
       const data = await res.json()
       if (data.error) throw new Error(data.error)
 
-      updateApplication(application.id, {
+      const patch = {
         matchScore: {
           overall_match: data.overall_match,
           gap_analysis: data.gap_analysis,
           missing_keywords: data.missing_keywords || [],
         },
-      })
+      }
+      updateApplicationLocal(application.id, patch)
+      updateApplicationMutation.mutate({ id: application.id, patch })
 
       toast.success("Target Lock analysis complete.")
-    } catch (err: any) {
-      toast.error(err.message || "Analysis failed.")
+    } catch (err: unknown) {
+      toast.error((err as Error).message || "Analysis failed.")
     } finally {
       setIsAnalyzing(false)
     }

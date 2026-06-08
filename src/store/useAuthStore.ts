@@ -1,6 +1,7 @@
 import { create } from "zustand"
 import { supabase } from "@/lib/supabase"
 import type { User, Session } from "@supabase/supabase-js"
+import { logger } from "@/lib/logger"
 
 interface Profile {
   id: string
@@ -58,7 +59,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
       .single()
 
     if (error) {
-      console.error("Error fetching profile:", error.message)
+      logger.error("Error fetching profile:", error.message)
       return
     }
 
@@ -79,7 +80,11 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     const { error } = await supabase.auth.signInWithOAuth({
       provider: "google",
       options: {
-        redirectTo: window.location.origin + "/editor",
+        // Redirect to site root after OAuth — the app's auth listener and
+        // ProtectedRoute will handle routing to /dashboard or /onboarding
+        // based on the user's onboarding_completed metadata.
+        // This avoids needing sub-paths in the Supabase allowed redirect URLs list.
+        redirectTo: window.location.origin,
       },
     })
 
@@ -101,11 +106,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     }
 
     const user = data.user
-    const onboardingCompleted =
-      user?.user_metadata?.onboarding_completed ||
-      (user &&
-        localStorage.getItem(`onboarding_completed_${user.id}`) === "true") ||
-      false
+    const onboardingCompleted = !!user?.user_metadata?.onboarding_completed
 
     set({
       user: data.user,
@@ -156,11 +157,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     // Fetch initial session
     supabase.auth.getSession().then(({ data: { session } }) => {
       const user = session?.user ?? null
-      const onboardingCompleted =
-        user?.user_metadata?.onboarding_completed ||
-        (user &&
-          localStorage.getItem(`onboarding_completed_${user.id}`) === "true") ||
-        false
+      const onboardingCompleted = !!user?.user_metadata?.onboarding_completed
       set({
         session,
         user,
@@ -177,11 +174,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_event, session) => {
       const user = session?.user ?? null
-      const onboardingCompleted =
-        user?.user_metadata?.onboarding_completed ||
-        (user &&
-          localStorage.getItem(`onboarding_completed_${user.id}`) === "true") ||
-        false
+      const onboardingCompleted = !!user?.user_metadata?.onboarding_completed
       set({
         session,
         user,
@@ -210,10 +203,9 @@ export const useAuthStore = create<AuthState>((set, get) => ({
           },
         })
         if (error) {
-          console.error("Error updating user metadata:", error.message)
+          logger.error("Error updating user metadata:", error.message)
         }
       }
-      localStorage.setItem(`onboarding_completed_${user.id}`, "true")
     }
     set({ onboardingCompleted: true })
   },
@@ -264,7 +256,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
         .update({ credits: nextBalance })
         .eq("id", user.id)
       if (error) {
-        console.error("Error updating profile credits:", error.message)
+        logger.error("Error updating profile credits:", error.message)
       }
     }
   },
@@ -311,7 +303,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
         .eq("id", user.id)
 
       if (error) {
-        console.error("Network Error deducting credit:", error.message)
+        logger.error("Network Error deducting credit:", error.message)
         // Local state already updated — lock stays active so refetch won't clobber it
         return true
       }
@@ -320,7 +312,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
       set({ _optimisticLockUntil: null })
       return true
     } catch (err) {
-      console.error("Exception in deductCredit:", err)
+      logger.error("Exception in deductCredit:", err)
       return true
     }
   },

@@ -4,6 +4,7 @@ import jsPDF from "jspdf"
 export async function exportResumeToPDF(
   elementId: string,
   filename: string,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   _options: {
     scale?: number
     width?: number

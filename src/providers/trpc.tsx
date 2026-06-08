@@ -3,6 +3,7 @@ import { httpBatchLink, createTRPCProxyClient } from "@trpc/client"
 import React, { useState } from "react"
 import { createTRPCReact } from "@trpc/react-query"
 import type { AppRouter } from "../api/router"
+import { supabase } from "../lib/supabase"
 
 export const trpc = createTRPCReact<AppRouter>()
 
@@ -11,6 +12,14 @@ export const vanillaTrpc = createTRPCProxyClient<AppRouter>({
   links: [
     httpBatchLink({
       url: "/trpc",
+      headers: async () => {
+        const { data } = await supabase.auth.getSession()
+        return {
+          Authorization: data?.session?.access_token
+            ? `Bearer ${data.session.access_token}`
+            : "",
+        }
+      },
     }),
   ],
 })
@@ -22,6 +31,14 @@ export function TRPCProvider({ children }: { children: React.ReactNode }) {
       links: [
         httpBatchLink({
           url: "/trpc",
+          headers: async () => {
+            const { data } = await supabase.auth.getSession()
+            return {
+              Authorization: data?.session?.access_token
+                ? `Bearer ${data.session.access_token}`
+                : "",
+            }
+          },
         }),
       ],
     })

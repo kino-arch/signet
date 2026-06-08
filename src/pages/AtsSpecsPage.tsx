@@ -71,7 +71,7 @@ export function AtsSpecsPage() {
             </motion.div>
             <motion.h1
               variants={itemVariants}
-              className="font-heading text-4xl font-bold tracking-tight md:text-5xl lg:text-7xl"
+              className="text-style-heading-lg tracking-tight md:text-5xl lg:text-7xl"
             >
               The 43% Failure Rate
             </motion.h1>
@@ -98,7 +98,7 @@ export function AtsSpecsPage() {
                   <div className="mb-6 flex h-14 w-14 items-center justify-center bg-destructive/10 text-destructive shadow-inner">
                     <XCircle className="h-7 w-7" />
                   </div>
-                  <h2 className="mb-4 font-heading text-2xl font-bold text-foreground">
+                  <h2 className="mb-4 text-style-heading text-foreground">
                     The "Flashy" Two-Column
                   </h2>
                   <ul className="space-y-4 text-base text-muted-foreground">
@@ -140,7 +140,7 @@ export function AtsSpecsPage() {
                   <div className="mb-6 flex h-14 w-14 items-center justify-center bg-primary/15 text-primary shadow-inner">
                     <CheckCircle2 className="h-7 w-7" />
                   </div>
-                  <h2 className="mb-4 font-heading text-2xl font-bold text-foreground">
+                  <h2 className="mb-4 text-style-heading text-foreground">
                     The FAANG Executive
                   </h2>
                   <ul className="space-y-4 text-base text-muted-foreground">
@@ -178,7 +178,7 @@ export function AtsSpecsPage() {
             variants={itemVariants}
             className="flex flex-col items-center justify-center pt-10 text-center"
           >
-            <h2 className="mb-8 font-heading text-3xl font-bold md:text-4xl">
+            <h2 className="mb-8 text-style-heading-lg">
               Ready to bypass the filter?
             </h2>
             <RippleButton

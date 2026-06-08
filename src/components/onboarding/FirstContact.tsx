@@ -132,7 +132,7 @@ function ActForm({
   setProgress,
 }: {
   act: number
-  setAct: (act: any) => void
+  setAct: (act: 1 | 2 | 3 | 4 | 5) => void
   setProgress: (p: number) => void
 }) {
   const [inputValue, setInputValue] = useState("")
@@ -388,7 +388,9 @@ function ActV_Supernova({ onComplete }: { onComplete: () => void }) {
               style={
                 {
                   "--angle": `${(i / 200) * 360}deg`,
+                  // eslint-disable-next-line react-hooks/purity
                   "--delay": `${Math.random() * 0.5}s`,
+                  // eslint-disable-next-line react-hooks/purity
                   "--speed": `${0.5 + Math.random() * 1}s`,
                 } as React.CSSProperties
               }

@@ -1,30 +1,15 @@
 import { z } from "zod"
-import { router, publicProcedure } from "../trpc"
+import { router, protectedProcedure } from "../trpc"
 import { TRPCError } from "@trpc/server"
-import { createClient } from "@supabase/supabase-js"
+import { supabaseAdmin } from "../../lib/supabaseAdmin"
+import { logAuditEvent } from "../../lib/audit"
+// import { saveSnapshotRatelimit } from "../../lib/ratelimit"
 import {
   StrictSnapshotSchema,
   LooseSnapshotSchema,
 } from "../../lib/db-validators"
-
-// Setup Supabase admin client
-const supabaseUrl =
-  (import.meta as any).env?.VITE_SUPABASE_URL ||
-  process.env.VITE_SUPABASE_URL ||
-  "https://dummy.supabase.co"
-const supabaseServiceKey =
-  process.env.SUPABASE_SERVICE_ROLE_KEY ||
-  (import.meta as any).env?.VITE_SUPABASE_ANON_KEY ||
-  "dummy-key"
-
-const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey, {
-  auth: {
-    persistSession: false,
-  },
-})
-
 export const slateRouter = router({
-  saveSnapshot: publicProcedure
+  saveSnapshot: protectedProcedure
     .input(
       z.object({
         slateId: z.string().uuid(),
@@ -33,7 +18,41 @@ export const slateRouter = router({
         baseVersion: z.number().optional(),
       })
     )
-    .mutation(async ({ input }) => {
+    .mutation(async ({ ctx, input }) => {
+      // NOTE: Rate Limiting is currently commented out due to npm package installation failures on the workspace, 
+      // but the code structure is in place for when @upstash packages are resolved.
+      // const { success, reset } = await saveSnapshotRatelimit.limit(`saveSnapshot:${ctx.userId}`)
+      // if (!success) {
+      //   throw new TRPCError({
+      //     code: "TOO_MANY_REQUESTS",
+      //     message: `Rate limit exceeded. Retry after ${Math.ceil((reset - Date.now()) / 1000)}s.`,
+      //   })
+      // }
+
+      const { userId } = ctx
+
+      // AUTHORIZATION CHECK: Verify the user owns this slate
+      const { data: slate, error: slateError } = await supabaseAdmin
+        .from("data_slates")
+        .select("id, user_id")
+        .eq("id", input.slateId)
+        .maybeSingle()
+
+      if (slateError || !slate) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Slate not found",
+        })
+      }
+
+      if (slate.user_id !== userId) {
+        console.warn(`[SECURITY] Unauthorized write attempt: user ${userId} tried to modify slate ${input.slateId} owned by ${slate.user_id}`)
+        throw new TRPCError({
+          code: "FORBIDDEN",
+          message: "You do not have permission to modify this slate",
+        })
+      }
+
       // 1. Boundary Validation
       const schema =
         input.type === "publish" ? StrictSnapshotSchema : LooseSnapshotSchema
@@ -103,6 +122,21 @@ export const slateRouter = router({
           })
         }
 
+        // 4. Audit log (fire-and-forget, non-blocking)
+        const req = ctx.req
+        const ip = req?.header("x-forwarded-for")?.split(",")[0]?.trim() || req?.header("cf-connecting-ip") || null
+        const ua = req?.header("user-agent") || null
+
+        logAuditEvent({
+          userId,
+          action: "SAVE_SNAPSHOT_DRAFT",
+          resourceType: "slate",
+          resourceId: input.slateId,
+          ipAddress: ip,
+          userAgent: ua,
+          metadata: { timestamp: new Date().toISOString(), version: nextVersion },
+        })
+
         return { success: true, version: nextVersion }
       }
 
@@ -143,6 +177,21 @@ export const slateRouter = router({
             message: insertError.message,
           })
         }
+
+        // 4. Audit log (fire-and-forget, non-blocking)
+        const req = ctx.req
+        const ip = req?.header("x-forwarded-for")?.split(",")[0]?.trim() || req?.header("cf-connecting-ip") || null
+        const ua = req?.header("user-agent") || null
+
+        logAuditEvent({
+          userId,
+          action: "SAVE_SNAPSHOT_PUBLISH",
+          resourceType: "slate",
+          resourceId: input.slateId,
+          ipAddress: ip,
+          userAgent: ua,
+          metadata: { timestamp: new Date().toISOString(), version: nextVersion },
+        })
 
         return { success: true, version: nextVersion }
       }

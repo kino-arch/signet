@@ -1,20 +1,73 @@
-import { Hono } from "hono"
+import { Hono, type Context } from "hono"
 import { aiClient } from "../lib/ai-client"
 import { createClient } from "@supabase/supabase-js"
+import { db } from "../../db"
+import { profiles } from "../../db/schema"
+import { eq, and, sql } from "drizzle-orm"
 
 const supabaseUrl =
-  (import.meta as any).env?.VITE_SUPABASE_URL ||
+  (import.meta as { env?: Record<string, string> }).env?.VITE_SUPABASE_URL ||
   process.env.VITE_SUPABASE_URL ||
   "https://dummy.supabase.co"
 const supabaseServiceKey =
   process.env.SUPABASE_SERVICE_ROLE_KEY ||
-  (import.meta as any).env?.VITE_SUPABASE_ANON_KEY ||
+  (import.meta as { env?: Record<string, string> }).env?.VITE_SUPABASE_ANON_KEY ||
   "dummy-key"
 const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey, {
   auth: { persistSession: false },
 })
 
 export const aiRouter = new Hono()
+
+// Simple in-memory rate limiting
+const rateLimitMap = new Map<string, { count: number; resetAt: number }>()
+const RATE_LIMIT_MAX = 10
+const RATE_LIMIT_WINDOW_MS = 60 * 1000 // 1 minute
+
+aiRouter.use("*", async (c, next) => {
+  const authHeader = c.req.header("authorization")
+  if (!authHeader) {
+    return c.json({ error: "Unauthorized: Missing Authorization header" }, 401)
+  }
+  const token = authHeader.replace("Bearer ", "")
+  if (!token) {
+    return c.json({ error: "Unauthorized: Missing Token" }, 401)
+  }
+
+  const { data: { user }, error } = await supabaseAdmin.auth.getUser(token)
+  if (error || !user) {
+    return c.json({ error: "Unauthorized: Invalid Token" }, 401)
+  }
+
+  // Rate Limiting Logic
+  const now = Date.now()
+  const rlState = rateLimitMap.get(user.id) || { count: 0, resetAt: now + RATE_LIMIT_WINDOW_MS }
+  if (now > rlState.resetAt) {
+    rlState.count = 0
+    rlState.resetAt = now + RATE_LIMIT_WINDOW_MS
+  }
+  rlState.count++
+  rateLimitMap.set(user.id, rlState)
+
+  if (rlState.count > RATE_LIMIT_MAX) {
+    return c.json({ error: "Rate limit exceeded. Try again later." }, 429)
+  }
+
+  c.set("user", user)
+  await next()
+})
+
+async function deductCreditAtomic(userId: string) {
+  const [updatedProfile] = await db
+    .update(profiles)
+    .set({ credits: sql`${profiles.credits} - 1` })
+    .where(and(eq(profiles.id, userId), sql`${profiles.credits} > 0`))
+    .returning()
+
+  if (!updatedProfile) {
+    throw new Error("Insufficient credits.")
+  }
+}
 
 import { ReforgeResponseSchema } from "../../lib/ghost-schema"
 import type { ImmutableFacts } from "../../lib/ghost-schema"
@@ -139,8 +192,9 @@ export async function reforgeAccomplishment(
   return reforgeData
 }
 
-aiRouter.post("/reforge", async (c) => {
+aiRouter.post("/reforge", async (c: Context) => {
   const body = await c.req.json()
+  const user = c.get("user")
   const {
     rawSummary,
     targetRole,
@@ -168,6 +222,12 @@ aiRouter.post("/reforge", async (c) => {
       schools: [],
     }
 
+    try {
+      await deductCreditAtomic(user.id)
+    } catch (e: any) {
+      return c.json({ error: e.message }, 402)
+    }
+
     const reforgeData = await reforgeAccomplishment(
       rawSummary,
       safeFacts,
@@ -177,7 +237,7 @@ aiRouter.post("/reforge", async (c) => {
 
     if (userId) {
       try {
-        let inputHash = rawSummary ? rawSummary.slice(0, 32) : "empty"
+        const inputHash = rawSummary ? rawSummary.slice(0, 32) : "empty"
 
         let inferredCount = 0
         let estimatedCount = 0
@@ -217,19 +277,21 @@ aiRouter.post("/reforge", async (c) => {
     }
 
     return c.json(reforgeData)
-  } catch (err: any) {
-    console.error("AI Reforge Error:", err)
+  } catch (err: unknown) {
+    const error = err instanceof Error ? err : new Error(String(err))
     return c.json(
-      { error: err.message || "Failed to generate AI response." },
+      { error: error.message || "Failed to generate AI response." },
       500
     )
   }
 })
 
-aiRouter.post("/distill", async (c) => {
+aiRouter.post("/distill", async (c: Context) => {
   const body = await c.req.json()
   const { rawText, mode, workEntries, targetLock } = body
   const userKey = c.req.header("x-user-api-key")
+
+  const user = c.get("user")
 
   let contextAddition = ""
   if (targetLock) {
@@ -239,8 +301,8 @@ Priority Skills to Highlight: ${targetLock.resume_strategy?.skills_priority?.joi
 Metrics Emphasis: ${targetLock.resume_strategy?.metrics_emphasis || "None"}`
   }
 
-  let systemPrompt = ""
-  let userPrompt = ""
+  let systemPrompt: string
+  let userPrompt: string
 
   if (mode === "infer_from_experience") {
     systemPrompt = `You are an expert resume ATS optimizer. Infer the core competencies and skills from the following work experience entries.\n${contextAddition}\nGroup them into logical categories (e.g. "Frontend Development", "Cloud & DevOps", "Leadership"). Return a JSON object with a 'categories' array, where each category has a 'name' (string) and 'keywords' (array of strings). Return 3-6 categories with 3-8 keywords each.`
@@ -251,6 +313,7 @@ Metrics Emphasis: ${targetLock.resume_strategy?.metrics_emphasis || "None"}`
   }
 
   try {
+    await deductCreditAtomic(user.id)
     const result = await aiClient.getChatCompletionJSON(
       systemPrompt,
       userPrompt,
@@ -258,13 +321,13 @@ Metrics Emphasis: ${targetLock.resume_strategy?.metrics_emphasis || "None"}`
       { userKey }
     )
     return c.json(result)
-  } catch (err: any) {
-    console.error("AI Distill Error:", err)
-    return c.json({ error: err.message || "Failed to generate skills." }, 500)
+  } catch (err: unknown) {
+    const error = err instanceof Error ? err : new Error(String(err))
+    return c.json({ error: error.message || "Failed to generate skills." }, 500)
   }
 })
 
-aiRouter.post("/target-lock", async (c) => {
+aiRouter.post("/target-lock", async (c: Context) => {
   const body = await c.req.json()
   const { companyName, jobTitle } = body
   const userKey = c.req.header("x-user-api-key")
@@ -307,8 +370,10 @@ Return a JSON object matching this schema exactly:
 }`
 
   const userPrompt = `Target Company: ${companyName}\nTarget Role: ${jobTitle || "General"}`
+  const user = c.get("user")
 
   try {
+    await deductCreditAtomic(user.id)
     const result = await aiClient.getChatCompletionJSON(
       systemPrompt,
       userPrompt,
@@ -316,16 +381,16 @@ Return a JSON object matching this schema exactly:
       { userKey }
     )
     return c.json(result)
-  } catch (err: any) {
-    console.error("Target Lock Error:", err)
+  } catch (err: unknown) {
+    const error = err instanceof Error ? err : new Error(String(err))
     return c.json(
-      { error: err.message || "Failed to acquire target lock." },
+      { error: error.message || "Failed to acquire target lock." },
       500
     )
   }
 })
 
-aiRouter.post("/score", async (c) => {
+aiRouter.post("/score", async (c: Context) => {
   const body = await c.req.json()
   const { bullets, targetRole, targetLock } = body
   const userKey = c.req.header("x-user-api-key")
@@ -361,8 +426,10 @@ Return a strict JSON object matching this schema exactly:
 }`
 
   const userPrompt = `Target Role: ${targetRole || "General"}\n\nBullets to analyze:\n${JSON.stringify(bullets)}`
+  const user = c.get("user")
 
   try {
+    await deductCreditAtomic(user.id)
     const result = await aiClient.getChatCompletionJSON(
       systemPrompt,
       userPrompt,
@@ -370,8 +437,8 @@ Return a strict JSON object matching this schema exactly:
       { userKey }
     )
     return c.json(result)
-  } catch (err: any) {
-    console.error("Score Impact Error:", err)
-    return c.json({ error: err.message || "Failed to score bullets." }, 500)
+  } catch (err: unknown) {
+    const error = err instanceof Error ? err : new Error(String(err))
+    return c.json({ error: error.message || "Failed to score bullets." }, 500)
   }
 })

@@ -18,6 +18,7 @@ const ThemeProviderContext = createContext<{
 
 export function ThemeProvider({
   children,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   defaultTheme = "dark",
   storageKey = "theme",
   ...props

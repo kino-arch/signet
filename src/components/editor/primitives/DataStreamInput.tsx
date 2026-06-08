@@ -72,7 +72,7 @@ export const DataStreamInput = forwardRef<
           case "url":
             return /^https?:\/\//i.test(v) || v.length === 0
           case "phone":
-            return /^[\d\s\-\+\(\)]+$/.test(v) || v.length === 0
+            return /^[\d\s\-+()]+$/.test(v) || v.length === 0
           case "date":
             return !isNaN(Date.parse(v)) || v.length === 0
           default:

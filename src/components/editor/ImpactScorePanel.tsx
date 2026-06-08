@@ -67,8 +67,8 @@ export function ImpactScorePanel({ entry }: ImpactScorePanelProps) {
 
       setResults(data.scores)
       setOverallScore(data.overall_score)
-    } catch (err: any) {
-      toast.error(err.message || "Scoring failed.")
+    } catch (err: unknown) {
+      toast.error((err as Error).message || "Scoring failed.")
     } finally {
       setIsScoring(false)
     }

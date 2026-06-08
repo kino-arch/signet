@@ -2,10 +2,18 @@ import { useEffect } from "react"
 import { useThemeStore } from "@/store/useThemeStore"
 import { getEnhancementLevel } from "@/lib/enhancement"
 
+declare global {
+  interface Window {
+    analytics?: {
+      track: (eventName: string, properties?: Record<string, unknown>) => void
+    }
+  }
+}
+
 const MAX_QUEUE_SIZE = 100
 const FLUSH_INTERVAL = 30000 // 30 seconds
 
-export const trackEvent = (eventName: string, properties: Record<string, any> = {}) => {
+export const trackEvent = (eventName: string, properties: Record<string, unknown> = {}) => {
   if (typeof window === 'undefined') return;
 
   const sessionContext = {
@@ -27,9 +35,7 @@ export const trackEvent = (eventName: string, properties: Record<string, any> = 
   if (queue.length > MAX_QUEUE_SIZE) queue.shift() // FIFO eviction
   localStorage.setItem('analytics_queue', JSON.stringify(queue))
   
-  // @ts-ignore
   if (window.analytics?.track) {
-    // @ts-ignore
     window.analytics.track(eventName, payload.properties)
   }
 }
@@ -39,10 +45,10 @@ export const useAnalyticsTracker = () => {
     const flush = () => {
       const queue = JSON.parse(localStorage.getItem('analytics_queue') || '[]')
       if (queue.length === 0) return
-      // @ts-ignore
       if (window.analytics?.track) {
-        // @ts-ignore
-        queue.forEach((event: any) => window.analytics.track(event.event, event.properties))
+        queue.forEach((event: { event: string; properties: Record<string, unknown> }) => {
+          window.analytics!.track(event.event, event.properties)
+        })
         localStorage.removeItem('analytics_queue')
       }
     }

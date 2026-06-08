@@ -30,7 +30,7 @@ export function Hero() {
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.1 }}
-          className="max-w-3xl font-heading text-3xl font-bold tracking-tight text-foreground sm:text-4xl md:text-5xl lg:text-6xl"
+          className="max-w-3xl text-style-hero text-3xl sm:text-4xl md:text-5xl lg:text-6xl text-foreground"
         >
           Secure Your Next Role with{" "}
           <span className="text-primary">Beskar-Grade Precision</span>

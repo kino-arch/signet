@@ -1,864 +1,223 @@
-@import "https://fonts.googleapis.com/css2?family=Ubuntu:wght@300;400;500;600;700&display=swap";
 @import "tailwindcss";
-@plugin "tailwindcss-animate";
-@import "tw-animate-css";
-@import "shadcn/tailwind.css";
-@import "@fontsource-variable/inter";
-@import "@fontsource-variable/dm-sans";
-@import "@fontsource/geist-mono";
 
-@font-face {
-  font-family: 'Chorus';
-  src: url('/fonts/CHORUS-BOLD.otf') format('opentype');
-  font-weight: 700;
-  font-style: normal;
-  font-display: swap;
+/* ============================================
+   CUSTOM FONT FACES
+   ============================================ */
+
+
+
+/* ============================================
+   SIGNET NORDIC DESIGN SYSTEM
+   "Forge" Theme — Premium Dark, High Contrast
+   ============================================ */
+
+@theme {
+  /* 60-30-10 Color Palette — Dark Mode */
+  --color-nordic-bg: #09090B;             /* 60% — Dominant: deep ink */
+  --color-nordic-surface: #18181B;        /* 30% — Cards, panels */
+  --color-nordic-surface-hover: #27272A;  /* 30% — Hover states */
+  --color-nordic-text: #FAFAFA;           /* Primary text — near white */
+  --color-nordic-text-secondary: #A1A1AA; /* Secondary text — warm gray */
+  --color-nordic-text-tertiary: #52525B;  /* Placeholders, hints */
+  --color-nordic-border: rgba(255,255,255,0.08);        /* Structural borders */
+  --color-nordic-border-subtle: rgba(255,255,255,0.04); /* Divider lines */
+  --color-nordic-accent: #3B82F6;         /* 10% — Electric blue */
+  --color-nordic-accent-hover: #2563EB;   /* CTA hover */
+  --color-nordic-accent-soft: rgba(59,130,246,0.12); /* Accent bg wash */
+  --color-nordic-success: #22C55E;
+  --color-nordic-warning: #F59E0B;
+  --color-nordic-error: #EF4444;
+
+  /* Typography — Nordic Stack */
+  /* Legacy variables (deprecate in Phase 6) */
+  --font-sans: "Onest Variable", ui-sans-serif, system-ui, sans-serif;
+  
+  /* Semantic aliases (new source of truth) */
+  --font-heading: "Schibsted Grotesk Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-body: "Onest Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Syne Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-serif: "Instrument Serif", Georgia, serif;
+  --font-mono: "Spline Sans Mono Variable", ui-monospace, monospace;
+
+  /* Spacing Scale (Nordic: generous, breathable) */
+  --spacing-nordic-xs: 0.25rem;   /* 4px */
+  --spacing-nordic-sm: 0.5rem;    /* 8px */
+  --spacing-nordic-md: 1rem;      /* 16px */
+  --spacing-nordic-lg: 1.5rem;    /* 24px */
+  --spacing-nordic-xl: 2.5rem;    /* 40px */
+  --spacing-nordic-2xl: 4rem;     /* 64px */
+
+  /* Shadows — deep, dispersed */
+  --shadow-nordic-sm: 0 1px 3px 0 rgb(0 0 0 / 0.4);
+  --shadow-nordic-md: 0 4px 12px -1px rgb(0 0 0 / 0.5), 0 2px 4px -2px rgb(0 0 0 / 0.3);
+  --shadow-nordic-lg: 0 10px 30px -3px rgb(0 0 0 / 0.6), 0 4px 8px -4px rgb(0 0 0 / 0.4);
+  --shadow-nordic-xl: 0 20px 50px -5px rgb(0 0 0 / 0.7), 0 8px 16px -6px rgb(0 0 0 / 0.5);
+  --shadow-nordic-glow: 0 0 40px rgba(59, 130, 246, 0.15);
+
+  /* Shadcn standard mappings to Nordic */
+  --color-background: var(--color-nordic-bg);
+  --color-foreground: var(--color-nordic-text);
+  --color-card: var(--color-nordic-surface);
+  --color-card-foreground: var(--color-nordic-text);
+  --color-popover: var(--color-nordic-surface);
+  --color-popover-foreground: var(--color-nordic-text);
+  --color-primary: var(--color-nordic-accent);
+  --color-primary-foreground: #FFFFFF;
+  --color-secondary: var(--color-nordic-surface-hover);
+  --color-secondary-foreground: var(--color-nordic-text-secondary);
+  --color-muted: var(--color-nordic-surface-hover);
+  --color-muted-foreground: var(--color-nordic-text-secondary);
+  --color-accent: var(--color-nordic-surface-hover);
+  --color-accent-foreground: var(--color-nordic-text);
+  --color-destructive: var(--color-nordic-error);
+  --color-destructive-foreground: #FFFFFF;
+  --color-border: var(--color-nordic-border);
+  --color-input: var(--color-nordic-border);
+  --color-ring: var(--color-nordic-accent);
+
+  /* Force rounded-none globally for Shadcn components */
+  --radius: 0px;
+  --radius-lg: 0px;
+  --radius-md: 0px;
+  --radius-sm: 0px;
 }
 
-@font-face {
-  font-family: 'Peace';
-  src: url('/fonts/Peace%20Sans.otf') format('opentype');
-  font-weight: 400;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'Realce';
-  src: url('/fonts/Realce-Black-v0.006.otf') format('opentype');
-  font-weight: 900;
-  font-style: normal;
-  font-display: swap;
-}
-
-@custom-variant dark (&:is(.dark *));
+/* ============================================
+   GLOBAL RESETS — Clean slate
+   ============================================ */
 
 @layer base {
-  html {
-    font-family: 'Inter Variable', 'DM Sans Variable', system-ui, sans-serif;
+  body {
+    @apply bg-nordic-bg text-nordic-text antialiased;
+    font-family: var(--font-sans);
   }
-  code, pre, kbd, .font-mono {
-    font-family: 'Geist Mono', 'Fira Code', monospace;
+
+  /* Typography defaults */
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-semibold tracking-tight text-nordic-text;
+    font-family: var(--font-heading); /* Schibsted Grotesk for all headings */
+    letter-spacing: -0.02em;
   }
+
+  /* Body and UI text — Onest for dynamic legibility */
+  body, p, li, td, th, label, input, textarea, select {
+    font-family: var(--font-body);
+  }
+
+  /* Code, badges, mono elements, and buttons — Spline Sans Mono */
+  code, pre, kbd, samp, button {
+    font-family: var(--font-mono);
+  }
+
+  /* Focus states — accessible, visible */
+  *:focus-visible {
+    @apply outline-2 outline-offset-2 outline-nordic-accent;
+  }
+
+  /* Scrollbar — dark mode */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: #09090B; }
+  ::-webkit-scrollbar-thumb { background: #27272A; border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: #3F3F46; }
+}
+
+/* ============================================
+   UTILITY CLASSES
+   ============================================ */
+
+@layer utilities {
   .font-display {
-    font-family: 'DM Sans Variable', 'Inter Variable', sans-serif;
-    font-weight: 700;
-  }
-}
-
-@layer utilities {
-  .bg-signet-hero-depth {
-    background: radial-gradient(
-      ellipse 80% 50% at 50% -20%, 
-      hsl(var(--signet-navy-900, 222 47% 11%)) 0%, 
-      hsl(var(--signet-navy-950, 222 47% 5%)) 50%, 
-      #000000 100%
-    );
-  }
-}
-
-:root {
-  --radius: 0rem;
-  /* App Shell Universe (Light Mode fallbacks) */
-  --app-bg: oklch(1 0 0);
-  --app-fg: oklch(0.141 0.005 285.823);
-  --app-primary: oklch(0.553 0.274 325.356);
-  --app-card: oklch(1 0 0);
-  --app-card-fg: oklch(0.141 0.005 285.823);
-  --app-muted: oklch(0.967 0.001 286.375);
-  --app-muted-fg: oklch(0.552 0.016 285.938);
-  --app-border: oklch(0.92 0.004 286.32);
-  --app-ring: oklch(0.553 0.274 325.356);
-
-  /* Cosmic Palette - Shared (Legacy defaults) */
-  --app-cyan: oklch(0.72 0.22 220);
-  --app-coral: oklch(0.65 0.24 15);
-  --app-violet: oklch(0.55 0.20 280);
-  --app-amber: oklch(0.70 0.20 80);
-
-  /* New theme-agnostic aliases */
-  --theme-primary: var(--app-cyan);
-  --theme-secondary: var(--app-amber);
-  --theme-accent: var(--app-violet);
-  --theme-success: var(--app-cyan);
-  --theme-warning: var(--app-amber);
-  --theme-danger: var(--app-coral);
-
-  /* Day 1 Level 0 Static Foundation Variables */
-  --theme-bg-start: #0a0e27;
-  --theme-bg-end: #0f172a;
-  --signet-glow: #00f0ff;
-  --signet-accent: #ffb800;
-
-  /* Legacy mappings */
-  --background: var(--app-bg);
-  --foreground: var(--app-fg);
-  --card: var(--app-card);
-  --card-foreground: var(--app-card-fg);
-  --popover: var(--app-card);
-  --popover-foreground: var(--app-card-fg);
-  --primary: var(--app-primary);
-  --primary-foreground: oklch(1 0 0);
-  --secondary: var(--app-muted);
-  --secondary-foreground: var(--app-fg);
-  --muted: var(--app-muted);
-  --muted-foreground: var(--app-muted-fg);
-  --accent: var(--app-muted);
-  --accent-foreground: var(--app-fg);
-  --destructive: var(--app-coral);
-  --border: var(--app-border);
-  --input: var(--app-border);
-  --ring: var(--app-ring);
-
-  /* Resume Preview Universe */
-  --print-bg: #ffffff;
-  --print-primary: #8264ff;
-  --print-coral: #ea545f;
-  --print-text: #09090b;
-}
-
-.dark {
-  color-scheme: dark;
-
-  /* Safari Fallbacks */
-  --app-bg: #0f0f23;
-  --app-fg: #e8e8ff;
-  --app-card: #181830;
-  --app-primary: #00e5ff;
-  --app-card-fg: #e8e8ff;
-  --app-muted: #252540;
-  --app-muted-fg: #8a8ab5;
-  --app-border: #333360;
-  --app-ring: #00e5ff;
-  
-  --sidebar-accent: #1e1e3a;
-  --sidebar-accent-foreground: #e8e8ff;
-
-  @supports (color: oklch(0% 0 0)) {
-    /* ── FOUNDATION: Blue-tinted, not pure black ── */
-    --app-bg: oklch(0.12 0.04 264);        /* #0f0f23 — deep navy, visible blue hue */
-    --app-fg: oklch(0.94 0.005 285.823);   /* #e8e8ff — ice white, not pure white */
-
-    /* ── SURFACES: Visible elevation layers ── */
-    --app-card: oklch(0.16 0.05 264);              /* #181830 — clearly above background */
-    --app-card-fg: oklch(0.94 0.005 285.823);
-    
-    /* ── PRIMARY: Electric Cyan that POPS ── */
-    --app-primary: oklch(0.75 0.24 220);           /* #00e5ff — brighter, more saturated */
-
-    /* ── MUTED: Must be readable ── */
-    --app-muted: oklch(0.22 0.06 264);
-    --app-muted-fg: oklch(0.65 0.08 264);  /* #8a8ab5 — readable, not ghostly */
-
-    /* ── BORDERS: VISIBLE edges ── */
-    --app-border: oklch(0.28 0.08 264);            /* #333360 — you MUST see the border */
-    --app-ring: oklch(0.75 0.24 220);              /* cyan focus ring */
-    
-    /* Solid, dark accent for sidebar hover states */
-    --sidebar-accent: oklch(0.18 0.06 264);  /* #1e1e3a — visible but not bright */
-    --sidebar-accent-foreground: oklch(0.94 0.005 285.823);
+    /* Keep for backward compatibility during transition */
+    font-family: var(--font-display);
+    @apply text-balance;
   }
 
-  /* Overwrite legacy variables */
-  --background: var(--app-bg);
-  --foreground: var(--app-fg);
-  --card: var(--app-card);
-  --card-foreground: var(--app-card-fg);
-  --popover: var(--app-card);
-  --popover-foreground: var(--app-card-fg);
-  --primary: var(--app-primary);
-  --primary-foreground: oklch(0.08 0.05 264);
-  --secondary: var(--app-muted);
-  --secondary-foreground: var(--app-fg);
-  --muted: var(--app-muted);
-  --muted-foreground: var(--app-muted-fg);
-  --accent: var(--app-muted);
-  --accent-foreground: var(--app-fg);
-  --destructive: var(--app-coral);
-  --border: var(--app-border);
-  --input: var(--app-border);
-  --ring: var(--app-ring);
-}
-
-@theme inline {
-  --color-cosmic-cyan: var(--app-cyan);
-  --color-cosmic-coral: var(--app-coral);
-  --color-cosmic-violet: var(--app-violet);
-  --color-cosmic-amber: var(--app-amber);
-
-  /* Semantic Theme Aliases */
-  --color-theme-primary: var(--theme-primary);
-  --color-theme-secondary: var(--theme-secondary);
-  --color-theme-accent: var(--theme-accent);
-  --color-theme-success: var(--theme-success);
-  --color-theme-warning: var(--theme-warning);
-  --color-theme-danger: var(--theme-danger);
-
-  --font-sans: 'Inter Variable', 'DM Sans Variable', system-ui, sans-serif;
-  --font-heading: 'Realce', 'DM Sans Variable', 'Inter Variable', sans-serif;
-  --font-mono: 'Geist Mono', 'Fira Code', monospace;
-  --font-chorus: 'Chorus', sans-serif;
-  --font-peace: 'Peace', sans-serif;
-  --font-realce: 'Realce', sans-serif;
-  --color-sidebar-ring: var(--sidebar-ring);
-  --color-sidebar-border: var(--sidebar-border);
-  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
-  --color-sidebar-accent: var(--sidebar-accent);
-  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
-  --color-sidebar-primary: var(--sidebar-primary);
-  --color-sidebar-foreground: var(--sidebar-foreground);
-  --color-sidebar: var(--sidebar);
-  --color-chart-5: var(--chart-5);
-  --color-chart-4: var(--chart-4);
-  --color-chart-3: var(--chart-3);
-  --color-chart-2: var(--chart-2);
-  --color-chart-1: var(--chart-1);
-  --color-ring: var(--ring);
-  --color-input: var(--input);
-  --color-border: var(--border);
-  --color-destructive: var(--destructive);
-  --color-destructive-foreground: var(--destructive-foreground);
-  --color-accent-foreground: var(--accent-foreground);
-  --color-accent: var(--accent);
-  --color-muted-foreground: var(--muted-foreground);
-  --color-muted: var(--muted);
-  --color-secondary-foreground: var(--secondary-foreground);
-  --color-secondary: var(--secondary);
-  --color-primary-foreground: var(--primary-foreground);
-  --color-primary: var(--primary);
-  --color-popover-foreground: var(--popover-foreground);
-  --color-popover: var(--popover);
-  --color-card-foreground: var(--card-foreground);
-  --color-card: var(--card);
-  --color-foreground: var(--foreground);
-  --color-background: var(--background);
-  --radius-sm: calc(var(--radius) * 0.6);
-  --radius-md: calc(var(--radius) * 0.8);
-  --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) * 1.4);
-  --radius-2xl: calc(var(--radius) * 1.8);
-  --radius-3xl: calc(var(--radius) * 2.2);
-  --radius-4xl: calc(var(--radius) * 2.6);
-  --animate-rippling: rippling var(--duration) ease-out;
-
-  @keyframes rippling {
-    0% { opacity: 1; }
-    100% { transform: scale(2); opacity: 0; }
+  .nordic-surface {
+    @apply bg-nordic-surface border border-nordic-border;
   }
 
-  --animate-background-position-spin: background-position-spin 3000ms infinite alternate;
-  @keyframes background-position-spin {
-    0% { background-position: top center; }
-    100% { background-position: bottom center; }
-  }
-}
-
-.container {
-  margin-inline: auto;
-  padding-inline: 1rem;
-  width: 100%;
-
-  @media (min-width: 768px) { padding-inline: 1.5rem; }
-  @media (min-width: 640px) { max-width: 640px; }
-  @media (min-width: 768px) { max-width: 768px; }
-  @media (min-width: 1024px) { max-width: 1024px; }
-  @media (min-width: 1280px) { max-width: 1280px; }
-  @media (min-width: 1400px) { max-width: 1400px; }
-}
-
-@layer base {
-  * {
-    @apply border-border outline-ring/50;
-    /* Firefox custom scrollbar */
-    scrollbar-width: thin;
-    scrollbar-color: oklch(0.28 0.08 264) transparent;
-  }
-  body {
-    @apply bg-background text-foreground;
-  }
-  html {
-    @apply font-sans;
-    scroll-behavior: smooth;
+  .nordic-surface-elevated {
+    @apply bg-nordic-surface border border-nordic-border shadow-nordic-md;
   }
 
-  /* Webkit custom scrollbar */
-  ::-webkit-scrollbar {
-    width: 6px;
-    height: 6px;
-  }
-  ::-webkit-scrollbar-track {
-    background: transparent;
-  }
-  ::-webkit-scrollbar-thumb {
-    background: oklch(0.28 0.08 264);
-    border-radius: 3px;
-  }
-  ::-webkit-scrollbar-thumb:hover {
-    background: oklch(0.35 0.10 264);
+  .nordic-text-primary {
+    @apply text-nordic-text font-medium;
   }
 
-  /* High-contrast focus rings */
-  :focus-visible {
-    outline: 2px solid oklch(0.75 0.24 220);
-    outline-offset: 2px;
-    box-shadow: 0 0 0 4px oklch(0.75 0.24 220 / 0.2);
+  .nordic-text-secondary {
+    @apply text-nordic-text-secondary;
   }
 
-  .glass-panel :focus-visible,
-  .glow-border-iridescent :focus-visible {
-    outline: 2px solid oklch(0.94 0.005 285.823);
-    outline-offset: 2px;
-    box-shadow: 0 0 0 4px oklch(0.94 0.005 285.823 / 0.15);
-  }
-}
-
-/* Resume preview is ALWAYS light-mode hex, immune to .dark */
-#resume-preview-content,
-[data-universe="print"] {
-  --background: var(--print-bg) !important;
-  --foreground: var(--print-text) !important;
-  --primary: var(--print-primary) !important;
-  --primary-foreground: #ffffff !important;
-  --card: #ffffff !important;
-  --card-foreground: #09090b !important;
-  --popover: #ffffff !important;
-  --popover-foreground: #09090b !important;
-  --secondary: #f4f4f5 !important;
-  --secondary-foreground: #18181b !important;
-  --muted: #f4f4f5 !important;
-  --muted-foreground: #71717a !important;
-  --accent: #f4f4f5 !important;
-  --accent-foreground: #18181b !important;
-  --destructive: var(--print-coral) !important;
-  --border: #e4e4e7 !important;
-  --input: #e4e4e7 !important;
-  --ring: transparent !important;
-}
-
-/* html2canvas leak prevention: force all descendant border utilities to hex */
-#resume-preview-content * {
-  border-color: #e4e4e7 !important;
-}
-
-.dark #resume-preview-content,
-.dark [data-universe="print"] {
-  --background: var(--print-bg) !important;
-  --foreground: var(--print-text) !important;
-  --primary: var(--print-primary) !important;
-  --primary-foreground: #ffffff !important;
-  --card: #ffffff !important;
-  --card-foreground: #09090b !important;
-  --popover: #ffffff !important;
-  --popover-foreground: #09090b !important;
-  --secondary: #f4f4f5 !important;
-  --secondary-foreground: #18181b !important;
-  --muted: #f4f4f5 !important;
-  --muted-foreground: #71717a !important;
-  --accent: #f4f4f5 !important;
-  --accent-foreground: #18181b !important;
-  --destructive: var(--print-coral) !important;
-  --border: #e4e4e7 !important;
-  --input: #e4e4e7 !important;
-  --ring: transparent !important;
-}
-
-@media print {
-  @page {
-    size: letter;
-    margin: 0;
+  .nordic-text-tertiary {
+    @apply text-nordic-text-tertiary text-sm;
   }
 
-  :root,
-  .dark {
-    --background: rgb(255, 255, 255);
-    --foreground: rgb(9, 11, 12);
-    --card: rgb(255, 255, 255);
-    --card-foreground: rgb(9, 11, 12);
-    --popover: rgb(255, 255, 255);
-    --popover-foreground: rgb(9, 11, 12);
-    --primary: rgb(130, 100, 255);
-    --primary-foreground: rgb(255, 255, 255);
-    --secondary: rgb(244, 244, 245);
-    --secondary-foreground: rgb(24, 24, 27);
-    --muted: rgb(241, 243, 243);
-    --muted-foreground: rgb(103, 120, 124);
-    --accent: rgb(234, 84, 95);
-    --accent-foreground: rgb(255, 255, 255);
-    --border: rgb(227, 231, 232);
-    --input: rgb(227, 231, 232);
-    --ring: rgb(130, 100, 255);
+  .nordic-input {
+    @apply bg-nordic-bg border border-nordic-border rounded-none px-3 py-2.5 text-nordic-text
+           placeholder:text-nordic-text-tertiary placeholder:italic
+           focus:outline-none focus:ring-2 focus:ring-nordic-accent/20 focus:border-nordic-accent
+           transition-all duration-150;
   }
 
-  body {
-    background: white !important;
-    -webkit-print-color-adjust: exact;
-    print-color-adjust: exact;
+  .nordic-input-label {
+    @apply block text-sm font-medium text-nordic-text-secondary mb-1.5;
   }
 
-  .resume-item { break-inside: avoid; }
-  .resume-header { break-after: avoid; }
-  p, li, .resume-text { orphans: 3; widows: 3; }
-}
-
-@layer utilities {
-
-  /* ── GLASS PANEL: Must have visible border ── */
-  .glass-panel {
-    background: rgba(15, 15, 35, 0.85);
-    border: 1px solid rgba(100, 100, 180, 0.25);
-    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
+  .nordic-btn-primary {
+    @apply inline-flex items-center justify-center gap-2
+           bg-nordic-accent text-white font-medium
+           rounded-none px-5 py-2.5
+           hover:bg-nordic-accent-hover
+           active:scale-[0.98]
+           transition-all duration-150
+           shadow-nordic-sm
+           disabled:opacity-50 disabled:cursor-not-allowed;
   }
 
-  /* Only enable blur if backdrop-filter is cheap enough */
-  @supports (backdrop-filter: blur(12px)) {
-    .glass-panel {
-      background: rgba(15, 15, 35, 0.7);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-    }
+  .nordic-btn-secondary {
+    @apply inline-flex items-center justify-center gap-2
+           bg-nordic-surface-hover text-nordic-text-secondary font-medium
+           border border-nordic-border
+           rounded-none px-5 py-2.5
+           hover:bg-nordic-surface hover:text-nordic-text
+           active:scale-[0.98]
+           transition-all duration-150;
   }
 
-  /* ── GLOW EFFECTS: Aggressive enough to see ── */
-  .glow-cyan {
-    box-shadow: 
-      0 0 0 1px rgba(0, 229, 255, 0.3),
-      0 0 20px rgba(0, 229, 255, 0.4),
-      0 0 60px rgba(0, 229, 255, 0.15);
+  .nordic-btn-ghost {
+    @apply inline-flex items-center justify-center gap-2
+           text-nordic-text-secondary font-medium
+           rounded-none px-3 py-2
+           hover:text-nordic-text hover:bg-nordic-surface-hover
+           transition-all duration-150;
   }
 
-  .btn-glow-cyan {
-    box-shadow: 
-      0 0 0 1px rgba(0, 229, 255, 0.3),
-      0 0 12px rgba(0, 229, 255, 0.3);
-    transition: all 0.15s ease;
-  }
-  .btn-glow-cyan:hover {
-    box-shadow: 
-      0 0 0 1px rgba(0, 229, 255, 0.5),
-      0 0 20px rgba(0, 229, 255, 0.4);
-    transform: translateY(-1px);
-  }
-  .btn-glow-cyan:active {
-    box-shadow: 
-      0 0 0 1px rgba(0, 229, 255, 0.2),
-      inset 0 2px 4px rgba(0, 0, 0, 0.3);
-    transform: translateY(0px) scale(0.98);
-    transition: all 0.05s ease;
+  .nordic-card {
+    @apply bg-nordic-surface border border-nordic-border rounded-none
+           shadow-nordic-sm
+           hover:shadow-nordic-md hover:border-white/15
+           transition-all duration-200;
   }
 
-  .glow-coral {
-    box-shadow: 
-      0 0 0 1px rgba(255, 100, 120, 0.3),
-      0 0 20px rgba(255, 100, 120, 0.4),
-      0 0 50px rgba(255, 100, 120, 0.2);
+  .nordic-card-flat {
+    @apply bg-nordic-surface border border-nordic-border rounded-none
+           transition-all duration-200;
   }
 
-  /* ── TEXT GLOW: Headlines must shine ── */
-  .text-glow-cyan {
-    text-shadow: 
-      0 0 20px rgba(0, 229, 255, 0.5),
-      0 0 40px rgba(0, 229, 255, 0.3);
+  .nordic-tag {
+    @apply inline-flex items-center gap-1
+           bg-nordic-surface-hover text-nordic-text-tertiary
+           text-xs font-medium uppercase tracking-wider
+           px-2 py-1 rounded-none
+           border border-nordic-border-subtle;
   }
 
-  .text-glow-white {
-    text-shadow: 
-      0 0 20px rgba(232, 232, 255, 0.3),
-      0 0 40px rgba(232, 232, 255, 0.15);
+  .nordic-divider {
+    @apply h-px bg-nordic-border-subtle;
   }
 
-  /* Safe iridescent border with hover-reveal to prevent visual fatigue */
-  .glow-border-iridescent {
-    position: relative;
-    background: linear-gradient(135deg, #0f0f23, #181830);
-    z-index: 1;
-    border: 1px solid oklch(0.28 0.08 264);
-    transition: border-color 0.3s ease;
-  }
-  
-  .glow-border-iridescent::before {
-    content: "";
-    position: absolute;
-    inset: -1px;
-    border-radius: inherit;
-    padding: 2px;
-    background: linear-gradient(
-      135deg,
-      rgba(0, 229, 255, 0.8),
-      rgba(255, 100, 120, 0.6),
-      rgba(124, 58, 237, 0.6),
-      rgba(0, 229, 255, 0.8)
-    );
-    opacity: 0;
-    transition: opacity 0.3s ease;
-    -webkit-mask: 
-      linear-gradient(#fff 0 0) content-box, 
-      linear-gradient(#fff 0 0);
-    mask: 
-      linear-gradient(#fff 0 0) content-box, 
-      linear-gradient(#fff 0 0);
-    -webkit-mask-composite: xor;
-    mask-composite: exclude;
-    pointer-events: none;
-    z-index: -1;
-  }
-  
-  .glow-border-iridescent:hover::before {
-    opacity: 1;
-  }
-  
-  .glow-border-iridescent:hover {
-    border-color: transparent;
-  }
-
-  /* Firefox fallback: solid colored border instead of gradient */
-  @supports not (-webkit-mask-composite: xor) {
-    .glow-border-iridescent::before {
-      -webkit-mask: none;
-      mask: none;
-      background: rgba(0, 229, 255, 0.4);
-      padding: 2px;
-    }
-  }
-
-  /* ── SIDEBAR SEPARATION ── */
-  .sidebar-glow-edge {
-    border-right: 1px solid rgba(100, 100, 180, 0.2);
-    box-shadow: 
-      inset -1px 0 0 rgba(0, 229, 255, 0.05),
-      4px 0 24px rgba(0, 0, 0, 0.3);
-  }
-
-  /* ── ATMOSPHERIC BACKGROUND (Day 0 CSS Houdini progressive enhancement) ── */
-  @property --gradient-angle {
-    syntax: '<angle>';
-    initial-value: 0deg;
-    inherits: false;
-  }
-
-  @supports (background: linear-gradient(in oklch, red, blue)) {
-    .cosmic-bg {
-      background: linear-gradient(var(--gradient-angle), var(--theme-bg-start, #0a0e27), var(--theme-bg-end, #0f172a), var(--theme-bg-start, #0a0e27));
-      animation: rotate-gradient 10s linear infinite;
-    }
-  }
-
-  @supports not (background: linear-gradient(in oklch, red, blue)) {
-    .cosmic-bg {
-      background: linear-gradient(180deg, var(--theme-bg-start, #0a0e27), var(--theme-bg-end, #0f172a));
-    }
-  }
-
-  @keyframes rotate-gradient {
-    to { --gradient-angle: 360deg; }
-  }
-
-  /* ── HORIZON GLOW: Bottom warmth ── */
-  .horizon-glow {
-    background: radial-gradient(ellipse at 50% 100%, rgba(255, 160, 80, 0.08) 0%, transparent 60%);
-  }
-
-  /* ── SKELETON ── */
-  .skeleton-cosmic {
-    background: linear-gradient(
-      90deg,
-      oklch(0.16 0.05 264) 0%,
-      oklch(0.20 0.06 264) 50%,
-      oklch(0.16 0.05 264) 100%
-    );
-    background-size: 200% 100%;
-    animation: skeleton-shimmer 1.5s ease-in-out infinite;
-  }
-
-  @keyframes skeleton-shimmer {
-    0% { background-position: 200% 0; }
-    100% { background-position: -200% 0; }
-  }
-
-  /* ── DIALOG BACKDROP ── */
-  .dialog-backdrop-cosmic {
-    background: 
-      radial-gradient(ellipse at 50% 50%, oklch(0.08 0.05 264 / 0.95) 0%, oklch(0.05 0.03 264 / 0.98) 100%);
-    backdrop-filter: blur(8px);
-  }
-}
-
-/* ── SONNER TOAST OVERRIDES ── */
-.dark [data-sonner-toast] {
-  background: oklch(0.18 0.06 264) !important;
-  border: 1px solid oklch(0.30 0.08 264) !important;
-  color: oklch(0.94 0.005 285.823) !important;
-}
-
-.dark [data-sonner-toast][data-type="success"] {
-  border-left: 3px solid oklch(0.75 0.20 150) !important;
-}
-
-.dark [data-sonner-toast][data-type="error"] {
-  border-left: 3px solid oklch(0.65 0.24 25) !important;
-}
-
-/* Disable expensive effects on low-power devices */
-@media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-  }
-  .glow-cyan, .glow-coral, .glow-violet, .btn-glow-cyan {
-    box-shadow: none !important;
-  }
-  .text-glow-cyan, .text-glow-white {
-    text-shadow: none !important;
-  }
-  .blur-3xl {
-    filter: none !important;
-    opacity: 0.5 !important;
-  }
-  .glass-panel {
-    backdrop-filter: none !important;
-    -webkit-backdrop-filter: none !important;
-    background: rgba(15, 15, 35, 0.95) !important;
-  }
-  .cosmic-sky-gradient {
-    background: var(--background);
-  }
-}
-
-@keyframes data-pulse {
-  0% { stroke-dashoffset: 100; opacity: 0; }
-  10% { opacity: 1; }
-  90% { opacity: 1; }
-  100% { stroke-dashoffset: 0; opacity: 0; }
-}
-
-.connection-line {
-  stroke-dasharray: 4 8;
-  animation: data-pulse 8s ease-in-out infinite;
-}
-
-/* ── SELECTIVE GRAIN TEXTURE (Day 1 Mandate) ── */
-.grain-texture {
-  position: relative;
-}
-.grain-texture::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  opacity: 0.04;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
-  pointer-events: none;
-  border-radius: inherit;
-  mix-blend-mode: overlay;
-  z-index: 10;
-}
-
-/* Onboarding Animations */
-@keyframes particle-burst {
-  0% { transform: translate(0, 0) scale(1); opacity: 1; }
-  100% { transform: translate(calc(cos(var(--angle)) * 50vw), calc(sin(var(--angle)) * 50vh)) scale(0); opacity: 0; }
-}
-
-.particle {
-  animation: particle-burst var(--speed) var(--delay) ease-out forwards;
-}
-
-@keyframes shockwave-expand {
-  0% { transform: scale(0); opacity: 1; }
-  100% { transform: scale(1); opacity: 0; }
-}
-
-.shockwave {
-  animation: shockwave-expand 1.5s ease-out forwards;
-}
-
-@keyframes collapse {
-  0% { width: 100vw; height: 100vh; border-radius: 0; opacity: 1; }
-  50% { width: 200vw; height: 200vh; background: white; border-radius: 50%; opacity: 1; }
-  100% { width: 0; height: 0; opacity: 0; }
-}
-
-/* ── LEVEL 0 STATIC UTILITIES ── */
-.cta-primary {
-  display: inline-flex;
-  min-height: 44px;
-  align-items: center;
-  justify-content: center;
-  padding: 0.75rem 1.5rem;
-  font-size: 1.125rem;
-  font-weight: 500;
-  color: #fff;
-  background-color: var(--signet-bg-start, #0a0e27);
-  border: 1px solid var(--signet-glow, #00f0ff);
-  text-decoration: none;
-  transition: all 0.2s ease;
-}
-
-.cta-primary:hover {
-  background-color: var(--signet-glow, #00f0ff);
-  color: #000;
-}
-
-.holographic-container {
-  position: relative;
-  display: block;
-}
-
-.holographic-container::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: repeating-linear-gradient(
-    0deg,
-    transparent,
-    transparent 2px,
-    rgba(0, 240, 255, 0.03) 2px,
-    rgba(0, 240, 255, 0.03) 4px
-  );
-  pointer-events: none;
-  animation: scanline-shift 8s linear infinite;
-  z-index: 20;
-}
-
-@keyframes scanline-shift {
-  from { background-position: 0 0; }
-  to { background-position: 0 100px; }
-}
-
-  @media (pointer: coarse) {
-    .holographic-container::before {
-      display: none;
-    }
-  }
-
-  /* 
-    Day 4 Primitives
-  */
-  
-  .holographic-scanline {
-    background: repeating-linear-gradient(0deg, transparent, transparent 2px, color-mix(in srgb, var(--signet-glow) 3%, transparent) 2px, color-mix(in srgb, var(--signet-glow) 3%, transparent) 4px);
-    animation: scanline-shift 8s linear infinite;
-  }
-  
-  .holographic-vignette {
-    box-shadow: inset 0 0 80px color-mix(in srgb, var(--signet-glow) 10%, transparent);
-  }
-
-  .holographic-strong {
-    --holographic-glow-intensity: 0.1;
-    box-shadow: 
-      0 0 calc(60px * var(--holographic-glow-intensity)) 
-      color-mix(in srgb, var(--signet-glow) calc(var(--holographic-glow-intensity) * 100%), transparent);
-    transition: box-shadow 0.3s ease-out;
-  }
-  
-  @keyframes scanline-shift {
-    from { transform: translateY(0); }
-    to { transform: translateY(4px); }
-  }
-
-  /* Mobile: no animation, no scanlines */
-  @media (pointer: coarse) {
-    .holographic-strong .holographic-scanline,
-    .holographic-strong .holographic-vignette,
-    .holographic-scanline,
-    .holographic-vignette {
-      display: none;
-    }
-  }
-
-/* ── MOBILE FIRST & SAFE AREA RULES (Day 7) ── */
-@media (pointer: coarse) {
-  a, button, [role="button"] {
-    min-height: 44px;
-    min-width: 44px;
-  }
-  
-  input, textarea, select {
-    font-size: 16px; /* prevents iOS zoom */
-  }
-}
-
-.safe-area-padding {
-  padding-left: env(safe-area-inset-left);
-  padding-right: env(safe-area-inset-right);
-  padding-top: env(safe-area-inset-top);
-  padding-bottom: env(safe-area-inset-bottom);
-}
-
-.min-h-safe {
-  min-height: 100vh;
-  min-height: 100dvh;
-}
-
-  .glow-border-subtle {
-    border: 1px solid color-mix(in srgb, var(--signet-glow) 20%, transparent);
-    box-shadow: 0 0 20px color-mix(in srgb, var(--signet-glow) 5%, transparent);
-  }
-
-  .glow-border-pulsing {
-    border: 1px solid color-mix(in srgb, var(--signet-glow) 30%, transparent);
-    animation: glow-pulse 4s ease-in-out infinite;
-  }
-
-  @keyframes glow-pulse {
-    0%, 100% { box-shadow: 0 0 20px color-mix(in srgb, var(--signet-glow) 5%, transparent); }
-    50% { box-shadow: 0 0 40px color-mix(in srgb, var(--signet-glow) 15%, transparent); }
-  }
-
-/* ── HOLOGRAPHIC INPUTS (Phase 1) ── */
-@keyframes scanline-safe {
-  0% {
-    transform: translateY(-100%);
-    opacity: 0;
-  }
-  10% { opacity: 0.3; }
-  90% { opacity: 0.3; }
-  100% {
-    transform: translateY(1000%);
-    opacity: 0;
-  }
-}
-
-.data-stream-input-container {
-  --glow-color: var(--app-cyan);
-}
-
-.data-stream-input:focus-visible,
-.holographic-textarea:focus-visible {
-  outline: 2px solid oklch(0.94 0.005 285.823); /* Ice white */
-  outline-offset: 2px;
-  background-color: color-mix(in srgb, var(--glow-color) 5%, transparent);
-}
-
-@media (pointer: coarse) {
-  .data-stream-input-container .scanline { 
-    display: none !important; 
-  }
-  
-  .data-stream-input-container.glow-border {
-    box-shadow: none !important;
-    border: 2px solid var(--glow-color) !important;
-  }
-  
-  .data-stream-input,
-  .holographic-textarea {
-    min-height: 44px;
-    padding-top: 16px !important;
-    padding-bottom: 16px !important;
-    font-size: 16px !important;
-  }
-}
-
-/* ── ACCESSIBILITY: CUSTOM FOCUS RING (Day 8) ── */
-:focus-visible {
-  outline: none;
-  box-shadow: 0 0 0 2px var(--theme-bg-start, #0f172a), 0 0 0 4px var(--signet-glow, #00f0ff);
-  border-radius: 4px;
-}
-
-/* Reduced motion: instant focus, no animation */
-@media (prefers-reduced-motion: reduce) {
-  :focus-visible {
-    transition: none;
+  .nordic-empty-state {
+    @apply flex flex-col items-center justify-center text-center
+           p-8 text-nordic-text-tertiary;
   }
 }

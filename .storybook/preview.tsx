@@ -2,6 +2,35 @@ import type { Preview } from "@storybook/react-vite"
 import React from "react"
 import "../src/index.css"
 import { ThemeProvider } from "../src/components/theme-provider"
+import { MotionConfig } from "framer-motion"
+import { createMemoryRouter, RouterProvider } from "react-router-dom"
+
+const customViewports = {
+  mobile: {
+    name: 'Mobile',
+    styles: { width: '375px', height: '812px' },
+  },
+  tablet: {
+    name: 'Tablet',
+    styles: { width: '768px', height: '1024px' },
+  },
+  desktop: {
+    name: 'Desktop',
+    styles: { width: '1280px', height: '900px' },
+  },
+  wide: {
+    name: 'Wide',
+    styles: { width: '1440px', height: '900px' },
+  },
+};
+
+const withRouter = (Story: React.ComponentType) => {
+  const router = createMemoryRouter([
+    { path: "/", element: <Story /> },
+    { path: "*", element: <Story /> },
+  ]);
+  return <RouterProvider router={router} />;
+};
 
 const preview: Preview = {
   parameters: {
@@ -14,22 +43,35 @@ const preview: Preview = {
     backgrounds: {
       default: "dark",
       values: [
-        { name: "dark", value: "#090b0c" },
-        { name: "light", value: "#ffffff" },
+        { name: "dark", value: "#020617" },
       ],
     },
-    a11y: {
-      // 'error' - fail on a11y violations in Vitest/CI
-      test: "error",
+    viewport: {
+      viewports: customViewports,
+      defaultViewport: 'desktop',
     },
+    a11y: {
+      test: "error",
+      config: {
+        rules: [
+          { id: 'color-contrast', enabled: true }
+        ]
+      }
+    },
+    chromatic: { delay: 500 },
   },
   decorators: [
     (Story) => (
-      <ThemeProvider defaultTheme="dark">
-        <div className="min-h-screen bg-background p-6 font-sans text-foreground antialiased">
-          <Story />
-        </div>
-      </ThemeProvider>
+      <MotionConfig reducedMotion="always">
+        <ThemeProvider defaultTheme="dark">
+          {withRouter(Story)}
+        </ThemeProvider>
+      </MotionConfig>
+    ),
+    (Story) => (
+      <div className="min-h-screen bg-slate-950 p-8 font-sans text-slate-200 antialiased">
+        <Story />
+      </div>
     ),
   ],
 }

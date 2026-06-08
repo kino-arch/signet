@@ -1,7 +1,9 @@
 import { useState } from "react"
 import { useForm } from "react-hook-form"
 import { Plus, Target } from "lucide-react"
+import { trpc } from "@/providers/trpc"
 import { Button } from "@/components/ui/button"
+import { motion } from "framer-motion"
 import {
   Dialog,
   DialogContent,
@@ -37,7 +39,14 @@ interface FormValues {
 
 export function AddTargetDialog() {
   const [open, setOpen] = useState(false)
-  const { addApplication } = useTargetMatrixStore()
+  const { addApplicationLocal } = useTargetMatrixStore()
+  const addApplicationMutation = trpc.jobTracker.addApplication.useMutation({
+    onSuccess: (data: any) => {
+      addApplicationLocal(data as any)
+      reset()
+      setOpen(false)
+    }
+  })
 
   const {
     register,
@@ -50,7 +59,7 @@ export function AddTargetDialog() {
   })
 
   const onSubmit = (data: FormValues) => {
-    addApplication({
+    addApplicationMutation.mutate({
       company: data.company.trim(),
       role: data.role.trim(),
       status: data.status,
@@ -59,24 +68,27 @@ export function AddTargetDialog() {
       url: data.url.trim() || undefined,
       notes: data.notes.trim() || undefined,
     })
-    reset()
-    setOpen(false)
   }
 
   return (
     <>
-      <Button
-        onClick={() => setOpen(true)}
-        size="sm"
-        className="gap-1.5"
-        aria-label="Add new target application"
-      >
-        <Plus className="size-3.5" />
-        Add Target
-      </Button>
+      <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
+        <Button
+          onClick={() => setOpen(true)}
+          size="sm"
+          className="gap-1.5 shadow-[0_0_15px_rgba(var(--nordic-accent-rgb),0.15)] hover:shadow-[0_0_25px_rgba(var(--nordic-accent-rgb),0.3)] transition-shadow"
+          aria-label="Add new target application"
+        >
+          <Plus className="size-3.5" />
+          Add Target
+        </Button>
+      </motion.div>
 
       <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent className="sm:max-w-[440px]">
+        <DialogContent
+          className="sm:max-w-[440px]"
+          aria-describedby="add-target-description"
+        >
           <DialogHeader>
             <div className="mb-1 flex items-center gap-2">
               <div className="flex size-7 items-center justify-center rounded-md bg-primary/10">
@@ -86,7 +98,10 @@ export function AddTargetDialog() {
                 Lock On Target
               </DialogTitle>
             </div>
-            <DialogDescription className="text-xs text-muted-foreground">
+            <DialogDescription
+              id="add-target-description"
+              className="text-xs text-muted-foreground"
+            >
               Add a new job target to the deployment grid.
             </DialogDescription>
           </DialogHeader>

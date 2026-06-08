@@ -23,7 +23,8 @@ import {
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { DataStreamInput } from "@/components/editor/primitives/DataStreamInput"
-import { HolographicTextarea } from "@/components/editor/primitives/HolographicTextarea"
+import { Textarea } from "@/components/ui/textarea"
+import { Label } from "@/components/ui/label"
 import { useDataSlateStore } from "@/store/useDataSlateStore"
 import type { WorkEntry } from "@/store/useDataSlateStore"
 import { ReforgeModal } from "@/components/editor/ReforgeModal"
@@ -169,16 +170,14 @@ function WorkBlock({ entry }: { entry: WorkEntry }) {
           </div>
 
           <div className="space-y-1.5">
-            <HolographicTextarea
-              label="Summary (Paragraph)"
+            <Label className="text-xs uppercase tracking-widest text-nordic-text-secondary font-mono">Summary (Paragraph)</Label>
+            <Textarea
               value={entry.summary}
               onChange={(e) =>
                 updateWorkEntry(entry.id, { summary: e.target.value })
               }
               placeholder="Brief overview of the role..."
-              unit="words"
-              minRows={2}
-              maxRows={6}
+              className="min-h-[80px]"
             />
           </div>
 
@@ -283,3 +282,4 @@ export function MissionHistoryArray() {
     </div>
   )
 }
+

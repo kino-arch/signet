@@ -1,27 +1,10 @@
 import { z } from "zod"
-import { router, publicProcedure } from "../trpc"
+import { router, protectedProcedure } from "../trpc"
 import { TRPCError } from "@trpc/server"
-import { createClient } from "@supabase/supabase-js"
-
-// We should use the service role key for admin privileges inside the Hono backend
-// In a real deployed app, these would come from environment variables.
-const supabaseUrl =
-  (import.meta as any).env?.VITE_SUPABASE_URL ||
-  process.env.VITE_SUPABASE_URL ||
-  "https://dummy.supabase.co"
-const supabaseServiceKey =
-  process.env.SUPABASE_SERVICE_ROLE_KEY ||
-  (import.meta as any).env?.VITE_SUPABASE_ANON_KEY ||
-  "dummy-key"
-
-const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey, {
-  auth: {
-    persistSession: false,
-  },
-})
+import { supabaseAdmin } from "../../lib/supabaseAdmin"
 
 export const skillsRouter = router({
-  commitOrder: publicProcedure
+  commitOrder: protectedProcedure
     .input(
       z.object({
         slateId: z.string().uuid(),
@@ -39,7 +22,31 @@ export const skillsRouter = router({
         ),
       })
     )
-    .mutation(async ({ input }) => {
+    .mutation(async ({ ctx, input }) => {
+      const { userId } = ctx
+
+      // AUTHORIZATION CHECK: Verify the user owns this slate
+      const { data: slate, error: slateError } = await supabaseAdmin
+        .from("data_slates")
+        .select("id, user_id")
+        .eq("id", input.slateId)
+        .maybeSingle()
+
+      if (slateError || !slate) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Slate not found",
+        })
+      }
+
+      if (slate.user_id !== userId) {
+        console.warn(`[SECURITY] Unauthorized write attempt: user ${userId} tried to modify slate ${input.slateId} owned by ${slate.user_id}`)
+        throw new TRPCError({
+          code: "FORBIDDEN",
+          message: "You do not have permission to modify this slate",
+        })
+      }
+
       // For now, since the existing schema uses `slate_sections`,
       // we'll update that directly to keep it simple and avoid breaking the existing UI fully,
       // or we can write to the new tables.

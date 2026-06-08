@@ -21,7 +21,7 @@ export function PrivacyPage() {
               animationData={shieldData}
               className="mb-4 h-16 w-16 opacity-80"
             />
-            <h1 className="font-heading text-4xl font-bold tracking-tight text-foreground sm:text-5xl">
+            <h1 className="text-style-heading-lg tracking-tight text-foreground sm:text-5xl">
               Privacy Policy
             </h1>
             <p className="mt-4 text-base text-muted-foreground">
@@ -31,7 +31,7 @@ export function PrivacyPage() {
 
           <div className="prose prose-invert max-w-none space-y-6 text-foreground/80">
             <section className="space-y-4">
-              <h2 className="font-heading text-2xl font-semibold text-foreground">
+              <h2 className="text-style-heading text-foreground">
                 1. Information We Collect
               </h2>
               <p>
@@ -59,7 +59,7 @@ export function PrivacyPage() {
             </section>
 
             <section className="space-y-4">
-              <h2 className="font-heading text-2xl font-semibold text-foreground">
+              <h2 className="text-style-heading text-foreground">
                 2. How We Use Your Data
               </h2>
               <p>
@@ -86,7 +86,7 @@ export function PrivacyPage() {
             </section>
 
             <section className="space-y-4">
-              <h2 className="font-heading text-2xl font-semibold text-foreground">
+              <h2 className="text-style-heading text-foreground">
                 3. Third-Party Services
               </h2>
               <p>
@@ -112,7 +112,7 @@ export function PrivacyPage() {
             </section>
 
             <section className="space-y-4">
-              <h2 className="font-heading text-2xl font-semibold text-foreground">
+              <h2 className="text-style-heading text-foreground">
                 4. Data Security
               </h2>
               <p>
@@ -125,7 +125,7 @@ export function PrivacyPage() {
             </section>
 
             <section className="space-y-4">
-              <h2 className="font-heading text-2xl font-semibold text-foreground">
+              <h2 className="text-style-heading text-foreground">
                 5. Contact the Guild
               </h2>
               <p>

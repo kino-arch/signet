@@ -1,104 +1,76 @@
-import { Badge } from "@/components/ui/badge"
-import { Card } from "@/components/ui/card"
-import { motion, type Variants } from "framer-motion"
-import { Award, Target, Users, ShieldAlert } from "lucide-react"
-
-const values = [
-  {
-    icon: Target,
-    title: "Precision Targeting",
-    description:
-      "Generate highly targeted resumes that bypass Applicant Tracking Systems (ATS) and get you straight to the interview stage.",
-  },
-  {
-    icon: Users,
-    title: "Built for Professionals",
-    description:
-      "Designed by industry experts to highlight your strengths with clean, professional layouts that recruiters love.",
-  },
-  {
-    icon: ShieldAlert,
-    title: "Enterprise Standards",
-    description:
-      "Every template is tested against modern enterprise parsers to ensure your data is always read accurately.",
-  },
-  {
-    icon: Award,
-    title: "The Signet Quality",
-    description:
-      "No bloat, no distracting graphics. Pure data extracted and structured for maximum impact.",
-  },
-]
+import { motion } from "framer-motion"
+import { Sparkles, ShieldCheck, FileOutput } from "lucide-react"
 
 export function Testimonials() {
-  const containerVariants: Variants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.15,
-      },
+  const valueProps = [
+    {
+      title: "AI Reforging",
+      description:
+        "Our proprietary AI doesn't just check spelling—it analyzes the job description and rewrites your bullet points to match the required tone, keywords, and narrative arc.",
+      icon: Sparkles,
     },
-  }
-
-  const itemVariants: Variants = {
-    hidden: { opacity: 0, y: 30 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: { duration: 0.6, ease: "easeOut" },
+    {
+      title: "ATS Compliance",
+      description:
+        "Signet guarantees your resume is readable by over 99% of Applicant Tracking Systems used by Fortune 500 companies. No more getting filtered before a human sees your application.",
+      icon: ShieldCheck,
     },
-  }
+    {
+      title: "Smart Exports",
+      description:
+        "Instantly generate pixel-perfect PDFs or copy optimized text directly into plain-text application fields. Your formatting stays intact exactly as designed.",
+      icon: FileOutput,
+    },
+  ]
 
   return (
-    <section id="testimonials" className="w-full bg-background py-20 md:py-24">
-      <div className="relative z-10 mx-auto w-full max-w-5xl px-4 sm:px-6 lg:px-8">
-        {/* About Section */}
+    <section className="w-full bg-nordic-bg py-24">
+      <div className="mx-auto w-full max-w-5xl px-6">
         <motion.div
-          initial={{ opacity: 0, y: -20 }}
+          initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          className="mb-16 text-center"
+          className="mb-16 md:mb-20"
         >
-          <Badge className="mb-4" variant="secondary">
-            Early Access
-          </Badge>
-          <h2 className="mb-4 font-heading text-3xl font-bold tracking-tight text-foreground md:text-4xl lg:text-5xl">
-            Why Choose Signet?
+          <h2 className="font-heading text-3xl font-medium tracking-tight text-nordic-text md:text-5xl lg:max-w-2xl">
+            Create Resumes with AI Assistance
           </h2>
-          <p className="mx-auto max-w-2xl text-lg text-muted-foreground">
-            We melt down your bloated work history and reforge it into
-            streamlined, ATS-optimized assets for the modern job market.
+          <p className="mt-4 max-w-xl text-lg text-nordic-text-secondary leading-relaxed">
+            We've distilled the expertise of executive recruiters into an automated platform that works for you.
           </p>
         </motion.div>
 
-        <motion.div
-          variants={containerVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true }}
-          className="mb-12 grid gap-6 md:grid-cols-2 lg:grid-cols-4"
-        >
-          {values.map((value) => {
-            const Icon = value.icon
+        <div className="grid gap-x-12 gap-y-16 md:grid-cols-2 lg:grid-cols-3">
+          {valueProps.map((prop, index) => {
+            const Icon = prop.icon
             return (
-              <motion.div key={value.title} variants={itemVariants}>
-                <Card className="group h-full border-border/50 bg-card/50 p-6 backdrop-blur transition-all hover:border-primary/50 hover:shadow-lg">
-                  <div className="mb-4 inline-flex bg-secondary p-3">
-                    <Icon className="h-6 w-6 text-foreground transition-transform group-hover:scale-110" />
-                  </div>
-                  <h3 className="mb-2 text-xl font-semibold text-foreground">
-                    {value.title}
-                  </h3>
-                  <p className="text-sm text-muted-foreground">
-                    {value.description}
-                  </p>
-                </Card>
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: index * 0.1 }}
+                className="relative pt-6 border-t border-nordic-border"
+              >
+                {/* Decorative accent dot on the border */}
+                <div className="absolute top-[-3px] left-0 h-1.5 w-1.5 rounded-full bg-nordic-accent" />
+
+                <div className="mb-4 inline-flex h-10 w-10 items-center justify-center rounded-lg bg-nordic-surface border border-nordic-border text-nordic-accent shadow-nordic-sm">
+                  <Icon className="h-5 w-5" />
+                </div>
+
+                <h3 className="mb-3 font-heading text-xl font-medium text-nordic-text">
+                  {prop.title}
+                </h3>
+
+                <p className="text-base text-nordic-text-secondary leading-relaxed">
+                  {prop.description}
+                </p>
               </motion.div>
             )
           })}
-        </motion.div>
+        </div>
       </div>
     </section>
   )

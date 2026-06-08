@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { SignetIcon } from './SignetIcon';
 
 const meta = {
@@ -18,6 +18,7 @@ export const Default: Story = {
 };
 
 export const Sizes: Story = {
+  args: { name: 'Star' },
   render: () => (
     <div className="flex items-center gap-4 text-white">
       <SignetIcon name="Star" size="sm" />

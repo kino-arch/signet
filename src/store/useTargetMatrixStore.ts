@@ -1,5 +1,4 @@
 import { create } from "zustand"
-import { persist } from "zustand/middleware"
 
 export type ApplicationStatus =
   | "lead"
@@ -33,108 +32,63 @@ export interface KanbanColumn {
 }
 
 export const KANBAN_COLUMNS: KanbanColumn[] = [
-  { id: "lead", label: "Leads", accent: "hsl(var(--muted-foreground))" },
-  { id: "applied", label: "Applied", accent: "hsl(var(--primary))" },
-  { id: "interviewing", label: "Interviewing", accent: "hsl(var(--chart-2))" },
-  { id: "offer", label: "Offer", accent: "hsl(var(--chart-4))" },
-  { id: "rejected", label: "Rejected", accent: "hsl(var(--destructive))" },
-]
-
-const MOCK_APPLICATIONS: Application[] = [
-  {
-    id: "app-1",
-    company: "Meridian Labs",
-    role: "Senior Frontend Engineer",
-    status: "applied",
-    dateAdded: new Date().toISOString(),
-    salary: "$160k – $180k",
-    location: "Remote",
-  },
-  {
-    id: "app-2",
-    company: "Nexus Dynamics",
-    role: "Staff React Developer",
-    status: "interviewing",
-    dateAdded: new Date().toISOString(),
-    salary: "$190k",
-    location: "San Francisco, CA",
-  },
-  {
-    id: "app-3",
-    company: "Vault Systems",
-    role: "Principal UI Engineer",
-    status: "lead",
-    dateAdded: new Date().toISOString(),
-    location: "Remote",
-  },
-  {
-    id: "app-4",
-    company: "Cipher Corp",
-    role: "Frontend Tech Lead",
-    status: "offer",
-    dateAdded: new Date().toISOString(),
-    salary: "$210k",
-    location: "Austin, TX",
-  },
+  { id: "lead", label: "Leads", accent: "#52525B" },          // nordic-text-tertiary
+  { id: "applied", label: "Applied", accent: "#3B82F6" },      // nordic-accent
+  { id: "interviewing", label: "Interviewing", accent: "#60A5FA" }, // lighter blue
+  { id: "offer", label: "Offer", accent: "#22C55E" },           // nordic-success
+  { id: "rejected", label: "Rejected", accent: "#EF4444" },     // nordic-error
 ]
 
 interface TargetMatrixState {
   applications: Application[]
-  addApplication: (app: Omit<Application, "id" | "dateAdded">) => void
-  updateApplication: (id: string, patch: Partial<Application>) => void
-  moveApplication: (id: string, newStatus: ApplicationStatus) => void
-  deleteApplication: (id: string) => void
-  reorderApplications: (status: ApplicationStatus, orderedIds: string[]) => void
+  setApplications: (apps: Application[]) => void
+  addApplicationLocal: (app: Application) => void
+  updateApplicationLocal: (id: string, patch: Partial<Application>) => void
+  moveApplicationLocal: (id: string, newStatus: ApplicationStatus) => void
+  deleteApplicationLocal: (id: string) => void
+  reorderApplicationsLocal: (status: ApplicationStatus, orderedIds: string[]) => void
 }
 
-export const useTargetMatrixStore = create<TargetMatrixState>()(
-  persist(
-    (set, get) => ({
-      applications: MOCK_APPLICATIONS,
+export const useTargetMatrixStore = create<TargetMatrixState>()((set, get) => ({
+  applications: [],
 
-      addApplication: (app) => {
-        const newApp: Application = {
-          ...app,
-          id: `app-${Date.now()}`,
-          dateAdded: new Date().toISOString(),
-        }
-        set((s) => ({ applications: [...s.applications, newApp] }))
-      },
+  setApplications: (apps) => {
+    set({ applications: apps })
+  },
 
-      updateApplication: (id, patch) => {
-        set((s) => ({
-          applications: s.applications.map((a) =>
-            a.id === id ? { ...a, ...patch } : a
-          ),
-        }))
-      },
+  addApplicationLocal: (app) => {
+    set((s) => ({ applications: [...s.applications, app] }))
+  },
 
-      moveApplication: (id, newStatus) => {
-        set((s) => ({
-          applications: s.applications.map((a) =>
-            a.id === id ? { ...a, status: newStatus } : a
-          ),
-        }))
-      },
+  updateApplicationLocal: (id, patch) => {
+    set((s) => ({
+      applications: s.applications.map((a) =>
+        a.id === id ? { ...a, ...patch } : a
+      ),
+    }))
+  },
 
-      deleteApplication: (id) => {
-        set((s) => ({
-          applications: s.applications.filter((a) => a.id !== id),
-        }))
-      },
+  moveApplicationLocal: (id, newStatus) => {
+    set((s) => ({
+      applications: s.applications.map((a) =>
+        a.id === id ? { ...a, status: newStatus } : a
+      ),
+    }))
+  },
 
-      reorderApplications: (status, orderedIds) => {
-        const { applications } = get()
-        const others = applications.filter((a) => a.status !== status)
-        const inColumn = applications.filter((a) => a.status === status)
-        const reordered = orderedIds
-          .map((id) => inColumn.find((a) => a.id === id))
-          .filter(Boolean) as Application[]
-        set({ applications: [...others, ...reordered] })
-      },
-    }),
-    {
-      name: "signet-target-matrix",
-    }
-  )
-)
+  deleteApplicationLocal: (id) => {
+    set((s) => ({
+      applications: s.applications.filter((a) => a.id !== id),
+    }))
+  },
+
+  reorderApplicationsLocal: (status, orderedIds) => {
+    const { applications } = get()
+    const others = applications.filter((a) => a.status !== status)
+    const inColumn = applications.filter((a) => a.status === status)
+    const reordered = orderedIds
+      .map((id) => inColumn.find((a) => a.id === id))
+      .filter(Boolean) as Application[]
+    set({ applications: [...others, ...reordered] })
+  },
+}))

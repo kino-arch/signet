@@ -1,7 +1,7 @@
 import { supabase } from "@/lib/supabase"
 import { StrictSnapshotSchema } from "@/lib/db-validators"
 
-export async function restoreVersion(versionId: string): Promise<any> {
+export async function restoreVersion(versionId: string): Promise<unknown> {
   // 1. Fetch the version to restore
   const { data: targetVersion, error: fetchErr } = await supabase
     .from("slate_versions")
@@ -31,6 +31,7 @@ export async function restoreVersion(versionId: string): Promise<any> {
       slate_id: targetVersion.slate_id,
       version_number: nextNumber,
       is_draft: false,
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       snapshot_data: snapshot as any,
     })
     .select()

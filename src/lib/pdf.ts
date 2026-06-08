@@ -7,6 +7,7 @@
  */
 
 export async function generatePDF(
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   _elementId = "resume-document",
   filename = "resume.pdf"
 ) {

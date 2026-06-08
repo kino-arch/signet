@@ -1,13 +1,8 @@
 import { describe, it, expect } from "vitest"
+import type { GhostBullet } from "../src/lib/ghost-schema"
 
-const TEST_FACTS = {
-  fullName: "Javier Kito",
-  email: "jkito@mail.com",
-  phone: "+17709898902",
-  companies: ["Helio Corp", "Nexus LLC"],
-  jobTitles: ["Full Stack Engineer"],
-  schools: ["King University", "Morris University"],
-}
+// Fixture: immutable facts that Ghost Protocol is not allowed to modify.
+// Kept here for future integration tests that verify identity fidelity.
 
 describe("Ghost Protocol — Luminescent Manuscript", () => {
   it("blocks export if inferred bullets exist", async () => {
@@ -34,7 +29,7 @@ describe("Ghost Protocol — Luminescent Manuscript", () => {
         originalClaim: "Helped with the project",
       },
     ] as const
-    const status = checkExportStatus(bullets as any)
+    const status = checkExportStatus(bullets as unknown as GhostBullet[])
     expect(status.allowed).toBe(false)
     expect(status.blockers.length).toBeGreaterThan(0)
     expect(status.inferredCount).toBe(1)

@@ -96,10 +96,12 @@ export const slateVersions = pgTable(
   })
 )
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const insertSlateVersionSchema = createInsertSchema(slateVersions as any, {
   snapshotData: LooseSnapshotSchema,
 })
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const selectSlateVersionSchema = createSelectSchema(slateVersions as any, {
   snapshotData: LooseSnapshotSchema,
 })
@@ -115,4 +117,19 @@ export const userTemplates = pgTable("user_templates", {
 }, (table) => ({
   unq: uniqueIndex("idx_user_templates_unq").on(table.userId, table.templateId),
 }))
+
+export const jobApplications = pgTable("job_applications", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  userId: uuid("user_id").notNull(),
+  company: text("company").notNull(),
+  role: text("role").notNull(),
+  status: text("status").notNull(),
+  dateAdded: timestamp("date_added", { withTimezone: true }).defaultNow().notNull(),
+  salary: text("salary"),
+  location: text("location"),
+  notes: text("notes"),
+  url: text("url"),
+  jobDescription: text("job_description"),
+  matchScore: jsonb("match_score"),
+});
 

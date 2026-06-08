@@ -1,0 +1,19 @@
+{
+  "status": "commited",
+  "type": "frontend",
+  "scope": "codebase",
+  "localEndpoint": "http://localhost:5173",
+  "loginUser": "admin@signet.app",
+  "loginPassword": "Test@2026",
+  "executionArgs": {
+    "projectName": "signet",
+    "projectPath": "c:\\cv\\signet",
+    "testIds": [],
+    "additionalInstruction": "",
+    "serverMode": "development",
+    "envs": {
+      "API_KEY": "sk-user-u_J5wikN2JUHCn_oJneYaUfMjmHX25EwNNpn2rjNc1ao7TS-E6YqKVtGZ70g6mstqpSa7XwYBvsVQhOpqY5lvdKsggB0U11sfvAvy7OSWZGeQIYbujPww-edmkEO9vI_pUE"
+    }
+  },
+  "serverPort": 64412
+}

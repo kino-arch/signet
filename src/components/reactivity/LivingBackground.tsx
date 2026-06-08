@@ -5,7 +5,7 @@ import { themes } from "@/themes"
 
 const spawnParticle = (
   container: HTMLDivElement | null,
-  particleConfig: any,
+  particleConfig: { type?: string; maxCount?: number; size?: number | string },
   color: string
 ) => {
   if (!container || particleConfig.type === "none") return
@@ -27,7 +27,7 @@ const spawnParticle = (
   }
 
   // Randomize size slightly
-  const baseSize = parseFloat(particleConfig.size) || 2
+  const baseSize = Number(particleConfig.size) || 2
   const size = baseSize * (0.5 + Math.random())
   particle.style.width = particleConfig.type === "rain" ? "1px" : `${size}px`
   particle.style.height =
@@ -76,6 +76,7 @@ export const LivingBackground = () => {
   useEffect(() => {
     if (typeof window !== "undefined") {
       const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)")
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setPrefersReducedMotion(mediaQuery.matches)
 
       const listener = (e: MediaQueryListEvent) =>

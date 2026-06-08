@@ -6,6 +6,7 @@ import { useDataSlateStore } from "@/store/useDataSlateStore"
 import type { WorkEntry } from "@/store/useDataSlateStore"
 import { cn } from "@/lib/utils"
 import { checkExportStatus } from "@/lib/export-guard"
+import type { GhostBullet } from "@/lib/ghost-schema"
 import { AutopsyBullet } from "./AutopsyBullet"
 
 interface ReforgeModalProps {
@@ -27,7 +28,7 @@ export function ReforgeModal({ entry }: ReforgeModalProps) {
 
     let isMounted = true
     proposalRef.current = ""
-    setAiProposal(entry.id, "")
+    setAiProposal(entry.id, null)
 
     const doReforge = async () => {
       const apiUrl = "/ai/reforge"
@@ -164,12 +165,13 @@ export function ReforgeModal({ entry }: ReforgeModalProps) {
                 </span>
               ) : entry.ai_proposal?.bullets ? (
                 <div className="space-y-3">
-                  {entry.ai_proposal.bullets.map((b: any, idx: number) => (
+                  {entry.ai_proposal.bullets.map((b: GhostBullet, idx: number) => (
                     <AutopsyBullet
                       key={idx}
                       bullet={b}
                       onUpdate={(updatedBullet) => {
-                        const newProposal = { ...entry.ai_proposal }
+                        const newProposal = { ...(entry.ai_proposal || {}) }
+                        if (!newProposal.bullets) return
                         if (updatedBullet === null) {
                           newProposal.bullets.splice(idx, 1)
                         } else {

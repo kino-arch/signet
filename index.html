@@ -1,111 +1,18 @@
 <!DOCTYPE html>
 <html lang="en" data-theme="dark">
   <head>
-    <!-- THEME SCRIPT FIRST — before anything else to prevent FOUC -->
-    <script>
-      (function() {
-        try {
-          var stored = localStorage.getItem('signet-theme');
-          var themeId = 'cosmic'; // Safe default
-          
-          if (stored) {
-            try {
-              var parsed = JSON.parse(stored);
-              themeId = parsed.state?.activeThemeId || 'cosmic';
-            } catch (e) {
-              // Corrupted storage, use default
-            }
-          }
-          
-          var themeColors = {
-            cosmic: {
-              '--app-bg': 'oklch(0.12 0.04 264)',
-              '--app-primary': 'oklch(0.75 0.24 220)',
-              '--app-coral': 'oklch(0.65 0.24 15)',
-              '--app-violet': 'oklch(0.55 0.20 280)',
-              '--app-amber': 'oklch(0.70 0.20 80)',
-              '--app-foreground': 'oklch(0.94 0.005 285.823)',
-              '--app-card': 'oklch(0.16 0.05 264)',
-              '--app-border': 'oklch(0.28 0.08 264)',
-              '--app-muted': 'oklch(0.55 0.08 264)',
-              '--app-secondary': 'oklch(0.22 0.06 264)',
-            },
-            urban: {
-              '--app-bg': 'oklch(0.10 0.03 220)',
-              '--app-primary': 'oklch(0.75 0.20 80)',
-              '--app-coral': 'oklch(0.70 0.22 15)',
-              '--app-violet': 'oklch(0.60 0.18 280)',
-              '--app-amber': 'oklch(0.72 0.18 150)',
-              '--app-foreground': 'oklch(0.92 0.005 285)',
-              '--app-card': 'oklch(0.14 0.04 230)',
-              '--app-border': 'oklch(0.28 0.06 240)',
-              '--app-muted': 'oklch(0.55 0.06 250)',
-              '--app-secondary': 'oklch(0.20 0.05 235)',
-            }
-          };
-
-          var themeModes = {
-            cosmic: {
-              landing: {
-                '--theme-bg-start': '#0a0e27',
-                '--theme-bg-end': '#0f172a',
-                '--signet-glow': '#00f0ff',
-                '--signet-accent': '#ffb800',
-                '--signet-grain-opacity': '0.04'
-              },
-              functional: {
-                '--theme-bg-start': '#0f172a',
-                '--theme-bg-end': '#0f172a',
-                '--signet-glow': '#00f0ff33',
-                '--signet-accent': '#ffb800',
-                '--signet-grain-opacity': '0.01'
-              }
-            },
-            urban: {
-              landing: {
-                '--theme-bg-start': '#1a0b1f',
-                '--theme-bg-end': '#2d1b2e',
-                '--signet-glow': '#ff0055',
-                '--signet-accent': '#ffb800',
-                '--signet-grain-opacity': '0.05'
-              },
-              functional: {
-                '--theme-bg-start': '#1a0b1f',
-                '--theme-bg-end': '#1a0b1f',
-                '--signet-glow': '#ff005533',
-                '--signet-accent': '#ffb800',
-                '--signet-grain-opacity': '0.02'
-              }
-            }
-          };
-          
-          var colors = themeColors[themeId] || themeColors.cosmic;
-          var modes = themeModes[themeId] || themeModes.cosmic;
-          
-          var isLanding = window.location.pathname === '/' || window.location.pathname === '/login';
-          var modeColors = isLanding ? modes.landing : modes.functional;
-          var root = document.documentElement;
-          
-          Object.keys(colors).forEach(function(key) {
-            root.style.setProperty(key, colors[key]);
-          });
-          Object.keys(modeColors).forEach(function(key) {
-            root.style.setProperty(key, modeColors[key]);
-          });
-          
-          root.setAttribute('data-theme', themeId);
-          document.body.classList.add('theme-' + themeId);
-        } catch (e) {
-          console.error('Theme init failed:', e);
-        }
-      })();
-    </script>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
 
     <!-- Preconnects -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <!-- Hubot Sans + Mona Sans loaded via Fontsource npm (see main.tsx) -->
+    <!-- Instrument Serif (editorial accent) + IBM Plex Mono (code labels) via Google Fonts -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=IBM+Plex+Mono:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
     <link rel="dns-prefetch" href="https://api.supabase.co" />
 
     <!-- Favicon -->

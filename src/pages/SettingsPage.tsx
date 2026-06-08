@@ -1,237 +1,467 @@
 import { useState } from "react"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import * as Sentry from "@sentry/react"
-import { AlertTriangle, Key, SpellCheck } from "lucide-react"
-import { toast } from "sonner"
+import { useAuthStore } from "@/store/useAuthStore"
 import { Seo } from "@/components/seo/Seo"
-import { DotPattern } from "@/components/dot-pattern"
-import { cn } from "@/lib/utils"
+import { supabase } from "@/lib/supabase"
+import { toast } from "sonner"
+import {
+  User,
+  Mail,
+  Lock,
+  Shield,
+  CreditCard,
+  AlertTriangle,
+  Loader2,
+} from "lucide-react"
+import { logger } from "@/lib/logger"
+
+interface SettingsSection {
+  id: string
+  label: string
+  icon: React.ComponentType<{ className?: string }>
+}
+
+const SECTIONS: SettingsSection[] = [
+  { id: "profile", label: "Profile", icon: User },
+  { id: "account", label: "Account & Security", icon: Shield },
+  { id: "billing", label: "Billing & Credits", icon: CreditCard },
+]
 
 export function SettingsPage() {
-  const [apiKey, setApiKey] = useState(() => {
-    if (typeof window !== "undefined") {
-      return localStorage.getItem("openrouter_api_key") || ""
-    }
-    return ""
-  })
-  const [enableLanguageTool, setEnableLanguageTool] = useState(() => {
-    const stored = localStorage.getItem("enable_language_tool")
-    return stored === null ? true : stored === "true"
-  })
-  const [industry, setIndustry] = useState(
-    () => localStorage.getItem("user_industry") || ""
+  const { user, profile, signOut } = useAuthStore()
+  const [activeSection, setActiveSection] = useState("profile")
+  const [displayName, setDisplayName] = useState(
+    user?.user_metadata?.full_name || user?.email?.split("@")[0] || ""
   )
-  const [tone, setTone] = useState(
-    () => localStorage.getItem("user_tone") || "Professional"
-  )
+  const [isSavingProfile, setIsSavingProfile] = useState(false)
+  const [oldPassword, setOldPassword] = useState("")
+  const [newPassword, setNewPassword] = useState("")
+  const [isChangingPassword, setIsChangingPassword] = useState(false)
+  const [isDeletingAccount, setIsDeletingAccount] = useState(false)
+  const [deleteConfirm, setDeleteConfirm] = useState("")
 
-  const handleSave = () => {
-    if (apiKey.trim() === "") {
-      localStorage.removeItem("openrouter_api_key")
-      toast.success("API Key removed")
-    } else {
-      localStorage.setItem("openrouter_api_key", apiKey.trim())
-      toast.success("API Key saved securely")
+  const handleSaveProfile = async () => {
+    if (!displayName.trim()) return
+    setIsSavingProfile(true)
+    try {
+      const { error } = await supabase.auth.updateUser({
+        data: { full_name: displayName.trim() },
+      })
+      if (error) throw error
+      toast.success("Profile updated")
+    } catch (err) {
+      logger.error("Failed to update profile", err)
+      toast.error("Failed to save changes")
+    } finally {
+      setIsSavingProfile(false)
     }
   }
+
+  const handleChangePassword = async () => {
+    if (!newPassword || newPassword.length < 8) {
+      toast.error("New password must be at least 8 characters")
+      return
+    }
+    setIsChangingPassword(true)
+    try {
+      const { error } = await supabase.auth.updateUser({ password: newPassword })
+      if (error) throw error
+      toast.success("Password updated successfully")
+      setOldPassword("")
+      setNewPassword("")
+    } catch (err) {
+      logger.error("Failed to update password", err)
+      toast.error("Failed to update password")
+    } finally {
+      setIsChangingPassword(false)
+    }
+  }
+
+  const handleDeleteAccount = async () => {
+    if (deleteConfirm !== "delete my account") {
+      toast.error('Type "delete my account" to confirm')
+      return
+    }
+    setIsDeletingAccount(true)
+    try {
+      // Retrieve the current session's access token to authenticate the edge function.
+      // The edge function uses the SERVICE_ROLE key server-side to call admin.deleteUser,
+      // which hard-deletes the user from auth.users. This ensures that any OAuth
+      // re-login (e.g. Google) creates a brand-new identity with onboarding_completed = null.
+      const { data: sessionData } = await supabase.auth.getSession()
+      const accessToken = sessionData.session?.access_token
+
+      if (!accessToken) {
+        toast.error("No active session found. Please refresh and try again.")
+        return
+      }
+
+      const supabaseUrl = import.meta.env.VITE_SUPABASE_URL as string
+      const response = await fetch(`${supabaseUrl}/functions/v1/delete-account`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+        },
+      })
+
+      if (!response.ok) {
+        const body = await response.json().catch(() => ({}))
+        throw new Error(body.error ?? `Server error ${response.status}`)
+      }
+
+      // Account is permanently deleted on the server. Sign out the local session.
+      await signOut()
+      toast.success("Your account has been permanently deleted.")
+    } catch (err) {
+      logger.error("Failed to delete account", err)
+      toast.error(err instanceof Error ? err.message : "Failed to delete account")
+    } finally {
+      setIsDeletingAccount(false)
+    }
+  }
+
+  const isGuest = user?.id.startsWith("guest_")
 
   return (
     <>
       <Seo
         title="Settings | Signet"
-        description="Configure your Signet experience."
+        description="Manage your Signet account, security settings, and billing."
         noindex={true}
       />
-      <main className="relative mx-auto flex h-full w-full max-w-3xl flex-col p-6 lg:p-10">
-        <DotPattern
-          className={cn(
-            "fixed inset-0 z-0 [mask-image:radial-gradient(800px_circle_at_center,white,transparent)] text-primary/5"
-          )}
-        />
 
-        <div className="relative z-10">
-          <div className="mb-8">
-            <h1 className="text-3xl font-bold tracking-tight text-foreground">
-              System Settings
-            </h1>
-            <p className="mt-2 text-sm text-muted-foreground">
-              Manage your API keys, preferences, and generation parameters.
-            </p>
-          </div>
+      <div className="mx-auto max-w-4xl">
+        <div className="mb-8">
+          <h1 className="text-2xl font-bold text-nordic-text">Settings</h1>
+          <p className="mt-1 text-sm text-nordic-text-secondary">
+            Manage your account preferences and security.
+          </p>
+        </div>
 
-          <div className="space-y-8">
-            {/* API Settings Section */}
-            <div className="space-y-4 rounded-xl border border-border/40 bg-card p-6 shadow-sm">
-              <div className="flex items-center gap-2 border-b border-border/40 pb-4">
-                <Key className="h-5 w-5 text-primary" />
-                <h2 className="text-xl font-semibold tracking-tight text-foreground">
-                  AI Integration
+        <div className="flex gap-8">
+          {/* Sidebar Nav */}
+          <nav
+            className="flex w-48 shrink-0 flex-col gap-1"
+            aria-label="Settings sections"
+          >
+            {SECTIONS.map((section) => (
+              <button
+                key={section.id}
+                id={`settings-nav-${section.id}`}
+                onClick={() => setActiveSection(section.id)}
+                aria-current={activeSection === section.id ? "page" : undefined}
+                className={`flex items-center gap-2.5 px-3 py-2.5 text-left text-sm font-medium transition-colors ${
+                  activeSection === section.id
+                    ? "border-l-2 border-nordic-accent bg-nordic-accent/10 text-nordic-accent"
+                    : "text-nordic-text-secondary hover:bg-nordic-surface-hover hover:text-nordic-text"
+                }`}
+              >
+                <section.icon className="h-4 w-4 shrink-0" />
+                {section.label}
+              </button>
+            ))}
+          </nav>
+
+          {/* Content Panel */}
+          <div className="flex-1 space-y-6">
+            {/* Profile Section */}
+            {activeSection === "profile" && (
+              <section
+                aria-labelledby="settings-heading-profile"
+                className="nordic-card p-6"
+              >
+                <h2
+                  id="settings-heading-profile"
+                  className="mb-6 text-base font-semibold text-nordic-text"
+                >
+                  Profile Information
                 </h2>
-              </div>
 
-              <div className="space-y-2 pt-2">
-                <Label
-                  htmlFor="api-key"
-                  className="text-xs font-semibold tracking-wider text-muted-foreground uppercase"
-                >
-                  OpenRouter API Key
-                </Label>
-                <div className="flex gap-2">
-                  <Input
-                    id="api-key"
-                    type="password"
-                    placeholder="sk-or-v1-..."
-                    value={apiKey}
-                    onChange={(e) => setApiKey(e.target.value)}
-                    className="bg-background font-mono"
-                  />
-                  <Button onClick={handleSave} className="px-6 font-semibold">
-                    Save
-                  </Button>
-                </div>
-              </div>
-
-              <div className="mt-4 flex gap-3 rounded-lg border border-amber-500/20 bg-amber-500/10 p-4">
-                <AlertTriangle className="mt-0.5 h-5 w-5 shrink-0 text-amber-500" />
-                <div className="space-y-1">
-                  <p className="text-sm font-semibold text-amber-500">
-                    Security Warning
-                  </p>
-                  <p className="text-sm text-amber-500/80">
-                    Your API key is stored locally in your browser. Do not use
-                    this on shared or public devices.
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            {/* AI Resume Generation Settings */}
-            <div className="space-y-4 rounded-xl border border-border/40 bg-card p-6 shadow-sm">
-              <div className="flex items-center gap-2 border-b border-border/40 pb-4">
-                <Key className="h-5 w-5 text-primary" />
-                <h2 className="text-xl font-semibold tracking-tight text-foreground">
-                  Generation Preferences
-                </h2>
-              </div>
-
-              <div className="space-y-2 pt-2">
-                <Label
-                  htmlFor="industry"
-                  className="text-xs font-semibold tracking-wider text-muted-foreground uppercase"
-                >
-                  Target Industry
-                </Label>
-                <Input
-                  id="industry"
-                  placeholder="e.g. Software Engineering"
-                  value={industry}
-                  onChange={(e) => {
-                    setIndustry(e.target.value)
-                    localStorage.setItem("user_industry", e.target.value)
-                  }}
-                  className="bg-background"
-                />
-              </div>
-
-              <div className="space-y-2 pt-2">
-                <Label
-                  htmlFor="tone"
-                  className="text-xs font-semibold tracking-wider text-muted-foreground uppercase"
-                >
-                  Preferred Tone
-                </Label>
-                <select
-                  id="tone"
-                  className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
-                  value={tone}
-                  onChange={(e) => {
-                    setTone(e.target.value)
-                    localStorage.setItem("user_tone", e.target.value)
-                  }}
-                >
-                  <option value="Professional">Professional</option>
-                  <option value="Technical">Technical</option>
-                  <option value="Conversational">Conversational</option>
-                </select>
-              </div>
-
-              <div className="flex items-center justify-between border-t border-border/20 pt-4">
-                <div className="flex items-center gap-3">
-                  <SpellCheck className="h-5 w-5 text-primary" />
+                <div className="space-y-4">
                   <div>
-                    <Label
-                      htmlFor="language-tool-toggle"
-                      className="cursor-pointer text-sm font-semibold text-foreground"
+                    <label
+                      htmlFor="settings-display-name"
+                      className="nordic-input-label"
                     >
-                      Grammar Checking
-                    </Label>
-                    <p className="mt-0.5 text-xs text-muted-foreground">
-                      Use LanguageTool to catch grammar and spelling issues
+                      Display Name
+                    </label>
+                    <div className="relative">
+                      <User className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-nordic-text-tertiary" />
+                      <input
+                        id="settings-display-name"
+                        type="text"
+                        value={displayName}
+                        onChange={(e) => setDisplayName(e.target.value)}
+                        className="nordic-input w-full pl-9"
+                        placeholder="Your display name"
+                        disabled={isGuest}
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label
+                      htmlFor="settings-email"
+                      className="nordic-input-label"
+                    >
+                      Email Address
+                    </label>
+                    <div className="relative">
+                      <Mail className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-nordic-text-tertiary" />
+                      <input
+                        id="settings-email"
+                        type="email"
+                        value={user?.email ?? ""}
+                        className="nordic-input w-full pl-9 opacity-60"
+                        readOnly
+                        disabled
+                        aria-label="Email address (read only)"
+                      />
+                    </div>
+                    <p className="mt-1 text-xs text-nordic-text-tertiary">
+                      Email cannot be changed here. Contact support if needed.
                     </p>
                   </div>
-                </div>
-                <button
-                  id="language-tool-toggle"
-                  role="switch"
-                  aria-checked={enableLanguageTool}
-                  onClick={() => {
-                    const next = !enableLanguageTool
-                    setEnableLanguageTool(next)
-                    localStorage.setItem("enable_language_tool", String(next))
-                    toast.success(
-                      next
-                        ? "Grammar checking enabled"
-                        : "Grammar checking disabled"
-                    )
-                  }}
-                  className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:outline-none ${enableLanguageTool ? "bg-primary" : "bg-muted"}`}
-                >
-                  <span
-                    className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-background shadow-lg ring-0 transition duration-200 ease-in-out ${enableLanguageTool ? "translate-x-5" : "translate-x-0"}`}
-                  />
-                </button>
-              </div>
-            </div>
 
-            {/* Diagnostics Section */}
-            <div className="space-y-4 rounded-xl border border-destructive/20 bg-destructive/5 p-6 shadow-sm">
-              <div className="flex items-center gap-2 border-b border-destructive/20 pb-4">
-                <AlertTriangle className="h-5 w-5 text-destructive" />
-                <h2 className="text-xl font-semibold tracking-tight text-foreground">
-                  Diagnostics
+                  <div className="pt-2">
+                    <button
+                      id="settings-save-profile"
+                      onClick={handleSaveProfile}
+                      disabled={isSavingProfile || isGuest}
+                      className="nordic-btn-primary"
+                    >
+                      {isSavingProfile && (
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                      )}
+                      Save Changes
+                    </button>
+                    {isGuest && (
+                      <p className="mt-2 text-xs text-nordic-text-tertiary">
+                        Sign up for a free account to save your profile.
+                      </p>
+                    )}
+                  </div>
+                </div>
+              </section>
+            )}
+
+            {/* Account & Security Section */}
+            {activeSection === "account" && (
+              <div className="space-y-6">
+                <section
+                  aria-labelledby="settings-heading-password"
+                  className="nordic-card p-6"
+                >
+                  <h2
+                    id="settings-heading-password"
+                    className="mb-6 text-base font-semibold text-nordic-text"
+                  >
+                    Change Password
+                  </h2>
+
+                  <div className="space-y-4">
+                    <div>
+                      <label
+                        htmlFor="settings-current-password"
+                        className="nordic-input-label"
+                      >
+                        Current Password
+                      </label>
+                      <div className="relative">
+                        <Lock className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-nordic-text-tertiary" />
+                        <input
+                          id="settings-current-password"
+                          type="password"
+                          value={oldPassword}
+                          onChange={(e) => setOldPassword(e.target.value)}
+                          className="nordic-input w-full pl-9"
+                          placeholder="••••••••"
+                          disabled={isGuest}
+                          autoComplete="current-password"
+                        />
+                      </div>
+                    </div>
+
+                    <div>
+                      <label
+                        htmlFor="settings-new-password"
+                        className="nordic-input-label"
+                      >
+                        New Password
+                      </label>
+                      <div className="relative">
+                        <Lock className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-nordic-text-tertiary" />
+                        <input
+                          id="settings-new-password"
+                          type="password"
+                          value={newPassword}
+                          onChange={(e) => setNewPassword(e.target.value)}
+                          className="nordic-input w-full pl-9"
+                          placeholder="••••••••"
+                          disabled={isGuest}
+                          autoComplete="new-password"
+                          aria-describedby="settings-password-hint"
+                        />
+                      </div>
+                      <p
+                        id="settings-password-hint"
+                        className="mt-1 text-xs text-nordic-text-tertiary"
+                      >
+                        Must be at least 8 characters.
+                      </p>
+                    </div>
+
+                    <button
+                      id="settings-change-password"
+                      onClick={handleChangePassword}
+                      disabled={isChangingPassword || isGuest}
+                      className="nordic-btn-primary"
+                    >
+                      {isChangingPassword && (
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                      )}
+                      Update Password
+                    </button>
+                  </div>
+                </section>
+
+                {/* Danger Zone */}
+                <section
+                  aria-labelledby="settings-heading-danger"
+                  className="border border-nordic-error/30 bg-nordic-error/5 p-6"
+                >
+                  <h2
+                    id="settings-heading-danger"
+                    className="mb-1 flex items-center gap-2 text-base font-semibold text-nordic-error"
+                  >
+                    <AlertTriangle className="h-4 w-4" />
+                    Danger Zone
+                  </h2>
+                  <p className="mb-4 text-sm text-nordic-text-secondary">
+                    Permanently delete your account and all associated data.
+                    This action cannot be undone.
+                  </p>
+                  <div className="space-y-3">
+                    <div>
+                      <label
+                        htmlFor="settings-delete-confirm"
+                        className="nordic-input-label text-xs"
+                      >
+                        Type{" "}
+                        <span className="font-mono text-nordic-error">
+                          delete my account
+                        </span>{" "}
+                        to confirm
+                      </label>
+                      <input
+                        id="settings-delete-confirm"
+                        type="text"
+                        value={deleteConfirm}
+                        onChange={(e) => setDeleteConfirm(e.target.value)}
+                        className="nordic-input w-full max-w-sm"
+                        placeholder="delete my account"
+                        aria-describedby="settings-delete-hint"
+                      />
+                    </div>
+                    <button
+                      id="settings-delete-account"
+                      onClick={handleDeleteAccount}
+                      disabled={
+                        isDeletingAccount || deleteConfirm !== "delete my account"
+                      }
+                      className="inline-flex items-center gap-2 bg-nordic-error px-5 py-2.5 font-medium text-white transition-colors hover:bg-nordic-error/80 disabled:cursor-not-allowed disabled:opacity-40"
+                    >
+                      {isDeletingAccount && (
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                      )}
+                      Delete Account
+                    </button>
+                  </div>
+                </section>
+              </div>
+            )}
+
+            {/* Billing Section */}
+            {activeSection === "billing" && (
+              <section
+                aria-labelledby="settings-heading-billing"
+                className="nordic-card p-6"
+              >
+                <h2
+                  id="settings-heading-billing"
+                  className="mb-6 text-base font-semibold text-nordic-text"
+                >
+                  Credits & Billing
                 </h2>
-              </div>
-              <div className="flex items-center gap-4 pt-2">
-                <Button
-                  variant="destructive"
-                  className="font-semibold"
-                  onClick={() => {
-                    const error = new Error("This is your first error!")
-                    Sentry.captureException(error)
-                    throw error
-                  }}
-                >
-                  Trigger Sentry Error
-                </Button>
-                <Button
-                  variant="outline"
-                  className="font-semibold"
-                  onClick={() => {
-                    console.log("User triggered test log via console.log", {
-                      log_source: "sentry_test",
-                    })
-                    toast("Test log sent to console.")
-                  }}
-                >
-                  Trigger Test Log
-                </Button>
-              </div>
-            </div>
+
+                <div className="space-y-6">
+                  {/* Credit Balance */}
+                  <div className="flex items-center justify-between border border-nordic-accent/20 bg-nordic-accent/5 p-4">
+                    <div>
+                      <p className="text-sm font-medium text-nordic-text">
+                        AI Credits Balance
+                      </p>
+                      <p className="mt-0.5 text-xs text-nordic-text-secondary">
+                        Each AI generation costs 1 credit.
+                      </p>
+                    </div>
+                    <div className="text-right">
+                      <span
+                        className="text-3xl font-bold text-nordic-accent"
+                        aria-label={`${profile?.credits ?? 0} credits remaining`}
+                      >
+                        {profile?.credits ?? 0}
+                      </span>
+                      <p className="text-xs text-nordic-text-tertiary">
+                        credits remaining
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Purchase CTA */}
+                  <div className="border border-nordic-border bg-nordic-surface-hover p-4">
+                    <p className="mb-3 text-sm text-nordic-text-secondary">
+                      Need more credits? Upgrade your plan or purchase a top-up.
+                    </p>
+                    <button
+                      id="settings-buy-credits"
+                      className="nordic-btn-primary"
+                      onClick={() => toast.info("Billing portal coming soon.")}
+                    >
+                      <CreditCard className="h-4 w-4" />
+                      Manage Billing
+                    </button>
+                  </div>
+
+                  {/* Plan Details */}
+                  <div>
+                    <h3 className="mb-3 text-sm font-medium text-nordic-text">
+                      Current Plan
+                    </h3>
+                    <div className="flex items-center justify-between border border-nordic-border p-4">
+                      <div>
+                        <p className="text-sm font-semibold text-nordic-text">
+                          {isGuest ? "Guest" : "Starter"}
+                        </p>
+                        <p className="text-xs text-nordic-text-secondary">
+                          {isGuest
+                            ? "No account — limited features"
+                            : "Free tier with 5 credits/month"}
+                        </p>
+                      </div>
+                      {!isGuest && (
+                        <span className="border border-nordic-accent/20 bg-nordic-accent/10 px-2.5 py-1 text-xs font-medium text-nordic-accent">
+                          Active
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </section>
+            )}
           </div>
         </div>
-      </main>
+      </div>
     </>
   )
 }

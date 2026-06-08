@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, type RefObject } from "react"
+import { useState, useEffect, type RefObject } from "react"
 
 export interface StarData {
   id: string
@@ -245,12 +245,12 @@ export class GravityEngine {
 }
 
 // Throttle utility
-function throttle<T extends (...args: any[]) => any>(
+function throttle<T extends (...args: Parameters<T>) => ReturnType<T>>(
   func: T,
   limit: number
 ): T {
   let inThrottle: boolean
-  return function (this: any, ...args: Parameters<T>) {
+  return function (this: unknown, ...args: Parameters<T>) {
     if (!inThrottle) {
       func.apply(this, args)
       inThrottle = true
@@ -269,30 +269,30 @@ export function useGravityPhysics(
     ) => void
   }
 ) {
-  const engineRef = useRef<GravityEngine | null>(null)
+  const [engine, setEngine] = useState<GravityEngine | null>(null)
   const [isReady, setIsReady] = useState(false)
 
   // Sync rest position updates
   useEffect(() => {
-    if (engineRef.current && isReady) {
-      engineRef.current.updateRestPositions(stars)
+    if (engine && isReady) {
+      engine.updateRestPositions(stars)
     }
-  }, [stars, isReady])
+  }, [stars, isReady, engine])
 
   useEffect(() => {
     if (!options.enabled || !containerRef.current) return
 
-    const engine = new GravityEngine(stars)
-    const cleanup = engine.attachContainer(containerRef.current)
+    const newEngine = new GravityEngine(stars)
+    const cleanup = newEngine.attachContainer(containerRef.current)
 
-    const unsubscribe = engine.subscribe(
+    const unsubscribe = newEngine.subscribe(
       throttle((positions) => {
         options.onPositionsChange?.(positions)
       }, 33)
     )
 
-    engine.start()
-    engineRef.current = engine
+    newEngine.start()
+    setEngine(newEngine)
     setIsReady(true)
 
     const handleMouseMove = (e: MouseEvent) => {
@@ -300,11 +300,11 @@ export function useGravityPhysics(
       const rect = containerRef.current.getBoundingClientRect()
       const x = ((e.clientX - rect.left) / rect.width) * 100
       const y = ((e.clientY - rect.top) / rect.height) * 100
-      engine.setMouse(x, y)
+      newEngine.setMouse(x, y)
     }
 
     const handleMouseLeave = () => {
-      engine.setMouse(-1000, -1000)
+      newEngine.setMouse(-1000, -1000)
     }
 
     containerRef.current.addEventListener("mousemove", handleMouseMove)
@@ -315,14 +315,14 @@ export function useGravityPhysics(
 
     return () => {
       unsubscribe()
-      engine.stop()
+      newEngine.stop()
       cleanup()
       el.removeEventListener("mousemove", handleMouseMove)
       el.removeEventListener("mouseleave", handleMouseLeave)
-      engineRef.current = null
+      setEngine(null)
       setIsReady(false)
     }
   }, [options.enabled])
 
-  return { engine: engineRef.current, isReady }
+  return { engine, isReady }
 }

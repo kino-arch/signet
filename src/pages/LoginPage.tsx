@@ -1,105 +1,79 @@
 import { ChevronLeftIcon } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { LoginForm } from "@/components/login-form"
-import { Logo } from "@/components/ui/logo"
+import { SignetMark } from "@/components/nordic/SignetMark"
+import { Link } from "react-router-dom"
+import { motion } from "framer-motion"
 
 export function LoginPage() {
   return (
-    <div className="grid min-h-svh bg-background text-foreground lg:grid-cols-2">
-      {/* Left side: Image / Pattern */}
-      <div className="relative hidden overflow-hidden border-r border-border/40 bg-zinc-950 lg:block">
-        <div className="absolute inset-0 z-10 flex flex-col justify-between p-10">
-          <div className="flex items-center gap-2">
-            <Logo size="md" showText={false} />
-            <span className="font-heading text-xl font-bold tracking-widest text-primary">
-              SIGNET
-            </span>
-          </div>
-          <div className="max-w-md">
-            <h2 className="mb-4 font-heading text-3xl font-bold text-white">
-              Forge Your Identity
-            </h2>
-            <p className="text-lg text-zinc-400">
-              A minimalist, sci-fi-themed resume builder with a sleek datapad
-              UI. Strip away the clutter and forge your career data into a
-              professional emblem.
-            </p>
-          </div>
+    <div className="grid min-h-screen bg-nordic-bg text-nordic-text lg:grid-cols-2">
+
+      {/* ── Left panel (Image) ─────────────────────────────────── */}
+      <div className="relative hidden overflow-hidden border-r border-nordic-border lg:flex lg:flex-col lg:p-8">
+        {/* Background Image */}
+        <div className="absolute inset-0 z-0">
+          <img
+            src="/assets/illustrations/hero_02_landscape.png"
+            alt="Signet Nordic Minimalist Landscape"
+            className="h-full w-full object-cover object-center opacity-80"
+          />
+          {/* Subtle gradient overlay to ensure the logo is readable and to blend edges if needed */}
+          <div className="absolute inset-0 bg-nordic-bg/20 bg-gradient-to-t from-nordic-bg/60 via-transparent to-nordic-bg/40" />
         </div>
 
-        {/* Hexagonal / Sci-fi Pattern Background */}
-        <div
-          className="absolute inset-0 z-0 opacity-20"
-          style={{
-            backgroundImage:
-              "linear-gradient(30deg, var(--primary) 12%, transparent 12.5%, transparent 87%, var(--primary) 87.5%, var(--primary)), linear-gradient(150deg, var(--primary) 12%, transparent 12.5%, transparent 87%, var(--primary) 87.5%, var(--primary)), linear-gradient(30deg, var(--primary) 12%, transparent 12.5%, transparent 87%, var(--primary) 87.5%, var(--primary)), linear-gradient(150deg, var(--primary) 12%, transparent 12.5%, transparent 87%, var(--primary) 87.5%, var(--primary)), linear-gradient(60deg, color-mix(in srgb, var(--primary) 77%, transparent) 25%, transparent 25.5%, transparent 75%, color-mix(in srgb, var(--primary) 77%, transparent) 75%, color-mix(in srgb, var(--primary) 77%, transparent)), linear-gradient(60deg, color-mix(in srgb, var(--primary) 77%, transparent) 25%, transparent 25.5%, transparent 75%, color-mix(in srgb, var(--primary) 77%, transparent) 75%, color-mix(in srgb, var(--primary) 77%, transparent))",
-            backgroundPosition:
-              "0 0, 0 0, 30px 53px, 30px 53px, 0 0, 30px 53px",
-            backgroundSize: "60px 106px",
-          }}
-        />
-        {/* Gradient overlay to make text readable */}
-        <div className="absolute inset-0 z-0 bg-gradient-to-t from-zinc-950 via-zinc-950/50 to-transparent" />
+        {/* Logo overlay */}
+        <motion.div
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="relative z-10 flex items-center gap-2.5"
+        >
+          <SignetMark size={28} />
+          <span className="text-xl font-bold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-white to-white/70">
+            Signet
+          </span>
+        </motion.div>
       </div>
 
-      {/* Right side: Login Form */}
-      <div className="relative flex flex-col gap-4 p-6 md:p-10">
+      {/* ── Right panel ─────────────────────────────────────────── */}
+      <div className="relative flex flex-col bg-nordic-bg p-4 md:p-6 lg:p-8">
+
+        {/* Back link */}
         <div className="flex w-full justify-start lg:justify-end">
-          <Button asChild className="group" variant="ghost" size="sm">
-            <a href="/">
-              <ChevronLeftIcon className="mr-1 h-4 w-4 text-primary transition-transform group-hover:-translate-x-1" />
-              <span className="text-sm font-medium text-muted-foreground transition-colors group-hover:text-foreground">
-                Back to Home
-              </span>
-            </a>
+          <Button asChild variant="ghost" size="sm" className="group text-nordic-text-secondary hover:text-nordic-text">
+            <Link to="/">
+              <ChevronLeftIcon className="mr-1 h-4 w-4 transition-transform group-hover:-translate-x-1" />
+              <span className="text-sm font-medium">Back to Home</span>
+            </Link>
           </Button>
         </div>
 
+        {/* Form centred */}
         <div className="flex flex-1 items-center justify-center">
-          <div className="flex w-full max-w-sm flex-col items-center">
-            {/* Logo is visible on small screens since left side is hidden */}
-            <div className="mb-8 flex w-full justify-center lg:hidden">
-              <Logo size="md" />
+          <div className="w-full max-w-sm">
+
+            {/* Mobile logo */}
+            <div className="mb-8 flex items-center justify-center gap-2.5 lg:hidden">
+              <SignetMark size={24} />
+              <span className="text-lg font-bold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-white to-white/70">
+                Signet
+              </span>
             </div>
 
-            <div className="w-full">
-              <LoginForm />
+            <LoginForm />
 
-              <div className="mt-8 w-full">
-                <div className="relative block overflow-hidden rounded-lg border border-border/40 bg-card/50 p-6 backdrop-blur-sm transition-colors">
-                  <div className="text-center text-sm">
-                    <p className="mb-2 text-muted-foreground">
-                      Want to learn more?
-                    </p>
-                    <a
-                      href="/docs"
-                      className="font-semibold text-primary hover:underline"
-                    >
-                      Read our documentation
-                    </a>
-                  </div>
-                </div>
-              </div>
-
-              <div className="mt-8 w-full">
-                <p className="text-center text-xs font-medium text-muted-foreground">
-                  By continuing, you agree to Signet&apos;s{" "}
-                  <a
-                    href="/terms"
-                    className="font-semibold text-primary hover:underline"
-                  >
-                    Terms of Service
-                  </a>{" "}
-                  and{" "}
-                  <a
-                    href="/privacy"
-                    className="font-semibold text-primary hover:underline"
-                  >
-                    Privacy Policy
-                  </a>
-                </p>
-              </div>
-            </div>
+            {/* Legal footer */}
+            <p className="mt-8 text-center text-xs text-nordic-text-tertiary">
+              By continuing, you agree to Signet&apos;s{" "}
+              <Link to="/terms" className="text-nordic-text-secondary underline-offset-4 hover:underline hover:text-nordic-text transition-colors">
+                Terms
+              </Link>{" "}
+              and{" "}
+              <Link to="/privacy" className="text-nordic-text-secondary underline-offset-4 hover:underline hover:text-nordic-text transition-colors">
+                Privacy Policy
+              </Link>
+            </p>
           </div>
         </div>
       </div>
