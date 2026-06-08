@@ -115,6 +115,9 @@ export const Disabled: Story = {
 
 export const Loading: Story = {
   name: "Loading State",
+  parameters: {
+    chromatic: { disableSnapshot: false, delay: 300 },
+  },
   args: {
     disabled: true,
     children: (

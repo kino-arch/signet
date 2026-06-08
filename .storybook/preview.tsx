@@ -10,8 +10,10 @@ import { MotionConfig } from "framer-motion"
 import { createMemoryRouter, RouterProvider } from "react-router-dom"
 
 // Synchronously force dark mode before React renders to prevent CSS transition flashes
+// Also set data-theme attribute so [data-theme="dark"] CSS selectors resolve on first paint
 if (typeof document !== 'undefined') {
   document.documentElement.classList.add('dark');
+  document.documentElement.setAttribute('data-theme', 'dark');
 }
 
 const customViewports = {
@@ -69,7 +71,7 @@ const preview: Preview = {
         ]
       }
     },
-    chromatic: { delay: 500 },
+    chromatic: { delay: 500, pauseAnimationAtEnd: true },
   },
   decorators: [
     (Story) => (

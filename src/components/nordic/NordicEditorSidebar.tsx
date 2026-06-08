@@ -13,7 +13,7 @@ export function NordicEditorSidebar() {
   // but for now we provide the UI shell.
 
   return (
-    <aside className="w-64 shrink-0 border-r border-nordic-border bg-white min-h-[calc(100vh-4rem)]">
+    <aside className="w-64 shrink-0 border-r border-nordic-border bg-nordic-surface min-h-[calc(100vh-4rem)]">
       <div className="p-4">
         <h2 className="text-xs font-bold uppercase tracking-wider text-nordic-text-tertiary mb-3 px-2">
           Document Editor
