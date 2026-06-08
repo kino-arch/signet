@@ -13,8 +13,8 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
-    - name: Enable Corepack
-      run: corepack enable
+    - name: Install pnpm
+      run: cd /tmp && npm install -g pnpm@11.5.1
 
     - name: Use Node.js
       uses: actions/setup-node@v4

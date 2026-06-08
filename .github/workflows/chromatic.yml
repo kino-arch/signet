@@ -20,8 +20,8 @@ jobs:
         with:
           fetch-depth: 0 # Required to retrieve git history
 
-      - name: Enable Corepack
-        run: corepack enable
+      - name: Install pnpm
+        run: cd /tmp && npm install -g pnpm@11.5.1
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
