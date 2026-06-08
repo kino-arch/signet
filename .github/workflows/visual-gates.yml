@@ -17,15 +17,16 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
-
       - name: Install pnpm
         uses: pnpm/action-setup@v3
         with:
-          version: 8
+          version: 9
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: 'pnpm'
 
       - name: Install dependencies
         run: pnpm install
@@ -33,10 +34,8 @@ jobs:
       - name: Spatial Gates (Regex checks)
         run: |
           echo "Checking for root-level edge bleeds..."
-          # A simple regex check to ensure w-full isn't used without max-w
-          # This is a rudimentary gate before Forge Bot AST parsing.
           grep -rn "w-full" src/ | grep -v "max-w" | grep -v "SignetWell" > spatial-violations.count || true
-          
+
       - name: Color Guard
         run: node scripts/color-guard.js
 
@@ -44,7 +43,7 @@ jobs:
         run: |
           echo "Checking for centered text fatigue..."
           grep -rn "text-center" src/ > typography-violations.count || true
-          
+
       - name: Generate Visual Health Report
         run: |
           echo "## 🎨 Visual Health Report" > report.md
