@@ -26,7 +26,7 @@ jobs:
         run: cd /tmp && npm install -g pnpm@11.5.1
 
       - name: Install dependencies
-        run: pnpm install
+        run: pnpm install --no-frozen-lockfile
 
       - name: Spatial Gates (Regex checks)
         run: |
