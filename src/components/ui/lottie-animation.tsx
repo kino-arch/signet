@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react"
-import LottieLib, { type LottieComponentProps } from "lottie-react"
+import { useEffect, useState, useRef } from "react"
+import LottieLib, { type LottieComponentProps, type LottieRefCurrentProps } from "lottie-react"
 import { cn } from "@/lib/utils"
 
 // Workaround for Vite/ESM default export resolution of CJS modules
@@ -33,9 +33,13 @@ export function LottieAnimation({
   autoplay = true,
   decorative = true,
   rendererSettings,
+  lottieRef: externalLottieRef,
   ...props
 }: LottieAnimationProps) {
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(false)
+  const internalLottieRef = useRef<LottieRefCurrentProps>(null)
+  
+  const actualLottieRef = (externalLottieRef as React.MutableRefObject<LottieRefCurrentProps | null>) || internalLottieRef
 
   useEffect(() => {
     const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)")
@@ -48,6 +52,31 @@ export function LottieAnimation({
     return () => mediaQuery.removeEventListener("change", handler)
   }, [])
 
+  const finalLoop = prefersReducedMotion ? false : loop
+  const finalAutoplay = prefersReducedMotion ? false : autoplay
+
+  // Pause animation when off-screen
+  useEffect(() => {
+    const container = actualLottieRef.current?.animationContainerRef?.current
+    if (!container) return
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (!actualLottieRef.current) return
+        if (entry.isIntersecting) {
+          if (finalAutoplay) {
+            actualLottieRef.current.play()
+          }
+        } else {
+          actualLottieRef.current.pause()
+        }
+      },
+      { threshold: 0 }
+    )
+    observer.observe(container)
+    return () => observer.disconnect()
+  }, [finalAutoplay, actualLottieRef])
+
   if (!animationData) {
     return null
   }
@@ -58,11 +87,9 @@ export function LottieAnimation({
       ? "grayscale sepia hue-rotate-[150deg] saturate-[300%] brightness-[1.2]"
       : ""
 
-  const finalLoop = prefersReducedMotion ? false : loop
-  const finalAutoplay = prefersReducedMotion ? false : autoplay
-
   return (
     <Lottie
+      lottieRef={actualLottieRef}
       className={cn(tintFilter, className)}
       aria-hidden={decorative ? "true" : undefined}
       role={decorative ? "presentation" : undefined}
