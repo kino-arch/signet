@@ -41,6 +41,7 @@ export default defineConfig({
           name: 'unit',
           include: ['tests/**/*.test.{ts,tsx}', 'src/**/*.test.{ts,tsx}'],
           exclude: ['**/node_modules/**', '**/.git/**'],
+          environment: 'jsdom',
         },
       },
       {

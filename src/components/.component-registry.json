@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "lastUpdated": "2026-06-05T20:29:00Z",
+  "lastUpdated": "2026-06-08T05:15:00Z",
   "components": [
     {
       "name": "shine-border",
@@ -17,12 +17,12 @@
         "rgb\\(",
         "hsl\\("
       ],
-      "lastVerification": "2026-06-05",
+      "lastVerification": "2026-06-08",
       "verifiedBy": "color-guard"
     },
     {
       "name": "hole",
-      "path": "src/components/hole.tsx",
+      "path": "src/components/animate-ui/components/backgrounds/hole.tsx",
       "origin": "@aliimam/hole",
       "status": "tokenized",
       "tokenizedDate": "2026-06-03",
@@ -32,23 +32,7 @@
       "forbiddenPatterns": [
         "#[0-9a-fA-F]{3,8}"
       ],
-      "lastVerification": "2026-06-05",
-      "verifiedBy": "color-guard"
-    },
-    {
-      "name": "neon-gradient-card",
-      "path": "src/components/neon-gradient-card.tsx",
-      "origin": "@aliimam/neon-gradient-card",
-      "status": "tokenized",
-      "tokenizedDate": "2026-06-03",
-      "approvedTokens": [
-        "var(--theme-accent)",
-        "var(--theme-primary)"
-      ],
-      "forbiddenPatterns": [
-        "#[0-9a-fA-F]{3,8}"
-      ],
-      "lastVerification": "2026-06-05",
+      "lastVerification": "2026-06-08",
       "verifiedBy": "color-guard"
     },
     {

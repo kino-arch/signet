@@ -6,6 +6,10 @@ on:
   pull_request:
     types: [opened, synchronize]
 
+permissions:
+  pull-requests: write
+  contents: read
+
 jobs:
   visual-compliance:
     name: Signet Visual Compliance
