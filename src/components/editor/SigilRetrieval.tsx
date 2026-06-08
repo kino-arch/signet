@@ -318,11 +318,15 @@ export function SigilRetrieval({
                       <span className="text-primary">{progress}%</span>
                     </div>
                     <div className="pointer-events-none h-1 w-full overflow-hidden opacity-80 mix-blend-screen">
-                      <LottieAnimation
-                        animationData={laserScanData}
-                        className="h-full w-full"
-                        rendererSettings={{ preserveAspectRatio: "none" }}
-                      />
+                      {!shouldReduceMotion ? (
+                        <LottieAnimation
+                          animationData={laserScanData}
+                          className="h-full w-full"
+                          rendererSettings={{ preserveAspectRatio: "none" }}
+                        />
+                      ) : (
+                        <div className="h-full w-full bg-primary/20" />
+                      )}
                     </div>
                     <div className="h-1 w-full overflow-hidden rounded-full bg-border/40">
                       <motion.div
