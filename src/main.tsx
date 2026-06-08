@@ -29,13 +29,16 @@ if (import.meta.env.VITE_SENTRY_ENABLE_LOGS === "true") {
 }
 
 Sentry.init({
-  dsn: "https://922cd647efc30d02c620426427f831b0@o4511482474201088.ingest.de.sentry.io/4511482493206608",
+  dsn: import.meta.env.VITE_SENTRY_DSN,
+  environment: import.meta.env.VITE_SENTRY_ENVIRONMENT ?? (isProd ? "production" : "development"),
+  release: import.meta.env.VITE_SENTRY_RELEASE,
   tunnel: import.meta.env.VITE_SUPABASE_URL
     ? `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/sentry-tunnel`
     : undefined,
   sendDefaultPii: import.meta.env.VITE_SENTRY_ENABLE_PII === "true",
   integrations: sentryIntegrations,
   tracesSampleRate: isProd ? 1.0 : 0.1,
+  enableLogs: import.meta.env.VITE_SENTRY_ENABLE_LOGS === "true",
 })
 
 // Nordic Typography Stack
