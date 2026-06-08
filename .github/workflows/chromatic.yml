@@ -21,7 +21,7 @@ jobs:
           fetch-depth: 0 # Required to retrieve git history
 
       - name: Install pnpm
-        uses: pnpm/action-setup@v4
+        run: npm install -g pnpm@11.5.1
 
 
       - name: Setup Node.js
