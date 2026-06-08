@@ -2,9 +2,6 @@ packages:
   - "."
   - "packages/*"
 
-ignoredBuiltDependencies:
-  - esbuild
-
 onlyBuiltDependencies:
   - "@bundled-es-modules/glob"
   - "core-js"
