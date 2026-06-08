@@ -44,8 +44,9 @@ serve(async (req: Request) => {
       httpClient: Stripe.createFetchHttpClient(),
     })
 
-    // Create Checkout Sessions API call. We do not pass payment_method_types to allow dynamic payment methods.
+    // Create Checkout Sessions API call. Force card and bank account only.
     const session = await stripe.checkout.sessions.create({
+      payment_method_types: ['card', 'us_bank_account'],
       mode: "payment",
       line_items: [
         {
