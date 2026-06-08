@@ -30,6 +30,8 @@ if (import.meta.env.VITE_SENTRY_ENABLE_LOGS === "true") {
 
 Sentry.init({
   dsn: import.meta.env.VITE_SENTRY_DSN,
+  environment: import.meta.env.VITE_SENTRY_ENVIRONMENT ?? (isProd ? "production" : "development"),
+  release: import.meta.env.VITE_SENTRY_RELEASE,
   tunnel: import.meta.env.VITE_SUPABASE_URL
     ? `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/sentry-tunnel`
     : undefined,
