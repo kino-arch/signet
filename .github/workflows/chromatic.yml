@@ -21,7 +21,9 @@ jobs:
           fetch-depth: 0 # Required to retrieve git history
 
       - name: Enable Corepack
-        run: corepack enable
+        run: |
+          npm install -g corepack@latest
+          corepack enable
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
