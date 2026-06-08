@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react-vite"
 import { NordicEditorSidebar } from "./NordicEditorSidebar"
-import { BrowserRouter } from "react-router-dom"
+
 
 const meta = {
   title: "Nordic/NordicEditorSidebar",
@@ -10,11 +10,9 @@ const meta = {
   },
   decorators: [
     (Story) => (
-      <BrowserRouter>
-        <div className="flex bg-nordic-bg p-8 min-h-screen">
-          <Story />
-        </div>
-      </BrowserRouter>
+      <div className="flex bg-nordic-bg p-8 min-h-screen">
+        <Story />
+      </div>
     ),
   ],
 } satisfies Meta<typeof NordicEditorSidebar>

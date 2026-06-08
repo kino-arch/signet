@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react-vite"
 import { NordicProfileDropdown } from "./NordicProfileDropdown"
-import { BrowserRouter } from "react-router-dom"
+
 
 const meta = {
   title: "Nordic/ProfileDropdown",
@@ -10,9 +10,7 @@ const meta = {
   },
   decorators: [
     (Story) => (
-      <BrowserRouter>
-        <Story />
-      </BrowserRouter>
+      <Story />
     ),
   ],
 } satisfies Meta<typeof NordicProfileDropdown>

@@ -22,8 +22,8 @@
   --color-nordic-text-tertiary: #52525B;  /* Placeholders, hints */
   --color-nordic-border: rgba(255,255,255,0.08);        /* Structural borders */
   --color-nordic-border-subtle: rgba(255,255,255,0.04); /* Divider lines */
-  --color-nordic-accent: #3B82F6;         /* 10% — Electric blue */
-  --color-nordic-accent-hover: #2563EB;   /* CTA hover */
+  --color-nordic-accent: #2563EB;         /* 10% — Electric blue (accessible) */
+  --color-nordic-accent-hover: #1D4ED8;   /* CTA hover */
   --color-nordic-accent-soft: rgba(59,130,246,0.12); /* Accent bg wash */
   --color-nordic-success: #22C55E;
   --color-nordic-warning: #F59E0B;

@@ -13,9 +13,9 @@ export function NordicEditorSidebar() {
   // but for now we provide the UI shell.
 
   return (
-    <aside className="w-64 shrink-0 border-r border-nordic-border bg-white min-h-[calc(100vh-4rem)]">
+    <aside className="w-64 shrink-0 border-r border-nordic-border bg-nordic-surface min-h-[calc(100vh-4rem)]">
       <div className="p-4">
-        <h2 className="text-xs font-bold uppercase tracking-wider text-nordic-text-tertiary mb-3 px-2">
+        <h2 className="text-xs font-bold uppercase tracking-wider text-nordic-text-secondary mb-3 px-2">
           Document Editor
         </h2>
         <nav className="space-y-1">
@@ -23,7 +23,7 @@ export function NordicEditorSidebar() {
             <NavLink
               key={item.name}
               to={item.path}
-              className={({ isActive }) =>
+              className={({ isActive }: { isActive: boolean }) =>
                 `flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
                   isActive
                     ? "bg-nordic-accent-soft text-nordic-accent"
