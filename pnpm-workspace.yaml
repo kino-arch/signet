@@ -7,3 +7,10 @@ ignoredBuiltDependencies:
 
 overrides:
   fetch-blob: "^4.0.0"
+
+peerDependencyRules:
+  ignoreMissing:
+    - "storybook"
+  allowedVersions:
+    tailwindcss-animate:
+      tailwindcss: "*"
