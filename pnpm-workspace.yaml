@@ -16,5 +16,4 @@ peerDependencyRules:
   ignoreMissing:
     - "storybook"
   allowedVersions:
-    tailwindcss-animate:
-      tailwindcss: "*"
+    tailwindcss: "*"
