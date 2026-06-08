@@ -13,12 +13,14 @@ type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   args: {
+    id: 'signet-input-default',
     placeholder: 'Enter text here...',
   },
 };
 
 export const WithLabelAndHelper: Story = {
   args: {
+    id: 'signet-input-label',
     label: 'Username',
     placeholder: 'johndoe',
     helperText: 'Pick a unique username.',
@@ -27,6 +29,7 @@ export const WithLabelAndHelper: Story = {
 
 export const WithError: Story = {
   args: {
+    id: 'signet-input-error',
     label: 'Email',
     placeholder: 'john@example.com',
     error: 'Invalid email address.',
@@ -35,6 +38,7 @@ export const WithError: Story = {
 
 export const WithIcon: Story = {
   args: {
+    id: 'signet-input-icon',
     placeholder: 'Search...',
     leftIcon: <Search size={16} />,
   },

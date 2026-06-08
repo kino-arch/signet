@@ -1,9 +1,18 @@
 import type { Preview } from "@storybook/react-vite"
 import React from "react"
 import "../src/index.css"
+import "@fontsource-variable/syne"
+import "@fontsource-variable/schibsted-grotesk"
+import "@fontsource-variable/onest"
+import "@fontsource-variable/spline-sans-mono"
 import { ThemeProvider } from "../src/components/theme-provider"
 import { MotionConfig } from "framer-motion"
 import { createMemoryRouter, RouterProvider } from "react-router-dom"
+
+// Synchronously force dark mode before React renders to prevent CSS transition flashes
+if (typeof document !== 'undefined') {
+  document.documentElement.classList.add('dark');
+}
 
 const customViewports = {
   mobile: {
@@ -28,7 +37,9 @@ const withRouter = (Story: React.ComponentType) => {
   const router = createMemoryRouter([
     { path: "/", element: <Story /> },
     { path: "*", element: <Story /> },
-  ]);
+  ], {
+    initialEntries: ['/forge/content'] // Force deterministic route for active NavLinks
+  });
   return <RouterProvider router={router} />;
 };
 
