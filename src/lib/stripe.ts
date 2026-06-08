@@ -5,7 +5,7 @@ import { config } from "dotenv"
 config({ path: ".env.local" })
 
 const secretKey =
-  (import.meta as any).env?.VITE_STRIPE_SECRET_KEY ||
+  (import.meta as unknown as { env?: Record<string, string> }).env?.VITE_STRIPE_SECRET_KEY ||
   process.env.VITE_STRIPE_SECRET_KEY ||
   process.env.SECRET_KEY
 

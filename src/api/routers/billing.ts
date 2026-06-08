@@ -53,11 +53,11 @@ export const billingRouter = router({
       return {
         url: session.url,
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       logger.error("Failed to create Stripe portal session", error)
       throw new TRPCError({
         code: "INTERNAL_SERVER_ERROR",
-        message: `Failed to create billing session: ${error?.message || "Unknown error"}`,
+        message: `Failed to create billing session: ${error instanceof Error ? error.message : "Unknown error"}`,
       })
     }
   }),

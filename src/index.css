@@ -30,6 +30,7 @@
   --color-nordic-error: #EF4444;
 
   /* Typography — Nordic Stack */
+
   /* Legacy variables (deprecate in Phase 6) */
   --font-sans: "Onest Variable", ui-sans-serif, system-ui, sans-serif;
   
@@ -37,7 +38,7 @@
   --font-heading: "Schibsted Grotesk Variable", ui-sans-serif, system-ui, sans-serif;
   --font-body: "Onest Variable", ui-sans-serif, system-ui, sans-serif;
   --font-display: "Syne Variable", ui-sans-serif, system-ui, sans-serif;
-  --font-serif: "Instrument Serif", Georgia, serif;
+  --font-serif: "Instrument Serif", georgia, serif;
   --font-mono: "Spline Sans Mono Variable", ui-monospace, monospace;
 
   /* Spacing Scale (Nordic: generous, breathable) */
@@ -90,12 +91,14 @@
 @layer base {
   body {
     @apply bg-nordic-bg text-nordic-text antialiased;
+
     font-family: var(--font-sans);
   }
 
   /* Typography defaults */
   h1, h2, h3, h4, h5, h6 {
     @apply font-semibold tracking-tight text-nordic-text;
+
     font-family: var(--font-heading); /* Schibsted Grotesk for all headings */
     letter-spacing: -0.02em;
   }

@@ -49,6 +49,7 @@
 @layer base {
   body {
     @apply bg-nordic-bg text-nordic-text antialiased;
+
     font-family: var(--font-sans);
   }
 

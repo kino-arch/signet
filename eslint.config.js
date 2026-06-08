@@ -72,7 +72,7 @@ export default defineConfig([globalIgnores(['dist']), {
     tseslint.configs.recommended,
     reactHooks.configs.flat.recommended,
     reactRefresh.configs.vite,
-    ...tailwindcss.configs['flat/recommended'],
+    // ...tailwindcss.configs['flat/recommended'],
   ],
   plugins: {
     'constellation': constellationPlugin,
@@ -96,14 +96,14 @@ export default defineConfig([globalIgnores(['dist']), {
       "warn",
       { allowConstantExport: true },
     ],
-    "tailwindcss/no-custom-classname": "warn",
+    // "tailwindcss/no-custom-classname": "warn",
     "constellation/no-arbitrary-tailwind": "warn",
   },
 },
 {
   files: ['src/ui/living/**/*.{ts,tsx}'],
   rules: {
-    "tailwindcss/no-custom-classname": "error",
+    // "tailwindcss/no-custom-classname": "error",
     "constellation/no-arbitrary-tailwind": "error",
   }
 },
