@@ -22,7 +22,7 @@ const sentryIntegrations = [
   }),
 ]
 
-if (isProd) {
+if (import.meta.env.VITE_SENTRY_ENABLE_LOGS === "true") {
   sentryIntegrations.push(
     Sentry.consoleLoggingIntegration({ levels: ["log", "warn", "error"] })
   )
@@ -33,10 +33,9 @@ Sentry.init({
   tunnel: import.meta.env.VITE_SUPABASE_URL
     ? `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/sentry-tunnel`
     : undefined,
-  sendDefaultPii: isProd,
+  sendDefaultPii: import.meta.env.VITE_SENTRY_ENABLE_PII === "true",
   integrations: sentryIntegrations,
   tracesSampleRate: isProd ? 1.0 : 0.1,
-  enableLogs: isProd,
 })
 
 // Nordic Typography Stack
