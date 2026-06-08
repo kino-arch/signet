@@ -8,15 +8,15 @@ import {
 } from "@/components/ui/tooltip"
 
 interface OpenBetaBadgeProps {
-  tip?: string;
-  title?: string;
-  className?: string;
+  tip?: string
+  title?: string
+  className?: string
 }
 
 export const OpenBetaBadge = ({
   tip = "This feature is currently in open beta. We are actively improving it based on your feedback.",
   title = "Beta",
-  className
+  className,
 }: OpenBetaBadgeProps) => {
   return (
     <TooltipProvider>

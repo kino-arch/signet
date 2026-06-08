@@ -1,11 +1,11 @@
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { motion } from "framer-motion";
-import { useNavigate } from "react-router-dom";
-import { ArrowRight, Sparkles } from "lucide-react";
+import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
+import { motion } from "framer-motion"
+import { useNavigate } from "react-router-dom"
+import { ArrowRight, Sparkles } from "lucide-react"
 
 export function Hero() {
-  const navigate = useNavigate();
+  const navigate = useNavigate()
 
   return (
     <section className="relative flex min-h-[calc(100svh-3.5rem)] w-full flex-col items-center overflow-hidden bg-background pt-16 pb-12 sm:pt-20 sm:pb-16 md:pt-24 md:pb-20">
@@ -30,7 +30,7 @@ export function Hero() {
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.1 }}
-          className="max-w-3xl font-heading text-3xl font-bold tracking-tight text-foreground sm:text-4xl md:text-5xl lg:text-6xl"
+          className="max-w-3xl text-style-hero text-3xl sm:text-4xl md:text-5xl lg:text-6xl text-foreground"
         >
           Secure Your Next Role with{" "}
           <span className="text-primary">Beskar-Grade Precision</span>
@@ -43,7 +43,9 @@ export function Hero() {
           transition={{ duration: 0.6, delay: 0.2 }}
           className="max-w-xl text-base text-muted-foreground sm:text-lg"
         >
-          Over 70% of flashy resumes fail Applicant Tracking Systems (ATS). Build a clean, data-driven professional resume engineered to bypass filters and land the interview.
+          Over 70% of flashy resumes fail Applicant Tracking Systems (ATS).
+          Build a clean, data-driven professional resume engineered to bypass
+          filters and land the interview.
         </motion.p>
 
         {/* CTA Buttons — using project's Button component with no overrides */}
@@ -53,11 +55,19 @@ export function Hero() {
           transition={{ duration: 0.6, delay: 0.3 }}
           className="flex flex-col items-center gap-3 sm:flex-row"
         >
-          <Button size="lg" onClick={() => navigate("/editor")} className="gap-2">
+          <Button
+            size="lg"
+            onClick={() => navigate("/editor")}
+            className="gap-2"
+          >
             Start Building
             <ArrowRight className="h-4 w-4" />
           </Button>
-          <Button size="lg" variant="outline" onClick={() => navigate("/ats-specs")}>
+          <Button
+            size="lg"
+            variant="outline"
+            onClick={() => navigate("/ats-specs")}
+          >
             ATS Specs
           </Button>
         </motion.div>
@@ -69,8 +79,8 @@ export function Hero() {
           transition={{ duration: 0.7, delay: 0.4 }}
           className="relative mt-2 w-full max-w-sm sm:max-w-md md:max-w-lg lg:max-w-xl xl:max-w-2xl"
         >
-          <div className="pointer-events-none absolute  -inset-4 bg-primary/5 blur-2xl" />
-          <div className="relative overflow-hidden  border border-border bg-card shadow-lg">
+          <div className="pointer-events-none absolute -inset-4 bg-primary/5 blur-2xl" />
+          <div className="relative overflow-hidden border border-border bg-card shadow-lg">
             <img
               src="/beskar_dataslate.png"
               alt="Beskar data-slate resume layout"
@@ -80,5 +90,5 @@ export function Hero() {
         </motion.div>
       </div>
     </section>
-  );
+  )
 }

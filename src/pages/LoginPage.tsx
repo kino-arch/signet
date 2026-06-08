@@ -1,75 +1,82 @@
-import { ChevronLeftIcon } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { LoginForm } from "@/components/login-form";
-import { ModeToggle } from "@/components/theme-switch";
-import { HoleBackground } from "@/components/animate-ui/components/backgrounds/hole";
-import { TextScrambleEffect } from "@/components/text-scramble";
-import { Logo } from "@/components/ui/logo";
+import { ChevronLeftIcon } from "lucide-react"
+import { Button } from "@/components/ui/button"
+import { LoginForm } from "@/components/login-form"
+import { SignetMark } from "@/components/nordic/SignetMark"
+import { Link } from "react-router-dom"
+import { motion } from "framer-motion"
 
 export function LoginPage() {
   return (
-    <main className="relative bg-background md:h-screen md:overflow-hidden lg:grid lg:grid-cols-2">
-      {/* ── Left decorative panel (Brand Side) ───────────────────────────── */}
-      <div className="relative hidden h-full w-full overflow-hidden border-r bg-zinc-950 lg:flex">
-        {/* Layer 0: The Tactical Depth (Hole Background) */}
-        <div className="absolute inset-0 z-0 opacity-80">
-          <HoleBackground 
-            strokeColor="#27272a" 
-            particleRGBColor={[6, 182, 212]} 
-            numberOfLines={60}
-            numberOfDiscs={40}
+    <div className="grid min-h-screen bg-nordic-bg text-nordic-text lg:grid-cols-2">
+
+      {/* ── Left panel (Image) ─────────────────────────────────── */}
+      <div className="relative hidden overflow-hidden border-r border-nordic-border lg:flex lg:flex-col lg:p-8">
+        {/* Background Image */}
+        <div className="absolute inset-0 z-0">
+          <img
+            src="/assets/illustrations/hero_02_landscape.png"
+            alt="Signet Nordic Minimalist Landscape"
+            className="h-full w-full object-cover object-center opacity-80"
           />
+          {/* Subtle gradient overlay to ensure the logo is readable and to blend edges if needed */}
+          <div className="absolute inset-0 bg-nordic-bg/20 bg-gradient-to-t from-nordic-bg/60 via-transparent to-nordic-bg/40" />
         </div>
 
-        {/* Layer 1: Foreground Content (Brand Side) */}
-        <div className="pointer-events-none relative z-10 flex h-full w-full flex-col justify-between p-12">
-          
-          {/* Top: Animated Logo */}
-          <div className="mr-auto flex items-center gap-3">
-            <Logo size="lg" />
-          </div>
-
-          {/* Bottom: Decrypting Intel Quote */}
-          <div className="pointer-events-auto relative max-w-md overflow-hidden rounded-lg border border-white/10 bg-black/40 p-6 shadow-2xl backdrop-blur-md">
-            <div className="absolute top-0 bottom-0 left-0 w-1 bg-primary" />
-            <div className="space-y-3">
-              <TextScrambleEffect 
-                text="Applicant Tracking Systems reject 43% of flashy resumes. We forge data-slates that bypass the filters." 
-                className="text-xl leading-relaxed font-medium text-zinc-300"
-              />
-              <footer className="font-mono text-xs font-semibold tracking-wider text-primary uppercase">
-                [ The FAANG Executive Protocol ]
-              </footer>
-            </div>
-          </div>
-        </div>
+        {/* Logo overlay */}
+        <motion.div
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="relative z-10 flex items-center gap-2.5"
+        >
+          <SignetMark size={28} />
+          <span className="text-xl font-bold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-white to-white/70">
+            Signet
+          </span>
+        </motion.div>
       </div>
 
-      {/* ── Right auth panel (Functional Side) ────────────────────────────────── */}
-      <div className="relative flex min-h-screen flex-col items-center justify-center px-4 sm:px-6">
-        
+      {/* ── Right panel ─────────────────────────────────────────── */}
+      <div className="relative flex flex-col bg-nordic-bg p-4 md:p-6 lg:p-8">
+
         {/* Back link */}
-        <Button asChild className="group absolute top-5 left-5 z-20" variant="ghost" size="sm">
-          <a href="/">
-            <ChevronLeftIcon className="mr-1 h-4 w-4 text-primary transition-transform group-hover:-translate-x-1" />
-            <span className="font-mono text-xs tracking-widest text-muted-foreground uppercase group-hover:text-foreground">Base Camp</span>
-          </a>
-        </Button>
-
-        {/* Theme Toggle */}
-        <div className="absolute top-5 right-5 z-20">
-          <ModeToggle />
+        <div className="flex w-full justify-start lg:justify-end">
+          <Button asChild variant="ghost" size="sm" className="group text-nordic-text-secondary hover:text-nordic-text">
+            <Link to="/">
+              <ChevronLeftIcon className="mr-1 h-4 w-4 transition-transform group-hover:-translate-x-1" />
+              <span className="text-sm font-medium">Back to Home</span>
+            </Link>
+          </Button>
         </div>
 
-        {/* Mobile brand (Only visible on small screens) */}
-        <div className="mb-6 flex w-full max-w-[380px] justify-center lg:hidden">
-          <Logo size="lg" />
+        {/* Form centred */}
+        <div className="flex flex-1 items-center justify-center">
+          <div className="w-full max-w-sm">
+
+            {/* Mobile logo */}
+            <div className="mb-8 flex items-center justify-center gap-2.5 lg:hidden">
+              <SignetMark size={24} />
+              <span className="text-lg font-bold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-white to-white/70">
+                Signet
+              </span>
+            </div>
+
+            <LoginForm />
+
+            {/* Legal footer */}
+            <p className="mt-8 text-center text-xs text-nordic-text-tertiary">
+              By continuing, you agree to Signet&apos;s{" "}
+              <Link to="/terms" className="text-nordic-text-secondary underline-offset-4 hover:underline hover:text-nordic-text transition-colors">
+                Terms
+              </Link>{" "}
+              and{" "}
+              <Link to="/privacy" className="text-nordic-text-secondary underline-offset-4 hover:underline hover:text-nordic-text transition-colors">
+                Privacy Policy
+              </Link>
+            </p>
+          </div>
         </div>
-
-        {/* Render the refactored LoginForm */}
-        <LoginForm />
-
       </div>
-    </main>
-  );
+    </div>
+  )
 }

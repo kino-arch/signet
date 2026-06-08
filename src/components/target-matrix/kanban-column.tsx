@@ -1,45 +1,36 @@
-import { useDroppable } from "@dnd-kit/core";
-import { SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
-import { cn } from "@/lib/utils";
-import type { Application, KanbanColumn as KanbanColumnDef } from "@/store/useTargetMatrixStore";
-import { KanbanCard } from "./kanban-card";
+import { useDroppable } from "@dnd-kit/core"
+import { SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable"
+import { cn } from "@/lib/utils"
+import type {
+  Application,
+  KanbanColumn as KanbanColumnDef,
+} from "@/store/useTargetMatrixStore"
+import { KanbanCard } from "./kanban-card"
 
 interface KanbanColumnProps {
-  column: KanbanColumnDef;
-  applications: Application[];
-  isOver?: boolean;
+  column: KanbanColumnDef
+  applications: Application[]
+  isOver?: boolean
 }
 
-export function KanbanColumn({ column, applications, isOver }: KanbanColumnProps) {
+export function KanbanColumn({
+  column,
+  applications,
+  isOver,
+}: KanbanColumnProps) {
   const { setNodeRef } = useDroppable({
     id: column.id,
     data: { type: "column", status: column.id },
-  });
+  })
 
-  const ids = applications.map((a) => a.id);
+  const ids = applications.map((a) => a.id)
 
   return (
-    <div className="flex w-[280px] shrink-0 flex-col gap-0">
+    <div className="flex w-72 shrink-0 flex-col gap-0 px-2">
       {/* Column Header */}
-      <div className="mb-3 flex items-center justify-between px-0.5">
-        <div className="flex items-center gap-2">
-          <div
-            className="h-2 w-2 rounded-full"
-            style={{ backgroundColor: column.accent }}
-            aria-hidden="true"
-          />
-          <h2 className="font-heading text-xs font-semibold tracking-widest text-muted-foreground uppercase">
-            {column.label}
-          </h2>
-        </div>
-        <span
-          className={cn(
-            "rounded-full px-2 py-0.5 font-mono text-[10px] tabular-nums transition-colors",
-            applications.length > 0
-              ? "bg-primary/10 text-primary"
-              : "bg-muted text-muted-foreground"
-          )}
-        >
+      <div className="mb-3 flex items-center justify-between">
+        <h3 className="text-sm font-semibold text-nordic-text">{column.label}</h3>
+        <span className="inline-flex h-5 min-w-[20px] items-center justify-center rounded-md bg-nordic-surface-hover px-1.5 text-xs font-medium text-nordic-text-secondary tabular-nums">
           {applications.length}
         </span>
       </div>
@@ -48,8 +39,8 @@ export function KanbanColumn({ column, applications, isOver }: KanbanColumnProps
       <div
         ref={setNodeRef}
         className={cn(
-          "flex min-h-[200px] flex-col gap-2.5 rounded-xl border border-dashed border-border/40 p-2.5 transition-all duration-150",
-          isOver && "border-primary/50 bg-primary/[0.03] shadow-inner"
+          "flex min-h-[200px] flex-col gap-3 transition-all duration-150",
+          isOver && "bg-nordic-surface-hover/50 rounded-xl"
         )}
       >
         <SortableContext items={ids} strategy={verticalListSortingStrategy}>
@@ -59,13 +50,11 @@ export function KanbanColumn({ column, applications, isOver }: KanbanColumnProps
         </SortableContext>
 
         {applications.length === 0 && (
-          <div className="flex flex-1 items-center justify-center">
-            <p className="font-mono text-[10px] tracking-wider text-muted-foreground/40 uppercase">
-              Drop targets here
-            </p>
+          <div className="flex flex-1 items-center justify-center rounded-lg border border-dashed border-nordic-border p-4 text-center">
+            <p className="text-xs text-nordic-text-tertiary">No applications</p>
           </div>
         )}
       </div>
     </div>
-  );
+  )
 }

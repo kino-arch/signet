@@ -1,0 +1,581 @@
+[
+  {
+    "id": "TC001",
+    "title": "Access the authenticated app after signing in",
+    "description": "A returning user can sign in from the login page and reach the authenticated app.",
+    "category": "User Authentication",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the email field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the sign-in form"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the authenticated app is displayed"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC002",
+    "title": "Sign up and enter the authenticated app",
+    "description": "A new user can create an account from the login page and reach the authenticated app.",
+    "category": "User Authentication",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the email field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the sign-up form"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the authenticated app is displayed"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC003",
+    "title": "Add work experience and save the resume",
+    "description": "This test verifies that an authenticated user can add work experience in the editor and save the resume successfully.",
+    "category": "Resume Editor",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the login credentials with {{LOGIN_USER}} and {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "action",
+        "description": "Navigate to /forge/new"
+      },
+      {
+        "type": "action",
+        "description": "Add a work experience entry in the resume editor"
+      },
+      {
+        "type": "action",
+        "description": "Save the resume"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify a save confirmation is visible"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the work experience entry is retained"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC004",
+    "title": "Create a new resume and save it from the editor",
+    "description": "An authenticated user can create a new resume from resume management, enter the editor, save it, and return to the list.",
+    "category": "Slates",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the email field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the sign-in form"
+      },
+      {
+        "type": "action",
+        "description": "Navigate to /slates"
+      },
+      {
+        "type": "action",
+        "description": "Create a new resume"
+      },
+      {
+        "type": "action",
+        "description": "Enter the editor for the new resume"
+      },
+      {
+        "type": "action",
+        "description": "Save the resume"
+      },
+      {
+        "type": "action",
+        "description": "Return to the resume list"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the new resume appears in the resume list"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC005",
+    "title": "Export a saved resume from the editor",
+    "description": "This test verifies that an authenticated user can export a resume from the editor after making edits.",
+    "category": "Resume Editor",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the login credentials with {{LOGIN_USER}} and {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "action",
+        "description": "Navigate to /forge/new"
+      },
+      {
+        "type": "action",
+        "description": "Make a resume edit"
+      },
+      {
+        "type": "action",
+        "description": "Export the resume"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify an export action completes"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the resume remains available in the editor"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC006",
+    "title": "Edit personal details and work experience in the editor",
+    "description": "An authenticated user can update personal details and work experience in an existing resume and save the changes.",
+    "category": "Forge",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the email field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the sign-in form"
+      },
+      {
+        "type": "action",
+        "description": "Navigate to /slates"
+      },
+      {
+        "type": "action",
+        "description": "Open an existing resume in the editor"
+      },
+      {
+        "type": "action",
+        "description": "Update the personal details fields"
+      },
+      {
+        "type": "action",
+        "description": "Update the work experience section"
+      },
+      {
+        "type": "action",
+        "description": "Save the resume"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the updated resume content is displayed"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC007",
+    "title": "Create a new resume from the list",
+    "description": "This test verifies that an authenticated user can create a new resume from the resume list and open it in the editor.",
+    "category": "Resume Management",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the login credentials with {{LOGIN_USER}} and {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "action",
+        "description": "Navigate to /slates"
+      },
+      {
+        "type": "action",
+        "description": "Create a new resume"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the resume editor is displayed"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify a new resume is ready to edit"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC008",
+    "title": "Stay signed in while moving directly to protected areas",
+    "description": "A signed-in user can land on protected routes directly and remain authenticated across dashboard and resume management navigation.",
+    "category": "Dashboard",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the email field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the sign-in form"
+      },
+      {
+        "type": "action",
+        "description": "Navigate to /dashboard"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the dashboard overview is displayed"
+      },
+      {
+        "type": "action",
+        "description": "Navigate to /slates"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the resume list is displayed"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC009",
+    "title": "Edit personal details in the resume editor",
+    "description": "This test verifies that an authenticated user can update personal details in the resume editor and keep the edited information visible before saving.",
+    "category": "Resume Editor",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the login credentials with {{LOGIN_USER}} and {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "action",
+        "description": "Navigate to /forge/new"
+      },
+      {
+        "type": "action",
+        "description": "Edit the personal details in the resume editor"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the personal details section is displayed"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the updated personal details are visible"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC010",
+    "title": "Review the dashboard and open resume management",
+    "description": "An authenticated user can view the dashboard overview and navigate to resume management.",
+    "category": "Dashboard",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the email field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the sign-in form"
+      },
+      {
+        "type": "action",
+        "description": "Navigate to /dashboard"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the dashboard overview is displayed"
+      },
+      {
+        "type": "action",
+        "description": "Click the navigation link to resume management"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the resume list is displayed"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC011",
+    "title": "Open the resume list and see saved resumes",
+    "description": "This test verifies that an authenticated user can open resume management and view existing resumes.",
+    "category": "Resume Management",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the login credentials with {{LOGIN_USER}} and {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "action",
+        "description": "Navigate to /slates"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the resume list is displayed"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify saved resumes are visible"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC012",
+    "title": "Return to the resume list after saving in the editor",
+    "description": "This test verifies that an authenticated user can save changes in the editor and return to the resume list afterward.",
+    "category": "Resume Management",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the login credentials with {{LOGIN_USER}} and {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the login form"
+      },
+      {
+        "type": "action",
+        "description": "Navigate to /slates"
+      },
+      {
+        "type": "action",
+        "description": "Create a new resume"
+      },
+      {
+        "type": "action",
+        "description": "Save the resume"
+      },
+      {
+        "type": "action",
+        "description": "Return to the resume list"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the resume list is displayed"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the saved resume appears in the list"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC013",
+    "title": "Move between dashboard and resume management while signed in",
+    "description": "An authenticated user can use the dashboard navigation to move to resume management and back without losing access.",
+    "category": "Dashboard",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the email field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the sign-in form"
+      },
+      {
+        "type": "action",
+        "description": "Navigate to /dashboard"
+      },
+      {
+        "type": "action",
+        "description": "Click the navigation link to resume management"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the resume list is displayed"
+      },
+      {
+        "type": "action",
+        "description": "Click the navigation link to the dashboard"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the dashboard overview is displayed"
+      }
+    ],
+    "priority": "High"
+  },
+  {
+    "id": "TC014",
+    "title": "Delete a resume and see the list update",
+    "description": "A returning user can delete an existing resume from the list and confirm the list refreshes afterward.",
+    "category": "Slates",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /login"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the email field with {{LOGIN_USER}}"
+      },
+      {
+        "type": "action",
+        "description": "Fill in the password field with {{LOGIN_PASSWORD}}"
+      },
+      {
+        "type": "action",
+        "description": "Submit the sign-in form"
+      },
+      {
+        "type": "action",
+        "description": "Navigate to /slates"
+      },
+      {
+        "type": "action",
+        "description": "Delete an existing resume"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the resume list updates after deletion"
+      }
+    ],
+    "priority": "Medium"
+  },
+  {
+    "id": "TC015",
+    "title": "Visit the landing page and start sign in",
+    "description": "A visitor can view the landing page and navigate into the sign-in experience from a primary call to action.",
+    "category": "Landing Page",
+    "steps": [
+      {
+        "type": "action",
+        "description": "Navigate to /"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the product overview is displayed"
+      },
+      {
+        "type": "action",
+        "description": "Click the primary call to action to start"
+      },
+      {
+        "type": "assertion",
+        "description": "Verify the sign-in page is displayed"
+      }
+    ],
+    "priority": "Medium"
+  }
+]

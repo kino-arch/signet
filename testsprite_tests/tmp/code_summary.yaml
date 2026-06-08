@@ -1,0 +1,108 @@
+version: "2"
+type: fullstack
+tech_stack:
+  - TypeScript
+  - React
+  - Vite
+  - Tailwind CSS
+  - Supabase
+  - TRPC
+  - Hono
+routes:
+  - path: /
+    file: src/pages/LandingPage.tsx
+    auth_required: false
+    description: Marketing landing page
+  - path: /login
+    file: src/pages/LoginPage.tsx
+    auth_required: false
+    description: User authentication page
+  - path: /dashboard
+    file: src/pages/DashboardPage.tsx
+    auth_required: true
+    description: Main user dashboard
+  - path: /slates
+    file: src/pages/SlatesPage.tsx
+    auth_required: true
+    description: Resume list and management page
+  - path: /forge/:slateId
+    file: src/pages/EditorPage.tsx
+    auth_required: true
+    description: Resume builder/editor page
+  - path: /api/trpc
+    file: src/api/router.ts
+    auth_required: true
+    description: TRPC backend API for data management
+features:
+  - name: Landing Page
+    description: Public facing landing page explaining the product
+    files:
+      - src/pages/LandingPage.tsx
+    entry_route: /
+    user_interactions:
+      - View features
+      - Click Get Started or Login buttons to navigate to login page
+    api_calls: []
+    auth_required: false
+  - name: User Authentication
+    description: Login or sign up via Supabase auth
+    files:
+      - src/pages/LoginPage.tsx
+      - src/store/useAuthStore.ts
+    entry_route: /login
+    user_interactions:
+      - Enter email address
+      - Enter password
+      - Click Sign in or Sign up button
+    api_calls:
+      - method: POST
+        endpoint: /auth/v1/token
+    auth_required: false
+  - name: Dashboard
+    description: Main dashboard to view metrics and manage data
+    files:
+      - src/pages/DashboardPage.tsx
+      - src/components/layout/dashboard-layout.tsx
+    entry_route: /dashboard
+    user_interactions:
+      - View overview of user activity
+      - Click navigation links to Slates, Applications, Settings
+    api_calls: []
+    auth_required: true
+  - name: Resume Management
+    description: View and manage created resumes (slates)
+    files:
+      - src/pages/SlatesPage.tsx
+    entry_route: /slates
+    user_interactions:
+      - View list of resumes
+      - Click Create New Resume button
+      - Delete existing resumes
+    api_calls:
+      - method: GET
+        endpoint: /api/trpc/slate.list
+    auth_required: true
+  - name: Resume Editor User Flow
+    description: Build and edit a resume
+    files:
+      - src/pages/EditorPage.tsx
+    entry_route: /forge/new
+    user_interactions:
+      - Add work experience
+      - Edit personal details
+      - Save resume
+      - Export resume
+    api_calls:
+      - method: POST
+        endpoint: /api/trpc/slate.save
+    auth_required: true
+  - name: TRPC API
+    description: Backend API for data operations
+    files:
+      - src/api/router.ts
+      - src/api/routers/slate.ts
+    entry_route: /api/trpc
+    user_interactions: []
+    api_calls: []
+    auth_required: true
+known_limitations: []

@@ -22,16 +22,10 @@ export function ShineBorder({
   borderWidth = 1,
   duration = 14,
   color = [
-    "#ff00ff", // neon pink
-    "#00ffff", // neon cyan
-    "#ff3131", // neon red
-    "#00ff00", // neon green
-    "#ffea00", // neon yellow
-    "#ff6ec7", // hot magenta
-    "#39ff14", // electric lime
-    "#ff8300", // neon orange
-    "#7df9ff", // electric blue
-    "#fe019a", // neon fuchsia
+    "var(--theme-primary)", // signet-cyan
+    "var(--theme-secondary)", // signet-amber
+    "var(--theme-primary)",
+    "var(--theme-secondary)",
   ],
 
   className,
@@ -63,10 +57,10 @@ export function ShineBorder({
     // Show only the border region using masks (content-box vs border-box)
     // WebKit/Safari
     WebkitMask:
-      "linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0)",
+      "linear-gradient(black 0 0) content-box, linear-gradient(black 0 0)",
     WebkitMaskComposite: "xor" as string,
     // Standard (Chromium/Firefox)
-    mask: "linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0)",
+    mask: "linear-gradient(black 0 0) content-box, linear-gradient(black 0 0)",
     maskComposite: "exclude" as string,
     pointerEvents: "none",
   }

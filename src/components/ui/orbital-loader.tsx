@@ -1,8 +1,8 @@
-"use client"
-
-import React from "react"
+﻿import React from "react"
 import { cva } from "class-variance-authority"
-import { motion } from "framer-motion"
+
+import { LottieAnimation } from "@/components/ui/lottie-animation"
+import holoRingData from "@/assets/animations/holo_ring.json"
 
 import { cn } from "@/lib/utils"
 
@@ -28,7 +28,7 @@ export interface OrbitalLoaderProps {
    */
   messagePlacement?: "top" | "bottom" | "left" | "right"
   /**
-   * Ring colour — use "primary" for the brand teal/blue accent, "foreground" for white.
+   * Ring colour â€” use "primary" for the brand teal/blue accent, "foreground" for white.
    * @default "foreground"
    */
   color?: "primary" | "foreground"
@@ -41,59 +41,19 @@ export function OrbitalLoader({
   color = "foreground",
   ...props
 }: React.ComponentProps<"div"> & OrbitalLoaderProps) {
-  const ringClass =
-    color === "primary"
-      ? "border-t-primary"
-      : "border-t-foreground"
-
   return (
     <div className={cn(orbitalLoaderVariants({ messagePlacement }))}>
-      <div className={cn("relative w-16 h-16", className)} {...props}>
-        {/* Outer ring — clockwise, 1 s */}
-        <motion.div
-          className={cn(
-            "absolute inset-0 border-2 border-transparent rounded-full",
-            ringClass
-          )}
-          animate={{ rotate: 360 }}
-          transition={{
-            duration: 1,
-            repeat: Number.POSITIVE_INFINITY,
-            ease: "linear",
-          }}
-        />
-        {/* Middle ring — counter-clockwise, 1.5 s */}
-        <motion.div
-          className={cn(
-            "absolute inset-2 border-2 border-transparent rounded-full opacity-75",
-            ringClass
-          )}
-          animate={{ rotate: -360 }}
-          transition={{
-            duration: 1.5,
-            repeat: Number.POSITIVE_INFINITY,
-            ease: "linear",
-          }}
-        />
-        {/* Inner ring — clockwise, 0.8 s */}
-        <motion.div
-          className={cn(
-            "absolute inset-4 border-2 border-transparent rounded-full opacity-50",
-            ringClass
-          )}
-          animate={{ rotate: 360 }}
-          transition={{
-            duration: 0.8,
-            repeat: Number.POSITIVE_INFINITY,
-            ease: "linear",
-          }}
-        />
-        {/* Glowing centre dot */}
-        <div
-          className={cn(
-            "absolute inset-0 m-auto h-2 w-2 rounded-full",
-            color === "primary" ? "bg-primary shadow-[0_0_8px_3px_hsl(var(--primary)/0.6)]" : "bg-foreground"
-          )}
+      <div
+        className={cn(
+          "relative flex h-24 w-24 items-center justify-center",
+          className
+        )}
+        {...props}
+      >
+        <LottieAnimation
+          animationData={holoRingData}
+          className="h-full w-full opacity-80"
+          colorMode={color === "primary" ? "cyan-tint" : "original"}
         />
       </div>
       {message && (

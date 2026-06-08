@@ -1,354 +1,385 @@
-import { useForgeStore } from "@/store/useForgeStore";
+import DOMPurify from "dompurify"
+import type { ResumeTemplateProps } from "./registry"
 
 /**
- * Ghost Protocol — Minimal Two-Column Template
+ * MinimalTemplate — Ghost
  *
- * Modern sidebar layout used by leading tech companies' design/engineering roles.
- * - Always white main panel, very light gray (#f7f7f7) sidebar
- * - Left sidebar: name, contact, skills, education
- * - Right main: summary/about, experience
- * - Monospaced section labels for modern tech aesthetic
+ * ATS Parse Rate: 98%
+ * Target: SaaS Startups, Y Combinator, Stripe, Vercel, Product Engineer
+ * Design: Minimal — Typography driven, extreme whitespace, no borders.
+ * Color: Gray on white
  */
-export function MinimalTemplate() {
-  const { basicInfo, experience, education, skills } = useForgeStore(
-    (state) => state.resumeData
-  );
+export function MinimalTemplate({ data }: ResumeTemplateProps) {
+  const { basics, work, education, skills, certifications } = data
 
-  const SIDEBAR_W = "30%";
-  const MAIN_W = "70%";
+  // Build location string safely
+  let locationStr = ""
+  if (basics.location?.city) {
+    locationStr = basics.location.city
+    if (basics.location.region) locationStr += `, ${basics.location.region}`
+  }
+
+  // Find linkedin profile if exists
+  const linkedin =
+    basics.profiles?.find((p) => p.network.toLowerCase() === "linkedin")?.url ||
+    ""
 
   const contactItems = [
-    { label: basicInfo.email },
-    { label: basicInfo.phone },
-    { label: basicInfo.location },
-    { label: basicInfo.linkedin },
-    { label: basicInfo.website },
-  ].filter((c) => c.label);
+    basics.email,
+    basics.phone,
+    locationStr,
+    linkedin,
+    basics.url,
+  ].filter(Boolean)
 
   return (
     <div
       className="relative min-h-full w-full print:overflow-visible print:p-0"
       style={{
-        backgroundColor: "#ffffff",
-        color: "#1a1a1a",
-        fontFamily: "'Inter', 'Helvetica Neue', Arial, sans-serif",
-        fontSize: "13px",
-        lineHeight: "1.55",
+        backgroundColor: "var(--resume-bg)",
+        color: "var(--resume-ink)",
+        fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
+        fontSize: "13.5px",
+        lineHeight: "1.6",
+        padding: "54px", // Extreme whitespace
         display: "flex",
+        flexDirection: "column",
+        gap: "24px", // Max whitespace between sections
       }}
     >
-      {/* ── LEFT SIDEBAR ── */}
-      <div
-        style={{
-          width: SIDEBAR_W,
-          backgroundColor: "#f6f6f6",
-          borderRight: "1px solid #e0e0e0",
-          padding: "36px 20px",
-          display: "flex",
-          flexDirection: "column",
-          gap: "20px",
-          flexShrink: 0,
-        }}
-      >
-        {/* Name & Title */}
-        <div>
-          <h1
+      {/* ── HEADER ── */}
+      <div style={{ marginBottom: "8px" }}>
+        <h1
+          style={{
+            fontSize: "36px",
+            fontWeight: "300",
+            letterSpacing: "-0.03em",
+            color: "var(--resume-ink)",
+            margin: "0 0 4px 0",
+            lineHeight: "1.1",
+          }}
+        >
+          {basics.name || "YOUR NAME"}
+        </h1>
+        {basics.label && (
+          <div
             style={{
-              fontSize: "28px",
-              fontWeight: "700",
-              color: "#111111",
-              letterSpacing: "-0.01em",
-              lineHeight: "1.2",
-              margin: "0 0 4px 0",
+              fontSize: "14px",
+              color: "var(--accent-minimal)",
+              marginBottom: "12px",
+              fontWeight: "400",
             }}
           >
-            {basicInfo.firstName}
-            <br />
-            {basicInfo.lastName}
-          </h1>
-          {basicInfo.designation && (
-            <p
-              style={{
-                fontSize: "12px",
-                fontFamily: "'Courier New', monospace",
-                color: "#777777",
-                letterSpacing: "0.06em",
-                textTransform: "uppercase",
-                margin: "0",
-              }}
-            >
-              {basicInfo.designation}
-            </p>
-          )}
-        </div>
+            {basics.label}
+          </div>
+        )}
 
-        {/* Divider */}
-        <hr style={{ border: "none", borderTop: "1px solid #d0d0d0", margin: "0" }} />
-
-        {/* Contact */}
+        {/* Contact Info Row (No separators) */}
         {contactItems.length > 0 && (
-          <div>
-            <SidebarLabel label="Contact" />
-            <div style={{ marginTop: "6px", display: "flex", flexDirection: "column", gap: "4px" }}>
-              {contactItems.map((c, i) => (
-                <span
-                  key={i}
-                  style={{
-                    fontSize: "12px",
-                    color: "#555555",
-                    wordBreak: "break-all",
-                    lineHeight: "1.4",
-                  }}
-                >
-                  {c.label}
-                </span>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* Skills */}
-        {skills.length > 0 && (
-          <div>
-            <SidebarLabel label="Stack" />
-            <div
-              style={{
-                marginTop: "6px",
-                display: "flex",
-                flexWrap: "wrap",
-                gap: "4px",
-              }}
-            >
-              {skills.map((skill) => (
-                <span
-                  key={skill}
-                  style={{
-                    fontSize: "11px",
-                    fontWeight: "500",
-                    color: "#444444",
-                    backgroundColor: "#ffffff",
-                    border: "1px solid #e0e0e0",
-                    borderRadius: "2px",
-                    padding: "4px 8px",
-                  }}
-                >
-                  {skill}
-                </span>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* Education */}
-        {education.length > 0 && (
-          <div>
-            <SidebarLabel label="Education" />
-            <div style={{ marginTop: "6px", display: "flex", flexDirection: "column", gap: "10px" }}>
-              {education.map((edu) => (
-                <div key={edu.id} className="resume-item">
-                  <p
-                    style={{
-                      fontSize: "13px",
-                      fontWeight: "700",
-                      color: "#111111",
-                      margin: "0 0 1px 0",
-                    }}
-                  >
-                    {edu.degree}
-                    {edu.field ? ` in ${edu.field}` : ""}
-                  </p>
-                  <p style={{ fontSize: "12px", color: "#666666", margin: "0 0 2px 0" }}>
-                    {edu.institution}
-                  </p>
-                  <p
-                    style={{
-                      fontSize: "11px",
-                      fontFamily: "'Courier New', monospace",
-                      color: "#888888",
-                      margin: "0",
-                    }}
-                  >
-                    {edu.startDate} – {edu.current ? "Present" : edu.endDate}
-                    {edu.score ? `  ·  ${edu.score}` : ""}
-                  </p>
-                </div>
-              ))}
-            </div>
+          <div
+            style={{
+              display: "flex",
+              flexWrap: "wrap",
+              gap: "16px",
+              fontSize: "12px",
+              color: "var(--accent-minimal)",
+            }}
+          >
+            {contactItems.map((item, i) => (
+              <span key={i}>{item}</span>
+            ))}
           </div>
         )}
       </div>
 
-      {/* ── MAIN CONTENT ── */}
-      <div
-        style={{
-          width: MAIN_W,
-          backgroundColor: "#ffffff",
-          padding: "36px 28px",
-          display: "flex",
-          flexDirection: "column",
-          gap: "18px",
-          overflow: "visible",
-        }}
-      >
-        {/* About / Summary */}
-        {basicInfo.summary && (
-          <div>
-            <MainLabel label="About" />
-            <div
-              dangerouslySetInnerHTML={{ __html: basicInfo.summary }}
-              style={{
-                fontSize: "13px",
-                color: "#333333",
-                lineHeight: "1.65",
-                marginTop: "6px",
-                maxWidth: "540px",
-              }}
-            />
-          </div>
-        )}
+      {/* ── SUMMARY ── */}
+      {basics.summary && (
+        <section>
+          <div
+            dangerouslySetInnerHTML={{
+              __html: DOMPurify.sanitize(basics.summary),
+            }}
+            style={{
+              margin: "0",
+              fontSize: "13.5px",
+              lineHeight: "1.6",
+              color: "var(--resume-ink)",
+            }}
+          />
+        </section>
+      )}
 
-        {/* Experience */}
-        {experience.length > 0 && (
-          <div>
-            <MainLabel label="Experience" />
-            <div
-              style={{
-                marginTop: "8px",
-                display: "flex",
-                flexDirection: "column",
-                gap: "12px",
-              }}
-            >
-              {experience.map((job) => (
-                <div key={job.id} className="resume-item">
-                  {/* Role + Date */}
+      {/* ── EXPERIENCE ── */}
+      {work.length > 0 && (
+        <section>
+          <SectionHeader label="Experience" accent="var(--accent-minimal)" />
+          <div
+            style={{ display: "flex", flexDirection: "column", gap: "20px" }}
+          >
+            {work.map((job) => (
+              <div
+                key={job.id}
+                className="resume-item print:break-inside-avoid"
+              >
+                {/* Row 1: Role at Company & Dates */}
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "flex-start",
+                    flexWrap: "wrap",
+                    gap: "4px",
+                    marginBottom: "8px",
+                  }}
+                >
                   <div
                     style={{
-                      display: "flex",
-                      justifyContent: "space-between",
-                      alignItems: "baseline",
-                      marginBottom: "1px",
+                      fontSize: "14px",
+                      color: "var(--resume-ink)",
+                      lineHeight: "1.3",
+                      letterSpacing: "-0.01em",
+                      flex: "1 1 auto",
+                      paddingRight: "16px",
                     }}
                   >
-                    <span
-                      style={{
-                        fontSize: "14px",
-                        fontWeight: "700",
-                        color: "#111111",
-                      }}
-                    >
-                      {job.role}
+                    <span style={{ fontWeight: "600" }}>
+                      {job.position || "Role Title"}
                     </span>
-                    <span
-                      style={{
-                        fontSize: "11px",
-                        fontFamily: "'Courier New', monospace",
-                        color: "#888888",
-                        whiteSpace: "nowrap",
-                        marginLeft: "8px",
-                      }}
-                    >
-                      {job.startDate} – {job.current ? "Present" : job.endDate}
-                    </span>
+                    {job.name && (
+                      <span style={{ color: "var(--resume-muted)" }}>
+                        {" "}
+                        at {job.name}
+                      </span>
+                    )}
                   </div>
-
-                  {/* Company */}
-                  <p
+                  <span
                     style={{
-                      fontSize: "12px",
-                      color: "#666666",
-                      marginBottom: "5px",
-                      fontWeight: "600",
+                      fontSize: "12.5px",
+                      color: "var(--resume-muted)",
+                      whiteSpace: "nowrap",
+                      lineHeight: "1.3",
+                      paddingTop: "1px",
                     }}
                   >
-                    {job.company}
-                    {job.location ? ` · ${job.location}` : ""}
-                  </p>
+                    {job.startDate}
+                    {job.startDate && " – "}
+                    {job.endDate || (job.startDate ? "Present" : "")}
+                  </span>
+                </div>
 
-                  {job.description && (
-                    <div
-                      dangerouslySetInnerHTML={{ __html: job.description }}
-                      style={{
-                        fontSize: "13px",
-                        color: "#444444",
-                        lineHeight: "1.55",
-                        marginBottom: "4px",
-                      }}
-                    />
-                  )}
+                {/* Optional brief description */}
+                {job.summary && (
+                  <div
+                    dangerouslySetInnerHTML={{
+                      __html: DOMPurify.sanitize(job.summary),
+                    }}
+                    style={{
+                      margin: "0 0 6px 0",
+                      fontSize: "13.5px",
+                      color: "var(--resume-ink)",
+                      lineHeight: "1.6",
+                    }}
+                  />
+                )}
 
-                  {job.highlights && job.highlights.length > 0 && (
-                    <ul
+                {/* Achievements */}
+                {job.highlights && job.highlights.length > 0 && (
+                  <ul
+                    style={{
+                      margin: "0",
+                      paddingLeft: "16px",
+                      listStyleType: "circle",
+                    }}
+                  >
+                    {job.highlights.map((item, idx) => (
+                      <li
+                        key={idx}
+                        style={{
+                          fontSize: "13.5px",
+                          color: "var(--resume-ink)",
+                          lineHeight: "1.6",
+                          marginBottom: "4px",
+                          paddingLeft: "4px",
+                        }}
+                      >
+                        {item}
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* ── EDUCATION ── */}
+      {education.length > 0 && (
+        <section>
+          <SectionHeader label="Education" accent="var(--accent-minimal)" />
+          <div
+            style={{ display: "flex", flexDirection: "column", gap: "16px" }}
+          >
+            {education.map((edu) => (
+              <div
+                key={edu.id}
+                className="resume-item print:break-inside-avoid"
+              >
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "baseline",
+                  }}
+                >
+                  <div style={{ fontSize: "14px", color: "var(--resume-ink)" }}>
+                    <span style={{ fontWeight: "600" }}>
+                      {edu.studyType} {edu.area ? `in ${edu.area}` : ""}
+                    </span>
+                    {edu.institution && (
+                      <span style={{ color: "var(--resume-muted)" }}>
+                        {" "}
+                        at {edu.institution}
+                      </span>
+                    )}
+                  </div>
+                  <span
+                    style={{ fontSize: "12.5px", color: "var(--resume-muted)" }}
+                  >
+                    {edu.startDate}
+                    {edu.startDate && " – "}
+                    {edu.endDate || (edu.startDate ? "Present" : "")}
+                  </span>
+                </div>
+                {edu.score && (
+                  <div
+                    style={{
+                      fontSize: "12.5px",
+                      color: "var(--resume-muted)",
+                      marginTop: "2px",
+                    }}
+                  >
+                    {edu.score}
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* ── TECHNICAL SKILLS ── */}
+      {skills.length > 0 && (
+        <section>
+          <SectionHeader label="Skills" accent="var(--accent-minimal)" />
+          <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+            {skills.map((skill) => (
+              <div
+                key={skill.id}
+                style={{
+                  fontSize: "13.5px",
+                  color: "var(--resume-ink)",
+                  lineHeight: "1.6",
+                }}
+              >
+                {skill.name && (
+                  <span
+                    style={{
+                      fontWeight: "600",
+                      color: "var(--accent-minimal)",
+                      marginRight: "8px",
+                    }}
+                  >
+                    {skill.name}
+                  </span>
+                )}
+                {skill.keywords.join(", ")}
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* ── CERTIFICATIONS ── */}
+      {certifications && certifications.length > 0 && (
+        <section>
+          <SectionHeader
+            label="Certifications"
+            accent="var(--accent-minimal)"
+          />
+          <div
+            style={{ display: "flex", flexDirection: "column", gap: "12px" }}
+          >
+            {certifications.map((cert) => (
+              <div
+                key={cert.id}
+                className="resume-item print:break-inside-avoid"
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "baseline",
+                }}
+              >
+                <div>
+                  <span
+                    style={{
+                      fontSize: "14px",
+                      fontWeight: "600",
+                      color: "var(--resume-ink)",
+                    }}
+                  >
+                    {cert.url ? (
+                      <a
+                        href={cert.url}
+                        style={{ color: "inherit", textDecoration: "none" }}
+                      >
+                        {cert.name}
+                      </a>
+                    ) : (
+                      cert.name
+                    )}
+                  </span>
+                  {cert.issuer && (
+                    <span
                       style={{
-                        margin: "0",
-                        paddingLeft: "13px",
-                        listStyleType: "disc",
+                        fontSize: "13.5px",
+                        color: "var(--resume-muted)",
                       }}
                     >
-                      {job.highlights.map((item, idx) => (
-                        <li
-                          key={idx}
-                          style={{
-                            fontSize: "13px",
-                            color: "#444444",
-                            lineHeight: "1.55",
-                            marginBottom: "2px",
-                            paddingLeft: "2px",
-                          }}
-                        >
-                          {item}
-                        </li>
-                      ))}
-                    </ul>
+                      {" "}
+                      — {cert.issuer}
+                    </span>
                   )}
                 </div>
-              ))}
-            </div>
+                {cert.date && (
+                  <span
+                    style={{ fontSize: "12.5px", color: "var(--resume-muted)" }}
+                  >
+                    {cert.date}
+                  </span>
+                )}
+              </div>
+            ))}
           </div>
-        )}
-      </div>
+        </section>
+      )}
     </div>
-  );
+  )
 }
 
-function SidebarLabel({ label }: { label: string }) {
+function SectionHeader({ label, accent }: { label: string; accent: string }) {
   return (
-    <p
-      className="resume-header"
+    <h2
       style={{
-        fontSize: "11px",
-        fontFamily: "'Courier New', monospace",
-        fontWeight: "700",
-        letterSpacing: "0.15em",
+        fontSize: "12px",
+        fontWeight: "600",
+        letterSpacing: "0.1em",
         textTransform: "uppercase",
-        color: "#888888",
-        margin: "0",
-        paddingBottom: "4px",
-        borderBottom: "1px solid #d0d0d0",
+        color: accent,
+        margin: "0 0 16px 0",
       }}
     >
       {label}
-    </p>
-  );
-}
-
-function MainLabel({ label }: { label: string }) {
-  return (
-    <p
-      className="resume-header"
-      style={{
-        fontSize: "11px",
-        fontFamily: "'Courier New', monospace",
-        fontWeight: "700",
-        letterSpacing: "0.15em",
-        textTransform: "uppercase",
-        color: "#999999",
-        margin: "0",
-        paddingBottom: "4px",
-        borderBottom: "1px solid #e8e8e8",
-      }}
-    >
-      {label}
-    </p>
-  );
+    </h2>
+  )
 }

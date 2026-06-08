@@ -18,12 +18,28 @@ const meta: Meta<typeof Button> = {
   argTypes: {
     variant: {
       control: "select",
-      options: ["default", "outline", "secondary", "ghost", "destructive", "link"],
+      options: [
+        "default",
+        "outline",
+        "secondary",
+        "ghost",
+        "destructive",
+        "link",
+      ],
       description: "Visual style of the button",
     },
     size: {
       control: "select",
-      options: ["default", "xs", "sm", "lg", "icon", "icon-xs", "icon-sm", "icon-lg"],
+      options: [
+        "default",
+        "xs",
+        "sm",
+        "lg",
+        "icon",
+        "icon-xs",
+        "icon-sm",
+        "icon-lg",
+      ],
       description: "Size of the button",
     },
     disabled: { control: "boolean" },
@@ -147,7 +163,9 @@ export const ClickInteraction: Story = {
     const btn = canvas.getByRole("button", { name: /click me/i })
 
     let clicked = false
-    btn.addEventListener("click", () => { clicked = true })
+    btn.addEventListener("click", () => {
+      clicked = true
+    })
 
     await userEvent.click(btn)
     expect(clicked).toBe(true)
@@ -162,7 +180,9 @@ export const KeyboardInteraction: Story = {
     const btn = canvas.getByRole("button", { name: /press enter/i })
 
     let activated = false
-    btn.addEventListener("click", () => { activated = true })
+    btn.addEventListener("click", () => {
+      activated = true
+    })
 
     btn.focus()
     await userEvent.keyboard("{Enter}")
@@ -180,7 +200,9 @@ export const DisabledCannotClick: Story = {
     expect(btn).toBeDisabled()
 
     let clicked = false
-    btn.addEventListener("click", () => { clicked = true })
+    btn.addEventListener("click", () => {
+      clicked = true
+    })
     await userEvent.click(btn, { pointerEventsCheck: 0 })
     // pointer-events: none means the DOM event never fires
     expect(clicked).toBe(false)
@@ -195,5 +217,5 @@ export const IconNoAriaLabel: Story = {
     // deliberately omitting aria-label to showcase the a11y addon catching it
     children: <Mail className="h-4 w-4" />,
   },
-  tags: ["!test"],  // exclude from Vitest runs — it intentionally fails a11y
+  tags: ["!test"], // exclude from Vitest runs — it intentionally fails a11y
 }

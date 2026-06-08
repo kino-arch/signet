@@ -1,27 +1,35 @@
 import React from "react"
-import { Sidebar } from "./sidebar"
-import { TopNav } from "./top-nav"
-import { CommandPalette } from "../ui/command-palette"
+import { useLocation } from "react-router-dom"
+import { NordicTopNav } from "@/layout/NordicTopNav"
+import { NordicEditorSidebar } from "@/components/nordic/NordicEditorSidebar"
+import { NordicBackground } from "@/components/ui/NordicBackground"
 
 export function DashboardLayout({ children }: { children: React.ReactNode }) {
-  return (
-    <div className="flex h-screen w-screen overflow-hidden bg-zinc-950 font-sans text-zinc-50">
-      {/* Structural Sidebar (30% Mandalorian Visual Weight) */}
-      <Sidebar className="w-64 border-r border-zinc-800 bg-zinc-900/50 backdrop-blur-md" />
+  const location = useLocation()
+  
+  // Only show the contextual sidebar when deep inside the Forge editor
+  const showSidebar = location.pathname.startsWith("/forge") || location.pathname === "/editor"
 
-      {/* Main Operations Terminal */}
-      <div className="flex flex-1 flex-col overflow-hidden">
-        {/* Persistent Top Navigation Telemetry Bar */}
-        <TopNav className="flex h-16 items-center justify-between border-b border-zinc-800 bg-zinc-950 px-8" />
-        
+  return (
+    <div className="relative min-h-screen bg-nordic-bg font-sans text-nordic-text">
+      <NordicBackground />
+      {/* Global Top Navigation */}
+      <NordicTopNav />
+
+      {/* Main Layout Grid */}
+      <div className="flex">
+        {/* Contextual Sidebar (Forge Only) */}
+        {showSidebar && <NordicEditorSidebar />}
+
         {/* Dynamic Workspace Viewport */}
-        <main className="relative flex-1 overflow-y-auto bg-zinc-950 p-8">
+        <main
+          className={`flex-1 ${
+            showSidebar ? "" : "w-full px-8 py-8"
+          }`}
+        >
           {children}
         </main>
       </div>
-
-      {/* Global Command Overlay */}
-      <CommandPalette />
     </div>
   )
 }

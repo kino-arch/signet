@@ -1,0 +1,57 @@
+name: Component Registry Lock
+
+on:
+  push:
+    paths:
+      - 'src/components/**'
+      - 'src/components/.component-registry.json'
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Verify Tokenized Components
+        run: |
+          REGISTRY="src/components/.component-registry.json"
+
+          jq -c '.components[] | select(.status == "tokenized")' "$REGISTRY" | while read -r component; do
+            name=$(echo "$component" | jq -r '.name')
+            path=$(echo "$component" | jq -r '.path')
+
+            echo "Verifying $name at $path..."
+
+            if [ ! -e "$path" ]; then
+              echo "❌ LOCK VIOLATION: $name — file not found at $path"
+              exit 1
+            fi
+
+            # Read forbidden patterns as newline-delimited strings
+            echo "$component" | jq -r '.forbiddenPatterns[]' | while read -r pattern; do
+              if grep -rE "$pattern" "$path"; then
+                echo "❌ LOCK VIOLATION: $name contains forbidden pattern: $pattern"
+                exit 1
+              fi
+            done
+
+            echo "✅ $name verified"
+          done
+
+      - name: Verify Native Components
+        run: |
+          REGISTRY="src/components/.component-registry.json"
+
+          jq -c '.components[] | select(.origin == "signet-native")' "$REGISTRY" | while read -r component; do
+            name=$(echo "$component" | jq -r '.name')
+            path=$(echo "$component" | jq -r '.path')
+
+            echo "Checking $name for @origin signet-native badge..."
+
+            if ! grep -q "@origin signet-native" "$path"; then
+              echo "❌ CERTIFICATION VIOLATION: $name missing @origin signet-native badge"
+              exit 1
+            fi
+
+            echo "✅ $name certified"
+          done

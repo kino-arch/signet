@@ -1,113 +1,104 @@
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
 import { motion } from "framer-motion";
-import { HelpCircle, MessageCircle } from "lucide-react";
+import { Plus, Minus } from "lucide-react";
+import { useState } from "react";
+import { cn } from "@/lib/utils";
 
 const faqs = [
   {
-    question: "How does the token system work?",
+    question: "How does the AI Reforging actually work?",
     answer:
-      "Each token allows you to generate and export one finalized, ATS-optimized resume. The base builder is free to use—you only spend a token when you're ready to export your final document.",
+      "Our AI analyzes your provided experience alongside the target job description. It identifies missing keywords, restructures your bullet points to emphasize impact (using the X-Y-Z formula), and adjusts the tone to match industry standards, all while preserving your actual experience.",
   },
   {
-    question: "Will this pass corporate ATS systems?",
+    question: "Will my resume pass Applicant Tracking Systems (ATS)?",
     answer:
-      "Yes. Every template we provide is rigorously tested against modern ATS (Applicant Tracking Systems) like Workday, Taleo, and Greenhouse to ensure your data is extracted perfectly.",
+      "Yes. Our templates are engineered specifically for ATS parsing. We strip out complex formatting, tables, and multi-column layouts that confuse parsers, ensuring 100% of your data is read correctly.",
   },
   {
-    question: "How does the AI Reforging work?",
+    question: "Can I export my resume to PDF?",
     answer:
-      "You input your raw work history, and our AI agents analyze the specific job description you're targeting. They then suggest high-impact verbs and metrics to reforge your bullet points for maximum relevance.",
+      "Absolutely. Signet generates pixel-perfect PDFs that maintain their exact formatting across all devices. You can also export to plain text for pasting directly into application forms.",
   },
   {
-    question: "Can I export to PDF?",
+    question: "Is there a limit to how many resumes I can build?",
     answer:
-      "Absolutely. Your resume can be instantly exported to a highly optimized, machine-readable PDF.",
-  },
-  {
-    question: "Is my data secure?",
-    answer:
-      "We operate under a strict code. Your data is encrypted, and we do not sell your history or contact information to third-party recruiters.",
+      "The Pro Builder tier is completely free and allows you to build, manage, and export an unlimited number of resumes. We only charge for premium features like bulk ATS scanning and enterprise API access.",
   },
 ];
 
 export function FAQ() {
+  const [openIndex, setOpenIndex] = useState<number | null>(0);
+
   return (
-    <section id="faq" className="w-full bg-background py-16 md:py-24">
-      <div className="relative z-10 mx-auto w-full max-w-4xl px-4 sm:px-6 lg:px-8">
-        {/* Header */}
+    <section id="faq" className="w-full bg-nordic-bg py-24">
+      <div className="mx-auto w-full max-w-5xl px-6">
         <motion.div
-          initial={{ opacity: 0, y: -20 }}
+          initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          className="mb-12 text-center md:mb-16"
+          className="mb-12 text-center"
         >
-          <Badge className="mb-4" variant="secondary">
-            <HelpCircle className="mr-2 h-3 w-3" />
-            FAQ
-          </Badge>
-          <h2 className="mb-4 font-heading text-3xl font-bold tracking-tight text-foreground md:text-4xl lg:text-5xl">
+          <h2 className="font-heading text-3xl font-medium tracking-tight text-nordic-text md:text-5xl">
             Frequently Asked Questions
           </h2>
-          <p className="mx-auto max-w-2xl text-base text-muted-foreground md:text-lg">
-            Answers to common questions from professionals seeking to upgrade their career assets.
-          </p>
         </motion.div>
 
-        {/* FAQ Accordion */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6, delay: 0.2 }}
-        >
-          <Card className="border-border/50 bg-card p-6 shadow-md">
-            <Accordion type="single" collapsible className="w-full">
-              {faqs.map((faq, index) => (
-                <AccordionItem key={index} value={`item-${index}`}>
-                  <AccordionTrigger className="text-left text-base font-semibold transition-colors hover:text-primary md:text-lg">
+        <div className="space-y-4">
+          {faqs.map((faq, index) => {
+            const isOpen = openIndex === index;
+            return (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 10 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.4, delay: index * 0.1 }}
+                className={cn(
+                  "overflow-hidden rounded-2xl border transition-colors duration-200",
+                  isOpen
+                    ? "border-nordic-border bg-nordic-surface shadow-nordic-sm"
+                    : "border-transparent bg-nordic-surface-hover hover:bg-nordic-border/50"
+                )}
+              >
+                <button
+                  onClick={() => setOpenIndex(isOpen ? null : index)}
+                  className="flex w-full items-center justify-between p-6 text-left"
+                >
+                  <span className="font-heading text-xl font-medium text-nordic-text">
                     {faq.question}
-                  </AccordionTrigger>
-                  <AccordionContent className="text-sm leading-relaxed text-muted-foreground md:text-base">
-                    {faq.answer}
-                  </AccordionContent>
-                </AccordionItem>
-              ))}
-            </Accordion>
-          </Card>
-        </motion.div>
-
-        {/* Bottom CTA */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ delay: 0.4 }}
-          className="mt-12 text-center md:mt-16"
-        >
-          <Card className="border-border/50 bg-secondary/20 p-6 md:p-8">
-            <MessageCircle className="mx-auto mb-4 h-12 w-12 text-primary" />
-            <h3 className="mb-2 text-xl font-bold text-foreground md:text-2xl">
-              Still have questions?
-            </h3>
-            <p className="mb-6 text-sm text-muted-foreground md:text-base">
-              If you didn't find the answer you need, transmit a signal to our support team.
-            </p>
-            <div className="flex flex-col justify-center gap-3 sm:flex-row">
-              <Button asChild size="lg" variant="default">
-                <a href="mailto:support@signet.com">Contact Support</a>
-              </Button>
-            </div>
-          </Card>
-        </motion.div>
+                  </span>
+                  <div
+                    className={cn(
+                      "ml-4 flex h-8 w-8 shrink-0 items-center justify-center rounded-full transition-colors",
+                      isOpen
+                        ? "bg-nordic-accent text-white"
+                        : "bg-nordic-border text-nordic-text-secondary"
+                    )}
+                  >
+                    {isOpen ? (
+                      <Minus className="h-4 w-4" />
+                    ) : (
+                      <Plus className="h-4 w-4" />
+                    )}
+                  </div>
+                </button>
+                <div
+                  className={cn(
+                    "grid transition-all duration-300 ease-in-out",
+                    isOpen ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"
+                  )}
+                >
+                  <div className="overflow-hidden">
+                    <p className="px-6 pb-6 text-nordic-text-secondary leading-relaxed">
+                      {faq.answer}
+                    </p>
+                  </div>
+                </div>
+              </motion.div>
+            );
+          })}
+        </div>
       </div>
     </section>
   );

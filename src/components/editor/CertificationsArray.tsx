@@ -1,42 +1,55 @@
-import { useState } from "react";
+import { useState } from "react"
 import {
   DndContext,
   closestCenter,
   PointerSensor,
   useSensor,
   useSensors,
-} from "@dnd-kit/core";
-import type { DragEndEvent } from "@dnd-kit/core";
+} from "@dnd-kit/core"
+import type { DragEndEvent } from "@dnd-kit/core"
 import {
   SortableContext,
   useSortable,
   verticalListSortingStrategy,
-} from "@dnd-kit/sortable";
-import { CSS } from "@dnd-kit/utilities";
-import { GripVertical, ChevronDown, ChevronUp, Plus, Trash2 } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { useDataSlateStore } from "@/store/useDataSlateStore";
-import type { CertificationEntry } from "@/store/useDataSlateStore";
-import { cn } from "@/lib/utils";
+} from "@dnd-kit/sortable"
+import { CSS } from "@dnd-kit/utilities"
+import {
+  GripVertical,
+  ChevronDown,
+  ChevronUp,
+  Plus,
+  Trash2,
+} from "lucide-react"
+import { Button } from "@/components/ui/button"
+import { DataStreamInput } from "@/components/editor/primitives/DataStreamInput"
+import { useDataSlateStore } from "@/store/useDataSlateStore"
+import type { CertificationEntry } from "@/store/useDataSlateStore"
+import { cn } from "@/lib/utils"
 
 // ─── Single Sortable Certification Block ──────────────────────────────────────
 function CertificationBlock({ entry }: { entry: CertificationEntry }) {
-  const { updateCertificationEntry, removeCertificationEntry } = useDataSlateStore();
-  const [expanded, setExpanded] = useState(false);
+  const { updateCertificationEntry, removeCertificationEntry } =
+    useDataSlateStore()
+  const [expanded, setExpanded] = useState(false)
 
-  const { attributes, listeners, setNodeRef, transform, transition, isDragging } =
-    useSortable({ id: entry.id });
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id: entry.id })
 
   const style = {
     transform: CSS.Transform.toString(transform),
     transition,
-  };
+  }
 
-  const displayTitle = entry.name || entry.issuer
-    ? `${entry.name || "Certification"}${entry.issuer ? ` · ${entry.issuer}` : ""}`
-    : "New Certification Entry";
+  const displayTitle =
+    entry.name || entry.issuer
+      ? `${entry.name || "Certification"}${entry.issuer ? ` · ${entry.issuer}` : ""}`
+      : "New Certification Entry"
 
   return (
     <div
@@ -45,7 +58,7 @@ function CertificationBlock({ entry }: { entry: CertificationEntry }) {
       className={cn(
         "rounded-lg border transition-all duration-200",
         isDragging
-          ? "border-primary/60 bg-primary/5 shadow-lg shadow-primary/10 opacity-90 z-50"
+          ? "z-50 border-primary/60 bg-primary/5 opacity-90 shadow-lg shadow-primary/10"
           : "border-border/40 bg-card/30 hover:border-border/70"
       )}
     >
@@ -65,13 +78,20 @@ function CertificationBlock({ entry }: { entry: CertificationEntry }) {
         </button>
 
         <div className="min-w-0 flex-1">
-          <span className="block truncate text-sm font-medium text-foreground">{displayTitle}</span>
+          <span className="block truncate text-sm font-medium text-foreground">
+            {displayTitle}
+          </span>
           {entry.date && (
-            <span className="font-mono text-[10px] text-muted-foreground">{entry.date}</span>
+            <span className="font-mono text-[10px] text-muted-foreground">
+              {entry.date}
+            </span>
           )}
         </div>
 
-        <div className="flex shrink-0 items-center gap-1" onClick={(e) => e.stopPropagation()}>
+        <div
+          className="flex shrink-0 items-center gap-1"
+          onClick={(e) => e.stopPropagation()}
+        >
           <button
             onClick={() => removeCertificationEntry(entry.id)}
             className="rounded p-1.5 text-muted-foreground/50 transition-colors hover:text-destructive"
@@ -79,8 +99,15 @@ function CertificationBlock({ entry }: { entry: CertificationEntry }) {
           >
             <Trash2 className="h-3.5 w-3.5" />
           </button>
-          <button onClick={() => setExpanded((v) => !v)} className="p-1.5 text-muted-foreground/50 transition-colors hover:text-foreground">
-            {expanded ? <ChevronUp className="h-3.5 w-3.5" /> : <ChevronDown className="h-3.5 w-3.5" />}
+          <button
+            onClick={() => setExpanded((v) => !v)}
+            className="p-1.5 text-muted-foreground/50 transition-colors hover:text-foreground"
+          >
+            {expanded ? (
+              <ChevronUp className="h-3.5 w-3.5" />
+            ) : (
+              <ChevronDown className="h-3.5 w-3.5" />
+            )}
           </button>
         </div>
       </div>
@@ -90,76 +117,91 @@ function CertificationBlock({ entry }: { entry: CertificationEntry }) {
         <div className="animate-in space-y-3 border-t border-border/20 px-4 pt-1 pb-4 duration-150 slide-in-from-top-1">
           <div className="grid grid-cols-2 gap-3">
             <div className="space-y-1.5">
-              <Label className="text-[10px] tracking-widest text-muted-foreground uppercase">Name / Title</Label>
-              <Input
+              <DataStreamInput
+                label="Name / Title"
                 value={entry.name}
-                onChange={(e) => updateCertificationEntry(entry.id, { name: e.target.value })}
+                onChange={(e) =>
+                  updateCertificationEntry(entry.id, { name: e.target.value })
+                }
                 placeholder="AWS Certified Solutions Architect"
-                className="h-8 bg-background/50 text-sm"
+                unit="chars"
               />
             </div>
             <div className="space-y-1.5">
-              <Label className="text-[10px] tracking-widest text-muted-foreground uppercase">Issuer / Org</Label>
-              <Input
+              <DataStreamInput
+                label="Issuer / Org"
                 value={entry.issuer}
-                onChange={(e) => updateCertificationEntry(entry.id, { issuer: e.target.value })}
+                onChange={(e) =>
+                  updateCertificationEntry(entry.id, { issuer: e.target.value })
+                }
                 placeholder="Amazon Web Services"
-                className="h-8 bg-background/50 text-sm"
+                unit="chars"
               />
             </div>
             <div className="space-y-1.5">
-              <Label className="text-[10px] tracking-widest text-muted-foreground uppercase">Date Obtained</Label>
-              <Input
+              <DataStreamInput
+                label="Date Obtained"
                 value={entry.date}
-                onChange={(e) => updateCertificationEntry(entry.id, { date: e.target.value })}
+                onChange={(e) =>
+                  updateCertificationEntry(entry.id, { date: e.target.value })
+                }
                 placeholder="2023-11"
-                className="h-8 bg-background/50 text-sm"
+                unit={null}
               />
             </div>
             <div className="space-y-1.5">
-              <Label className="text-[10px] tracking-widest text-muted-foreground uppercase">Verification URL</Label>
-              <Input
+              <DataStreamInput
+                label="Verification URL"
                 value={entry.url}
-                onChange={(e) => updateCertificationEntry(entry.id, { url: e.target.value })}
+                onChange={(e) =>
+                  updateCertificationEntry(entry.id, { url: e.target.value })
+                }
                 placeholder="https://..."
-                className="h-8 bg-background/50 text-sm"
+                unit="bytes"
               />
             </div>
           </div>
         </div>
       )}
     </div>
-  );
+  )
 }
 
 // ─── Certifications Section ───────────────────────────────────────────────────
 export function CertificationsArray() {
-  const { certifications, addCertificationEntry, reorderCertificationEntries, setSyncPaused } = useDataSlateStore();
+  const {
+    certifications,
+    addCertificationEntry,
+    reorderCertificationEntries,
+    setSyncPaused,
+  } = useDataSlateStore()
 
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 8 } })
-  );
+  )
 
   const handleDragStart = () => {
-    setSyncPaused(true);
-  };
+    setSyncPaused(true)
+  }
 
   const handleDragEnd = (e: DragEndEvent) => {
-    setSyncPaused(false);
-    const { active, over } = e;
+    setSyncPaused(false)
+    const { active, over } = e
     if (over && active.id !== over.id) {
-      reorderCertificationEntries(String(active.id), String(over.id));
+      reorderCertificationEntries(String(active.id), String(over.id))
     }
-  };
+  }
 
   const handleDragCancel = () => {
-    setSyncPaused(false);
-  };
+    setSyncPaused(false)
+  }
 
   return (
     <div className="space-y-3">
       <div className="flex items-center justify-between border-b border-border/20 pb-2">
-        <h3 className="text-sm font-bold tracking-widest text-primary uppercase">Certifications</h3>
+        <h3 className="text-sm font-bold tracking-widest text-primary uppercase">
+          Certifications
+        </h3>
         <Button
           variant="ghost"
           size="sm"
@@ -177,7 +219,9 @@ export function CertificationsArray() {
           onClick={addCertificationEntry}
         >
           <Plus className="h-5 w-5 text-muted-foreground/50" />
-          <p className="text-xs text-muted-foreground">Add your first certification</p>
+          <p className="text-xs text-muted-foreground">
+            Add your first certification
+          </p>
         </div>
       )}
 
@@ -188,7 +232,10 @@ export function CertificationsArray() {
         onDragEnd={handleDragEnd}
         onDragCancel={handleDragCancel}
       >
-        <SortableContext items={certifications.map((e) => e.id)} strategy={verticalListSortingStrategy}>
+        <SortableContext
+          items={certifications.map((e) => e.id)}
+          strategy={verticalListSortingStrategy}
+        >
           <div className="space-y-2">
             {certifications.map((entry) => (
               <CertificationBlock key={entry.id} entry={entry} />
@@ -197,5 +244,5 @@ export function CertificationsArray() {
         </SortableContext>
       </DndContext>
     </div>
-  );
+  )
 }

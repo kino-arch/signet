@@ -1,5 +1,11 @@
 // @ts-nocheck
-export async function generateStrategy(companyIntel: any, apiKey: string) {
+import { callAI } from "../_shared/ai-client.ts"
+
+/**
+ * Generates a strategic Target Lock Briefing using the shared AI client.
+ * Uses the cascading model chain (NVIDIA → Gemini → OpenAI).
+ */
+export async function generateStrategy(companyIntel: any, _apiKey?: string) {
   const systemPrompt = `You are an elite career strategist and executive resume writer. 
 Your task is to analyze intelligence gathered about a target company and a specific job role, and output a highly strategic "Target Lock Briefing" to help a candidate tailor their resume perfectly.
 
@@ -28,9 +34,9 @@ You must return a valid JSON object matching this structure EXACTLY:
       "insight": "A non-obvious insight based on the data",
       "action": "What the candidate should do about it"
     }
-  ], // Exactly 3 of these
+  ],
   "fit_radar": {
-    "technical_match": 85, // 0-100 score estimating baseline expectations
+    "technical_match": 85,
     "culture_alignment": 90,
     "experience_level": 80,
     "industry_relevance": 75,
@@ -47,44 +53,29 @@ Important Rules:
 - Return ONLY valid JSON. No markdown formatting blocks around the JSON.
 - Base your analysis entirely on the provided intelligence.
 - The tone should be authoritative, strategic, and tactical.
-`;
+`
 
   const userPrompt = `Here is the intelligence gathered:
 ${JSON.stringify(companyIntel, null, 2)}
 
-Generate the Target Lock Briefing JSON.`;
+Generate the Target Lock Briefing JSON.`
 
-  const response = await fetch("https://integrate.api.nvidia.com/v1/chat/completions", {
-    method: "POST",
-    headers: {
-      "Authorization": `Bearer ${apiKey}`,
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({
-      model: "meta/llama-3.1-70b-instruct",
-      messages: [
-        { role: "system", content: systemPrompt },
-        { role: "user", content: userPrompt }
-      ],
-      temperature: 0.2,
-      max_tokens: 1500,
-    })
-  });
+  const result = await callAI({
+    system: systemPrompt,
+    user: userPrompt,
+    temperature: 0.2,
+    maxTokens: 2000,
+    responseFormat: "json",
+  })
 
-  if (!response.ok) {
-    const errorText = await response.text();
-    throw new Error(`Nvidia API error: ${response.status} - ${errorText}`);
-  }
-
-  const data = await response.json();
-  const content = data.choices[0].message.content;
-  
   try {
     // Strip markdown code blocks if the model included them despite instructions
-    const cleanContent = content.replace(/^```json\s*/, '').replace(/\s*```$/, '').trim();
-    return JSON.parse(cleanContent);
-  } catch (err) {
-    console.error("Failed to parse Nvidia response as JSON:", content);
-    throw new Error("AI returned invalid JSON strategy");
+    const cleanContent = result.content
+      .replace(/^```json\s*/, "")
+      .replace(/\s*```$/, "")
+      .trim()
+    return JSON.parse(cleanContent)
+  } catch {
+    throw new Error("AI returned invalid JSON strategy")
   }
 }

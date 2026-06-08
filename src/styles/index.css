@@ -1,0 +1,173 @@
+@import "tailwindcss";
+/* stylelint-disable color-no-hex, color-hex-length, declaration-block-single-line-max-declarations */
+
+/* ============================================
+   SIGNET NORDIC DESIGN SYSTEM
+   "Fjord" Theme — Light, Professional, Human
+   ============================================ */
+
+@theme {
+  /* 60-30-10 Color Palette */
+  --color-nordic-bg: #FAFAFA;           /* 60% — Dominant background */
+  --color-nordic-surface: #FFFFFF;       /* 30% — Surfaces, cards */
+  --color-nordic-surface-hover: #F4F4F5; /* 30% — Hover states */
+  --color-nordic-text: #18181B;         /* Primary text */
+  --color-nordic-text-secondary: #52525B; /* Secondary text */
+  --color-nordic-text-tertiary: #A1A1AA;  /* Placeholders, hints */
+  --color-nordic-border: #E4E4E7;       /* Structural borders */
+  --color-nordic-border-subtle: #F4F4F5; /* Divider lines */
+  --color-nordic-accent: #2563EB;       /* 10% — CTA, links, focus */
+  --color-nordic-accent-hover: #1D4ED8; /* CTA hover */
+  --color-nordic-accent-soft: #EFF6FF;  /* CTA backgrounds */
+  --color-nordic-success: #16A34A;
+  --color-nordic-warning: #D97706;
+  --color-nordic-error: #DC2626;
+
+  /* Typography */
+  --font-sans: "Inter", "Geist", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "Geist Mono", ui-monospace, monospace;
+
+  /* Spacing Scale (Nordic: generous, breathable) */
+  --spacing-nordic-xs: 0.25rem;   /* 4px */
+  --spacing-nordic-sm: 0.5rem;    /* 8px */
+  --spacing-nordic-md: 1rem;      /* 16px */
+  --spacing-nordic-lg: 1.5rem;    /* 24px */
+  --spacing-nordic-xl: 2.5rem;    /* 40px */
+  --spacing-nordic-2xl: 4rem;     /* 64px */
+
+  /* Shadows (soft, dispersed — no neon) */
+  --shadow-nordic-sm: 0 1px 2px 0 rgb(0 0 0 / 0.04);
+  --shadow-nordic-md: 0 4px 6px -1px rgb(0 0 0 / 0.06), 0 2px 4px -2px rgb(0 0 0 / 0.04);
+  --shadow-nordic-lg: 0 10px 15px -3px rgb(0 0 0 / 0.06), 0 4px 6px -4px rgb(0 0 0 / 0.04);
+  --shadow-nordic-xl: 0 20px 25px -5px rgb(0 0 0 / 0.06), 0 8px 10px -6px rgb(0 0 0 / 0.04);
+}
+
+/* ============================================
+   GLOBAL RESETS — Purge Sci-Fi Remnants
+   ============================================ */
+
+@layer base {
+  body {
+    @apply bg-nordic-bg text-nordic-text antialiased;
+    font-family: var(--font-sans);
+  }
+
+  /* Kill all sci-fi classes if they somehow persist */
+  .glass-panel,
+  .glow-border-iridescent,
+  .holographic-container,
+  .grain-texture,
+  [class*="glow-"],
+  [class*="holographic-"],
+  [class*="neon-"],
+  [class*="sci-fi-"] {
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    backdrop-filter: none !important;
+    filter: none !important;
+  }
+
+  /* Typography defaults */
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-semibold tracking-tight text-nordic-text;
+  }
+
+  /* Focus states — accessible, visible */
+  *:focus-visible {
+    @apply outline-2 outline-offset-2 outline-nordic-accent;
+  }
+}
+
+/* ============================================
+   UTILITY CLASSES
+   ============================================ */
+
+@layer utilities {
+  .nordic-surface {
+    @apply bg-nordic-surface border border-nordic-border;
+  }
+
+  .nordic-surface-elevated {
+    @apply bg-nordic-surface border border-nordic-border shadow-nordic-md;
+  }
+
+  .nordic-text-primary {
+    @apply text-nordic-text font-medium;
+  }
+
+  .nordic-text-secondary {
+    @apply text-nordic-text-secondary;
+  }
+
+  .nordic-text-tertiary {
+    @apply text-nordic-text-tertiary text-sm;
+  }
+
+  .nordic-input {
+    @apply bg-nordic-surface border border-nordic-border rounded-lg px-3 py-2.5 text-nordic-text
+           placeholder:text-nordic-text-tertiary placeholder:italic
+           focus:outline-none focus:ring-2 focus:ring-nordic-accent/20 focus:border-nordic-accent
+           transition-all duration-150;
+  }
+
+  .nordic-input-label {
+    @apply block text-sm font-medium text-nordic-text-secondary mb-1.5;
+  }
+
+  .nordic-btn-primary {
+    @apply inline-flex items-center justify-center gap-2
+           bg-nordic-accent text-white font-medium
+           rounded-lg px-5 py-2.5
+           hover:bg-nordic-accent-hover
+           active:scale-[0.98]
+           transition-all duration-150
+           disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+
+  .nordic-btn-secondary {
+    @apply inline-flex items-center justify-center gap-2
+           bg-nordic-surface-hover text-nordic-text-secondary font-medium
+           rounded-lg px-5 py-2.5
+           hover:bg-nordic-border hover:text-nordic-text
+           active:scale-[0.98]
+           transition-all duration-150;
+  }
+
+  .nordic-btn-ghost {
+    @apply inline-flex items-center justify-center gap-2
+           text-nordic-text-secondary font-medium
+           rounded-lg px-3 py-2
+           hover:text-nordic-text hover:bg-nordic-surface-hover
+           transition-all duration-150;
+  }
+
+  .nordic-card {
+    @apply bg-nordic-surface border border-nordic-border rounded-xl
+           shadow-nordic-sm
+           hover:shadow-nordic-md hover:border-nordic-border-subtle
+           transition-all duration-200;
+  }
+
+  .nordic-card-flat {
+    @apply bg-nordic-surface border border-nordic-border rounded-xl
+           transition-all duration-200;
+  }
+
+  .nordic-tag {
+    @apply inline-flex items-center gap-1
+           bg-nordic-surface-hover text-nordic-text-tertiary
+           text-xs font-medium uppercase tracking-wider
+           px-2 py-1 rounded-md
+           border border-nordic-border-subtle;
+  }
+
+  .nordic-divider {
+    @apply h-px bg-nordic-border-subtle;
+  }
+
+  .nordic-empty-state {
+    @apply flex flex-col items-center justify-center text-center
+           p-8 text-nordic-text-tertiary;
+  }
+}

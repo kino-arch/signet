@@ -1,108 +1,154 @@
 "use client"
 
-import { Link } from "react-router-dom"
-import { ArrowRight } from "lucide-react"
-
 import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
-import TextLoop from "@/components/text-loop"
+import { ArrowRight, Sparkles } from "lucide-react"
+import { motion, useReducedMotion } from "framer-motion"
 
 export function HeroDemo() {
+  const shouldReduceMotion = useReducedMotion()
+
+  // Typography styles from Option A
+  const textShadowStyle = {
+    textShadow: "0 0 40px oklch(0.55 0.22 285 / 0.4)",
+  }
+
+  // Animation sequences
+  const headingVariants = {
+    hidden: { opacity: 0, y: shouldReduceMotion ? 0 : 20 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        duration: 0.6,
+        ease: [0.4, 0, 0.2, 1] as const,
+        staggerChildren: shouldReduceMotion ? 0 : 0.08,
+      },
+    },
+  }
+
+  const wordVariants = {
+    hidden: { opacity: 0, y: shouldReduceMotion ? 0 : 20 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.6, ease: [0.4, 0, 0.2, 1] as const },
+    },
+  }
+
+  const subtitleVariants = {
+    hidden: { opacity: 0, y: shouldReduceMotion ? 0 : 10 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        duration: 0.5,
+        delay: shouldReduceMotion ? 0 : 0.4,
+        ease: [0.4, 0, 0.2, 1] as const,
+      },
+    },
+  }
+
+  const buttonVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        duration: 0.5,
+        delay: shouldReduceMotion ? 0 : 0.6,
+        ease: [0.4, 0, 0.2, 1] as const,
+      },
+    },
+  }
+
+  const headingWords = ["Turn", "Raw", "Into", "Remarkable"]
+
   return (
-    <div className="relative flex w-full flex-col items-center justify-start overflow-hidden bg-background">
-      {/* Tactical HUD Grid Overlay */}
-      <div className="pointer-events-none absolute inset-0 z-0 overflow-hidden">
+    <section className="relative flex w-full items-center justify-center overflow-hidden bg-background px-6 pt-32 pb-24">
+      {/* Background Illustration */}
+      <div className="pointer-events-none absolute inset-0 z-0">
+        <img
+          src="/illustrations/hero-01.png"
+          alt="The Alchemist's Forge"
+          className="h-full w-full object-cover opacity-30 mix-blend-screen"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-background via-background/80 to-background/20" />
+      </div>
+
+      {/* Animated background gradient orbs (rounded-none per rule) */}
+      <div className="absolute inset-0 -z-10">
+        <div className="absolute top-1/4 left-1/4 h-[600px] w-[600px] animate-pulse rounded-none bg-primary/5 blur-3xl" />
         <div
-          className="absolute inset-0 hud-grid opacity-40 mix-blend-screen"
-          style={{
-            maskImage: "linear-gradient(to bottom, rgba(0,0,0,0.8) 0%, transparent 80%)",
-            WebkitMaskImage: "linear-gradient(to bottom, rgba(0,0,0,0.8) 0%, transparent 80%)",
-            height: "100%",
-          }}
+          className="absolute right-1/4 bottom-1/4 h-[600px] w-[600px] animate-pulse rounded-none bg-accent/5 blur-3xl"
+          style={{ animationDelay: "1s" }}
         />
       </div>
 
-      {/* Hero Content Wrapper */}
-      <div className="z-30 flex w-full max-w-4xl flex-col items-center justify-center px-4 pt-28 pb-12 text-center sm:px-6 md:pt-32">
-        <div className="space-y-5 sm:mx-auto">
-          {/* Tactical Pill Badge utilizing Shadcn UI preset & Geist Mono */}
-          <div className="flex justify-center">
-            <Link to="#features">
-              <Badge
-                variant="outline"
-                className="group/badge flex h-8 cursor-pointer items-center gap-2 rounded-md border-border/50 bg-background/50 py-1.5 pr-2.5 pl-3 font-mono text-xs tracking-wider backdrop-blur-sm transition-all duration-300 hover:border-primary/50 hover:bg-muted/70"
-              >
-                <span className="animate-beskar-shimmer font-bold">BOOTING SIGNET</span>
-                <span className="h-3 w-px bg-border" />
-                <span className="flex items-center font-semibold text-primary group-hover/badge:text-primary/80">
-                  LAUNCH <ArrowRight className="ml-1 size-3 transition-transform group-hover/badge:translate-x-0.5" />
-                </span>
-              </Badge>
-            </Link>
-          </div>
+      <div className="relative z-10 mx-auto max-w-4xl space-y-6 text-center">
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.5 }}
+          className="inline-flex items-center gap-2 rounded-none border border-border/30 bg-background/30 px-4 py-2 text-xs font-medium text-foreground/70 backdrop-blur-md transition-all duration-300 hover:border-border/60"
+        >
+          <Sparkles className="h-3.5 w-3.5 text-primary/80" />
+          <span className="font-mono text-[10px] tracking-widest text-muted-foreground uppercase md:text-xs">
+            Introducing our new platform
+          </span>
+        </motion.div>
 
-          {/* Heading - Perfectly balanced typographic hierarchy */}
-          <h1 className="mx-auto flex max-w-4xl flex-row flex-wrap items-center justify-center text-4xl leading-[1.05] font-extrabold tracking-tight text-foreground drop-shadow-sm sm:text-5xl md:text-6xl lg:text-7xl">
-            <TextLoop 
-              staticText="Elevate Your" 
-              rotatingTexts={["Career", "Skills", "Potential", "Future"]}
-              className="justify-center text-4xl leading-[1.05] font-extrabold tracking-tight sm:text-5xl md:text-6xl lg:text-7xl"
-              staticTextClassName="mr-2 sm:mr-3"
-              rotatingTextClassName="bg-gradient-to-r from-primary to-primary/60 pr-0 sm:pr-1"
-              backgroundClassName="dark:from-transparent dark:via-primary/10 dark:to-primary/20 bg-gradient-to-r from-transparent via-primary/10 to-primary/20"
-              cursorClassName="bg-primary"
-            />
-          </h1>
-
-          {/* Subheading - concise context and readability focus */}
-          <p className="mx-auto max-w-xl text-sm text-muted-foreground/95 sm:text-base md:text-lg">
-            Forge an indestructible, ATS-optimized professional identity. Built for operators who demand minimalist, high-conversion design.
-          </p>
-
-          {/* Action Callouts */}
-          <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
-            <Button asChild size="lg" className="px-6 text-sm font-medium shadow-md transition-all duration-300 hover:shadow-primary/10">
-              <Link to="/editor">
-                <span className="text-nowrap">Start Forging</span>
-              </Link>
-            </Button>
-            <Button
-              asChild
-              size="lg"
-              variant="outline"
-              className="border-border/50 bg-background/50 px-6 text-sm font-medium backdrop-blur-sm transition-all duration-300 hover:bg-muted/50"
+        <motion.h1
+          className="flex flex-wrap justify-center gap-x-4 font-heading text-[clamp(2.5rem,5vw,4.5rem)] leading-[1.05] font-bold tracking-[-0.02em] text-foreground uppercase"
+          variants={headingVariants}
+          initial="hidden"
+          animate="visible"
+          aria-label="Turn Raw Into Remarkable"
+          style={textShadowStyle}
+        >
+          {headingWords.map((word, index) => (
+            <motion.span
+              key={index}
+              variants={wordVariants}
+              aria-hidden="true"
+              className={
+                word === "Remarkable" ? "text-primary" : "text-foreground"
+              }
             >
-              <Link to="/docs">
-                <span className="text-nowrap">Explore Datacore</span>
-              </Link>
-            </Button>
-          </div>
-        </div>
+              {word}
+            </motion.span>
+          ))}
+        </motion.h1>
 
-        {/* Holographic Tactical Dashboard Showcase */}
-        <div className="relative mt-12 w-full max-w-4xl overflow-hidden px-2 sm:mt-16 lg:mt-20">
-          <div
-            aria-hidden
-            className="pointer-events-none absolute inset-0 z-30 bg-linear-to-b from-transparent from-60% to-background"
-          />
-          <div className="group relative mx-auto aspect-[2700/1440] w-full overflow-hidden rounded-2xl border border-border/50 bg-background p-2 shadow-2xl ring-background transition-all duration-700 hover:border-primary/30">
-            {/* Tactical Frame Glow */}
-            <div className="absolute inset-0 -z-10 bg-gradient-to-tr from-primary/10 via-transparent to-primary/5 opacity-0 transition-opacity duration-700 group-hover:opacity-100" />
-            
-            <img
-              className="relative z-10 block h-full w-full rounded-xl border border-border/40 bg-background object-cover object-top shadow-inner"
-              src="/hero-dashboard.png"
-              alt="Signet Dashboard"
-            />
-            
-            {/* Holographic Scanline Overlay */}
-            <div className="pointer-events-none absolute inset-2 z-20 overflow-hidden rounded-xl opacity-70 mix-blend-screen transition-opacity duration-500 group-hover:opacity-100">
-               <div className="absolute inset-0 bg-primary/5" />
-               <div className="absolute -top-10 right-0 left-0 h-8 animate-scanline bg-gradient-to-b from-transparent via-primary/30 to-transparent shadow-[0_0_20px_var(--color-primary)]" />
-            </div>
-          </div>
-        </div>
+        <motion.p
+          className="mx-auto max-w-xl font-mono text-base leading-relaxed font-light text-muted-foreground/90 md:text-lg"
+          variants={subtitleVariants}
+          initial="hidden"
+          animate="visible"
+        >
+          AI-forged resumes that pass the bots and impress the humans.
+        </motion.p>
+
+        <motion.div
+          className="flex flex-col justify-center gap-4 pt-6 sm:flex-row sm:gap-6"
+          variants={buttonVariants}
+          initial="hidden"
+          animate="visible"
+        >
+          <Button
+            size="lg"
+            className="group h-12 rounded-none px-8 text-sm font-semibold tracking-wide uppercase shadow-[0_0_10px_rgba(var(--color-primary),0.1)] transition-all hover:shadow-[0_0_20px_rgba(var(--color-primary),0.3)]"
+          >
+            Start Forge
+            <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
+          </Button>
+          <Button
+            size="lg"
+            variant="outline"
+            className="h-12 rounded-none border-border/50 px-8 text-sm font-semibold tracking-wide text-foreground uppercase transition-all hover:border-border hover:bg-foreground/5"
+          >
+            View Demo
+          </Button>
+        </motion.div>
       </div>
-    </div>
+    </section>
   )
 }

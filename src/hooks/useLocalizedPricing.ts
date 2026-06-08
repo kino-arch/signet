@@ -1,15 +1,15 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect } from "react"
 
 interface LocalizedPricing {
-  currency: string;
-  symbol: string;
-  rate: number;
-  loading: boolean;
-  isEstimate: boolean;
+  currency: string
+  symbol: string
+  rate: number
+  loading: boolean
+  isEstimate: boolean
 }
 
-const DEFAULT_CURRENCY = "USD";
-const DEFAULT_SYMBOL = "$";
+const DEFAULT_CURRENCY = "USD"
+const DEFAULT_SYMBOL = "$"
 
 // ── Timezone → Currency mapping (works offline, no network needed) ──────────
 const timezoneToCurrency: Record<string, string> = {
@@ -75,7 +75,7 @@ const timezoneToCurrency: Record<string, string> = {
   "America/Bogota": "COP",
   "America/Santiago": "CLP",
   "America/Lima": "PEN",
-};
+}
 
 // ── Hardcoded approximate rates (updated periodically, used as fallback) ────
 // These are approximate USD→X rates. They don't need to be perfect because
@@ -127,7 +127,7 @@ const fallbackRates: Record<string, number> = {
   BDT: 120,
   PKR: 280,
   NPR: 136,
-};
+}
 
 const getSymbolForCurrency = (currency: string): string => {
   try {
@@ -139,11 +139,11 @@ const getSymbolForCurrency = (currency: string): string => {
         maximumFractionDigits: 0,
       })
       .replace(/\d/g, "")
-      .trim();
+      .trim()
   } catch {
-    return "$";
+    return "$"
   }
-};
+}
 
 /**
  * Detects the user's local currency from their browser timezone (no network
@@ -159,18 +159,18 @@ export function useLocalizedPricing(): LocalizedPricing {
     rate: 1,
     loading: true,
     isEstimate: true,
-  });
+  })
 
   useEffect(() => {
-    let isMounted = true;
+    let isMounted = true
 
     async function resolve() {
       // ── Step 1: Detect currency from timezone (always works, zero network) ─
-      let userCurrency = DEFAULT_CURRENCY;
+      let userCurrency = DEFAULT_CURRENCY
       try {
-        const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+        const tz = Intl.DateTimeFormat().resolvedOptions().timeZone
         if (tz && timezoneToCurrency[tz]) {
-          userCurrency = timezoneToCurrency[tz];
+          userCurrency = timezoneToCurrency[tz]
         }
       } catch {
         // Intl not supported — stay USD
@@ -180,11 +180,11 @@ export function useLocalizedPricing(): LocalizedPricing {
       try {
         const res = await fetch("https://ipapi.co/currency/", {
           signal: AbortSignal.timeout(3000),
-        });
+        })
         if (res.ok) {
-          const text = (await res.text()).trim();
+          const text = (await res.text()).trim()
           if (text && text.length === 3) {
-            userCurrency = text;
+            userCurrency = text
           }
         }
       } catch {
@@ -192,19 +192,19 @@ export function useLocalizedPricing(): LocalizedPricing {
       }
 
       // ── Step 3: Get exchange rate (live → fallback) ────────────────────────
-      let rate = fallbackRates[userCurrency] ?? 1;
-      let isEstimate = true;
+      let rate = fallbackRates[userCurrency] ?? 1
+      let isEstimate = true
 
       try {
         const res = await fetch(
           `https://api.exchangerate-api.com/v4/latest/USD`,
           { signal: AbortSignal.timeout(4000) }
-        );
+        )
         if (res.ok) {
-          const json = await res.json();
+          const json = await res.json()
           if (json.rates?.[userCurrency]) {
-            rate = json.rates[userCurrency];
-            isEstimate = false;
+            rate = json.rates[userCurrency]
+            isEstimate = false
           }
         }
       } catch {
@@ -218,17 +218,17 @@ export function useLocalizedPricing(): LocalizedPricing {
           rate,
           loading: false,
           isEstimate,
-        });
+        })
       }
     }
 
-    resolve();
+    resolve()
     return () => {
-      isMounted = false;
-    };
-  }, []);
+      isMounted = false
+    }
+  }, [])
 
-  return data;
+  return data
 }
 
 export function formatPrice(
@@ -236,14 +236,14 @@ export function formatPrice(
   localization: LocalizedPricing
 ): string {
   if (localization.loading) {
-    return "…";
+    return "…"
   }
 
   if (localization.currency === "USD") {
-    return `$${basePriceUsd.toFixed(2)}`;
+    return `$${basePriceUsd.toFixed(2)}`
   }
 
-  const converted = basePriceUsd * localization.rate;
+  const converted = basePriceUsd * localization.rate
 
   try {
     return new Intl.NumberFormat(undefined, {
@@ -251,9 +251,9 @@ export function formatPrice(
       currency: localization.currency,
       minimumFractionDigits: 0,
       maximumFractionDigits: 0,
-    }).format(converted);
+    }).format(converted)
   } catch {
     // Unknown currency code — fall back to USD
-    return `$${basePriceUsd.toFixed(2)}`;
+    return `$${basePriceUsd.toFixed(2)}`
   }
 }

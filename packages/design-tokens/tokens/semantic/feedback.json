@@ -1,0 +1,9 @@
+{
+  "color": {
+    "feedback": {
+      "error": {
+        "value": "{signet.red.400}"
+      }
+    }
+  }
+}

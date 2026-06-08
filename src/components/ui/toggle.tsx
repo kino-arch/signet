@@ -1,6 +1,4 @@
-"use client"
-
-import * as React from "react"
+﻿import * as React from "react"
 import { cva, type VariantProps } from "class-variance-authority"
 import { Toggle as TogglePrimitive } from "radix-ui"
 
@@ -16,9 +14,9 @@ const toggleVariants = cva(
       },
       size: {
         default:
-          "h-7 min-w-7 px-2 has-data-[icon=inline-end]:pr-1.5 has-data-[icon=inline-start]:pl-1.5",
-        sm: "h-6 min-w-6 rounded-[min(var(--radius-md),8px)] px-2 text-[0.625rem] has-data-[icon=inline-end]:pr-1.5 has-data-[icon=inline-start]:pl-1.5 [&_svg:not([class*='size-'])]:size-3",
-        lg: "h-8 min-w-8 px-2.5 has-data-[icon=inline-end]:pr-2 has-data-[icon=inline-start]:pl-2",
+          "h-7 min-w-7 px-2 has-[data-icon=inline-end]:pr-1.5 has-[data-icon=inline-start]:pl-1.5",
+        sm: "h-6 min-w-6 rounded-[min(var(--radius-md),8px)] px-2 text-[0.625rem] has-[data-icon=inline-end]:pr-1.5 has-[data-icon=inline-start]:pl-1.5 [&_svg:not([class*='size-'])]:size-3",
+        lg: "h-8 min-w-8 px-2.5 has-[data-icon=inline-end]:pr-2 has-[data-icon=inline-start]:pl-2",
       },
     },
     defaultVariants: {

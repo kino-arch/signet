@@ -1,0 +1,12 @@
+{
+  "component": {
+    "input": {
+      "border": {
+        "value": "{signet.navy.800}"
+      },
+      "focusRing": {
+        "value": "{color.action.primary}"
+      }
+    }
+  }
+}

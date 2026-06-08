@@ -1,37 +1,48 @@
-import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
-import Stripe from "npm:stripe@^14.0.0";
+import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
+import Stripe from "npm:stripe@^14.0.0"
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-stripe-secret-key",
-};
+  "Access-Control-Allow-Headers":
+    "authorization, x-client-info, apikey, content-type, x-stripe-secret-key",
+}
 
 serve(async (req: Request) => {
   if (req.method === "OPTIONS") {
-    return new Response("ok", { headers: corsHeaders });
+    return new Response("ok", { headers: corsHeaders })
   }
 
   try {
-    const { tierId, tokens, priceCents, successUrl, cancelUrl, userId, email } = await req.json();
+    const {
+      tierId,
+      credits,
+      priceCents,
+      successUrl,
+      cancelUrl,
+      userId,
+      email,
+    } = await req.json()
 
-    const authHeader = req.headers.get("Authorization");
+    const authHeader = req.headers.get("Authorization")
     if (!authHeader) {
-      throw new Error("Missing Authorization header");
+      throw new Error("Missing Authorization header")
     }
 
     // In a production environment, we should retrieve Stripe Secret Key from Deno.env.
     // Deno.env.get("STRIPE_SECRET_KEY")
     // But since the frontend was passing it via x-stripe-secret-key for local testing, we'll try that first, falling back to env.
-    const stripeKey = req.headers.get("x-stripe-secret-key") || Deno.env.get("STRIPE_SECRET_KEY");
-    
+    const stripeKey =
+      req.headers.get("x-stripe-secret-key") ||
+      Deno.env.get("STRIPE_SECRET_KEY")
+
     if (!stripeKey) {
-      throw new Error("Stripe secret key not configured");
+      throw new Error("Stripe secret key not configured")
     }
 
     const stripe = new Stripe(stripeKey, {
       apiVersion: "2023-10-16", // fallback for types, we omit in production calls usually
       httpClient: Stripe.createFetchHttpClient(),
-    });
+    })
 
     // Create Checkout Sessions API call. We do not pass payment_method_types to allow dynamic payment methods.
     const session = await stripe.checkout.sessions.create({
@@ -41,8 +52,8 @@ serve(async (req: Request) => {
           price_data: {
             currency: "usd",
             product_data: {
-              name: `${tokens} Signet Credits`,
-              description: `Purchase of ${tokens} credits for Signet Dossier generation.`,
+              name: `${credits} Signet Credits`,
+              description: `Purchase of ${credits} credits for Signet Dossier generation.`,
             },
             unit_amount: priceCents,
           },
@@ -54,21 +65,21 @@ serve(async (req: Request) => {
       // Include metadata to identify the user and package for the webhook
       metadata: {
         userId: userId,
-        tokens: tokens.toString(),
+        credits: credits.toString(),
         tierId: tierId,
       },
       ...(email ? { customer_email: email } : {}),
-    });
+    })
 
     return new Response(JSON.stringify({ url: session.url }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
       status: 200,
-    });
+    })
   } catch (error: any) {
-    console.error("Error creating stripe checkout:", error);
+    console.error("Error creating stripe checkout:", error)
     return new Response(JSON.stringify({ error: error.message }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
       status: 400,
-    });
+    })
   }
-});
+})

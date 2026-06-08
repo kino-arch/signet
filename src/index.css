@@ -1,309 +1,224 @@
-@import "https://fonts.googleapis.com/css2?family=Ubuntu:wght@300;400;500;600;700&display=swap";
 @import "tailwindcss";
-@import "tw-animate-css";
-@import "shadcn/tailwind.css";
-@import "@fontsource-variable/inter";
-@import "@fontsource-variable/dm-sans";
-@import "@fontsource/geist-mono";
+/* stylelint-disable color-no-hex, color-hex-length, declaration-block-single-line-max-declarations */
 
-@custom-variant dark (&:is(.dark *));
+/* ============================================
+   CUSTOM FONT FACES
+   ============================================ */
 
-:root {
-  --radius: 0;
-  --background: oklch(100% 0 0deg);
-  --foreground: oklch(14.7% 0.004 49.3deg);
-  --card: oklch(100% 0 0deg);
-  --card-foreground: oklch(14.7% 0.004 49.3deg);
-  --popover: oklch(100% 0 0deg);
-  --popover-foreground: oklch(14.7% 0.004 49.3deg);
-  --primary: oklch(50% 0.134 242.749deg);
-  --primary-foreground: oklch(97.7% 0.013 236.62deg);
-  --secondary: oklch(96.7% 0.001 286.375deg);
-  --secondary-foreground: oklch(21% 0.006 285.885deg);
-  --muted: oklch(96% 0.002 17.2deg);
-  --muted-foreground: oklch(54.7% 0.021 43.1deg);
-  --accent: oklch(96% 0.002 17.2deg);
-  --accent-foreground: oklch(21.4% 0.009 43.1deg);
-  --destructive: oklch(57.7% 0.245 27.325deg);
-  --border: oklch(92.2% 0.005 34.3deg);
-  --input: oklch(92.2% 0.005 34.3deg);
-  --ring: oklch(71.4% 0.014 41.2deg);
-  --chart-1: oklch(87.9% 0.169 91.605deg);
-  --chart-2: oklch(76.9% 0.188 70.08deg);
-  --chart-3: oklch(66.6% 0.179 58.318deg);
-  --chart-4: oklch(55.5% 0.163 48.998deg);
-  --chart-5: oklch(47.3% 0.137 46.201deg);
-  --sidebar: oklch(98.6% 0.002 67.8deg);
-  --sidebar-foreground: oklch(14.7% 0.004 49.3deg);
-  --sidebar-primary: oklch(58.8% 0.158 241.966deg);
-  --sidebar-primary-foreground: oklch(97.7% 0.013 236.62deg);
-  --sidebar-accent: oklch(96% 0.002 17.2deg);
-  --sidebar-accent-foreground: oklch(21.4% 0.009 43.1deg);
-  --sidebar-border: oklch(92.2% 0.005 34.3deg);
-  --sidebar-ring: oklch(71.4% 0.014 41.2deg);
+
+
+/* ============================================
+   SIGNET NORDIC DESIGN SYSTEM
+   "Forge" Theme — Premium Dark, High Contrast
+   ============================================ */
+
+@theme {
+  /* 60-30-10 Color Palette — Dark Mode */
+  --color-nordic-bg: #09090B;             /* 60% — Dominant: deep ink */
+  --color-nordic-surface: #18181B;        /* 30% — Cards, panels */
+  --color-nordic-surface-hover: #27272A;  /* 30% — Hover states */
+  --color-nordic-text: #FAFAFA;           /* Primary text — near white */
+  --color-nordic-text-secondary: #A1A1AA; /* Secondary text — warm gray */
+  --color-nordic-text-tertiary: #52525B;  /* Placeholders, hints */
+  --color-nordic-border: rgba(255,255,255,0.08);        /* Structural borders */
+  --color-nordic-border-subtle: rgba(255,255,255,0.04); /* Divider lines */
+  --color-nordic-accent: #3B82F6;         /* 10% — Electric blue */
+  --color-nordic-accent-hover: #2563EB;   /* CTA hover */
+  --color-nordic-accent-soft: rgba(59,130,246,0.12); /* Accent bg wash */
+  --color-nordic-success: #22C55E;
+  --color-nordic-warning: #F59E0B;
+  --color-nordic-error: #EF4444;
+
+  /* Typography — Nordic Stack */
+  /* Legacy variables (deprecate in Phase 6) */
+  --font-sans: "Onest Variable", ui-sans-serif, system-ui, sans-serif;
+  
+  /* Semantic aliases (new source of truth) */
+  --font-heading: "Schibsted Grotesk Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-body: "Onest Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Syne Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-serif: "Instrument Serif", Georgia, serif;
+  --font-mono: "Spline Sans Mono Variable", ui-monospace, monospace;
+
+  /* Spacing Scale (Nordic: generous, breathable) */
+  --spacing-nordic-xs: 0.25rem;   /* 4px */
+  --spacing-nordic-sm: 0.5rem;    /* 8px */
+  --spacing-nordic-md: 1rem;      /* 16px */
+  --spacing-nordic-lg: 1.5rem;    /* 24px */
+  --spacing-nordic-xl: 2.5rem;    /* 40px */
+  --spacing-nordic-2xl: 4rem;     /* 64px */
+
+  /* Shadows — deep, dispersed */
+  --shadow-nordic-sm: 0 1px 3px 0 rgb(0 0 0 / 0.4);
+  --shadow-nordic-md: 0 4px 12px -1px rgb(0 0 0 / 0.5), 0 2px 4px -2px rgb(0 0 0 / 0.3);
+  --shadow-nordic-lg: 0 10px 30px -3px rgb(0 0 0 / 0.6), 0 4px 8px -4px rgb(0 0 0 / 0.4);
+  --shadow-nordic-xl: 0 20px 50px -5px rgb(0 0 0 / 0.7), 0 8px 16px -6px rgb(0 0 0 / 0.5);
+  --shadow-nordic-glow: 0 0 40px rgba(59, 130, 246, 0.15);
+
+  /* Shadcn standard mappings to Nordic */
+  --color-background: var(--color-nordic-bg);
+  --color-foreground: var(--color-nordic-text);
+  --color-card: var(--color-nordic-surface);
+  --color-card-foreground: var(--color-nordic-text);
+  --color-popover: var(--color-nordic-surface);
+  --color-popover-foreground: var(--color-nordic-text);
+  --color-primary: var(--color-nordic-accent);
+  --color-primary-foreground: #FFFFFF;
+  --color-secondary: var(--color-nordic-surface-hover);
+  --color-secondary-foreground: var(--color-nordic-text-secondary);
+  --color-muted: var(--color-nordic-surface-hover);
+  --color-muted-foreground: var(--color-nordic-text-secondary);
+  --color-accent: var(--color-nordic-surface-hover);
+  --color-accent-foreground: var(--color-nordic-text);
+  --color-destructive: var(--color-nordic-error);
+  --color-destructive-foreground: #FFFFFF;
+  --color-border: var(--color-nordic-border);
+  --color-input: var(--color-nordic-border);
+  --color-ring: var(--color-nordic-accent);
+
+  /* Force rounded-none globally for Shadcn components */
+  --radius: 0px;
+  --radius-lg: 0px;
+  --radius-md: 0px;
+  --radius-sm: 0px;
 }
 
-.dark {
-  --background: oklch(14.7% 0.004 49.3deg);
-  --foreground: oklch(98.6% 0.002 67.8deg);
-  --card: oklch(21.4% 0.009 43.1deg);
-  --card-foreground: oklch(98.6% 0.002 67.8deg);
-  --popover: oklch(21.4% 0.009 43.1deg);
-  --popover-foreground: oklch(98.6% 0.002 67.8deg);
-  --primary: oklch(70% 0.15 240.79deg);
-  --primary-foreground: oklch(14.7% 0.004 49.3deg);
-  --secondary: oklch(27.4% 0.006 286.033deg);
-  --secondary-foreground: oklch(98.5% 0 0deg);
-  --muted: oklch(26.8% 0.011 36.5deg);
-  --muted-foreground: oklch(71.4% 0.014 41.2deg);
-  --accent: oklch(26.8% 0.011 36.5deg);
-  --accent-foreground: oklch(98.6% 0.002 67.8deg);
-  --destructive: oklch(70.4% 0.191 22.216deg);
-  --border: oklch(100% 0 0deg / 10%);
-  --input: oklch(100% 0 0deg / 15%);
-  --ring: oklch(54.7% 0.021 43.1deg);
-  --chart-1: oklch(87.9% 0.169 91.605deg);
-  --chart-2: oklch(76.9% 0.188 70.08deg);
-  --chart-3: oklch(66.6% 0.179 58.318deg);
-  --chart-4: oklch(55.5% 0.163 48.998deg);
-  --chart-5: oklch(47.3% 0.137 46.201deg);
-  --sidebar: oklch(21.4% 0.009 43.1deg);
-  --sidebar-foreground: oklch(98.6% 0.002 67.8deg);
-  --sidebar-primary: oklch(68.5% 0.169 237.323deg);
-  --sidebar-primary-foreground: oklch(29.3% 0.066 243.157deg);
-  --sidebar-accent: oklch(26.8% 0.011 36.5deg);
-  --sidebar-accent-foreground: oklch(98.6% 0.002 67.8deg);
-  --sidebar-border: oklch(100% 0 0deg / 10%);
-  --sidebar-ring: oklch(54.7% 0.021 43.1deg);
-}
-
-@theme inline {
-  --font-sans: 'Inter Variable', sans-serif;
-  --font-heading: 'DM Sans Variable', sans-serif;
-  --font-mono: 'Geist Mono', monospace;
-  --color-sidebar-ring: var(--sidebar-ring);
-  --color-sidebar-border: var(--sidebar-border);
-  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
-  --color-sidebar-accent: var(--sidebar-accent);
-  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
-  --color-sidebar-primary: var(--sidebar-primary);
-  --color-sidebar-foreground: var(--sidebar-foreground);
-  --color-sidebar: var(--sidebar);
-  --color-chart-5: var(--chart-5);
-  --color-chart-4: var(--chart-4);
-  --color-chart-3: var(--chart-3);
-  --color-chart-2: var(--chart-2);
-  --color-chart-1: var(--chart-1);
-  --color-ring: var(--ring);
-  --color-input: var(--input);
-  --color-border: var(--border);
-  --color-destructive: var(--destructive);
-  --color-destructive-foreground: var(--destructive-foreground);
-  --color-accent-foreground: var(--accent-foreground);
-  --color-accent: var(--accent);
-  --color-muted-foreground: var(--muted-foreground);
-  --color-muted: var(--muted);
-  --color-secondary-foreground: var(--secondary-foreground);
-  --color-secondary: var(--secondary);
-  --color-primary-foreground: var(--primary-foreground);
-  --color-primary: var(--primary);
-  --color-popover-foreground: var(--popover-foreground);
-  --color-popover: var(--popover);
-  --color-card-foreground: var(--card-foreground);
-  --color-card: var(--card);
-  --color-foreground: var(--foreground);
-  --color-background: var(--background);
-  --radius-sm: calc(var(--radius) * 0.6);
-  --radius-md: calc(var(--radius) * 0.8);
-  --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) * 1.4);
-  --radius-2xl: calc(var(--radius) * 1.8);
-  --radius-3xl: calc(var(--radius) * 2.2);
-  --radius-4xl: calc(var(--radius) * 2.6);
-  --animate-rippling: rippling var(--duration) ease-out;
-
-  @keyframes rippling {
-    0% {
-      opacity: 1;
-    }
-
-    100% {
-      transform: scale(2);
-      opacity: 0;
-    }
-  }
-
-  --animate-background-position-spin: background-position-spin 3000ms infinite alternate;
-
-  @keyframes background-position-spin {
-    0% {
-      background-position: top center;
-    }
-
-    100% {
-      background-position: bottom center;
-    }
-  }
-}
-
-@utility container {
-  margin-inline: auto;
-  padding-inline: 1rem;
-  width: 100%;
-
-  @media (min-width: 768px) {
-    padding-inline: 1.5rem;
-  }
-  @media (min-width: 640px) {
-    max-width: 640px;
-  }
-  @media (min-width: 768px) {
-    max-width: 768px;
-  }
-  @media (min-width: 1024px) {
-    max-width: 1024px;
-  }
-  @media (min-width: 1280px) {
-    max-width: 1280px;
-  }
-  @media (min-width: 1400px) {
-    max-width: 1400px;
-  }
-}
-
-@utility animate-reverse-spin {
-  animation: spin 1s linear infinite reverse;
-}
-
-@utility animate-beskar-shimmer {
-  background: linear-gradient(
-    90deg,
-    color-mix(in srgb, var(--color-foreground) 40%, transparent) 0%,
-    var(--color-muted-foreground) 20%,
-    var(--color-primary) 40%,
-    var(--color-primary) 60%,
-    var(--color-muted-foreground) 80%,
-    color-mix(in srgb, var(--color-foreground) 40%, transparent) 100%
-  );
-  background-size: 200% auto;
-  animation: beskar-shimmer 4s linear infinite;
-  /* stylelint-disable-next-line property-no-vendor-prefix -- needed for cross-browser text-clip */
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  color: transparent;
-}
-
-@utility hud-grid {
-  background-image: 
-    linear-gradient(to right, color-mix(in srgb, var(--color-primary) 15%, transparent) 1px, transparent 1px),
-    linear-gradient(to bottom, color-mix(in srgb, var(--color-primary) 15%, transparent) 1px, transparent 1px);
-  background-size: 32px 32px;
-}
-
-@keyframes beskar-shimmer {
-  0% {
-    background-position: 200% center;
-  }
-
-  100% {
-    background-position: 0% center;
-  }
-}
-
-@utility animate-scanline {
-  animation: scanline 6s linear infinite;
-}
-
-@keyframes scanline {
-  0% {
-    top: 0%;
-  }
-
-  50% {
-    top: 100%;
-  }
-
-  100% {
-    top: 0%;
-  }
-}
+/* ============================================
+   GLOBAL RESETS — Clean slate
+   ============================================ */
 
 @layer base {
-  * {
-    @apply border-border outline-ring/50;
-
-    font-family: Ubuntu, sans-serif;
-  }
-
   body {
-    @apply bg-background text-foreground;
+    @apply bg-nordic-bg text-nordic-text antialiased;
+    font-family: var(--font-sans);
   }
 
-  html {
-    @apply font-sans;
-
-    scroll-behavior: smooth;
+  /* Typography defaults */
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-semibold tracking-tight text-nordic-text;
+    font-family: var(--font-heading); /* Schibsted Grotesk for all headings */
+    letter-spacing: -0.02em;
   }
+
+  /* Body and UI text — Onest for dynamic legibility */
+  body, p, li, td, th, label, input, textarea, select {
+    font-family: var(--font-body);
+  }
+
+  /* Code, badges, mono elements, and buttons — Spline Sans Mono */
+  code, pre, kbd, samp, button {
+    font-family: var(--font-mono);
+  }
+
+  /* Focus states — accessible, visible */
+  *:focus-visible {
+    @apply outline-2 outline-offset-2 outline-nordic-accent;
+  }
+
+  /* Scrollbar — dark mode */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: #09090B; }
+  ::-webkit-scrollbar-thumb { background: #27272A; border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: #3F3F46; }
 }
 
-/* FIX: html2canvas crashes on oklch() colors.
-   Since the global * selector applies border-border (which uses --border: oklch(...)),
-   every element in the DOM has an oklch computed border color.
-   We override it to HEX inside the PDF container to prevent parsing crashes. */
-#resume-preview-content {
-  --border: #e4e4e7;
-  --ring: transparent;
-  --background: #ffffff;
-  --foreground: #09090b;
-}
+/* ============================================
+   UTILITY CLASSES
+   ============================================ */
 
-@media print {
-  @page {
-    size: letter;
-    margin: 0;
+@layer utilities {
+  .font-display {
+    /* Keep for backward compatibility during transition */
+    font-family: var(--font-display);
+    @apply text-balance;
   }
 
-  /* Force light-mode semantic tokens during print regardless of active theme.
-     This allows all components to use bg-background, text-foreground etc.
-     without needing any hardcoded print:text-black or print:bg-white overrides. */
-  :root,
-  .dark {
-    --background: rgb(255, 255, 255);
-    --foreground: rgb(9, 11, 12);
-    --card: rgb(255, 255, 255);
-    --card-foreground: rgb(9, 11, 12);
-    --popover: rgb(255, 255, 255);
-    --popover-foreground: rgb(9, 11, 12);
-    --primary: rgb(0, 117, 149);
-    --primary-foreground: rgb(236, 254, 255);
-    --secondary: rgb(244, 244, 245);
-    --secondary-foreground: rgb(24, 24, 27);
-    --muted: rgb(241, 243, 243);
-    --muted-foreground: rgb(103, 120, 124);
-    --accent: rgb(241, 243, 243);
-    --accent-foreground: rgb(22, 27, 29);
-    --border: rgb(227, 231, 232);
-    --input: rgb(227, 231, 232);
-    --ring: rgb(156, 168, 171);
+  .nordic-surface {
+    @apply bg-nordic-surface border border-nordic-border;
   }
 
-  body {
-    background: white !important;
-    -webkit-print-color-adjust: exact;
-    print-color-adjust: exact;
+  .nordic-surface-elevated {
+    @apply bg-nordic-surface border border-nordic-border shadow-nordic-md;
   }
 
-  /* FAANG Multi-Page Pagination Rules */
-  .resume-item {
-    break-inside: avoid;
+  .nordic-text-primary {
+    @apply text-nordic-text font-medium;
   }
 
-  .resume-header {
-    break-after: avoid;
+  .nordic-text-secondary {
+    @apply text-nordic-text-secondary;
   }
 
-  p, li, .resume-text {
-    orphans: 3;
-    widows: 3;
+  .nordic-text-tertiary {
+    @apply text-nordic-text-tertiary text-sm;
+  }
+
+  .nordic-input {
+    @apply bg-nordic-bg border border-nordic-border rounded-none px-3 py-2.5 text-nordic-text
+           placeholder:text-nordic-text-tertiary placeholder:italic
+           focus:outline-none focus:ring-2 focus:ring-nordic-accent/20 focus:border-nordic-accent
+           transition-all duration-150;
+  }
+
+  .nordic-input-label {
+    @apply block text-sm font-medium text-nordic-text-secondary mb-1.5;
+  }
+
+  .nordic-btn-primary {
+    @apply inline-flex items-center justify-center gap-2
+           bg-nordic-accent text-white font-medium
+           rounded-none px-5 py-2.5
+           hover:bg-nordic-accent-hover
+           active:scale-[0.98]
+           transition-all duration-150
+           shadow-nordic-sm
+           disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+
+  .nordic-btn-secondary {
+    @apply inline-flex items-center justify-center gap-2
+           bg-nordic-surface-hover text-nordic-text-secondary font-medium
+           border border-nordic-border
+           rounded-none px-5 py-2.5
+           hover:bg-nordic-surface hover:text-nordic-text
+           active:scale-[0.98]
+           transition-all duration-150;
+  }
+
+  .nordic-btn-ghost {
+    @apply inline-flex items-center justify-center gap-2
+           text-nordic-text-secondary font-medium
+           rounded-none px-3 py-2
+           hover:text-nordic-text hover:bg-nordic-surface-hover
+           transition-all duration-150;
+  }
+
+  .nordic-card {
+    @apply bg-nordic-surface border border-nordic-border rounded-none
+           shadow-nordic-sm
+           hover:shadow-nordic-md hover:border-white/15
+           transition-all duration-200;
+  }
+
+  .nordic-card-flat {
+    @apply bg-nordic-surface border border-nordic-border rounded-none
+           transition-all duration-200;
+  }
+
+  .nordic-tag {
+    @apply inline-flex items-center gap-1
+           bg-nordic-surface-hover text-nordic-text-tertiary
+           text-xs font-medium uppercase tracking-wider
+           px-2 py-1 rounded-none
+           border border-nordic-border-subtle;
+  }
+
+  .nordic-divider {
+    @apply h-px bg-nordic-border-subtle;
+  }
+
+  .nordic-empty-state {
+    @apply flex flex-col items-center justify-center text-center
+           p-8 text-nordic-text-tertiary;
   }
 }

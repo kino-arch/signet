@@ -1,0 +1,52 @@
+{
+  "version": "1.0.0",
+  "lastUpdated": "2026-06-08T05:15:00Z",
+  "components": [
+    {
+      "name": "shine-border",
+      "path": "src/components/shine-border.tsx",
+      "origin": "@aliimam/shine-border",
+      "status": "tokenized",
+      "tokenizedDate": "2026-06-03",
+      "approvedTokens": [
+        "var(--theme-primary)",
+        "var(--theme-secondary)"
+      ],
+      "forbiddenPatterns": [
+        "#[0-9a-fA-F]{3,8}",
+        "rgb\\(",
+        "hsl\\("
+      ],
+      "lastVerification": "2026-06-08",
+      "verifiedBy": "color-guard"
+    },
+    {
+      "name": "hole",
+      "path": "src/components/animate-ui/components/backgrounds/hole.tsx",
+      "origin": "@aliimam/hole",
+      "status": "tokenized",
+      "tokenizedDate": "2026-06-03",
+      "approvedTokens": [
+        "var(--theme-primary)"
+      ],
+      "forbiddenPatterns": [
+        "#[0-9a-fA-F]{3,8}"
+      ],
+      "lastVerification": "2026-06-08",
+      "verifiedBy": "color-guard"
+    },
+    {
+      "name": "SignetTestimonials",
+      "path": "src/components/sections/testimonials/SignetTestimonials.tsx",
+      "origin": "signet-native",
+      "status": "certified",
+      "certifiedDate": "2026-06-05",
+      "certifiedBy": "design-lead",
+      "violations": {
+        "spatial": 0,
+        "color": 0,
+        "typography": 0
+      }
+    }
+  ]
+}

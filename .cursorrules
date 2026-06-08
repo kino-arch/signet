@@ -1,0 +1,12 @@
+---
+name: Enforce PNPM
+description: Strict rule to only use pnpm and never npm.
+always_on: true
+---
+
+# PNPM Only Enforcement
+
+- **NEVER** use `npm` or `yarn` commands (`npm install`, `npm run`, `yarn install`, etc.).
+- **ALWAYS** use `pnpm` instead of `npm` (e.g., `pnpm install`, `pnpm run`, `pnpm exec`, `pnpm add`).
+- This project is strictly configured as a pnpm workspace and will fail if `npm` is used due to strict engine settings and `.npmrc` protections.
+- Ensure that any package additions are done using `pnpm add <package>` and any script execution is done via `pnpm run <script>`.

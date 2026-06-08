@@ -25,3 +25,14 @@ dist-ssr
 
 *storybook.log
 storybook-static
+
+testsprite_tests\tmp\config.json
+
+# Agent and temporary files
+.agents/
+eslint_out.txt
+eslint_quiet.txt
+eslint-report.json
+living-errors*.json
+living-errors*.txt
+SECURITY_AUDIT.md

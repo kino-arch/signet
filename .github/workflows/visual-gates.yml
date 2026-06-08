@@ -1,0 +1,62 @@
+name: Visual Gates
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    types: [opened, synchronize]
+
+permissions:
+  pull-requests: write
+  contents: read
+
+jobs:
+  visual-compliance:
+    name: Signet Visual Compliance
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install pnpm
+        run: cd /tmp && npm install -g pnpm@11.5.1
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Spatial Gates (Regex checks)
+        run: |
+          echo "Checking for root-level edge bleeds..."
+          grep -rn "w-full" src/ | grep -v "max-w" | grep -v "SignetWell" > spatial-violations.count || true
+
+      - name: Color Guard
+        run: node scripts/color-guard.js
+
+      - name: Typography Gates
+        run: |
+          echo "Checking for centered text fatigue..."
+          grep -rn "text-center" src/ > typography-violations.count || true
+
+      - name: Generate Visual Health Report
+        run: |
+          echo "## 🎨 Visual Health Report" > report.md
+          echo "" >> report.md
+          echo "| Metric | Value | Status |" >> report.md
+          echo "|--------|-------|--------|" >> report.md
+          echo "| Spatial violations | $(wc -l < spatial-violations.count | xargs) | $([ $(wc -l < spatial-violations.count) -eq 0 ] && echo '✅' || echo '❌') |" >> report.md
+          echo "| Color violations | $(cat color-violations.count) | $([ $(cat color-violations.count) -eq 0 ] && echo '✅' || echo '❌') |" >> report.md
+          echo "" >> report.md
+          echo "<details><summary>Action Required</summary>" >> report.md
+          echo "Run \`node scripts/component-census.js\` to see full report and auto-fix with Forge Bot." >> report.md
+          echo "</details>" >> report.md
+
+      - name: Post PR Comment
+        if: github.event_name == 'pull_request'
+        uses: marocchino/sticky-pull-request-comment@v2
+        with:
+          header: visual-health
+          path: report.md

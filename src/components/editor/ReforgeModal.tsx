@@ -1,141 +1,98 @@
-import { useEffect, useRef } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { CheckCircle2, XCircle, Loader2, Zap } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { useDataSlateStore } from "@/store/useDataSlateStore";
-import { useAuthStore } from "@/store/useAuthStore";
-import type { WorkEntry } from "@/store/useDataSlateStore";
-import { supabase } from "@/lib/supabase";
-import { cn } from "@/lib/utils";
+import { useEffect, useRef } from "react"
+import { motion, AnimatePresence } from "framer-motion"
+import { CheckCircle2, XCircle, Loader2, Zap } from "lucide-react"
+import { Button } from "@/components/ui/button"
+import { useDataSlateStore } from "@/store/useDataSlateStore"
+import type { WorkEntry } from "@/store/useDataSlateStore"
+import { cn } from "@/lib/utils"
+import { checkExportStatus } from "@/lib/export-guard"
+import type { GhostBullet } from "@/lib/ghost-schema"
+import { AutopsyBullet } from "./AutopsyBullet"
 
 interface ReforgeModalProps {
-  entry: WorkEntry;
+  entry: WorkEntry
 }
 
-import { useAI } from "@/lib/useAI";
-
+import { useForgeStore } from "@/store/useForgeStore"
 // ─── System Override Modal ────────────────────────────────────────────────────
 export function ReforgeModal({ entry }: ReforgeModalProps) {
-  const { setAiProposal, setAiLoading, acceptProposal, discardProposal } = useDataSlateStore();
-  const proposalRef = useRef("");
-  const isActive = entry.ai_loading || (entry.ai_proposal !== undefined);
-  const { reforgeDescription } = useAI();
-  const { user } = useAuthStore();
+  const { setAiProposal, setAiLoading, acceptProposal, discardProposal } =
+    useDataSlateStore()
+  const proposalRef = useRef("")
+  const isActive = entry.ai_loading || entry.ai_proposal !== undefined
+  const targetLockBriefing = useForgeStore((s) => s.targetLockBriefing)
 
   // Kick off the stream when loading flag is set
   useEffect(() => {
-    if (!entry.ai_loading) return;
+    if (!entry.ai_loading) return
 
-    let isMounted = true;
-    proposalRef.current = "";
-    setAiProposal(entry.id, "");
+    let isMounted = true
+    proposalRef.current = ""
+    setAiProposal(entry.id, null)
 
     const doReforge = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      const isGuest = user?.id?.startsWith("guest_");
-      
-      // Guest / Expired Session Fallback
-      if (isGuest || !session?.access_token) {
-        try {
-          const result = await reforgeDescription(entry.summary || "", entry.position || "", entry.name || "");
-          if (isMounted) setAiProposal(entry.id, result);
-        } catch (err: unknown) {
-          if (isMounted) setAiProposal(entry.id, `⚠️ Reforge failed: ${(err as Error).message}`);
-        } finally {
-          if (isMounted) setAiLoading(entry.id, false);
-        }
-        return;
-      }
-
-      const supabaseUrl = import.meta.env.VITE_SUPABASE_URL as string;
-      const edgeUrl = `${supabaseUrl}/functions/v1/reforge-datacore`;
+      const apiUrl = "/ai/reforge"
+      const userKey = localStorage.getItem("openrouter_api_key") || ""
 
       try {
-        const response = await fetch(edgeUrl, {
+        const response = await fetch(apiUrl, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${session.access_token}`,
-            apikey: import.meta.env.VITE_SUPABASE_ANON_KEY as string,
+            "x-user-api-key": userKey,
           },
           body: JSON.stringify({
             rawSummary: entry.summary,
             targetRole: entry.position,
             targetCompany: entry.name,
+            targetLock: targetLockBriefing,
+            industry: localStorage.getItem("user_industry") || "",
+            tone: localStorage.getItem("user_tone") || "Professional",
+            enableLanguageTool:
+              localStorage.getItem("enable_language_tool") !== "false",
+            userId: localStorage.getItem("sb-vslbiwubtcynvfytwcbr-auth-token")
+              ? JSON.parse(
+                  localStorage.getItem("sb-vslbiwubtcynvfytwcbr-auth-token") ||
+                    "{}"
+                )?.user?.id
+              : undefined,
+            slateId: useDataSlateStore.getState().activeSlateId,
           }),
-        });
+        })
 
         if (!response.ok) {
-          const text = await response.text();
+          const text = await response.text()
           if (isMounted) {
-            // If Edge Function auth fails mid-flight, fallback to client-side OpenRouter
-            if (response.status === 401) {
-              try {
-                const fallbackResult = await reforgeDescription(entry.summary || "", entry.position || "", entry.name || "");
-                setAiProposal(entry.id, fallbackResult);
-              } catch {
-                setAiProposal(entry.id, `⚠️ Forge error ${response.status}: ${text}`);
-              }
-            } else {
-              setAiProposal(entry.id, `⚠️ Forge error ${response.status}: ${text}`);
-            }
+            setAiProposal(entry.id, {
+              error: `Forge error ${response.status}: ${text}`,
+            })
           }
-          return;
+          return
         }
 
-        if (!response.body) {
-          if (isMounted) setAiProposal(entry.id, "⚠️ No response body from edge function.");
-          return;
-        }
-
-        const reader = response.body.getReader();
-        const decoder = new TextDecoder();
-        let buffer = "";
-
-        while (true) {
-          const { done, value } = await reader.read();
-          if (done) break;
-
-          buffer += decoder.decode(value, { stream: true });
-          const lines = buffer.split("\n");
-          buffer = lines.pop() ?? "";
-
-          for (const line of lines) {
-            if (!line.startsWith("data: ")) continue;
-            const data = line.slice(6).trim();
-            if (data === "[DONE]") {
-              return;
-            }
-            try {
-              const parsed = JSON.parse(data);
-              const delta = parsed?.choices?.[0]?.delta?.content;
-              const reasoning = parsed?.choices?.[0]?.delta?.reasoning_content || parsed?.choices?.[0]?.delta?.reasoning;
-              
-              if (delta !== undefined && delta !== null && isMounted) {
-                 proposalRef.current += delta;
-                 setAiProposal(entry.id, proposalRef.current);
-              } else if (reasoning && !proposalRef.current && isMounted) {
-                 setAiProposal(entry.id, "Analyzing trajectory and calculating optimal rewrite vectors...");
-              }
-            } catch {
-              // Skip unparseable SSE lines silently
-            }
-          }
+        const data = await response.json()
+        if (isMounted) {
+          setAiProposal(entry.id, data)
         }
       } catch (err: unknown) {
-         if (isMounted) setAiProposal(entry.id, `⚠️ Reforge failed: ${(err as Error).message}`);
+        if (isMounted)
+          setAiProposal(entry.id, {
+            error: `Reforge failed: ${(err as Error).message}`,
+          })
       } finally {
-         if (isMounted) setAiLoading(entry.id, false);
+        if (isMounted) setAiLoading(entry.id, false)
       }
-    };
+    }
 
-    doReforge();
+    doReforge()
 
-    return () => { isMounted = false; };
+    return () => {
+      isMounted = false
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [entry.ai_loading, entry.id, entry.summary, entry.position, entry.name]);
+  }, [entry.ai_loading, entry.id, entry.summary, entry.position, entry.name])
 
-  if (!isActive) return null;
+  if (!isActive) return null
 
   return (
     <AnimatePresence>
@@ -151,13 +108,15 @@ export function ReforgeModal({ entry }: ReforgeModalProps) {
           <div className="flex items-center gap-2">
             <Zap className="h-3.5 w-3.5 text-primary" />
             <span className="font-mono text-xs font-bold tracking-widest text-primary uppercase">
-              System Override
+              System Override (Ghost Protocol)
             </span>
           </div>
           {entry.ai_loading && (
             <div className="flex items-center gap-1.5 text-amber-500">
               <Loader2 className="h-3 w-3 animate-spin" />
-              <span className="font-mono text-[10px] tracking-widest uppercase">Reforging...</span>
+              <span className="font-mono text-[10px] tracking-widest uppercase">
+                Reforging...
+              </span>
             </div>
           )}
           {!entry.ai_loading && entry.ai_proposal !== undefined && (
@@ -175,7 +134,9 @@ export function ReforgeModal({ entry }: ReforgeModalProps) {
               Original
             </p>
             <p className="text-xs leading-relaxed text-muted-foreground">
-              {entry.summary || <span className="italic opacity-50">No summary</span>}
+              {entry.summary || (
+                <span className="italic opacity-50">No summary</span>
+              )}
             </p>
           </div>
 
@@ -184,32 +145,96 @@ export function ReforgeModal({ entry }: ReforgeModalProps) {
             <p className="text-[9px] font-bold tracking-widest text-primary/60 uppercase">
               AI Proposal
             </p>
-            <p
+            <div
               className={cn(
-                "text-xs leading-relaxed",
+                "space-y-2 text-xs leading-relaxed",
                 entry.ai_loading ? "text-primary/60" : "text-foreground"
               )}
             >
-              {entry.ai_proposal || (
+              {entry.ai_loading ? (
                 <span className="flex items-center gap-1 text-primary/40">
                   <Loader2 className="h-3 w-3 animate-spin" />
-                  <span className="font-mono text-[10px]">Receiving signal...</span>
+                  <span className="font-mono text-[10px]">
+                    Analyzing trajectory and calculating optimal rewrite
+                    vectors...
+                  </span>
                 </span>
-              )}
-              {entry.ai_loading && entry.ai_proposal && (
-                <span className="ml-0.5 inline-block h-3 w-0.5 animate-pulse bg-primary align-middle" />
-              )}
-            </p>
+              ) : entry.ai_proposal?.error ? (
+                <span className="text-destructive">
+                  {entry.ai_proposal.error}
+                </span>
+              ) : entry.ai_proposal?.bullets ? (
+                <div className="space-y-3">
+                  {entry.ai_proposal.bullets.map((b: GhostBullet, idx: number) => (
+                    <AutopsyBullet
+                      key={idx}
+                      bullet={b}
+                      onUpdate={(updatedBullet) => {
+                        const newProposal = { ...(entry.ai_proposal || {}) }
+                        if (!newProposal.bullets) return
+                        if (updatedBullet === null) {
+                          newProposal.bullets.splice(idx, 1)
+                        } else {
+                          newProposal.bullets[idx] = updatedBullet
+                        }
+                        setAiProposal(entry.id, newProposal)
+                      }}
+                    />
+                  ))}
+                </div>
+              ) : null}
+            </div>
           </div>
         </div>
+
+        {/* Status Messages */}
+        {!entry.ai_loading && entry.ai_proposal?.bullets && (
+          <div className="border-t border-border/20 bg-muted/20 px-4 py-2">
+            {(() => {
+              const status = checkExportStatus(entry.ai_proposal.bullets)
+              if (status.blockers.length > 0) {
+                return (
+                  <div className="flex flex-col gap-1 text-xs font-medium text-red-500">
+                    {status.blockers.map((b, i) => (
+                      <span key={i}>• {b}</span>
+                    ))}
+                  </div>
+                )
+              }
+              if (status.warnings.length > 0) {
+                return (
+                  <div className="flex flex-col gap-1 text-xs font-medium text-amber-500">
+                    {status.warnings.map((w, i) => (
+                      <span key={i}>• {w}</span>
+                    ))}
+                  </div>
+                )
+              }
+              return (
+                <div className="text-xs font-medium text-green-500">
+                  • Ready to integrate
+                </div>
+              )
+            })()}
+          </div>
+        )}
 
         {/* Action Buttons */}
         {!entry.ai_loading && entry.ai_proposal !== undefined && (
           <div className="flex items-center gap-2 border-t border-border/20 bg-muted/5 px-4 py-3">
             <Button
               size="sm"
-              onClick={() => acceptProposal(entry.id)}
-              className="h-8 flex-1 gap-1.5 bg-primary text-xs font-bold tracking-wider text-primary-foreground uppercase hover:bg-primary/90"
+              disabled={(() => {
+                if (entry.ai_proposal?.bullets) {
+                  const status = checkExportStatus(entry.ai_proposal.bullets)
+                  return !status.allowed
+                }
+                return false
+              })()}
+              onClick={() => {
+                acceptProposal(entry.id)
+              }}
+              className="h-8 flex-1 gap-1.5 bg-primary text-xs font-bold tracking-wider text-primary-foreground uppercase hover:bg-primary/90 disabled:opacity-50"
             >
               <CheckCircle2 className="h-3.5 w-3.5" />
               Integrate Upgrade
@@ -227,5 +252,5 @@ export function ReforgeModal({ entry }: ReforgeModalProps) {
         )}
       </motion.div>
     </AnimatePresence>
-  );
+  )
 }
