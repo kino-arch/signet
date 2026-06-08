@@ -1,0 +1,11 @@
+fix(ci): correct pnpm peerDependencyRules allowedVersions syntax
+
+The allowedVersions field in pnpm-workspace.yaml expects a flat map of
+"dependency-name: version", not a nested object specifying the dependent
+package first.
+
+The previous syntax (tailwindcss-animate: { tailwindcss: "*" }) caused
+pnpm v11 to crash during lockfile resolution on fresh installs with:
+[ERR_PNPM_INVALID_ALLOWED_VERSION_SELECTOR] bareSpecifier.startsWith is not a function
+
+Corrected to tailwindcss: "*".
