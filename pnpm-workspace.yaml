@@ -4,3 +4,6 @@ packages:
 
 ignoredBuiltDependencies:
   - esbuild
+
+overrides:
+  fetch-blob: "^4.0.0"

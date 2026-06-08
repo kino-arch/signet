@@ -137,10 +137,5 @@
     "vite": "^8",
     "vitest": "^4.1.7",
     "vitest-axe": "^0.1.0"
-  },
-  "pnpm": {
-    "overrides": {
-      "fetch-blob": "^4.0.0"
-    }
-  }
 }
+
