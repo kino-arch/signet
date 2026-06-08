@@ -1,0 +1,48 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Phoenix Dashboard</title>
+  <style>
+    body { font-family: system-ui, sans-serif; background: #0f172a; color: #f8fafc; padding: 2rem; }
+    h1 { color: #38bdf8; }
+    .card { background: #1e293b; padding: 1.5rem; border-radius: 0.5rem; margin-bottom: 1.5rem; }
+    .score { font-size: 3rem; font-weight: 800; color: #10b981; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; }
+  </style>
+</head>
+<body>
+  <h1>Phoenix Dashboard</h1>
+  <p>Last updated: 6/8/2026, 3:44:30 AM</p>
+  
+  <div class="grid">
+    <div class="card">
+      <h2>Critical Layer Compliance</h2>
+      <div class="score">93.37%</div>
+      <p>Excludes isolated 3rd party code, only user-facing surfaces.</p>
+    </div>
+    
+    <div class="card">
+      <h2>Production Layer Compliance</h2>
+      <div class="score">33.96%</div>
+      <p>Excludes animate-ui and editor templates.</p>
+    </div>
+    
+    <div class="card">
+      <h2>Full Layer Compliance</h2>
+      <div class="score">33.14%</div>
+      <p>Entire src/ directory.</p>
+    </div>
+  </div>
+  
+  <div class="card">
+    <h2>Top Critical Violators</h2>
+    <ul>
+      <li><strong>src/pages/AnalyticsPage.tsx</strong>: 18 violations</li><li><strong>src/components/dashboard/stats-card.tsx</strong>: 2 violations</li><li><strong>src/components/dashboard/ConstellationLines.tsx</strong>: 1 violations</li><li><strong>src/components/dashboard/ViewModeToggle.tsx</strong>: 1 violations</li><li><strong>src/pages/AtsSpecsPage.tsx</strong>: 1 violations</li><li><strong>src/pages/ForgotPasswordPage.tsx</strong>: 1 violations</li><li><strong>src/pages/NordicEditorPage.tsx</strong>: 1 violations</li><li><strong>src/pages/OnboardingPage.tsx</strong>: 1 violations</li><li><strong>src/pages/PrivacyPage.tsx</strong>: 1 violations</li><li><strong>src/pages/SettingsPage.tsx</strong>: 1 violations</li>
+    </ul>
+  </div>
+</body>
+</html>
+  
