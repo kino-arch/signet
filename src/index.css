@@ -1,5 +1,5 @@
 @import "tailwindcss";
-/* stylelint-disable color-no-hex, color-hex-length, declaration-block-single-line-max-declarations */
+/* stylelint-disable color-no-hex, color-hex-length, declaration-block-single-line-max-declarations, custom-property-pattern */
 
 /* ============================================
    FONT IMPORTS — served via Vite asset pipeline
@@ -14,18 +14,12 @@
 @import "@fontsource-variable/syne";
 
 /* ============================================
-   TAILWIND v4 @config BRIDGE
-   Keeps tailwind.config.js custom plugins and
-   design-tokens extension working while we
-   migrate tokens incrementally to @theme.
+   TAILWIND v4 MIGRATED TOKENS
    ============================================ */
-@config "../tailwind.config.js";
 
 /* ============================================
    CUSTOM FONT FACES
    ============================================ */
-
-
 
 /* ============================================
    SIGNET NORDIC DESIGN SYSTEM
@@ -34,55 +28,61 @@
 
 @theme {
   /* 60-30-10 Color Palette — Semantic Luminance Dark Mode */
-  --color-nordic-bg: #050505;             /* Plane 1: Atmosphere */
-  --color-nordic-canvas: #0D0F14;         /* Plane 4: Content Canvas */
-  --color-nordic-surface: #1A1D26;        /* Plane 5: Elevated Cards/Rails */
-  --color-nordic-surface-hover: #212631;  /* 20% brighter surface */
-  --color-nordic-text: #F1F5F9;           /* Text primary (Headings) */
-  --color-nordic-text-secondary: #94A3B8; /* Text secondary (Body) */
-  --color-nordic-text-tertiary: #64748B;  /* Text muted (Captions, disabled) */
-  --color-nordic-border: #252A3A;         /* 1px dividers */
-  --color-nordic-border-subtle: rgba(37, 42, 58, 0.5); 
-  
+  --color-nordic-bg: #050505; /* Plane 1: Atmosphere */
+  --color-nordic-canvas: #0d0f14; /* Plane 4: Content Canvas */
+  --color-nordic-surface: #1a1d26; /* Plane 5: Elevated Cards/Rails */
+  --color-nordic-surface-hover: #212631; /* 20% brighter surface */
+  --color-nordic-text: #f1f5f9; /* Text primary (Headings) */
+  --color-nordic-text-secondary: #94a3b8; /* Text secondary (Body) */
+  --color-nordic-text-tertiary: #64748b; /* Text muted (Captions, disabled) */
+  --color-nordic-border: #252a3a; /* 1px dividers */
+  --color-nordic-border-subtle: rgba(37, 42, 58, 0.5);
+
   /* Semantic Colors */
-  --color-nordic-primary: #60A5FA;        /* Actions, active states */
-  --color-nordic-primary-hover: #93C5FD;
-  --color-nordic-accent: #2563EB;         /* Brand blue (WCAG 4.5:1 on white) */
-  --color-nordic-accent-hover: #1D4ED8;   
-  --color-nordic-success: #34D399;        /* Completed/verified ONLY */
-  --color-nordic-warning: #FBBF24;        /* Needs attention */
-  --color-nordic-error: #F87171;          /* Danger, errors */
-  --color-nordic-info: #818CF8;           /* Neutral highlights, ghost */
+  --color-nordic-primary: #60a5fa; /* Actions, active states */
+  --color-nordic-primary-hover: #93c5fd;
+  --color-nordic-accent: #2563eb; /* Brand blue (WCAG 4.5:1 on white) */
+  --color-nordic-accent-hover: #1d4ed8;
+  --color-nordic-success: #34d399; /* Completed/verified ONLY */
+  --color-nordic-warning: #fbbf24; /* Needs attention */
+  --color-nordic-error: #f87171; /* Danger, errors */
+  --color-nordic-info: #818cf8; /* Neutral highlights, ghost */
 
   /* Typography — Nordic Stack */
 
   /* Legacy variables (deprecate in Phase 6) */
   --font-sans: "Onest Variable", ui-sans-serif, system-ui, sans-serif;
-  
+
   /* Semantic aliases (new source of truth) */
-  --font-heading: "Schibsted Grotesk Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-heading:
+    "Schibsted Grotesk Variable", ui-sans-serif, system-ui, sans-serif;
   --font-body: "Onest Variable", ui-sans-serif, system-ui, sans-serif;
   --font-display: "Syne Variable", ui-sans-serif, system-ui, sans-serif;
   --font-serif: "Instrument Serif", georgia, serif;
   --font-mono: "Spline Sans Mono Variable", ui-monospace, monospace;
 
   /* Spacing Scale (Nordic: generous, breathable) */
-  --spacing-nordic-xs: 0.25rem;   /* 4px */
-  --spacing-nordic-sm: 0.5rem;    /* 8px */
-  --spacing-nordic-md: 1rem;      /* 16px */
-  --spacing-nordic-lg: 1.5rem;    /* 24px */
-  --spacing-nordic-xl: 2.5rem;    /* 40px */
-  --spacing-nordic-2xl: 4rem;     /* 64px */
+  --spacing-nordic-xs: 0.25rem; /* 4px */
+  --spacing-nordic-sm: 0.5rem; /* 8px */
+  --spacing-nordic-md: 1rem; /* 16px */
+  --spacing-nordic-lg: 1.5rem; /* 24px */
+  --spacing-nordic-xl: 2.5rem; /* 40px */
+  --spacing-nordic-2xl: 4rem; /* 64px */
 
   /* Shadows — deep, dispersed */
   --shadow-nordic-sm: 0 1px 3px 0 rgb(0 0 0 / 0.4);
-  --shadow-nordic-md: 0 4px 12px -1px rgb(0 0 0 / 0.5), 0 2px 4px -2px rgb(0 0 0 / 0.3);
-  --shadow-nordic-lg: 0 10px 30px -3px rgb(0 0 0 / 0.6), 0 4px 8px -4px rgb(0 0 0 / 0.4);
-  --shadow-nordic-xl: 0 20px 50px -5px rgb(0 0 0 / 0.7), 0 8px 16px -6px rgb(0 0 0 / 0.5);
+  --shadow-nordic-md:
+    0 4px 12px -1px rgb(0 0 0 / 0.5), 0 2px 4px -2px rgb(0 0 0 / 0.3);
+  --shadow-nordic-lg:
+    0 10px 30px -3px rgb(0 0 0 / 0.6), 0 4px 8px -4px rgb(0 0 0 / 0.4);
+  --shadow-nordic-xl:
+    0 20px 50px -5px rgb(0 0 0 / 0.7), 0 8px 16px -6px rgb(0 0 0 / 0.5);
   --shadow-nordic-glow: 0 0 40px rgba(59, 130, 246, 0.15);
 
   /* Shadcn standard mappings to Semantic Luminance */
-  --color-background: var(--color-nordic-canvas); /* Canvas as default bg for content */
+  --color-background: var(
+    --color-nordic-canvas
+  ); /* Canvas as default bg for content */
   --color-foreground: var(--color-nordic-text);
   --color-card: var(--color-nordic-surface);
   --color-card-foreground: var(--color-nordic-text);
@@ -97,17 +97,17 @@
   --color-accent: var(--color-nordic-surface-hover);
   --color-accent-foreground: var(--color-nordic-text);
   --color-destructive: var(--color-nordic-error);
-  --color-destructive-foreground: #FFFFFF;
+  --color-destructive-foreground: #ffffff;
   --color-border: var(--color-nordic-border);
   --color-input: var(--color-nordic-border);
   --color-ring: var(--color-nordic-primary);
 
   /* Chart colors — mapped to Nordic semantic palette */
-  --color-chart-1: var(--color-nordic-primary);    /* blue */
-  --color-chart-2: var(--color-nordic-success);    /* green */
-  --color-chart-3: var(--color-nordic-warning);    /* amber */
-  --color-chart-4: var(--color-nordic-error);      /* red */
-  --color-chart-5: var(--color-nordic-info);       /* indigo */
+  --color-chart-1: var(--color-nordic-primary); /* blue */
+  --color-chart-2: var(--color-nordic-success); /* green */
+  --color-chart-3: var(--color-nordic-warning); /* amber */
+  --color-chart-4: var(--color-nordic-error); /* red */
+  --color-chart-5: var(--color-nordic-info); /* indigo */
 
   /* Sidebar tokens — aligned to existing plane hierarchy */
   --color-sidebar: var(--color-nordic-bg);
@@ -124,6 +124,42 @@
   --radius-lg: 0px;
   --radius-md: 0px;
   --radius-sm: 0px;
+
+  /* Tokens from design-tokens/dist/tailwind.json */
+  --color-signet-cyan-50: #e6feff;
+  --color-signet-cyan-400: #00f0ff;
+  --color-signet-cyan-900: #002024;
+  --color-signet-navy-800: #0f172a;
+  --color-signet-navy-900: #0a0e27;
+  --color-signet-red-400: #ef4444;
+  --color-signet-red-500: #ef4444;
+  --color-action-primary: #00f0ff;
+  --color-action-secondary: #0f172a;
+  --color-action-danger: #ef4444;
+  --color-feedback-error: #ef4444;
+  --color-surface-base: #0a0e27;
+  --color-surface-elevated: #0f172a;
+  --color-component-button-primary-bg: #00f0ff;
+  --color-component-button-primary-text: #0a0e27;
+  --color-component-input-border: #0f172a;
+  --color-component-input-focusRing: #00f0ff;
+
+  /* Fluid typography */
+  --text-fluid-hero: clamp(2.5rem, 5vw + 1rem, 4.5rem);
+  --text-fluid-hero--line-height: 1.1;
+  --text-fluid-hero--font-weight: 800;
+  --text-fluid-hero--letter-spacing: -0.02em;
+  --text-fluid-subtitle: clamp(1.25rem, 2vw + 0.5rem, 2rem);
+  --text-fluid-subtitle--line-height: 1.3;
+  --text-fluid-subtitle--font-weight: 600;
+  --text-fluid-body: clamp(0.875rem, 0.5vw + 0.75rem, 1rem);
+  --text-fluid-body--line-height: 1.6;
+  --text-fluid-label: clamp(0.625rem, 0.25vw + 0.5rem, 0.75rem);
+  --text-fluid-label--line-height: 1.5;
+  --text-fluid-label--letter-spacing: 0.08em;
+
+  /* Animations */
+  --animate-reverse-spin: spin 1s linear infinite reverse;
 }
 
 /* ============================================
@@ -140,40 +176,58 @@
   /* Typography defaults */
   h1 {
     @apply font-semibold text-nordic-text;
+
     font-family: var(--font-heading);
     letter-spacing: -0.02em;
     font-size: 24px;
   }
-  
+
   h2 {
     @apply font-semibold text-nordic-text;
+
     font-family: var(--font-heading);
     letter-spacing: -0.01em;
     font-size: 18px;
   }
-  
+
   h3 {
     @apply font-medium text-nordic-text;
+
     font-family: var(--font-heading);
     letter-spacing: 0.02em;
     font-size: 14px;
     text-transform: uppercase;
   }
 
-  h4, h5, h6 {
+  h4,
+  h5,
+  h6 {
     @apply font-medium text-nordic-text;
+
     font-family: var(--font-heading);
   }
 
   /* Body and UI text — Onest for dynamic legibility */
-  body, p, li, td, th, label, input, textarea, select {
+  body,
+  p,
+  li,
+  td,
+  th,
+  label,
+  input,
+  textarea,
+  select {
     font-family: var(--font-body);
     font-size: 14px;
     font-weight: 400;
   }
 
   /* Code, badges, mono elements, and buttons — Spline Sans Mono */
-  code, pre, kbd, samp, button {
+  code,
+  pre,
+  kbd,
+  samp,
+  button {
     font-family: var(--font-mono);
   }
 
@@ -183,15 +237,46 @@
   }
 
   /* Scrollbar — dark mode */
-  ::-webkit-scrollbar { width: 6px; }
-  ::-webkit-scrollbar-track { background: #09090B; }
-  ::-webkit-scrollbar-thumb { background: #27272A; border-radius: 3px; }
-  ::-webkit-scrollbar-thumb:hover { background: #3F3F46; }
+  ::-webkit-scrollbar {
+    width: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    background: #09090b;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #27272a;
+    border-radius: 3px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: #3f3f46;
+  }
 }
 
 /* ============================================
    UTILITY CLASSES
    ============================================ */
+
+@layer components {
+  .text-style-hero {
+    @apply font-display text-6xl leading-tight font-[800] tracking-tight;
+  }
+
+  .text-style-heading-lg {
+    @apply font-heading text-4xl leading-tight font-[600];
+  }
+
+  .text-style-heading {
+    @apply font-heading text-2xl leading-snug font-[600];
+  }
+
+  .text-style-body {
+    @apply font-sans text-base leading-relaxed font-[300];
+  }
+
+  .text-style-caption {
+    @apply font-mono text-sm leading-normal font-[500] text-nordic-text-secondary;
+  }
+}
 
 @layer utilities {
   .font-display {
@@ -201,7 +286,7 @@
   }
 
   .nordic-surface {
-    @apply bg-nordic-surface border border-nordic-border;
+    @apply border border-nordic-border bg-nordic-surface;
   }
 
   .liquid-glass {
@@ -222,16 +307,20 @@
 
   /* Navigation Rail - Plane 2 */
   .arctic-rail {
-    background-color: #0F1117;
+    background-color: #0f1117;
     border-right: 1px solid var(--color-nordic-surface);
   }
-  
+
   /* Command Bar - Plane 3 */
   .command-bar {
     background-color: #161922;
     border-top: 1px solid rgba(255, 255, 255, 0.05);
     backdrop-filter: blur(8px);
-    background-image: linear-gradient(to bottom, rgba(22, 25, 34, 0.8), rgba(22, 25, 34, 1));
+    background-image: linear-gradient(
+      to bottom,
+      rgba(22, 25, 34, 0.8),
+      rgba(22, 25, 34, 1)
+    );
   }
 
   /* Status Line — full-width bottom anchor bar */
@@ -244,18 +333,20 @@
 
   /* Ambient Shelf — contextual template tray */
   .ambient-shelf {
-    background-color: rgba(15, 23, 42, 0.90);
+    background-color: rgba(15, 23, 42, 0.9);
     backdrop-filter: blur(24px) saturate(160%);
-    border: 1px solid rgba(255, 255, 255, 0.10);
-    box-shadow: 0 -8px 40px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.04) inset;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow:
+      0 -8px 40px rgba(0, 0, 0, 0.6),
+      0 0 0 1px rgba(255, 255, 255, 0.04) inset;
   }
 
   .nordic-surface-elevated {
-    @apply bg-nordic-surface border border-nordic-border shadow-nordic-md;
+    @apply border border-nordic-border bg-nordic-surface shadow-nordic-md;
   }
 
   .nordic-text-primary {
-    @apply text-nordic-text font-medium;
+    @apply font-medium text-nordic-text;
   }
 
   .nordic-text-secondary {
@@ -263,39 +354,39 @@
   }
 
   .nordic-text-tertiary {
-    @apply text-nordic-text-tertiary text-sm;
+    @apply text-sm text-nordic-text-tertiary;
   }
 
   .nordic-input {
-    @apply bg-nordic-bg border border-nordic-border rounded-none px-3 py-2.5 text-nordic-text
-           placeholder:text-nordic-text-tertiary placeholder:italic
-           focus:outline-none focus:ring-2 focus:ring-nordic-accent/20 focus:border-nordic-accent
-           transition-all duration-150;
+    @apply rounded-none border border-nordic-border bg-nordic-bg px-3 py-2.5 text-nordic-text
+           transition-all duration-150
+           placeholder:text-nordic-text-tertiary placeholder:italic focus:border-nordic-accent focus:ring-2
+           focus:ring-nordic-accent/20 focus:outline-none;
   }
 
   .nordic-input-label {
-    @apply block text-sm font-medium text-nordic-text-secondary mb-1.5;
+    @apply mb-1.5 block text-sm font-medium text-nordic-text-secondary;
   }
 
   .nordic-btn-primary {
     @apply inline-flex items-center justify-center gap-2
-           bg-nordic-accent text-white font-medium
-           rounded-none px-5 py-2.5
-           hover:bg-nordic-accent-hover
-           active:scale-[0.98]
-           transition-all duration-150
+           rounded-none bg-nordic-accent px-5
+           py-2.5 font-medium text-white
            shadow-nordic-sm
-           disabled:opacity-50 disabled:cursor-not-allowed;
+           transition-all
+           duration-150 hover:bg-nordic-accent-hover
+           active:scale-[0.98]
+           disabled:cursor-not-allowed disabled:opacity-50;
   }
 
   .nordic-btn-secondary {
     @apply inline-flex items-center justify-center gap-2
-           bg-nordic-surface-hover text-nordic-text-secondary font-medium
-           border border-nordic-border
-           rounded-none px-5 py-2.5
-           hover:bg-nordic-surface hover:text-nordic-text
-           active:scale-[0.98]
-           transition-all duration-150;
+           rounded-none border border-nordic-border
+           bg-nordic-surface-hover px-5
+           py-2.5 font-medium text-nordic-text-secondary
+           transition-all duration-150
+           hover:bg-nordic-surface
+           hover:text-nordic-text active:scale-[0.98];
   }
 
   @keyframes shimmer {
@@ -305,37 +396,43 @@
   }
 
   @keyframes float {
-    0% { transform: translateY(0px); }
-    50% { transform: translateY(-10px); }
-    100% { transform: translateY(0px); }
+    0% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-10px);
+    }
+    100% {
+      transform: translateY(0);
+    }
   }
 
   .nordic-btn-ghost {
     @apply inline-flex items-center justify-center gap-2
-           text-nordic-text-secondary font-medium
-           rounded-none px-3 py-2
-           hover:text-nordic-text hover:bg-nordic-surface-hover
-           transition-all duration-150;
+           rounded-none px-3
+           py-2 font-medium text-nordic-text-secondary
+           transition-all duration-150
+           hover:bg-nordic-surface-hover hover:text-nordic-text;
   }
 
   .nordic-card {
-    @apply bg-nordic-surface border border-nordic-border rounded-none
+    @apply rounded-none border border-nordic-border bg-nordic-surface
            shadow-nordic-sm
-           hover:shadow-nordic-md hover:border-white/15
-           transition-all duration-200;
+           transition-all duration-200
+           hover:border-white/15 hover:shadow-nordic-md;
   }
 
   .nordic-card-flat {
-    @apply bg-nordic-surface border border-nordic-border rounded-none
+    @apply rounded-none border border-nordic-border bg-nordic-surface
            transition-all duration-200;
   }
 
   .nordic-tag {
     @apply inline-flex items-center gap-1
-           bg-nordic-surface-hover text-nordic-text-tertiary
-           text-xs font-medium uppercase tracking-wider
-           px-2 py-1 rounded-none
-           border border-nordic-border-subtle;
+           rounded-none border
+           border-nordic-border-subtle bg-nordic-surface-hover px-2 py-1
+           text-xs font-medium tracking-wider
+           text-nordic-text-tertiary uppercase;
   }
 
   .nordic-divider {
@@ -343,7 +440,7 @@
   }
 
   .nordic-empty-state {
-    @apply flex flex-col items-center justify-center text-center
-           p-8 text-nordic-text-tertiary;
+    @apply flex flex-col items-center justify-center p-8
+           text-center text-nordic-text-tertiary;
   }
 }
