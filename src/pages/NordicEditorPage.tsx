@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Download, Eye, Plus, Trash2 } from "lucide-react";
+import { Crosshair, Download, Eye, Plus, Trash2 } from "lucide-react";
 import { useDataSlateStore } from "@/store/useDataSlateStore";
 import type { DataSlateStore, WorkEntry, SkillEntry, EducationEntry } from "@/store/useDataSlateStore";
 import { exportResumeToPDF } from "@/lib/export-pdf";
