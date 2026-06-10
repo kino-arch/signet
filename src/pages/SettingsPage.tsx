@@ -40,15 +40,16 @@ export function SettingsPage() {
   const [isDeletingAccount, setIsDeletingAccount] = useState(false)
   const [deleteConfirm, setDeleteConfirm] = useState("")
 
-  const { mutate: createPortalSession, isPending: isCreatingSession } = trpc.billing.createPortalSession.useMutation({
-    onSuccess: (data) => {
-      window.location.href = data.url
-    },
-    onError: (error) => {
-      logger.error("Failed to redirect to billing portal", error)
-      toast.error("Failed to open billing portal")
-    },
-  })
+  const { mutate: createPortalSession, isPending: isCreatingSession } =
+    trpc.billing.createPortalSession.useMutation({
+      onSuccess: (data) => {
+        window.location.href = data.url
+      },
+      onError: (error) => {
+        logger.error("Failed to redirect to billing portal", error)
+        toast.error("Failed to open billing portal")
+      },
+    })
 
   const handleSaveProfile = async () => {
     if (!displayName.trim()) return
@@ -74,7 +75,9 @@ export function SettingsPage() {
     }
     setIsChangingPassword(true)
     try {
-      const { error } = await supabase.auth.updateUser({ password: newPassword })
+      const { error } = await supabase.auth.updateUser({
+        password: newPassword,
+      })
       if (error) throw error
       toast.success("Password updated successfully")
       setOldPassword("")
@@ -107,13 +110,16 @@ export function SettingsPage() {
       }
 
       const supabaseUrl = import.meta.env.VITE_SUPABASE_URL as string
-      const response = await fetch(`${supabaseUrl}/functions/v1/delete-account`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${accessToken}`,
-        },
-      })
+      const response = await fetch(
+        `${supabaseUrl}/functions/v1/delete-account`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      )
 
       if (!response.ok) {
         const body = await response.json().catch(() => ({}))
@@ -125,7 +131,9 @@ export function SettingsPage() {
       toast.success("Your account has been permanently deleted.")
     } catch (err) {
       logger.error("Failed to delete account", err)
-      toast.error(err instanceof Error ? err.message : "Failed to delete account")
+      toast.error(
+        err instanceof Error ? err.message : "Failed to delete account"
+      )
     } finally {
       setIsDeletingAccount(false)
     }
@@ -143,8 +151,8 @@ export function SettingsPage() {
 
       <div className="mx-auto max-w-4xl">
         <div className="mb-8">
-          <h1 className="text-2xl font-bold text-nordic-text">Settings</h1>
-          <p className="mt-1 text-sm text-nordic-text-secondary">
+          <h1 className="text-style-heading-xl text-nordic-text">Settings</h1>
+          <p className="mt-1 text-style-body-sm text-nordic-text-secondary">
             Manage your account preferences and security.
           </p>
         </div>
@@ -183,7 +191,7 @@ export function SettingsPage() {
               >
                 <h2
                   id="settings-heading-profile"
-                  className="mb-6 text-base font-semibold text-nordic-text"
+                  className="mb-6 text-style-heading-sm text-nordic-text"
                 >
                   Profile Information
                 </h2>
@@ -229,7 +237,7 @@ export function SettingsPage() {
                         aria-label="Email address (read only)"
                       />
                     </div>
-                    <p className="mt-1 text-xs text-nordic-text-tertiary">
+                    <p className="mt-1 text-style-helper">
                       Email cannot be changed here. Contact support if needed.
                     </p>
                   </div>
@@ -247,7 +255,7 @@ export function SettingsPage() {
                       Save Changes
                     </button>
                     {isGuest && (
-                      <p className="mt-2 text-xs text-nordic-text-tertiary">
+                      <p className="mt-2 text-style-helper">
                         Sign up for a free account to save your profile.
                       </p>
                     )}
@@ -265,7 +273,7 @@ export function SettingsPage() {
                 >
                   <h2
                     id="settings-heading-password"
-                    className="mb-6 text-base font-semibold text-nordic-text"
+                    className="mb-6 text-style-heading-sm text-nordic-text"
                   >
                     Change Password
                   </h2>
@@ -316,7 +324,7 @@ export function SettingsPage() {
                       </div>
                       <p
                         id="settings-password-hint"
-                        className="mt-1 text-xs text-nordic-text-tertiary"
+                        className="mt-1 text-style-helper"
                       >
                         Must be at least 8 characters.
                       </p>
@@ -343,12 +351,12 @@ export function SettingsPage() {
                 >
                   <h2
                     id="settings-heading-danger"
-                    className="mb-1 flex items-center gap-2 text-base font-semibold text-nordic-error"
+                    className="mb-1 flex items-center gap-2 text-style-heading-sm text-nordic-error"
                   >
                     <AlertTriangle className="h-4 w-4" />
                     Danger Zone
                   </h2>
-                  <p className="mb-4 text-sm text-nordic-text-secondary">
+                  <p className="mb-4 text-style-body-sm text-nordic-text-secondary">
                     Permanently delete your account and all associated data.
                     This action cannot be undone.
                   </p>
@@ -356,7 +364,7 @@ export function SettingsPage() {
                     <div>
                       <label
                         htmlFor="settings-delete-confirm"
-                        className="nordic-input-label text-xs"
+                        className="nordic-input-label text-style-label-sm"
                       >
                         Type{" "}
                         <span className="font-mono text-nordic-error">
@@ -378,7 +386,8 @@ export function SettingsPage() {
                       id="settings-delete-account"
                       onClick={handleDeleteAccount}
                       disabled={
-                        isDeletingAccount || deleteConfirm !== "delete my account"
+                        isDeletingAccount ||
+                        deleteConfirm !== "delete my account"
                       }
                       className="inline-flex items-center gap-2 bg-nordic-error px-5 py-2.5 font-medium text-white transition-colors hover:bg-nordic-error/80 disabled:cursor-not-allowed disabled:opacity-40"
                     >
@@ -400,7 +409,7 @@ export function SettingsPage() {
               >
                 <h2
                   id="settings-heading-billing"
-                  className="mb-6 text-base font-semibold text-nordic-text"
+                  className="mb-6 text-style-heading-sm text-nordic-text"
                 >
                   Credits & Billing
                 </h2>
@@ -409,29 +418,27 @@ export function SettingsPage() {
                   {/* Credit Balance */}
                   <div className="flex items-center justify-between border border-nordic-accent/20 bg-nordic-accent/5 p-4">
                     <div>
-                      <p className="text-sm font-medium text-nordic-text">
+                      <p className="text-style-label-md text-nordic-text">
                         AI Credits Balance
                       </p>
-                      <p className="mt-0.5 text-xs text-nordic-text-secondary">
+                      <p className="mt-0.5 text-style-label-sm text-nordic-text-secondary">
                         Each AI generation costs 1 credit.
                       </p>
                     </div>
                     <div className="text-right">
                       <span
-                        className="text-3xl font-bold text-nordic-accent"
+                        className="text-style-display-sm text-nordic-accent"
                         aria-label={`${profile?.credits ?? 0} credits remaining`}
                       >
                         {profile?.credits ?? 0}
                       </span>
-                      <p className="text-xs text-nordic-text-tertiary">
-                        credits remaining
-                      </p>
+                      <p className="text-style-helper">credits remaining</p>
                     </div>
                   </div>
 
                   {/* Purchase CTA */}
                   <div className="border border-nordic-border bg-nordic-surface-hover p-4">
-                    <p className="mb-3 text-sm text-nordic-text-secondary">
+                    <p className="mb-3 text-style-body-sm text-nordic-text-secondary">
                       Need more credits? Upgrade your plan or purchase a top-up.
                     </p>
                     <button
@@ -451,22 +458,22 @@ export function SettingsPage() {
 
                   {/* Plan Details */}
                   <div>
-                    <h3 className="mb-3 text-sm font-medium text-nordic-text">
+                    <h3 className="mb-3 text-style-label-md text-nordic-text">
                       Current Plan
                     </h3>
                     <div className="flex items-center justify-between border border-nordic-border p-4">
                       <div>
-                        <p className="text-sm font-semibold text-nordic-text">
+                        <p className="text-style-label-md font-semibold text-nordic-text">
                           {isGuest ? "Guest" : "Starter"}
                         </p>
-                        <p className="text-xs text-nordic-text-secondary">
+                        <p className="text-style-label-sm text-nordic-text-secondary">
                           {isGuest
                             ? "No account — limited features"
                             : "Free tier with 5 credits/month"}
                         </p>
                       </div>
                       {!isGuest && (
-                        <span className="border border-nordic-accent/20 bg-nordic-accent/10 px-2.5 py-1 text-xs font-medium text-nordic-accent">
+                        <span className="border border-nordic-accent/20 bg-nordic-accent/10 px-2.5 py-1 text-style-label-sm text-nordic-accent">
                           Active
                         </span>
                       )}
