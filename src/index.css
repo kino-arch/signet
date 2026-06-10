@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import "./styles/typography-registry.css";
 /* stylelint-disable color-no-hex, color-hex-length, declaration-block-single-line-max-declarations, custom-property-pattern */
 
 /* ============================================
@@ -83,6 +84,7 @@
   --color-background: var(
     --color-nordic-canvas
   ); /* Canvas as default bg for content */
+
   --color-foreground: var(--color-nordic-text);
   --color-card: var(--color-nordic-surface);
   --color-card-foreground: var(--color-nordic-text);
@@ -240,13 +242,16 @@
   ::-webkit-scrollbar {
     width: 6px;
   }
+
   ::-webkit-scrollbar-track {
     background: #09090b;
   }
+
   ::-webkit-scrollbar-thumb {
     background: #27272a;
     border-radius: 3px;
   }
+
   ::-webkit-scrollbar-thumb:hover {
     background: #3f3f46;
   }
@@ -255,28 +260,6 @@
 /* ============================================
    UTILITY CLASSES
    ============================================ */
-
-@layer components {
-  .text-style-hero {
-    @apply font-display text-6xl leading-tight font-[800] tracking-tight;
-  }
-
-  .text-style-heading-lg {
-    @apply font-heading text-4xl leading-tight font-[600];
-  }
-
-  .text-style-heading {
-    @apply font-heading text-2xl leading-snug font-[600];
-  }
-
-  .text-style-body {
-    @apply font-sans text-base leading-relaxed font-[300];
-  }
-
-  .text-style-caption {
-    @apply font-mono text-sm leading-normal font-[500] text-nordic-text-secondary;
-  }
-}
 
 @layer utilities {
   .font-display {
@@ -399,9 +382,11 @@
     0% {
       transform: translateY(0);
     }
+
     50% {
       transform: translateY(-10px);
     }
+
     100% {
       transform: translateY(0);
     }

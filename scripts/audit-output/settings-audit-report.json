@@ -1,0 +1,114 @@
+{
+  "high": [
+    {
+      "line": 147,
+      "classes": "text-sm text-nordic-text-secondary",
+      "reason": "Likely maps to text-style-body or text-style-label"
+    },
+    {
+      "line": 186,
+      "classes": "text-base font-semibold text-nordic-text",
+      "reason": "Likely maps to text-style-body or text-style-label"
+    },
+    {
+      "line": 232,
+      "classes": "text-xs text-nordic-text-tertiary",
+      "reason": "Likely maps to text-style-body or text-style-label"
+    },
+    {
+      "line": 250,
+      "classes": "text-xs text-nordic-text-tertiary",
+      "reason": "Likely maps to text-style-body or text-style-label"
+    },
+    {
+      "line": 268,
+      "classes": "text-base font-semibold text-nordic-text",
+      "reason": "Likely maps to text-style-body or text-style-label"
+    },
+    {
+      "line": 319,
+      "classes": "text-xs text-nordic-text-tertiary",
+      "reason": "Likely maps to text-style-body or text-style-label"
+    },
+    {
+      "line": 346,
+      "classes": "text-base font-semibold text-nordic-error",
+      "reason": "Likely maps to text-style-body or text-style-label"
+    },
+    {
+      "line": 351,
+      "classes": "text-sm text-nordic-text-secondary",
+      "reason": "Likely maps to text-style-body or text-style-label"
+    },
+    {
+      "line": 359,
+      "classes": "text-xs",
+      "reason": "Likely maps to text-style-body or text-style-label"
+    },
+    {
+      "line": 403,
+      "classes": "text-base font-semibold text-nordic-text",
+      "reason": "Likely maps to text-style-body or text-style-label"
+    },
+    {
+      "line": 412,
+      "classes": "text-sm font-medium text-nordic-text",
+      "reason": "Likely maps to text-style-body or text-style-label"
+    },
+    {
+      "line": 415,
+      "classes": "text-xs text-nordic-text-secondary",
+      "reason": "Likely maps to text-style-body or text-style-label"
+    },
+    {
+      "line": 426,
+      "classes": "text-xs text-nordic-text-tertiary",
+      "reason": "Likely maps to text-style-body or text-style-label"
+    },
+    {
+      "line": 434,
+      "classes": "text-sm text-nordic-text-secondary",
+      "reason": "Likely maps to text-style-body or text-style-label"
+    },
+    {
+      "line": 454,
+      "classes": "text-sm font-medium text-nordic-text",
+      "reason": "Likely maps to text-style-body or text-style-label"
+    },
+    {
+      "line": 459,
+      "classes": "text-sm font-semibold text-nordic-text",
+      "reason": "Likely maps to text-style-body or text-style-label"
+    },
+    {
+      "line": 462,
+      "classes": "text-xs text-nordic-text-secondary",
+      "reason": "Likely maps to text-style-body or text-style-label"
+    },
+    {
+      "line": 469,
+      "classes": "text-xs font-medium text-nordic-accent",
+      "reason": "Likely maps to text-style-body or text-style-label"
+    }
+  ],
+  "medium": [
+    {
+      "line": 146,
+      "classes": "text-2xl font-bold text-nordic-text",
+      "reason": "Needs semantic mapping (Heading/Display)"
+    },
+    {
+      "line": 421,
+      "classes": "text-3xl font-bold text-nordic-accent",
+      "reason": "Needs semantic mapping (Heading/Display)"
+    }
+  ],
+  "low": [],
+  "skip": [
+    {
+      "line": 383,
+      "classes": "font-medium text-white",
+      "reason": "State prefix detected"
+    }
+  ]
+}
