@@ -2,9 +2,13 @@ import { useEffect, useState, useRef } from "react"
 import LottieLib, { type LottieComponentProps, type LottieRefCurrentProps } from "lottie-react"
 import { cn } from "@/lib/utils"
 
-// Workaround for Vite/ESM default export resolution of CJS modules
-const Lottie =
-  (LottieLib as { default?: typeof LottieLib }).default || LottieLib
+// Recursively unwrap .default until we reach the actual React component function,
+// handling all levels of CJS/ESM wrapping that Vite/esbuild may produce.
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+let Lottie: any = LottieLib
+while (Lottie && typeof Lottie !== "function" && (Lottie as { default?: unknown }).default) {
+  Lottie = (Lottie as { default: unknown }).default
+}
 
 interface LottieAnimationProps extends Omit<
   LottieComponentProps,
