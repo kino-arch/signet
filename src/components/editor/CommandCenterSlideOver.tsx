@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react"
 import { createPortal } from "react-dom"
-import { motion, AnimatePresence } from "framer-motion"
+import { motion, AnimatePresence } from "motion/react"
 import { Target, Activity, ChevronRight, X, Radar } from "lucide-react"
 import { TargetLockPanel } from "./TargetLockPanel"
 import { useTargetLock } from "@/lib/useTargetLock"

@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { useNavigate } from "react-router-dom"
-import { motion, AnimatePresence } from "framer-motion"
+import { motion, AnimatePresence } from "motion/react"
 import { useAuthStore } from "@/store/useAuthStore"
 import { SignetMark } from "@/components/nordic/SignetMark"
 import { Seo } from "@/components/seo/Seo"

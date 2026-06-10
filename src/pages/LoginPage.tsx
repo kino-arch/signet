@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button"
 import { LoginForm } from "@/components/login-form"
 import { SignetMark } from "@/components/nordic/SignetMark"
 import { Link } from "react-router-dom"
-import { motion } from "framer-motion"
+import { motion } from "motion/react"
 
 export function LoginPage() {
   return (

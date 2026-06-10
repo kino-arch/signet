@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils"
 import { Input } from "@/components/ui/input"
 import { GoogleIcon } from "@/components/google-icon"
 import { useAuthStore } from "@/store/useAuthStore"
-import { motion, AnimatePresence, type Variants } from "framer-motion"
+import { motion, AnimatePresence, type Variants } from "motion/react"
 import { Loader2 } from "lucide-react"
 
 type AuthMode = "sign-in" | "sign-up"

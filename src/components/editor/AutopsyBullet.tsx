@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { motion } from "framer-motion"
+import { motion } from "motion/react"
 import type { GhostBullet } from "@/lib/ghost-schema"
 import { VerifyCard } from "./VerifyCard"
 import { RewriteAssistant } from "./RewriteAssistant"

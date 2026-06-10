@@ -1,4 +1,4 @@
-import { motion, type Variants } from "framer-motion";
+import { motion, type Variants } from "motion/react";
 import { ChevronRight, Sparkles, ArrowUpRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import { NordicBackground } from "@/components/ui/NordicBackground";

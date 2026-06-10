@@ -2,7 +2,7 @@
 import { SignetSection } from '@/components/layout/SignetSection';
 import { SignetWell } from '@/components/layout/SignetWell';
 import { SignetCard } from '@/components/primitives/SignetCard';
-import { motion } from 'framer-motion';
+import { motion } from 'motion/react';
 
 const testimonials = [
   {

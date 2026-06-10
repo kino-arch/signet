@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, motion } from "motion/react";
 import { User, Briefcase, GraduationCap, Palette, Check, AlertTriangle, X } from "lucide-react";
 import {
   Sidebar,

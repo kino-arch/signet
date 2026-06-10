@@ -1,4 +1,4 @@
-import { m, AnimatePresence } from "framer-motion"
+import { m, AnimatePresence } from "motion/react"
 import { GeometricSeal } from "@/components/ui/geometric-seal"
 import { useReducedMotion } from "@/hooks/use-reduced-motion"
 

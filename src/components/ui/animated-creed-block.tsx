@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from "react"
-import { motion } from "framer-motion"
+import { motion } from "motion/react"
 import { cn } from "@/lib/utils"
 import { useReducedMotion } from "@/hooks/use-reduced-motion"
 

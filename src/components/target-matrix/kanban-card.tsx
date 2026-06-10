@@ -7,7 +7,7 @@ import {
   DollarSign,
   ExternalLink,
 } from "lucide-react"
-import { motion } from "framer-motion"
+import { motion } from "motion/react"
 import { cn } from "@/lib/utils"
 import type { Application } from "@/store/useTargetMatrixStore"
 import { useTargetMatrixStore } from "@/store/useTargetMatrixStore"

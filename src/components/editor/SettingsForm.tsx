@@ -1,7 +1,7 @@
 import { useForgeStore } from "@/store/useForgeStore"
 import { Check } from "lucide-react"
 import { cn } from "@/lib/utils"
-import { motion } from "framer-motion"
+import { motion } from "motion/react"
 import { SignetWell } from "@/components/layout/SignetWell"
 
 const templates = [

@@ -1,4 +1,4 @@
-import { motion, type Variants } from "framer-motion"
+import { motion, type Variants } from "motion/react"
 import { Link, useNavigate } from "react-router-dom"
 import {
   ArrowLeft,

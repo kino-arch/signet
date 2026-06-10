@@ -1,5 +1,5 @@
 import * as React from "react"
-import { motion, AnimatePresence } from "framer-motion"
+import { motion, AnimatePresence } from "motion/react"
 import { Bell } from "lucide-react"
 
 export function NativeNotificationBell() {

@@ -1,4 +1,4 @@
-import { motion } from "framer-motion"
+import { motion } from "motion/react"
 import { Sparkles, ShieldCheck, FileOutput } from "lucide-react"
 
 export function Testimonials() {

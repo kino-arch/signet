@@ -4,7 +4,7 @@ import { ChevronLeftIcon, CheckCircle2 } from "lucide-react"
 import { SignetMark } from "@/components/nordic/SignetMark"
 import { Input } from "@/components/ui/input"
 import { supabase } from "@/lib/supabase"
-import { motion, AnimatePresence } from "framer-motion"
+import { motion, AnimatePresence } from "motion/react"
 
 export function ForgotPasswordPage() {
   const [email, setEmail] = useState("")

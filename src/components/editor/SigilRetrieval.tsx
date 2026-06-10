@@ -5,7 +5,7 @@ import {
   useReducedMotion,
   type Transition,
   type Variants,
-} from "framer-motion"
+} from "motion/react"
 import {
   Check,
   Download,

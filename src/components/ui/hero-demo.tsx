@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button"
 import { ArrowRight, Sparkles } from "lucide-react"
-import { motion, useReducedMotion } from "framer-motion"
+import { motion, useReducedMotion } from "motion/react"
 
 export function HeroDemo() {
   const shouldReduceMotion = useReducedMotion()

@@ -7,7 +7,7 @@
  * from a prompt into a real, populated slate card.
  */
 import React, { useState, useId } from "react"
-import { motion, AnimatePresence } from "framer-motion"
+import { motion, AnimatePresence } from "motion/react"
 import { Sparkles, ArrowRight, Loader2 } from "lucide-react"
 import { Link } from "react-router-dom"
 import { useRespectfulMotion } from "@/hooks/useRespectfulMotion"

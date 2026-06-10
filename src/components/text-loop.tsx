@@ -1,6 +1,6 @@
-﻿import { useEffect, useState } from "react"
-import { LazyMotion, domAnimation, m, AnimatePresence } from "framer-motion"
-import type { Transition } from "framer-motion"
+import { useEffect, useState } from "react"
+import { LazyMotion, domAnimation, m, AnimatePresence } from "motion/react"
+import type { Transition } from "motion/react"
 import { cn } from "@/lib/utils"
 
 interface TextLoopProps {

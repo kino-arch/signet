@@ -4,7 +4,7 @@ import {
   LayoutTemplate, FileText, Terminal, Briefcase, Palette, Layers,
   Crosshair, Sparkles, LayoutDashboard, Edit3, BarChart2,
 } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence } from "motion/react";
 
 import { useDataSlateStore } from "@/store/useDataSlateStore";
 import type { DataSlateStore, WorkEntry, EducationEntry } from "@/store/useDataSlateStore";

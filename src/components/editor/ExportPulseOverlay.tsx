@@ -1,4 +1,4 @@
-import { m, AnimatePresence } from "framer-motion"
+import { m, AnimatePresence } from "motion/react"
 import { useReducedMotion } from "@/hooks/use-reduced-motion"
 
 interface ExportPulseOverlayProps {
