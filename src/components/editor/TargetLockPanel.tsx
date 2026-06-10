@@ -1,4 +1,5 @@
 import React, { useState } from "react"
+import { motion } from "framer-motion"
 import {
   Target,
   Crosshair,
@@ -43,6 +44,7 @@ export function TargetLockPanel({ onComplete }: { onComplete?: () => void }) {
     "idle" | "deploying" | "deployed"
   >("idle")
   const [autoDeploy, setAutoDeploy] = useState(true)
+  const [focusedMetric, setFocusedMetric] = useState<string | null>(null)
 
   const timeoutRefs = React.useRef<ReturnType<typeof setTimeout>[]>([])
 
@@ -91,20 +93,20 @@ export function TargetLockPanel({ onComplete }: { onComplete?: () => void }) {
   return (
     <SignetWell size="default" className="animate-in space-y-6 duration-500 zoom-in-95 fade-in">
       {/* Header */}
-      <div className="flex items-center justify-between border-b border-primary/20 pb-4">
+      <div className="flex items-center justify-between border-b border-nordic-border pb-4">
         <div className="flex items-center gap-3">
-          <div className="rounded-md border border-primary/30 bg-primary/10 p-2 text-primary">
+          <div className="rounded-md border border-nordic-border bg-primary/10 p-2 text-primary">
             <Target className="h-6 w-6" />
           </div>
           <div>
-            <h2 className="flex items-center gap-2 text-2xl font-bold tracking-tight text-foreground uppercase">
+            <h2 className="flex items-center gap-2 text-2xl font-bold tracking-tight text-nordic-text uppercase">
               Target Lock{" "}
               <OpenBetaBadge
                 title="BETA"
                 className="border-primary text-primary"
               />
             </h2>
-            <p className="text-sm text-muted-foreground">
+            <p className="text-sm text-nordic-text-tertiary">
               AI-Powered Company Intelligence & Resume Strategy
             </p>
           </div>
@@ -118,7 +120,7 @@ export function TargetLockPanel({ onComplete }: { onComplete?: () => void }) {
 
       {/* State: IDLE */}
       {status === "idle" && (
-        <Card className="border-primary/20 bg-background/50 backdrop-blur-sm">
+        <Card className="border-nordic-border bg-nordic-surface/80 backdrop-blur-sm">
           <CardHeader>
             <CardTitle className="text-lg">Acquire Target</CardTitle>
           </CardHeader>
@@ -126,7 +128,7 @@ export function TargetLockPanel({ onComplete }: { onComplete?: () => void }) {
             <form onSubmit={handleEngage} className="space-y-4">
               <div className="grid gap-4 md:grid-cols-2">
                 <div className="space-y-2">
-                  <label className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
+                  <label className="flex items-center gap-2 text-sm font-medium text-nordic-text-tertiary">
                     <Building2 className="h-4 w-4" /> Company Name (Required)
                   </label>
                   <Input
@@ -134,18 +136,18 @@ export function TargetLockPanel({ onComplete }: { onComplete?: () => void }) {
                     value={companyName}
                     onChange={(e) => setCompanyName(e.target.value)}
                     required
-                    className="border-primary/30 bg-background/50 focus-visible:ring-primary"
+                    className="border-nordic-border bg-nordic-surface/80 focus-visible:ring-primary"
                   />
                 </div>
                 <div className="space-y-2">
-                  <label className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
+                  <label className="flex items-center gap-2 text-sm font-medium text-nordic-text-tertiary">
                     <Crosshair className="h-4 w-4" /> Target Role (Optional)
                   </label>
                   <Input
                     placeholder="e.g. Senior Frontend Engineer"
                     value={jobTitle}
                     onChange={(e) => setJobTitle(e.target.value)}
-                    className="border-primary/30 bg-background/50 focus-visible:ring-primary"
+                    className="border-nordic-border bg-nordic-surface/80 focus-visible:ring-primary"
                   />
                 </div>
               </div>
@@ -161,10 +163,10 @@ export function TargetLockPanel({ onComplete }: { onComplete?: () => void }) {
                   <div className="peer h-5 w-9 rounded-full bg-muted peer-checked:bg-primary peer-focus:ring-2 peer-focus:ring-primary/50 peer-focus:outline-none after:absolute after:top-0.5 after:left-0.5 after:h-4 after:w-4 after:rounded-full after:border after:border-gray-300 after:bg-white after:transition-all after:content-[''] peer-checked:after:translate-x-full peer-checked:after:border-white"></div>
                 </label>
                 <div className="flex flex-col">
-                  <span className="text-sm font-medium text-foreground">
+                  <span className="text-sm font-medium text-nordic-text">
                     Fast-Track Auto-Deploy
                   </span>
-                  <span className="text-xs text-muted-foreground">
+                  <span className="text-xs text-nordic-text-tertiary">
                     Skip review and instantly inject target strategy
                   </span>
                 </div>
@@ -185,7 +187,7 @@ export function TargetLockPanel({ onComplete }: { onComplete?: () => void }) {
 
       {/* State: SCANNING / ANALYZING */}
       {(status === "scanning" || status === "analyzing") && (
-        <Card className="relative overflow-hidden border-primary/50 bg-background/50 backdrop-blur-sm">
+        <Card className="relative overflow-hidden border-primary/50 bg-nordic-surface/80 backdrop-blur-sm">
           <div className="absolute inset-0 animate-pulse bg-primary/5" />
           <CardContent className="space-y-6 pt-6 text-center">
             <div className="flex justify-center">
@@ -194,7 +196,7 @@ export function TargetLockPanel({ onComplete }: { onComplete?: () => void }) {
                   className="h-16 w-16 animate-spin text-primary"
                   style={{ animationDuration: "3s" }}
                 />
-                <div className="absolute inset-0 animate-ping rounded-full border-4 border-primary/30" />
+                <div className="absolute inset-0 animate-ping rounded-full border-4 border-nordic-border" />
               </div>
             </div>
             <div className="space-y-2">
@@ -206,7 +208,7 @@ export function TargetLockPanel({ onComplete }: { onComplete?: () => void }) {
                 className="mx-auto h-2 w-full max-w-md bg-primary/20"
               />
             </div>
-            <p className="animate-pulse text-sm text-muted-foreground">
+            <p className="animate-pulse text-sm text-nordic-text-tertiary">
               Scraping corporate registry, decrypting culture signals, and
               forging strategic matrix...
             </p>
@@ -236,13 +238,13 @@ export function TargetLockPanel({ onComplete }: { onComplete?: () => void }) {
       {status === "complete" && briefing && (
         <div className="animate-in space-y-6 duration-700 fade-in slide-in-from-bottom-4">
           {/* Data Persistence Banner */}
-          <div className="flex items-start gap-3 rounded-lg border border-primary/30 bg-primary/10 p-4">
+          <div className="flex items-start gap-3 rounded-lg border border-nordic-border bg-primary/10 p-4">
             <Shield className="mt-0.5 h-5 w-5 shrink-0 text-primary" />
             <div className="text-sm">
               <span className="mb-1 block font-semibold tracking-widest text-primary uppercase">
                 Tactical Cache Secured
               </span>
-              <span className="text-muted-foreground">
+              <span className="text-nordic-text-tertiary">
                 Target intelligence and corporate signals have been intercepted
                 and cached. This research data will remain available in your
                 sidebar until you finalize your resume build.
@@ -250,9 +252,10 @@ export function TargetLockPanel({ onComplete }: { onComplete?: () => void }) {
             </div>
           </div>
 
-          <div className="grid gap-6 md:grid-cols-3">
-            {/* Company DNA */}
-            <Card className="border-primary/20 bg-background/50 backdrop-blur-sm md:col-span-2">
+          <div className="@container/target-lock">
+            <div className="grid gap-6 @min-w-[700px]/target-lock:grid-cols-5 flex-col">
+              {/* Company DNA */}
+              <Card className="border-nordic-border bg-nordic-surface/80 backdrop-blur-sm @min-w-[700px]/target-lock:col-span-3">
               <CardHeader className="pb-2">
                 <CardTitle className="flex items-center gap-2 text-lg">
                   <Building2 className="h-5 w-5 text-primary" />
@@ -261,7 +264,7 @@ export function TargetLockPanel({ onComplete }: { onComplete?: () => void }) {
               </CardHeader>
               <CardContent className="space-y-4">
                 <div>
-                  <div className="mb-1 text-sm text-muted-foreground">
+                  <div className="mb-1 text-sm text-nordic-text-tertiary">
                     Corporate Persona
                   </div>
                   <div className="text-lg font-medium">
@@ -270,7 +273,7 @@ export function TargetLockPanel({ onComplete }: { onComplete?: () => void }) {
                 </div>
 
                 <div>
-                  <div className="mb-2 text-sm text-muted-foreground">
+                  <div className="mb-2 text-sm text-nordic-text-tertiary">
                     Culture Signals
                   </div>
                   <div className="flex flex-wrap gap-2">
@@ -287,7 +290,7 @@ export function TargetLockPanel({ onComplete }: { onComplete?: () => void }) {
                 </div>
 
                 <div>
-                  <div className="mb-1 text-sm text-muted-foreground">
+                  <div className="mb-1 text-sm text-nordic-text-tertiary">
                     Resume Tone Recommendation
                   </div>
                   <div className="rounded-md border-l-2 border-primary bg-secondary/50 p-3 text-sm">
@@ -298,68 +301,99 @@ export function TargetLockPanel({ onComplete }: { onComplete?: () => void }) {
             </Card>
 
             {/* Fit Radar */}
-            <Card className="flex flex-col border-primary/20 bg-background/50 backdrop-blur-sm">
+            <Card className="flex flex-col border-nordic-border bg-nordic-surface/80 backdrop-blur-sm @min-w-[700px]/target-lock:col-span-2">
               <CardHeader className="pb-0">
                 <CardTitle className="flex items-center justify-center gap-2 text-center text-lg">
                   <Activity className="h-5 w-5 text-primary" /> Role Fit Radar
                 </CardTitle>
               </CardHeader>
-              <CardContent className="-mt-4 flex min-h-[250px] flex-1 items-center justify-center">
-                <ResponsiveContainer width="100%" height={250} minWidth={200}>
-                  <RadarChart
-                    cx="50%"
-                    cy="50%"
-                    outerRadius="65%"
-                    data={[
-                      {
-                        subject: "Tech",
-                        A: briefing.fit_radar.technical_match,
-                        fullMark: 100,
-                      },
-                      {
-                        subject: "Culture",
-                        A: briefing.fit_radar.culture_alignment,
-                        fullMark: 100,
-                      },
-                      {
-                        subject: "Exp.",
-                        A: briefing.fit_radar.experience_level,
-                        fullMark: 100,
-                      },
-                      {
-                        subject: "Industry",
-                        A: briefing.fit_radar.industry_relevance,
-                        fullMark: 100,
-                      },
-                      {
-                        subject: "Keywords",
-                        A: briefing.fit_radar.keyword_coverage,
-                        fullMark: 100,
-                      },
-                    ]}
-                  >
-                    <PolarGrid stroke="var(--theme-primary)" strokeOpacity={0.2} />
-                    <PolarAngleAxis
-                      dataKey="subject"
-                      tick={{ fill: "var(--app-muted-fg)", fontSize: 11 }}
-                    />
-                    <PolarRadiusAxis
-                      angle={30}
-                      domain={[0, 100]}
-                      tick={false}
-                      axisLine={false}
-                    />
-                    <RechartsRadar
-                      name="Fit"
-                      dataKey="A"
-                      stroke="var(--theme-primary)"
-                      fill="var(--theme-primary)"
-                      fillOpacity={0.5}
-                    />
-                  </RadarChart>
-                </ResponsiveContainer>
+              <CardContent className="-mt-4 flex min-h-[250px] flex-1 items-center justify-center relative">
+                <motion.div
+                  className="relative flex w-full justify-center"
+                  animate={{
+                    width: focusedMetric ? "100%" : "60%",
+                    height: focusedMetric ? 300 : 250,
+                  }}
+                  transition={{ type: "spring", stiffness: 200, damping: 20 }}
+                >
+                  <ResponsiveContainer width="100%" height="100%" minWidth={150}>
+                    <RadarChart
+                      cx="50%"
+                      cy="50%"
+                      outerRadius={focusedMetric ? "75%" : "60%"}
+                      data={[
+                        {
+                          subject: "Tech",
+                          A: briefing.fit_radar.technical_match,
+                          fullMark: 100,
+                        },
+                        {
+                          subject: "Culture",
+                          A: briefing.fit_radar.culture_alignment,
+                          fullMark: 100,
+                        },
+                        {
+                          subject: "Exp.",
+                          A: briefing.fit_radar.experience_level,
+                          fullMark: 100,
+                        },
+                        {
+                          subject: "Industry",
+                          A: briefing.fit_radar.industry_relevance,
+                          fullMark: 100,
+                        },
+                        {
+                          subject: "Keywords",
+                          A: briefing.fit_radar.keyword_coverage,
+                          fullMark: 100,
+                        },
+                      ]}
+                    >
+                      <PolarGrid stroke="rgba(99,102,241,0.35)" />
+                      {focusedMetric && (
+                        <PolarAngleAxis
+                          dataKey="subject"
+                          tick={{ fill: "rgba(255,255,255,0.75)", fontSize: 11, fontWeight: 500 }}
+                        />
+                      )}
+                      <PolarRadiusAxis
+                        angle={30}
+                        domain={[0, 100]}
+                        tick={false}
+                        axisLine={false}
+                      />
+                      <RechartsRadar
+                        name="Fit"
+                        dataKey="A"
+                        stroke="hsl(220 90% 65%)"
+                        fill="hsl(220 90% 65%)"
+                        fillOpacity={0.35}
+                      />
+                    </RadarChart>
+                  </ResponsiveContainer>
+                  
+                  {!focusedMetric && (
+                    <div 
+                      className="absolute inset-0 flex items-center justify-center bg-nordic-surface/40 backdrop-blur-[1px] rounded-full cursor-pointer hover:bg-nordic-surface/20 transition-all duration-300"
+                      onClick={() => setFocusedMetric("all")}
+                    >
+                      <span className="font-ui text-xs uppercase tracking-widest text-primary font-semibold drop-shadow-md">
+                        Analyze Fit
+                      </span>
+                    </div>
+                  )}
+                  {focusedMetric && (
+                    <div 
+                      className="absolute top-0 right-0 cursor-pointer text-xs text-nordic-text-tertiary hover:text-nordic-text transition-colors"
+                      onClick={() => setFocusedMetric(null)}
+                    >
+                      Collapse
+                    </div>
+                  )}
+                </motion.div>
               </CardContent>
             </Card>
+            </div>
           </div>
 
           {/* Advantage Cards */}
@@ -367,15 +401,15 @@ export function TargetLockPanel({ onComplete }: { onComplete?: () => void }) {
             <h3 className="mb-3 flex items-center gap-2 text-lg font-bold">
               <Zap className="h-5 w-5 text-primary" /> Strategic Advantages
             </h3>
-            <div className="grid gap-4 md:grid-cols-3">
+            <div className="grid gap-4 @md:grid-cols-3">
               {briefing.advantage_cards.map((card, idx) => (
                 <Card
                   key={idx}
-                  className="border-primary/20 bg-background/50 backdrop-blur-sm transition-all hover:border-primary/50 hover:bg-primary/5"
+                  className="border-nordic-border bg-nordic-surface/80 backdrop-blur-sm transition-all hover:border-primary/50 hover:bg-primary/5"
                 >
                   <CardContent className="space-y-2 p-5">
-                    <h4 className="font-bold text-foreground">{card.title}</h4>
-                    <p className="text-sm text-muted-foreground">
+                    <h4 className="font-bold text-nordic-text">{card.title}</h4>
+                    <p className="text-sm text-nordic-text-tertiary">
                       {card.insight}
                     </p>
                     <div className="mt-2 border-t border-border/50 pt-2 text-xs font-medium text-primary">
@@ -388,7 +422,7 @@ export function TargetLockPanel({ onComplete }: { onComplete?: () => void }) {
           </div>
 
           {/* Strategy Preview */}
-          <Card className="border-primary/20 bg-background/50 backdrop-blur-sm">
+          <Card className="border-nordic-border bg-nordic-surface/80 backdrop-blur-sm">
             <CardHeader>
               <CardTitle className="flex items-center gap-2 text-lg">
                 <CheckCircle2 className="h-5 w-5 text-primary" /> Target
@@ -399,7 +433,7 @@ export function TargetLockPanel({ onComplete }: { onComplete?: () => void }) {
               <div className="grid gap-6 md:grid-cols-2">
                 <div className="space-y-4">
                   <div>
-                    <div className="mb-1 text-sm font-medium text-muted-foreground">
+                    <div className="mb-1 text-sm font-medium text-nordic-text-tertiary">
                       Generated Summary Draft
                     </div>
                     <div className="rounded-md bg-secondary/30 p-3 text-sm">
@@ -407,7 +441,7 @@ export function TargetLockPanel({ onComplete }: { onComplete?: () => void }) {
                     </div>
                   </div>
                   <div>
-                    <div className="mb-2 text-sm font-medium text-muted-foreground">
+                    <div className="mb-2 text-sm font-medium text-nordic-text-tertiary">
                       Priority Skills
                     </div>
                     <div className="flex flex-wrap gap-2">
@@ -416,7 +450,7 @@ export function TargetLockPanel({ onComplete }: { onComplete?: () => void }) {
                           <Badge
                             key={i}
                             variant="outline"
-                            className="border-primary/30"
+                            className="border-nordic-border"
                           >
                             {skill}
                           </Badge>
@@ -428,7 +462,7 @@ export function TargetLockPanel({ onComplete }: { onComplete?: () => void }) {
 
                 <div className="space-y-4">
                   <div>
-                    <div className="mb-2 text-sm font-medium text-muted-foreground">
+                    <div className="mb-2 text-sm font-medium text-nordic-text-tertiary">
                       Keyword Injection Targets
                     </div>
                     <div className="space-y-2">
@@ -459,7 +493,7 @@ export function TargetLockPanel({ onComplete }: { onComplete?: () => void }) {
                         <h4 className="text-sm font-bold tracking-widest text-green-400 uppercase">
                           Strategy Deployed Successfully
                         </h4>
-                        <p className="text-sm text-muted-foreground">
+                        <p className="text-sm text-nordic-text-tertiary">
                           Your resume summary, skills, and keyword targets have
                           been injected. Continue to the next step to review and
                           refine your data.
@@ -467,9 +501,29 @@ export function TargetLockPanel({ onComplete }: { onComplete?: () => void }) {
                       </div>
                     </div>
                   </div>
+                  {/* Continue CTA — the success state needs a clear exit action */}
+                  <div className="mt-4 flex justify-end gap-3">
+                    <Button
+                      variant="outline"
+                      onClick={() => {
+                        reset()
+                      }}
+                      className="gap-2"
+                    >
+                      Start Over
+                    </Button>
+                    <Button
+                      onClick={() => onComplete?.()}
+                      className="gap-2"
+                      size="lg"
+                    >
+                      Continue to Editor
+                      <ChevronRight className="h-4 w-4" />
+                    </Button>
+                  </div>
                 </div>
               ) : (
-                <div className="flex justify-end border-t border-primary/20 pt-4">
+                <div className="flex justify-end border-t border-nordic-border pt-4">
                   <Button
                     onClick={handleDeploy}
                     disabled={deployPhase === "deploying"}

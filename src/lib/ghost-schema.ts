@@ -36,6 +36,9 @@ export const BulletSchema = z.object({
   sourceFidelity: SourceFidelityEnum,
   originalClaim: z.string(),
 
+  // Cryptographic zero-trust hash
+  provenanceHash: z.string().optional(),
+
   // Visual metadata for UI
   visualHint: z.enum(["solid", "dotted", "wavy"]).optional(),
 })

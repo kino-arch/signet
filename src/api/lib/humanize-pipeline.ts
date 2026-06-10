@@ -1,13 +1,16 @@
-import { validateATS } from "./ats-validator"
+import { validateATS, validateSemanticATS } from "./ats-validator"
 
 export interface HumanizeOptions {
   enableLanguageTool?: boolean
   scope?: "full_resume" | "section"
+  jobDescription?: string
+  userKey?: string
 }
 
 export interface HumanizeResult {
   finalContent: string
   atsScore: number
+  semanticAtsScore?: number
   warnings: string[]
   grammarErrors: number
 }
@@ -59,9 +62,18 @@ export async function runHumanizePipeline(
     }
   }
 
+  let semanticAtsScore: number | undefined = undefined
+
+  if (options?.jobDescription) {
+    const semanticResult = await validateSemanticATS(content, options.jobDescription, options.userKey)
+    semanticAtsScore = semanticResult.score
+    atsResult.warnings.push(...semanticResult.warnings)
+  }
+
   return {
     finalContent,
     atsScore: atsResult.score,
+    semanticAtsScore,
     warnings: atsResult.warnings,
     grammarErrors,
   }

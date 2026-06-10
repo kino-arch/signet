@@ -42,8 +42,9 @@ const TermsPage = lazy(() =>
 const ApplicationsPage = lazy(() =>
   import("@/pages/ApplicationsPage").then((m) => ({ default: m.ApplicationsPage }))
 )
-const AnalyticsPage = lazy(() =>
-  import("@/pages/AnalyticsPage").then((m) => ({ default: m.AnalyticsPage }))
+
+const SlatesDashboardPage = lazy(() =>
+  import("@/pages/SlatesDashboardPage").then((m) => ({ default: m.SlatesDashboardPage }))
 )
 const SettingsPage = lazy(() =>
   import("@/pages/SettingsPage").then((m) => ({ default: m.SettingsPage }))
@@ -53,6 +54,9 @@ const OnboardingPage = lazy(() =>
 )
 const ForgotPasswordPage = lazy(() =>
   import("@/pages/ForgotPasswordPage").then((m) => ({ default: m.ForgotPasswordPage }))
+)
+const EmbedResumePage = lazy(() =>
+  import("@/pages/EmbedResumePage").then((m) => ({ default: m.EmbedResumePage }))
 )
 
 // ── Inline stub pages (replace as Nordic variants are built) ──────────────────
@@ -94,23 +98,14 @@ function LandingPage() {
   )
 }
 
-function DashboardStub() {
-  return <NordicEditorPage />
-}
 
-function SlatesStub() {
-  return (
-    <div className="flex min-h-[50vh] items-center justify-center">
-      <p className="text-sm text-nordic-text-secondary">Slates — coming soon</p>
-    </div>
-  )
-}
 
 // ── Shared fallback ───────────────────────────────────────────────────────────
 const LoadingFallback = () => (
-  <div className="flex h-screen items-center justify-center bg-nordic-bg">
+  <main role="main" className="flex h-screen items-center justify-center bg-nordic-bg">
+    <h1 className="sr-only">Loading</h1>
     <Loader2 className="h-8 w-8 animate-spin text-nordic-accent" />
-  </div>
+  </main>
 )
 
 // ── Auth guard ────────────────────────────────────────────────────────────────
@@ -173,15 +168,14 @@ export function App() {
                   <Route path="/ats-specs" element={<AtsSpecsPage />} />
                   <Route path="/privacy" element={<PrivacyPage />} />
                   <Route path="/terms" element={<TermsPage />} />
+                  <Route path="/embed/:slateId" element={<EmbedResumePage />} />
 
                   {/* Protected — dashboard shell */}
                   <Route
                     path="/dashboard"
                     element={
                       <ProtectedRoute>
-                        <DashboardLayout>
-                          <DashboardStub />
-                        </DashboardLayout>
+                        <Navigate to="/slates" replace />
                       </ProtectedRoute>
                     }
                   />
@@ -190,7 +184,7 @@ export function App() {
                     element={
                       <ProtectedRoute>
                         <DashboardLayout>
-                          <SlatesStub />
+                          <SlatesDashboardPage />
                         </DashboardLayout>
                       </ProtectedRoute>
                     }
@@ -207,13 +201,7 @@ export function App() {
                   />
                   <Route
                     path="/analytics"
-                    element={
-                      <ProtectedRoute>
-                        <DashboardLayout>
-                          <AnalyticsPage />
-                        </DashboardLayout>
-                      </ProtectedRoute>
-                    }
+                    element={<Navigate to="/slates" replace />}
                   />
                   <Route
                     path="/settings"

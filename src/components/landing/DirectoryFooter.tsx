@@ -34,7 +34,7 @@ export function DirectoryFooter() {
         </div>
 
         {/* Bottom Bar */}
-        <div className="flex flex-col items-center justify-between gap-4 py-8 md:flex-row text-sm text-nordic-text-tertiary">
+        <div className="flex flex-col items-center justify-between gap-4 py-8 md:flex-row text-sm text-nordic-text-secondary">
           <div>&copy; {currentYear} Signet. All rights reserved.</div>
           <div className="flex gap-6">
             <a href="#" className="hover:text-nordic-text transition-colors">Privacy Policy</a>

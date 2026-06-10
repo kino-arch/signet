@@ -1,5 +1,5 @@
 import { cn } from "@/lib/utils";
-import { forwardRef } from "react";
+import { forwardRef, useId } from "react";
 
 interface NordicInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   label?: string;
@@ -8,15 +8,19 @@ interface NordicInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
 }
 
 export const NordicInput = forwardRef<HTMLInputElement, NordicInputProps>(
-  ({ label, error, helper, className, ...props }, ref) => {
+  ({ label, error, helper, className, id, ...props }, ref) => {
+    const generatedId = useId();
+    const inputId = id || generatedId;
+
     return (
       <div className="space-y-1.5">
         {label && (
-          <label className="nordic-input-label">
+          <label htmlFor={inputId} className="nordic-input-label">
             {label}
           </label>
         )}
         <input
+          id={inputId}
           ref={ref}
           className={cn(
             "nordic-input w-full",

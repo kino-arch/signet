@@ -4,6 +4,7 @@ import { router, createContext } from "./trpc"
 import { skillsRouter } from "./routers/skills"
 import { slateRouter } from "./routers/slate"
 import { aiRouter } from "./routers/ai"
+import { ghostApi } from "./routers/v1/ghost"
 import { templateRouter } from "./routers/template"
 import { jobTrackerRouter } from "./routers/jobTracker"
 import { billingRouter } from "./routers/billing"
@@ -23,6 +24,7 @@ import { stripeWebhooks } from "./routers/stripeWebhooks"
 const app = new Hono()
 
 app.route("/ai", aiRouter)
+app.route("/v1/ghost", ghostApi)
 app.route("/webhooks", stripeWebhooks)
 
 app.use(

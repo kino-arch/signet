@@ -75,13 +75,18 @@ export default {
         action: tokens.color.action,
         feedback: tokens.color.feedback,
         surface: tokens.color.surface,
-        component: tokens.component,
-        nordic: {
-          'text-secondary': 'var(--color-nordic-text-secondary)',
-        }
+        component: tokens.component
       },
       spacing: tokens.space,
-      fontSize: tokens.fontSizes,
+      fontSize: {
+        ...tokens.fontSizes,
+        // Fluid type scale: interpolates smoothly between mobile → desktop
+        // No more jarring md:text-4xl jumps — typography breathes with the viewport
+        'fluid-hero':     ['clamp(2.5rem, 5vw + 1rem, 4.5rem)',    { lineHeight: '1.1', fontWeight: '800', letterSpacing: '-0.02em' }],
+        'fluid-subtitle': ['clamp(1.25rem, 2vw + 0.5rem, 2rem)',   { lineHeight: '1.3', fontWeight: '600' }],
+        'fluid-body':     ['clamp(0.875rem, 0.5vw + 0.75rem, 1rem)', { lineHeight: '1.6' }],
+        'fluid-label':    ['clamp(0.625rem, 0.25vw + 0.5rem, 0.75rem)', { lineHeight: '1.5', letterSpacing: '0.08em' }],
+      },
       animation: {
         "reverse-spin": "spin 1s linear infinite reverse",
       },

@@ -1,21 +1,31 @@
 import OpenAI from "openai"
-import { config } from "dotenv"
 
-// Load environment variables from .env.local
-config({ path: ".env.local" })
+function getEnv(key: string): string | undefined {
+  // @ts-ignore
+  if (typeof import.meta !== "undefined" && import.meta.env) {
+    // @ts-ignore
+    return import.meta.env[key] || import.meta.env[`VITE_${key}`];
+  }
+  if (typeof process !== "undefined" && process.env) {
+    return process.env[key] || process.env[`VITE_${key}`];
+  }
+  return undefined;
+}
 
-const MOCK_AI = process.env.MOCK_AI === "true"
+const MOCK_AI = getEnv("MOCK_AI") === "true"
 
 // Primary: Mistral API
 const primaryClient = new OpenAI({
   baseURL: "https://api.mistral.ai/v1",
-  apiKey: process.env.MISTRAL_API_KEY || "dummy",
+  apiKey: getEnv("MISTRAL_API_KEY") || "dummy",
+  dangerouslyAllowBrowser: true, // Allow frontend usage
 })
 
 // Secondary fallback: NVIDIA NIM
 const fallbackClient = new OpenAI({
   baseURL: "https://integrate.api.nvidia.com/v1",
-  apiKey: process.env.VITE_NVIDIA_API_KEY || "dummy",
+  apiKey: getEnv("NVIDIA_API_KEY") || "dummy",
+  dangerouslyAllowBrowser: true, // Allow frontend usage
 })
 
 interface AiOptions {
@@ -37,8 +47,8 @@ export const aiClient = {
 
     if (
       !options?.userKey &&
-      !process.env.MISTRAL_API_KEY &&
-      !process.env.VITE_NVIDIA_API_KEY
+      !getEnv("MISTRAL_API_KEY") &&
+      !getEnv("NVIDIA_API_KEY")
     ) {
       throw new Error(
         "Missing API Key. Please configure your API Keys in .env.local."
@@ -84,8 +94,8 @@ export const aiClient = {
 
     if (
       !options?.userKey &&
-      !process.env.MISTRAL_API_KEY &&
-      !process.env.VITE_NVIDIA_API_KEY
+      !getEnv("MISTRAL_API_KEY") &&
+      !getEnv("NVIDIA_API_KEY")
     ) {
       throw new Error(
         "Missing API Key. Please configure your API Keys in .env.local."
@@ -130,8 +140,8 @@ export const aiClient = {
 
     if (
       !options?.userKey &&
-      !process.env.MISTRAL_API_KEY &&
-      !process.env.VITE_NVIDIA_API_KEY
+      !getEnv("MISTRAL_API_KEY") &&
+      !getEnv("NVIDIA_API_KEY")
     ) {
       throw new Error(
         "Missing API Key. Please configure your API Keys in .env.local."
@@ -164,6 +174,31 @@ export const aiClient = {
         // Nvidia NIM might not officially support response_format for all models, but it's OpenAI compatible
       })
       return JSON.parse(res.choices[0].message.content || "{}")
+    }
+  },
+
+  async getEmbeddings(text: string, options?: AiOptions) {
+    const isMock = !options?.userKey && MOCK_AI
+    if (isMock) {
+      // Return a dummy 1536-dimensional vector
+      return new Array(1536).fill(0).map(() => Math.random() - 0.5)
+    }
+
+    try {
+      const response = await primaryClient.embeddings.create({
+        model: "mistral-embed",
+        input: text,
+      })
+      return response.data[0].embedding
+    } catch (err) {
+      console.warn("Mistral API failed for Embeddings, using fallback:", err)
+      // Fallback
+      const response = await fallbackClient.embeddings.create({
+        model: "nvidia/nv-embedqa-e5-v5",
+        input: text,
+        encoding_format: "float",
+      })
+      return response.data[0].embedding
     }
   },
 

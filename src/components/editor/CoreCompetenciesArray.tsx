@@ -54,7 +54,14 @@ interface SuggestionState {
   rejected: Set<string>
 }
 
-// ─── Sub-component: Chat-style skill input ────────────────────────────────────
+const FOCUS_AREAS = [
+  { id: "frontend", label: "Frontend", icon: "🎨" },
+  { id: "backend", label: "Backend", icon: "⚙️" },
+  { id: "data", label: "Data Science", icon: "📊" },
+  { id: "leadership", label: "Leadership", icon: "👑" },
+  { id: "product", label: "Product", icon: "💡" },
+]
+
 function SkillInput({
   onExtract,
   onScanExperience,
@@ -65,12 +72,21 @@ function SkillInput({
   isLoading: boolean
 }) {
   const [text, setText] = useState("")
+  const [focusArea, setFocusArea] = useState<string | null>(null)
 
   const handleSubmit = () => {
-    if (!text.trim()) return
-    onExtract(text.trim())
+    let finalPrompt = text.trim()
+    if (!finalPrompt && focusArea) {
+      const areaLabel = FOCUS_AREAS.find((f) => f.id === focusArea)?.label
+      finalPrompt = `Extract core competencies and technical skills for a ${areaLabel} role.`
+    }
+    if (!finalPrompt) return
+    onExtract(finalPrompt)
     setText("")
+    setFocusArea(null)
   }
+
+  const isReady = text.trim().length > 0 || focusArea !== null
 
   return (
     <div 
@@ -87,14 +103,34 @@ function SkillInput({
         className="leading-relaxed text-muted-foreground"
         style={{ fontSize: "11px" }}
       >
-        Tell me what you are good at! You can type a few lines or paste your
-        current resume skills section, and I will organize them for you.
+        Select a focus area, or type a few lines about what you do, and I will organize your skills.
       </p>
+
+      {/* Focus Area Selection */}
+      <div>
+        <div className="flex flex-wrap gap-2">
+          {FOCUS_AREAS.map((type) => (
+            <button
+              key={type.id}
+              onClick={() => setFocusArea(type.id === focusArea ? null : type.id)}
+              className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-semibold transition-all ${
+                focusArea === type.id
+                  ? "bg-primary text-primary-foreground shadow-sm shadow-primary/20"
+                  : "bg-background border border-border/50 text-muted-foreground hover:border-primary/50 hover:text-foreground"
+              }`}
+            >
+              <span>{type.icon}</span>
+              {type.label}
+            </button>
+          ))}
+        </div>
+      </div>
+
       <div className="relative">
         <textarea
           className="nordic-input w-full resize-none text-sm"
           value={text}
-          rows={4}
+          rows={3}
           onChange={(e) => setText(e.target.value)}
           disabled={isLoading}
           placeholder={
@@ -121,7 +157,7 @@ function SkillInput({
         <Button
           size="sm"
           onClick={handleSubmit}
-          disabled={isLoading || !text.trim()}
+          disabled={isLoading || !isReady}
           className="h-8 gap-2 bg-primary text-xs font-semibold tracking-wider text-primary-foreground uppercase hover:bg-primary/90"
         >
           {isLoading ? (

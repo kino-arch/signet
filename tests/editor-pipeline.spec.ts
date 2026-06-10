@@ -139,86 +139,67 @@ test.describe("Editor Happy Path Pipeline", () => {
     await page.goto("/onboarding")
     await expect(page).toHaveURL(/.*onboarding/, { timeout: 15000 })
 
-    // STEP 0: Wait for Biometric Recognition scanner
-    const enterForgeButton = page.getByRole("button", {
-      name: "Enter the Forge",
+    // STEP 1: What is your current field?
+    await expect(page.getByText("What is your current field?")).toBeVisible()
+    await page.getByText("Engineering", { exact: true }).click()
+    const continueButton = page.getByRole("button", {
+      name: "Continue",
     })
-    await expect(enterForgeButton).toBeEnabled({ timeout: 10000 })
-    await enterForgeButton.click()
+    await expect(continueButton).toBeEnabled()
+    await continueButton.click()
 
-    // STEP 1: Select Guild Creed (Specialization)
-    await expect(page.getByText("Select Your Specialization")).toBeVisible()
-    await page.getByText("The Forge", { exact: true }).click()
-    const confirmRoleButton = page.getByRole("button", {
-      name: "Confirm Specialization",
-    })
-    await expect(confirmRoleButton).toBeEnabled()
-    await confirmRoleButton.click()
+    // STEP 2: What's your primary goal?
+    await expect(page.getByText("What's your primary goal?")).toBeVisible()
+    await page.getByText("Format & Polish", { exact: true }).click()
+    const buildButton = page.getByRole("button", { name: "Build my workspace" })
+    await expect(buildButton).toBeEnabled()
+    await buildButton.click()
 
-    // STEP 2: Target Intelligence (Skip for now)
-    await expect(page.getByText("Target Intelligence")).toBeVisible()
-    await page.getByRole("button", { name: "Skip for now / Continue" }).click()
-
-    // STEP 3: Professional Profile
-    await expect(page.getByText("Your Professional Profile")).toBeVisible()
-    await page.locator("#firstName").fill("Din")
-    await page.locator("#lastName").fill("Djarin")
-    await page.locator("input[type='tel']").fill("+15550198000")
-    await page.locator("#location").fill("Mandalore Sector")
-    await page.getByRole("button", { name: "Continue to Review" }).click()
-
-    // STEP 4: The Forge Commitment
-    await expect(page.getByText("The Forge Commitment")).toBeVisible()
-    const oathCheckboxText = page.getByText(
-      "I'm ready to build my resume inside the Forge editor."
-    )
-    await expect(oathCheckboxText).toBeVisible({ timeout: 15000 })
-    await oathCheckboxText.click()
-
-    const launchButton = page.getByRole("button", { name: "Launch the Forge" })
-    await expect(launchButton).toBeEnabled()
-    await launchButton.click()
-
-    // 5. Redirect to Slates Armory
+    // 5. Redirect to Slates Dashboard
     await expect(page).toHaveURL(/.*\/slates/, { timeout: 15000 })
 
-    // Click the empty state dropzone to initialize a new slate
-    await page.locator("text=AWAITING INTEL").click()
+    // Create a new slate via GenesisPrompt
+    await expect(page.getByText("Create your first Slate")).toBeVisible({ timeout: 10000 })
+    await page.getByLabel(/Target role/).fill("Jedi Knight")
+    await page.getByRole("button", { name: /Forge Slate/i }).click()
 
-    // 6. Redirect to Editor Forge
-    await expect(page).toHaveURL(/.*\/forge\/.+/, { timeout: 15000 })
+    // Wait for "Slate forged" and click Open Editor
+    await expect(page.getByText("Slate forged.")).toBeVisible({ timeout: 10000 })
+    await page.getByRole("link", { name: "Open Editor" }).click()
+
+    // 6. Redirect to Editor
+    await expect(page).toHaveURL(/.*\/editor|.*\/forge\/.+/, { timeout: 15000 })
 
     // Wait for Hydration to complete
     await expect(page.getByText("Hydrating Forge…")).not.toBeVisible({
       timeout: 10000,
     })
 
-    // Verify Dashboard loads and inputs are pre-filled
+    // Verify Editor loads
     await expect(
-      page.getByRole("heading", { name: /Forge Array/i })
+      page.getByRole("heading", { name: /Personal Information/i })
     ).toBeVisible({ timeout: 10000 })
-    await expect(page.getByText("Identity Core")).toBeVisible()
-    const nameInput = page.locator("#basics-name")
-    await expect(nameInput).toHaveValue("Din Djarin")
+    const nameInput = page.getByLabel("Full Name")
+    await nameInput.fill("Din Djarin")
 
-    // 6. Test Data Mutation and Sync Debounce
-    const roleInput = page.locator("#basics-label")
+    // 6. Test Data Mutation and Preview Sync
+    const roleInput = page.getByLabel("Professional Title")
     await roleInput.fill("Bounty Hunter")
 
+    // Open Preview Dialog
+    await page.getByRole("button", { name: /Preview/i }).click()
+
     // Verify it updates instantly in the template preview
-    const previewArea = page.locator(".w-full.bg-white.text-zinc-950")
-    await expect(previewArea).toContainText("BOUNTY HUNTER", {
+    const previewArea = page.locator("#resume-preview").first()
+    await expect(previewArea).toContainText("Bounty Hunter", {
       ignoreCase: true,
     })
-
-    // Verify Sync Status Indicator goes to SYNCING... and then SECURED
-    const syncStatus = page.getByText(/STATE:/)
-    await expect(syncStatus).toContainText("SYNCING", { timeout: 2000 })
-    await expect(syncStatus).toContainText("SECURED", { timeout: 10000 })
+    
+    // Close Preview Dialog
+    await page.keyboard.press("Escape")
 
     // 7. Verify Document Export functionality
-    const exportButton = page.getByRole("button", { name: "Export PDF" })
+    const exportButton = page.getByRole("button", { name: /Export PDF/i })
     await expect(exportButton).toBeVisible()
-    await expect(exportButton).toHaveClass(/hover:bg-primary/)
   })
 })

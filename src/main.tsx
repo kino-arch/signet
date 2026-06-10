@@ -41,16 +41,11 @@ Sentry.init({
   enableLogs: import.meta.env.VITE_SENTRY_ENABLE_LOGS === "true",
 })
 
-// Nordic Typography Stack
-import "@fontsource-variable/syne"
-import "@fontsource-variable/schibsted-grotesk"
-import "@fontsource-variable/onest"
-import "@fontsource-variable/spline-sans-mono"
-// Nordic design system — single CSS entry point
+// Nordic design system — single CSS entry point (fonts loaded via CSS @import)
 import "./index.css"
 import App from "./App.tsx"
 import { HelmetProvider } from "react-helmet-async"
-import { LazyMotion, domAnimation } from "framer-motion"
+import { LazyMotion, domAnimation } from "motion/react"
 
 const container = document.getElementById("root")!
 const root = createRoot(container)

@@ -14,7 +14,7 @@ if (!secretKey) {
 
 // This module is server-side only. Never import from client code.
 export const stripe = new Stripe(secretKey || "dummy-key", {
-  apiVersion: "2023-10-16",
+  apiVersion: "2026-05-27.dahlia",
   appInfo: {
     name: "Signet",
     version: "1.0.0",

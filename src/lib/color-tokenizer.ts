@@ -50,7 +50,6 @@ export function tokenizeColor(hex: string): string {
     'var(--color-nordic-bg)': 'var(--app-bg)',           // Navy 900
     'var(--color-nordic-accent)': 'var(--theme-primary)',    // Cyan 500
     'var(--color-nordic-warning)': 'var(--theme-secondary)',  // Amber 500
-    'var(--color-nordic-bg)': 'var(--app-bg)',
     'var(--color-nordic-text)': 'var(--app-fg)',
   };
   

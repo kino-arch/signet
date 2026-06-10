@@ -2,7 +2,7 @@ import type { Preview } from "@storybook/react-vite"
 import React from "react"
 import "../src/index.css"
 import { ThemeProvider } from "../src/components/theme-provider"
-import { MotionConfig } from "framer-motion"
+import { MotionConfig } from "motion/react"
 import { createMemoryRouter, RouterProvider } from "react-router-dom"
 
 const customViewports = {

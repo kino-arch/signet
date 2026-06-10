@@ -1,9 +1,12 @@
-import { Hono, type Context } from "hono"
-import { aiClient } from "../lib/ai-client"
+import { Hono } from "hono"
+import type { User } from "@supabase/supabase-js"
 import { createClient } from "@supabase/supabase-js"
 import { db } from "../../db"
 import { profiles } from "../../db/schema"
 import { eq, and, sql } from "drizzle-orm"
+import { aiGateway } from "../../lib/ai-gateway"
+import { generateObject } from "ai"
+import { z } from "zod"
 
 const supabaseUrl =
   (import.meta as { env?: Record<string, string> }).env?.VITE_SUPABASE_URL ||
@@ -17,7 +20,8 @@ const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey, {
   auth: { persistSession: false },
 })
 
-export const aiRouter = new Hono()
+type Env = { Variables: { user: User } }
+export const aiRouter = new Hono<Env>()
 
 // Simple in-memory rate limiting
 const rateLimitMap = new Map<string, { count: number; resetAt: number }>()
@@ -58,6 +62,12 @@ aiRouter.use("*", async (c, next) => {
 })
 
 async function deductCreditAtomic(userId: string) {
+  // Skip credit deduction when no database is configured (local dev without DATABASE_URL).
+  // In production, DATABASE_URL is always set and this guard is never triggered.
+  const hasDb =
+    !!(process.env.DATABASE_URL || process.env.VITE_SUPABASE_DB_URL)
+  if (!hasDb) return
+
   const [updatedProfile] = await db
     .update(profiles)
     .set({ credits: sql`${profiles.credits} - 1` })
@@ -159,21 +169,21 @@ Output:
 export async function reforgeAccomplishment(
   userInput: string,
   immutableFacts: ImmutableFacts,
-  userKey: string | undefined,
   contextAddition: string = ""
 ) {
   const systemPrompt = `${GHOST_PROTOCOL_PROMPT}\n\n${contextAddition}`
   const userPrompt = `Reforge this accomplishment into Ghost Protocol format.\n\nUser Input: "${userInput}"\n\nImmutable Facts: ${JSON.stringify(immutableFacts)}`
 
-  const rawResult = await aiClient.getChatCompletionJSON(
-    systemPrompt,
-    userPrompt,
-    "gpt-4o-mini",
-    { userKey, temperature: 0.2 }
-  )
+  const { object } = await generateObject({
+    model: aiGateway.route({ type: 'generateObject' }) as any,
+    schema: ReforgeResponseSchema,
+    system: systemPrompt,
+    prompt: userPrompt,
+    temperature: 0.2
+  })
 
   // Validate with Zod
-  const validated = ReforgeResponseSchema.safeParse(rawResult)
+  const validated = ReforgeResponseSchema.safeParse(object)
   if (!validated.success) {
     console.error("Ghost Protocol schema violation:", validated.error)
     throw new Error("AI output failed structured validation.")
@@ -192,7 +202,7 @@ export async function reforgeAccomplishment(
   return reforgeData
 }
 
-aiRouter.post("/reforge", async (c: Context) => {
+aiRouter.post("/reforge", async (c) => {
   const body = await c.req.json()
   const user = c.get("user")
   const {
@@ -204,7 +214,6 @@ aiRouter.post("/reforge", async (c: Context) => {
     slateId,
     immutableFacts,
   } = body
-  const userKey = c.req.header("x-user-api-key")
 
   let contextAddition = ""
   if (targetLock) {
@@ -232,7 +241,6 @@ aiRouter.post("/reforge", async (c: Context) => {
     const reforgeData = await reforgeAccomplishment(
       rawSummary,
       safeFacts,
-      userKey,
       contextAddition
     )
 
@@ -262,6 +270,15 @@ aiRouter.post("/reforge", async (c: Context) => {
             inferredCount,
             estimatedCount,
             verifiedCount,
+            veritrail_trace: {
+              timestamp: new Date().toISOString(),
+              trace_id: `trace-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`,
+              pipeline_steps: [
+                { step: "raw_input", data: rawSummary },
+                { step: "context_enrichment", data: contextAddition },
+                { step: "distilled_draft", data: reforgeData.bullets }
+              ]
+            }
           },
           final_score: 100, // We'll compute the real ATS score on the client side
         })
@@ -287,10 +304,9 @@ aiRouter.post("/reforge", async (c: Context) => {
   }
 })
 
-aiRouter.post("/distill", async (c: Context) => {
+aiRouter.post("/distill", async (c) => {
   const body = await c.req.json()
   const { rawText, mode, workEntries, targetLock } = body
-  const userKey = c.req.header("x-user-api-key")
 
   const user = c.get("user")
 
@@ -313,25 +329,31 @@ Metrics Emphasis: ${targetLock.resume_strategy?.metrics_emphasis || "None"}`
     userPrompt = rawText || ""
   }
 
+  const SkillsSchema = z.object({
+    categories: z.array(z.object({
+      name: z.string(),
+      keywords: z.array(z.string())
+    }))
+  })
+
   try {
     await deductCreditAtomic(user.id)
-    const result = await aiClient.getChatCompletionJSON(
-      systemPrompt,
-      userPrompt,
-      "gpt-4o-mini",
-      { userKey }
-    )
-    return c.json(result)
+    const { object } = await generateObject({
+      model: aiGateway.route({ type: 'generateObject' }) as any,
+      schema: SkillsSchema,
+      system: systemPrompt,
+      prompt: userPrompt
+    })
+    return c.json(object)
   } catch (err: unknown) {
     const error = err instanceof Error ? err : new Error(String(err))
     return c.json({ error: error.message || "Failed to generate skills." }, 500)
   }
 })
 
-aiRouter.post("/target-lock", async (c: Context) => {
+aiRouter.post("/target-lock", async (c) => {
   const body = await c.req.json()
   const { companyName, jobTitle } = body
-  const userKey = c.req.header("x-user-api-key")
 
   const systemPrompt = `You are an elite career strategist. The user is targeting a role at a specific company. Provide a tactical briefing. 
 Return a JSON object matching this schema exactly:
@@ -373,16 +395,55 @@ Return a JSON object matching this schema exactly:
   const userPrompt = `Target Company: ${companyName}\nTarget Role: ${jobTitle || "General"}`
   const user = c.get("user")
 
+  const TargetLockSchema = z.object({
+    briefing: z.object({
+      company_dna: z.object({
+        personality: z.string(),
+        tone_recommendation: z.string(),
+        culture_keywords: z.array(z.string()),
+        avoid_terms: z.array(z.string())
+      }),
+      resume_strategy: z.object({
+        summary_directive: z.string(),
+        summary_draft: z.string(),
+        experience_framing: z.string(),
+        skills_priority: z.array(z.string()),
+        skills_to_add: z.array(z.string()),
+        keyword_injection_targets: z.array(z.string()),
+        metrics_emphasis: z.string()
+      }),
+      advantage_cards: z.array(z.object({ title: z.string(), insight: z.string(), action: z.string() })),
+      fit_radar: z.object({
+        technical_match: z.number(),
+        culture_alignment: z.number(),
+        experience_level: z.number(),
+        industry_relevance: z.number(),
+        keyword_coverage: z.number()
+      }),
+      interview_hooks: z.object({
+        likely_questions: z.array(z.string()),
+        talking_points: z.array(z.string()),
+        company_challenges_to_reference: z.array(z.string())
+      })
+    })
+  })
+
   try {
-    await deductCreditAtomic(user.id)
-    const result = await aiClient.getChatCompletionJSON(
-      systemPrompt,
-      userPrompt,
-      "gpt-4o-mini",
-      { userKey }
-    )
-    return c.json(result)
+    try {
+      await deductCreditAtomic(user.id)
+    } catch (e: unknown) {
+      const err = e instanceof Error ? e : new Error(String(e))
+      return c.json({ error: err.message }, 402)
+    }
+    const { object } = await generateObject({
+      model: aiGateway.route({ type: 'generateObject' }) as any,
+      schema: TargetLockSchema,
+      system: systemPrompt,
+      prompt: userPrompt
+    })
+    return c.json(object)
   } catch (err: unknown) {
+    console.error("[TARGET LOCK ERROR]", err)
     const error = err instanceof Error ? err : new Error(String(err))
     return c.json(
       { error: error.message || "Failed to acquire target lock." },
@@ -391,10 +452,11 @@ Return a JSON object matching this schema exactly:
   }
 })
 
-aiRouter.post("/score", async (c: Context) => {
+
+
+aiRouter.post("/score", async (c) => {
   const body = await c.req.json()
   const { bullets, targetRole, targetLock } = body
-  const userKey = c.req.header("x-user-api-key")
 
   let contextAddition = ""
   if (targetLock) {
@@ -429,17 +491,60 @@ Return a strict JSON object matching this schema exactly:
   const userPrompt = `Target Role: ${targetRole || "General"}\n\nBullets to analyze:\n${JSON.stringify(bullets)}`
   const user = c.get("user")
 
+  const ScoreSchema = z.object({
+    overall_score: z.number(),
+    scores: z.array(z.object({
+      original: z.string(),
+      score: z.number(),
+      breakdown: z.object({
+        accomplishment_x: z.number(),
+        metric_y: z.number(),
+        method_z: z.number()
+      }),
+      verdict: z.enum(["weak", "needs_metrics", "strong", "faang_ready"]),
+      issues: z.array(z.string()),
+      rewrite: z.string()
+    }))
+  })
+
   try {
-    await deductCreditAtomic(user.id)
-    const result = await aiClient.getChatCompletionJSON(
-      systemPrompt,
-      userPrompt,
-      "gpt-4o-mini",
-      { userKey }
-    )
-    return c.json(result)
+    try {
+      await deductCreditAtomic(user.id)
+    } catch (e: unknown) {
+      const err = e instanceof Error ? e : new Error(String(e))
+      return c.json({ error: err.message }, 402)
+    }
+    const { object } = await generateObject({
+      model: aiGateway.route({ type: 'generateObject' }) as any,
+      schema: ScoreSchema,
+      system: systemPrompt,
+      prompt: userPrompt
+    })
+    return c.json(object)
   } catch (err: unknown) {
     const error = err instanceof Error ? err : new Error(String(err))
     return c.json({ error: error.message || "Failed to score bullets." }, 500)
+  }
+})
+
+aiRouter.post("/copilot", async (c) => {
+  const body = await c.req.json()
+  const { context } = body
+  
+  const CopilotSchema = z.object({
+    gap: z.enum(['missing_quantifier', 'weak_verb', 'passive_voice', 'missing_context', 'none']),
+    suggestion: z.string().nullable()
+  })
+
+  try {
+    const { object } = await generateObject({
+      model: aiGateway.route({ type: 'generateObject', latencySLO: 'fast', costBudget: 'minimal' }) as any,
+      schema: CopilotSchema,
+      system: "You are a Ghost Copilot for a resume editor. Observe the user's keystrokes. If there's an obvious missing quantifier, weak verb, or context gap, suggest a continuation. If they haven't finished a thought, or it's fine, return gap: 'none' and suggestion: null. The suggestion should naturally append to the user's text. Do not repeat the user's text.",
+      prompt: `Current Value: ${context.currentValue}`
+    })
+    return c.json(object)
+  } catch(e) {
+    return c.json({ gap: 'none', suggestion: null })
   }
 })

@@ -137,7 +137,7 @@ export function SigilRetrieval({
   const triggerDownload = async () => {
     try {
       const filename = `${basics.name ? basics.name.replace(/\s+/g, "-") : "Operative-Dossier"}-Resume.pdf`
-      await exportResumeToPDF("resume-document", filename)
+      await exportResumeToPDF("resume-preview", filename)
       // Deduct one credit for a successful forge
       const deducted = await deductCredit()
       if (!deducted) {

@@ -1,0 +1,112 @@
+/* ============================================
+   TIPTAP PROSEMIRROR EDITOR STYLES
+   Aligned to Nordic design token system.
+   Import this file in any component that renders
+   a Tiptap editor instance.
+   ============================================ */
+
+/* Ensure cursor and focus ring follow token */
+.ProseMirror {
+  @apply outline-none;
+  caret-color: var(--color-nordic-primary);
+}
+
+/* ─── Typography ─────────────────────────────────────────────────────────── */
+
+.ProseMirror p {
+  @apply mb-4 leading-7 text-nordic-text;
+  font-family: var(--font-body);
+  font-size: 14px;
+}
+
+.ProseMirror h1 {
+  @apply mb-4 font-semibold text-nordic-text;
+  font-family: var(--font-heading);
+  font-size: 24px;
+  letter-spacing: -0.02em;
+}
+
+.ProseMirror h2 {
+  @apply mb-3 font-semibold text-nordic-text;
+  font-family: var(--font-heading);
+  font-size: 18px;
+  letter-spacing: -0.01em;
+}
+
+.ProseMirror h3 {
+  @apply mb-2 font-medium text-nordic-text;
+  font-family: var(--font-heading);
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+/* ─── Lists ──────────────────────────────────────────────────────────────── */
+
+.ProseMirror ul {
+  @apply mb-4 list-disc pl-6 text-nordic-text;
+}
+
+.ProseMirror ol {
+  @apply mb-4 list-decimal pl-6 text-nordic-text;
+}
+
+.ProseMirror li {
+  @apply mb-1 leading-7;
+}
+
+/* ─── Blockquote ─────────────────────────────────────────────────────────── */
+
+.ProseMirror blockquote {
+  @apply mb-4 border-l-2 border-nordic-primary pl-4 italic text-nordic-text-secondary;
+}
+
+/* ─── Code ───────────────────────────────────────────────────────────────── */
+
+.ProseMirror code {
+  @apply rounded-none bg-nordic-surface-hover px-1.5 py-0.5 text-nordic-text;
+  font-family: var(--font-mono);
+  font-size: 13px;
+}
+
+.ProseMirror pre {
+  @apply mb-4 rounded-none border border-nordic-border bg-nordic-surface p-4;
+}
+
+.ProseMirror pre code {
+  @apply bg-transparent p-0;
+}
+
+/* ─── Inline elements ────────────────────────────────────────────────────── */
+
+.ProseMirror a {
+  @apply text-nordic-primary underline underline-offset-4;
+  transition: color 150ms ease;
+}
+
+.ProseMirror a:hover {
+  @apply text-nordic-primary-hover;
+}
+
+.ProseMirror hr {
+  @apply my-6 border-nordic-border;
+}
+
+/* ─── Placeholder ────────────────────────────────────────────────────────── */
+
+.ProseMirror p.is-editor-empty:first-child::before {
+  content: attr(data-placeholder);
+  @apply pointer-events-none float-left h-0 italic text-nordic-text-tertiary;
+}
+
+/* ─── Selection ──────────────────────────────────────────────────────────── */
+
+.ProseMirror ::selection {
+  background-color: rgba(96, 165, 250, 0.2);
+}
+
+/* ─── Focus ring ─────────────────────────────────────────────────────────── */
+
+.ProseMirror:focus {
+  outline: none;
+}

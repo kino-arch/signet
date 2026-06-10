@@ -1,5 +1,13 @@
 /// <reference types="vite/client" />
 
+// Ambient declarations for side-effect-only font imports that lack type definitions
+declare module "@fontsource-variable/syne" {}
+declare module "@fontsource-variable/schibsted-grotesk" {}
+declare module "@fontsource-variable/onest" {}
+declare module "@fontsource-variable/spline-sans-mono" {}
+
+
+
 import 'vitest';
 
 declare module 'vitest' {

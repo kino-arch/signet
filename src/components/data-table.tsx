@@ -3,15 +3,15 @@ import { useNavigate } from "react-router-dom"
 import { supabase } from "@/lib/supabase"
 import { toast } from "sonner"
 import {
-  IconChevronLeft,
-  IconChevronRight,
-  IconChevronsLeft,
-  IconChevronsRight,
-  IconCircleCheckFilled,
-  IconDotsVertical,
-  IconLayoutColumns,
-  IconPlus,
-} from "@tabler/icons-react"
+  ChevronLeft,
+  ChevronRight,
+  ChevronsLeft,
+  ChevronsRight,
+  CircleCheck,
+  EllipsisVertical,
+  Columns3,
+  Plus,
+} from "lucide-react"
 import {
   flexRender,
   getCoreRowModel,
@@ -133,7 +133,7 @@ const columns: ColumnDef<DataSlate>[] = [
               : "text-muted-foreground"
           }
         >
-          {isDeployed && <IconCircleCheckFilled className="mr-1 size-3" />}
+          {isDeployed && <CircleCheck className="mr-1 size-3 fill-current" />}
           {row.original.status}
         </Badge>
       )
@@ -174,7 +174,7 @@ const columns: ColumnDef<DataSlate>[] = [
               className="flex size-8 text-muted-foreground data-[state=open]:bg-muted"
               size="icon"
             >
-              <IconDotsVertical className="size-4" />
+              <EllipsisVertical className="size-4" />
               <span className="sr-only">Open menu</span>
             </Button>
           </DropdownMenuTrigger>
@@ -266,7 +266,7 @@ export function DataTable({
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="outline" size="sm" className="border-primary/20">
-                <IconLayoutColumns className="mr-2 size-4" />
+                <Columns3 className="mr-2 size-4" />
                 <span className="hidden lg:inline">Columns</span>
               </Button>
             </DropdownMenuTrigger>
@@ -301,7 +301,7 @@ export function DataTable({
             className="bg-primary text-primary-foreground hover:bg-primary/90"
             onClick={() => navigate("/forge/new")}
           >
-            <IconPlus className="mr-2 size-4" />
+            <Plus className="mr-2 size-4" />
             <span className="hidden lg:inline">New Slate</span>
           </Button>
         </div>
@@ -417,7 +417,7 @@ export function DataTable({
               disabled={!table.getCanPreviousPage()}
               aria-label="Go to first page"
             >
-              <IconChevronsLeft className="size-4" />
+              <ChevronsLeft className="size-4" />
             </Button>
             <Button
               variant="outline"
@@ -426,7 +426,7 @@ export function DataTable({
               disabled={!table.getCanPreviousPage()}
               aria-label="Go to previous page"
             >
-              <IconChevronLeft className="size-4" />
+              <ChevronLeft className="size-4" />
             </Button>
             <Button
               variant="outline"
@@ -435,7 +435,7 @@ export function DataTable({
               disabled={!table.getCanNextPage()}
               aria-label="Go to next page"
             >
-              <IconChevronRight className="size-4" />
+              <ChevronRight className="size-4" />
             </Button>
             <Button
               variant="outline"
@@ -444,7 +444,7 @@ export function DataTable({
               disabled={!table.getCanNextPage()}
               aria-label="Go to last page"
             >
-              <IconChevronsRight className="size-4" />
+              <ChevronsRight className="size-4" />
             </Button>
           </div>
         </div>

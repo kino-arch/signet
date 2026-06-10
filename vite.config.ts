@@ -39,8 +39,9 @@ export default defineConfig({
         extends: true,
         test: {
           name: 'unit',
+          // Contract: unit tests are *.test.ts — E2E specs (*.spec.ts) belong to Playwright.
           include: ['tests/**/*.test.{ts,tsx}', 'src/**/*.test.{ts,tsx}'],
-          exclude: ['**/node_modules/**', '**/.git/**'],
+          exclude: ['**/node_modules/**', '**/.git/**', '**/*.spec.ts'],
           environment: 'jsdom',
         },
       },

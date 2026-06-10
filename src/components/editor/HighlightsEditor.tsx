@@ -5,7 +5,11 @@ import type { WorkEntry } from "@/store/useDataSlateStore"
 import { useDataSlateStore } from "@/store/useDataSlateStore"
 import { AutopsyBullet } from "./AutopsyBullet"
 import type { GhostBullet } from "@/lib/ghost-schema"
+import { sealBullet } from "@/lib/provenance"
+import { computeSemanticTrajectory } from "@/lib/semantic-diff"
 import { useState } from "react"
+import { toast } from "sonner"
+import { HighlightRewriteAssistant } from "./HighlightRewriteAssistant"
 
 interface HighlightsEditorProps {
   entry: WorkEntry
@@ -36,7 +40,7 @@ export function HighlightsEditor({ entry }: HighlightsEditorProps) {
     })
   }
 
-  const handleUpdateGhost = (
+  const handleUpdateGhost = async (
     index: number,
     updatedBullet: GhostBullet | null
   ) => {
@@ -44,19 +48,32 @@ export function HighlightsEditor({ entry }: HighlightsEditorProps) {
     if (updatedBullet === null) {
       newGhostBullets.splice(index, 1)
     } else {
-      newGhostBullets[index] = updatedBullet
+      newGhostBullets[index] = await sealBullet(updatedBullet)
+      
+      // Calculate Semantic Impact Shift if the text actually changed
+      const oldText = ghostBullets[index].text
+      const newText = updatedBullet.text
+      if (oldText && oldText !== newText) {
+        const { shift } = await computeSemanticTrajectory(oldText, newText)
+        if (shift > 0.05) {
+          toast.success("Semantic Commit Logged", {
+            description: `Impact shifted by ${(shift * 100).toFixed(1)}%. Vector hash sealed.`,
+          })
+        }
+      }
     }
     syncToStore(newGhostBullets)
   }
 
-  const handleManualTextUpdate = (index: number, text: string) => {
+  const handleManualTextUpdate = async (index: number, text: string) => {
     const newGhostBullets = [...ghostBullets]
-    newGhostBullets[index] = {
+    const baseBullet = {
       ...newGhostBullets[index],
       text,
-      provenance: "user_verified",
+      provenance: "user_verified" as const,
       confidence: 1.0,
     }
+    newGhostBullets[index] = await sealBullet(baseBullet)
     syncToStore(newGhostBullets)
   }
 
@@ -109,6 +126,7 @@ export function HighlightsEditor({ entry }: HighlightsEditorProps) {
                 }}
               >
                 {isEditing ? (
+                  <div className="space-y-2">
                     <textarea
                       className="nordic-input w-full resize-none text-sm"
                       value={bullet.text}
@@ -116,11 +134,23 @@ export function HighlightsEditor({ entry }: HighlightsEditorProps) {
                       onChange={(e) =>
                         handleManualTextUpdate(idx, e.target.value)
                       }
-                      onBlur={() => setEditingIdx(null)}
                       autoFocus={editingIdx === idx}
                       placeholder="E.g., Increased conversion by 15%..."
                       aria-label="Edit highlight bullet"
                     />
+                    <HighlightRewriteAssistant 
+                      currentText={bullet.text}
+                      onApply={(text) => {
+                        handleManualTextUpdate(idx, text)
+                        setEditingIdx(null)
+                      }}
+                    />
+                    <div className="flex justify-end">
+                      <Button size="sm" variant="ghost" className="h-6 text-[10px] uppercase tracking-wider" onClick={(e) => { e.stopPropagation(); setEditingIdx(null) }}>
+                        Done
+                      </Button>
+                    </div>
+                  </div>
                 ) : (
                   <AutopsyBullet
                     bullet={bullet}

@@ -133,7 +133,7 @@ export function FeaturesBento() {
                 <div className="h-2.5 w-2.5 rounded-none bg-[var(--color-nordic-error)]" aria-hidden="true" />
                 <div className="h-2.5 w-2.5 rounded-none bg-[var(--color-nordic-warning)]" aria-hidden="true" />
                 <div className="h-2.5 w-2.5 rounded-none bg-[var(--color-nordic-success)]" aria-hidden="true" />
-                <span className="ml-3 text-xs font-mono text-nordic-text-tertiary">
+                <span className="ml-3 text-xs font-mono text-nordic-text-secondary">
                   {features.find((f) => f.id === activeFeature)?.title}
                 </span>
               </div>

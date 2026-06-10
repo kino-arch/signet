@@ -1,26 +1,67 @@
-import { useState } from "react";
-import { Download, Eye, Plus, Trash2 } from "lucide-react";
+import { useState, useEffect } from "react";
+import {
+  Download, Eye, Plus, Trash2,
+  LayoutTemplate, FileText, Terminal, Briefcase, Palette, Layers,
+  Crosshair, Sparkles, LayoutDashboard, Edit3, BarChart2,
+} from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+
 import { useDataSlateStore } from "@/store/useDataSlateStore";
-import type { DataSlateStore, WorkEntry, SkillEntry, EducationEntry } from "@/store/useDataSlateStore";
-import { exportResumeToPDF } from "@/lib/export-pdf";
+import type { DataSlateStore, WorkEntry, EducationEntry } from "@/store/useDataSlateStore";
 
 import { NordicInput } from "@/components/nordic/NordicInput";
 import { NordicTextarea } from "@/components/nordic/NordicTextarea";
-import { FloatingAIChatWidget } from "@/components/editor/floating-ai-chat-widget";
-import { GripVertical } from "lucide-react"
-import { Reorder } from "framer-motion"
-import { TemplateProvider, useTemplateTheme } from "@/components/templates/TemplateContext";
-import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
-import { NordicBackground } from "@/components/ui/NordicBackground";
-import { ResumeStepWizard } from "@/components/ui/ResumeStepWizard";
 
-/* Minimal Template connected to DataSlateStore */
+import { TemplateProvider, useTemplateTheme } from "@/components/templates/TemplateContext";
+import { Dialog, DialogContent, DialogTrigger, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import { SidebarProvider, SidebarInset, SidebarTrigger } from "@/components/ui/sidebar";
+import { AppSidebar } from "@/components/editor/AppSidebar";
+import { NordicBackground } from "@/components/ui/NordicBackground";
+import { VoiceMemoButton } from "@/components/editor/VoiceMemoButton";
+import { TargetLockPanel } from "@/components/editor/TargetLockPanel";
+import { HighlightsEditor } from "@/components/editor/HighlightsEditor";
+import { CoreCompetenciesArray } from "@/components/editor/CoreCompetenciesArray";
+import { SummaryGeneratorAssistant } from "@/components/editor/v2/SummaryGeneratorAssistant";
+import { ImpactScorePanel } from "@/components/editor/ImpactScorePanel";
+import { SigilRetrieval } from "@/components/editor/SigilRetrieval";
+
+import { StandardTemplate } from "@/components/templates/StandardTemplate";
+import { TechnicalTemplate } from "@/components/templates/TechnicalTemplate";
+import { ModernTemplate } from "@/components/templates/ModernTemplate";
+import { ExecutiveTemplate } from "@/components/templates/ExecutiveTemplate";
+import { CreativeTemplate } from "@/components/templates/CreativeTemplate";
+
+import { useForgeStore } from "@/store/useForgeStore";
+import { useEditorShortcuts } from "@/hooks/useEditorShortcuts";
+
+// ── Design constants ──────────────────────────────────────────────────────────
+
+const TEMPLATES_LIST = [
+  { id: "standard", name: "Standard", icon: FileText, desc: "ATS Optimized" },
+  { id: "minimal", name: "Minimal", icon: LayoutTemplate, desc: "Clean & Simple" },
+  { id: "technical", name: "Technical", icon: Terminal, desc: "For Engineers" },
+  { id: "modern", name: "Modern", icon: Layers, desc: "Sleek Split" },
+  { id: "executive", name: "Executive", icon: Briefcase, desc: "Leadership" },
+  { id: "creative", name: "Creative", icon: Palette, desc: "Design Focus" },
+];
+
+// Focus Tunnel — three cognitive modes
+type FocusMode = "compose" | "structure" | "analyze";
+
+const FOCUS_MODES: { id: FocusMode; label: string; icon: typeof Edit3 }[] = [
+  { id: "compose", label: "Compose", icon: Edit3 },
+  { id: "structure", label: "Structure", icon: LayoutDashboard },
+  { id: "analyze", label: "Analyze", icon: BarChart2 },
+];
+
+// ── MinimalTemplate (inline) ──────────────────────────────────────────────────
+
 function MinimalTemplate({ store }: { store: DataSlateStore }) {
   const { colors } = useTemplateTheme();
   const { basics, work, skills, education } = store;
 
   return (
-    <div 
+    <div
       id="resume-preview"
       className="h-full overflow-y-auto p-8"
       style={{ backgroundColor: colors.pageBg, color: colors.textPrimary }}
@@ -32,13 +73,10 @@ function MinimalTemplate({ store }: { store: DataSlateStore }) {
         {basics.phone && <span>{basics.phone}</span>}
         {basics.location?.city && <span>{basics.location.city}</span>}
       </div>
-      
+
       {basics.summary && (
         <div className="mt-6">
-          <h2 
-            className="pb-1 text-sm font-bold uppercase tracking-wider"
-            style={{ borderBottom: `1px solid ${colors.border}`, color: colors.textSecondary }}
-          >
+          <h2 className="pb-1 text-sm font-bold uppercase tracking-wider" style={{ borderBottom: `1px solid ${colors.border}`, color: colors.textSecondary }}>
             Summary
           </h2>
           <p className="mt-2 text-sm leading-relaxed" style={{ color: colors.textSecondary }}>{basics.summary}</p>
@@ -47,10 +85,7 @@ function MinimalTemplate({ store }: { store: DataSlateStore }) {
 
       {work.length > 0 && (
         <div className="mt-6">
-          <h2 
-            className="pb-1 text-sm font-bold uppercase tracking-wider"
-            style={{ borderBottom: `1px solid ${colors.border}`, color: colors.textSecondary }}
-          >
+          <h2 className="pb-1 text-sm font-bold uppercase tracking-wider" style={{ borderBottom: `1px solid ${colors.border}`, color: colors.textSecondary }}>
             Experience
           </h2>
           <div className="mt-3 space-y-4">
@@ -58,12 +93,11 @@ function MinimalTemplate({ store }: { store: DataSlateStore }) {
               <div key={w.id}>
                 <div className="flex justify-between font-medium">
                   <span style={{ color: colors.textPrimary }}>{w.name}</span>
-                  <span className="text-sm" style={{ color: colors.textSecondary }}>{w.startDate} - {w.endDate || 'Present'}</span>
+                  <span className="text-sm" style={{ color: colors.textSecondary }}>{w.startDate} – {w.endDate || "Present"}</span>
                 </div>
-                <div className="text-sm italic mb-1" style={{ color: colors.accent }}>{w.position}</div>
-                {w.summary && <p className="text-sm mb-1" style={{ color: colors.textSecondary }}>{w.summary}</p>}
+                <div className="text-sm" style={{ color: colors.accent }}>{w.position}</div>
                 {w.highlights && w.highlights.length > 0 && (
-                  <ul className="list-disc list-outside ml-4 text-sm space-y-1" style={{ color: colors.textSecondary }}>
+                  <ul className="mt-1 list-disc list-outside ml-4 space-y-0.5 text-sm" style={{ color: colors.textSecondary }}>
                     {w.highlights.map((h: string, i: number) => <li key={i}>{h}</li>)}
                   </ul>
                 )}
@@ -75,17 +109,12 @@ function MinimalTemplate({ store }: { store: DataSlateStore }) {
 
       {skills.length > 0 && (
         <div className="mt-6">
-          <h2 
-            className="pb-1 text-sm font-bold uppercase tracking-wider"
-            style={{ borderBottom: `1px solid ${colors.border}`, color: colors.textSecondary }}
-          >
+          <h2 className="pb-1 text-sm font-bold uppercase tracking-wider" style={{ borderBottom: `1px solid ${colors.border}`, color: colors.textSecondary }}>
             Skills
           </h2>
-          <div className="mt-3 flex flex-wrap gap-2">
-            {skills.map((s: SkillEntry) => (
-              <span key={s.id} className="text-sm border px-2 py-1" style={{ borderColor: colors.border, color: colors.textSecondary }}>
-                {s.name}
-              </span>
+          <div className="mt-2 flex flex-wrap gap-2">
+            {skills.map((s: any) => (
+              <span key={s.id} className="text-sm px-2 py-0.5 rounded" style={{ backgroundColor: colors.border, color: colors.textSecondary }}>{s.name}</span>
             ))}
           </div>
         </div>
@@ -93,10 +122,7 @@ function MinimalTemplate({ store }: { store: DataSlateStore }) {
 
       {education.length > 0 && (
         <div className="mt-6">
-          <h2 
-            className="pb-1 text-sm font-bold uppercase tracking-wider"
-            style={{ borderBottom: `1px solid ${colors.border}`, color: colors.textSecondary }}
-          >
+          <h2 className="pb-1 text-sm font-bold uppercase tracking-wider" style={{ borderBottom: `1px solid ${colors.border}`, color: colors.textSecondary }}>
             Education
           </h2>
           <div className="mt-3 space-y-3">
@@ -106,7 +132,7 @@ function MinimalTemplate({ store }: { store: DataSlateStore }) {
                   <span style={{ color: colors.textPrimary }}>{e.institution}</span>
                   <span className="text-sm" style={{ color: colors.textSecondary }}>{e.endDate}</span>
                 </div>
-                <div className="text-sm" style={{ color: colors.textSecondary }}>{e.studyType} {e.area ? `in ${e.area}` : ''}</div>
+                <div className="text-sm" style={{ color: colors.textSecondary }}>{e.studyType} {e.area ? `in ${e.area}` : ""}</div>
               </div>
             ))}
           </div>
@@ -116,348 +142,380 @@ function MinimalTemplate({ store }: { store: DataSlateStore }) {
   );
 }
 
+// ── TemplateRenderer ──────────────────────────────────────────────────────────
+
+function TemplateRenderer({ store, templateId }: { store: DataSlateStore; templateId: string }) {
+  return (
+    <TemplateProvider theme="light">
+      {templateId === "standard" && <StandardTemplate store={store} />}
+      {templateId === "minimal" && <MinimalTemplate store={store} />}
+      {templateId === "technical" && <TechnicalTemplate store={store} />}
+      {templateId === "modern" && <ModernTemplate store={store} />}
+      {templateId === "executive" && <ExecutiveTemplate store={store} />}
+      {templateId === "creative" && <CreativeTemplate store={store} />}
+    </TemplateProvider>
+  );
+}
+
+// ── NordicEditorPage ──────────────────────────────────────────────────────────
+
 export function NordicEditorPage() {
   const store = useDataSlateStore();
-  const { 
-    basics, setBasics, 
+  const {
+    basics, setBasics,
     work, addWorkEntry, updateWorkEntry, removeWorkEntry,
-    skills, addSkillEntry, updateSkillEntry, removeSkillEntry,
-    education, addEducationEntry, updateEducationEntry, removeEducationEntry
+    education, addEducationEntry, updateEducationEntry, removeEducationEntry,
   } = store;
 
-  const [activeTemplate, setActiveTemplate] = useState<string | null>("minimal");
-  const [isExporting, setIsExporting] = useState(false);
+  const targetLockCompany = useForgeStore((s) => s.targetLockCompany);
+
+  const [activeTemplate, setActiveTemplate] = useState<string>("minimal");
   const [currentStep, setCurrentStep] = useState(1);
+  const [showAiSummary, setShowAiSummary] = useState(false);
 
-  const STEPS = [
-    { id: 1, label: "Personal" },
-    { id: 2, label: "Experience" },
-    { id: 3, label: "Education" },
-    { id: 4, label: "Skills" },
-  ];
+  // Focus Tunnel: cognitive mode
+  const [focusMode, setFocusMode] = useState<FocusMode>("compose");
 
-  const totalSteps = STEPS.length;
+  // Command Center: popup state
+  const [commandCenterOpen, setCommandCenterOpen] = useState(false);
 
-  const handleExport = async () => {
-    setIsExporting(true);
-    try {
-      await exportResumeToPDF("resume-preview", `${basics.name || 'resume'}.pdf`);
-    } catch (e) {
-      console.error(e);
-    } finally {
-      setIsExporting(false);
+  // Sidebar open/collapse state — synced to focusMode
+  const [sidebarOpen, setSidebarOpen] = useState(true);
+
+  // Export Dialog state
+  const [exportDialogOpen, setExportDialogOpen] = useState(false);
+
+
+  useEffect(() => {
+    if (focusMode === "compose") {
+      setSidebarOpen(false);
+    } else {
+      setSidebarOpen(true);
     }
-  };
+  }, [focusMode]);
 
+  useEditorShortcuts({
+    navigateTo: (step) => setCurrentStep(step),
+    toggleSidebar: () => setSidebarOpen(s => !s),
+    openCommandPalette: () => setCommandCenterOpen(true),
+  });
+
+  // Ambient Shelf: show only on the Design step (step 4)
+  const showAmbientShelf = currentStep === 4;
 
   const canExport = !!activeTemplate && !!basics.name;
 
+  const handleExportComplete = () => {
+    setExportDialogOpen(false);
+  };
+
+  // Focus Tunnel: derive rail + command center state from mode
+
   return (
-    <div
-      className="flex h-[calc(100vh-64px)] w-full flex-row font-sans relative overflow-hidden bg-nordic-bg"
-      style={{ zoom: 0.85 }}
-    >
-      <NordicBackground />
-
-      <FloatingAIChatWidget />
-      
-      {/* Sidebar - Actions & Templates */}
-      <div className="w-64 border-r border-nordic-border bg-nordic-surface flex flex-col h-full shrink-0 z-10 relative">
-        <div className="p-5 border-b border-nordic-border">
-          <h1 className="text-lg font-bold text-nordic-text">Resume Editor</h1>
-          <p className="text-xs text-nordic-text-tertiary">Build your resume</p>
-        </div>
+    <SidebarProvider open={sidebarOpen} onOpenChange={setSidebarOpen}>
+      <div className="flex h-screen w-full font-sans relative overflow-hidden bg-nordic-bg">
+        <NordicBackground />
         
-        <div className="p-5 space-y-4">
-          <button
-            onClick={handleExport}
-            disabled={!canExport || isExporting}
-            className="nordic-btn-primary w-full disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2"
-            aria-disabled={!canExport || isExporting}
-          >
-            <Download className="h-4 w-4" />
-            {isExporting ? "Exporting..." : "Export"}
-          </button>
+        <AppSidebar currentStep={currentStep} onStepChange={setCurrentStep} />
 
-          <Dialog>
-            <DialogTrigger asChild>
-              <button
-                disabled={!activeTemplate}
-                className="nordic-btn-secondary w-full disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2"
-              >
-                <Eye className="h-4 w-4" />
-                Preview
-              </button>
-            </DialogTrigger>
-            <DialogContent className="max-w-[1000px] w-full max-h-[90vh] overflow-hidden p-0 border-nordic-border bg-nordic-bg shadow-2xl">
-              <div className="h-[85vh] w-full overflow-y-auto bg-white/5">
-                {activeTemplate ? (
-                  <TemplateProvider theme="light">
-                    <MinimalTemplate store={store} />
-                  </TemplateProvider>
-                ) : (
-                  <div className="flex items-center justify-center h-full text-nordic-text-tertiary">
-                    Select a template to preview.
+        <SidebarInset role="main" className="flex-1 flex flex-col h-full bg-transparent overflow-hidden">
+          {/* ── Header ── */}
+          <header className="flex h-12 shrink-0 items-center justify-between gap-2 border-b border-white/5 bg-nordic-surface/50 px-4">
+             {/* Left: Command History Breadcrumbs */}
+             <div className="flex items-center gap-4">
+               <SidebarTrigger className="-ml-1 text-nordic-text-tertiary hover:text-nordic-text transition-colors" />
+               <div className="h-4 w-px bg-white/10" />
+               <div className="flex items-center gap-2 pl-2 text-[10px] font-mono tracking-widest uppercase">
+                  <h1 className="text-nordic-text-secondary max-w-[120px] truncate m-0 font-normal leading-normal">{basics.name || "Untitled Resume"}</h1>
+                  <span className="text-nordic-text-tertiary opacity-40">/</span>
+                  <span className="text-nordic-accent/80 border border-nordic-accent/20 bg-nordic-accent/10 px-1.5 py-0.5 rounded flex items-center gap-1">
+                    <Sparkles className="w-3 h-3" /> Enhanced 3 bullets
+                  </span>
+                  <span className="text-nordic-text-tertiary opacity-40">/</span>
+                  <span className="text-nordic-text px-1.5 py-0.5 rounded border border-white/5 bg-white/5">
+                    {targetLockCompany ? `Added Target: ${targetLockCompany}` : "Updated Personal Info"}
+                  </span>
+               </div>
+             </div>
+             
+             {/* Center: Command Center Dialog */}
+             <div className="flex items-center">
+               <Dialog open={commandCenterOpen} onOpenChange={setCommandCenterOpen}>
+                 <DialogTrigger asChild>
+                   <button className="flex items-center gap-2 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest transition-all border border-white/10 text-nordic-text-tertiary hover:text-nordic-text hover:border-white/20">
+                     <Crosshair className="w-3 h-3" />
+                     {targetLockCompany ? `Target: ${targetLockCompany}` : "Target Lock"}
+                   </button>
+                 </DialogTrigger>
+                 <DialogContent className="max-w-[480px] w-full p-0 border-nordic-border bg-nordic-bg/95 backdrop-blur-xl shadow-2xl rounded-2xl overflow-hidden liquid-glass">
+                   <div className="flex items-center justify-between px-5 py-4 border-b border-white/8 shrink-0 bg-white/5">
+                     <div className="flex items-center gap-2">
+                       <Crosshair className="w-4 h-4 text-nordic-accent" />
+                       <span className="text-sm font-semibold text-nordic-text uppercase tracking-wider">Command Center</span>
+                     </div>
+                   </div>
+                   <div className="flex-1 overflow-y-auto p-6 max-h-[80vh]">
+                     <TargetLockPanel onComplete={() => setCommandCenterOpen(false)} />
+                   </div>
+                 </DialogContent>
+               </Dialog>
+             </div>
+
+             {/* Right: Actions */}
+             <div className="flex items-center gap-3">
+                {/* Focus Modes */}
+                <div className="flex items-center gap-1 border border-white/8 rounded px-1">
+                  {FOCUS_MODES.map(({ id, label, icon: Icon }) => (
+                    <button
+                      key={id}
+                      onClick={() => setFocusMode(id)}
+                      className={`p-1 rounded transition-colors ${focusMode === id ? "text-nordic-accent bg-white/5" : "text-nordic-text-tertiary hover:text-nordic-text hover:bg-white/5"}`}
+                      title={`${label} mode`}
+                    >
+                      <Icon className="w-3 h-3" />
+                    </button>
+                  ))}
+                </div>
+                <span className="opacity-20 text-[10px]">|</span>
+                {/* Preview */}
+                <Dialog>
+                  <DialogTrigger asChild>
+                    <button
+                      disabled={!activeTemplate}
+                      className="text-[10px] uppercase tracking-widest text-nordic-text-secondary hover:text-nordic-accent transition-colors disabled:opacity-30 disabled:cursor-not-allowed flex items-center gap-1"
+                    >
+                      <Eye className="w-3 h-3" />
+                      Preview
+                    </button>
+                  </DialogTrigger>
+                  <DialogContent className="max-w-[1000px] w-full max-h-[90vh] overflow-hidden p-0 border-nordic-border bg-nordic-bg shadow-2xl">
+                    <div className="h-[85vh] w-full overflow-y-auto">
+                      {activeTemplate && <TemplateRenderer store={store} templateId={activeTemplate} />}
+                    </div>
+                  </DialogContent>
+                </Dialog>
+                <span className="opacity-20 text-[10px]">|</span>
+                
+                {/* Hidden Template for PDF Export */}
+                {activeTemplate && (
+                  <div className="fixed -left-[10000px] top-0 pointer-events-none w-[800px] bg-white">
+                    <TemplateRenderer store={store} templateId={activeTemplate} />
                   </div>
                 )}
-              </div>
-            </DialogContent>
-          </Dialog>
-        </div>
 
-        {/* Template Selector */}
-        <div className="p-5 flex-1 border-t border-nordic-border">
-          <span className="text-[10px] font-bold uppercase tracking-wider text-nordic-text-tertiary mb-3 block">Template</span>
-          <div className="flex flex-col gap-2">
-            {["minimal", "technical", "creative"].map((id) => (
-              <button
-                key={id}
-                onClick={() => setActiveTemplate(id)}
-                className={`w-full text-left p-3 border transition-all ${
-                  activeTemplate === id
-                    ? "border-nordic-accent bg-nordic-accent text-nordic-bg shadow-[0_0_10px_rgba(var(--nordic-accent-rgb),0.2)]"
-                    : "border-nordic-border bg-nordic-bg hover:bg-nordic-surface-hover text-nordic-text-secondary hover:text-nordic-text"
-                }`}
-              >
-                <p className="text-sm font-semibold uppercase tracking-wider">{id}</p>
-              </button>
-            ))}
-          </div>
-        </div>
-      </div>
+                {/* Export */}
+                <Dialog open={exportDialogOpen} onOpenChange={setExportDialogOpen}>
+                  <DialogTrigger asChild>
+                    <button
+                      disabled={!canExport}
+                      className="text-[10px] uppercase tracking-widest text-nordic-text-secondary hover:text-nordic-accent transition-colors disabled:opacity-30 disabled:cursor-not-allowed flex items-center gap-1"
+                    >
+                      <Download className="w-3 h-3" />
+                      Export PDF
+                    </button>
+                  </DialogTrigger>
+                  <DialogContent className="max-w-[600px] w-full p-0 border-nordic-border bg-nordic-bg shadow-2xl rounded-xl">
+                    <DialogTitle className="sr-only">Export to PDF</DialogTitle>
+                    <DialogDescription className="sr-only">Retrieve your document using Beskar Credits</DialogDescription>
+                    <SigilRetrieval 
+                      onComplete={handleExportComplete} 
+                      onNoTokens={() => {
+                        // In a real app we might redirect to a billing page or show an alert.
+                        alert("Not enough Beskar Credits.");
+                      }} 
+                    />
+                  </DialogContent>
+                </Dialog>
+             </div>
+          </header>
 
-      {/* Main Container - Step Wizard */}
-      <div className="flex-1 relative h-full z-10 flex flex-col overflow-hidden">
-        <ResumeStepWizard
-          steps={STEPS}
-          currentStep={currentStep}
-          onStepClick={(step) => setCurrentStep(step)}
-        >
-          {/* ── Step 1: Personal Info ── */}
-          {currentStep === 1 && (
-            <div className="space-y-6">
-              <div className="bg-nordic-surface border border-nordic-border p-6">
-                <h2 className="text-base font-semibold text-nordic-text mb-4">Personal Information</h2>
-                <div className="grid grid-cols-2 gap-4 mb-4">
-                  <NordicInput
-                    label="Full Name"
-                    value={basics.name}
-                    onChange={(e) => setBasics({ name: e.target.value })}
-                    placeholder="Jane Doe"
-                  />
-                  <NordicInput
-                    label="Professional Title"
-                    value={basics.label}
-                    onChange={(e) => setBasics({ label: e.target.value })}
-                    placeholder="Senior Software Engineer"
-                  />
-                </div>
-                <div className="grid grid-cols-2 gap-4 mb-4">
-                  <NordicInput
-                    label="Email"
-                    value={basics.email}
-                    onChange={(e) => setBasics({ email: e.target.value })}
-                    placeholder="jane@example.com"
-                  />
-                  <NordicInput
-                    label="Phone"
-                    value={basics.phone}
-                    onChange={(e) => setBasics({ phone: e.target.value })}
-                    placeholder="+1 555-0100"
-                  />
-                </div>
-                <div className="grid grid-cols-2 gap-4 mb-4">
-                  <NordicInput
-                    label="Website"
-                    value={basics.url}
-                    onChange={(e) => setBasics({ url: e.target.value })}
-                    placeholder="https://janedoe.dev"
-                  />
-                  <NordicInput
-                    label="City"
-                    value={basics.location?.city || ""}
-                    onChange={(e) => setBasics({ location: { ...basics.location, city: e.target.value, countryCode: basics.location?.countryCode || "", region: basics.location?.region || "" } })}
-                    placeholder="San Francisco"
-                  />
-                </div>
-                <div>
-                  <label className="nordic-input-label">Professional Summary</label>
-                  <NordicTextarea
-                    value={basics.summary}
-                    onChange={(e) => setBasics({ summary: e.target.value })}
-                    placeholder="A brief overview of your professional background and goals..."
-                    rows={5}
-                  />
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* ── Step 2: Experience ── */}
-          {currentStep === 2 && (
-            <div className="space-y-6">
-              <div className="bg-nordic-surface border border-nordic-border p-6">
-                <div className="flex items-center justify-between mb-6">
-                  <h2 className="text-base font-semibold text-nordic-text">Experience</h2>
-                  <button onClick={addWorkEntry} className="nordic-btn-ghost text-xs">
-                    <Plus className="h-3 w-3 mr-1" /> Add
-                  </button>
-                </div>
-                <div className="space-y-6">
-                  {work.map((w, index) => (
-                    <div key={w.id} className="relative group border-b border-nordic-border pb-8 last:border-0 last:pb-0">
-                      <div className="flex items-center justify-between mb-4">
-                        <h3 className="text-sm font-semibold text-nordic-text-secondary uppercase tracking-wider">Role {index + 1}</h3>
+          <main className="flex-1 overflow-y-auto p-8 relative z-10">
+            <div className="max-w-4xl mx-auto">
+            {/* ── Step 1: Personal Info ── */}
+            {currentStep === 1 && (
+              <div className="space-y-6">
+                <div className="bg-nordic-surface border border-nordic-border p-6">
+                  <h2 className="text-base font-semibold text-nordic-text mb-4">Personal Information</h2>
+                  <div className="grid grid-cols-2 gap-4 mb-4">
+                    <NordicInput label="Full Name" value={basics.name} onChange={(e) => setBasics({ name: e.target.value })} placeholder="Jane Doe" />
+                    <NordicInput label="Professional Title" value={basics.label} onChange={(e) => setBasics({ label: e.target.value })} placeholder="Senior Software Engineer" />
+                  </div>
+                  <div className="grid grid-cols-2 gap-4 mb-4">
+                    <NordicInput label="Email" value={basics.email} onChange={(e) => setBasics({ email: e.target.value })} placeholder="jane@example.com" />
+                    <NordicInput label="Phone" value={basics.phone} onChange={(e) => setBasics({ phone: e.target.value })} placeholder="+1 555-0100" />
+                  </div>
+                  <div className="grid grid-cols-2 gap-4 mb-4">
+                    <NordicInput label="Website" value={basics.url} onChange={(e) => setBasics({ url: e.target.value })} placeholder="https://janedoe.dev" />
+                    <NordicInput
+                      label="City"
+                      value={basics.location?.city || ""}
+                      onChange={(e) => setBasics({ location: { ...basics.location, city: e.target.value, countryCode: basics.location?.countryCode || "", region: basics.location?.region || "" } })}
+                      placeholder="San Francisco"
+                    />
+                  </div>
+                  <div>
+                    <div className="flex items-center justify-between mb-1.5">
+                      <label className="nordic-input-label">Professional Summary</label>
+                      {!showAiSummary && (
                         <button
-                          onClick={() => removeWorkEntry(w.id)}
-                          className="p-1 text-nordic-text-tertiary hover:text-nordic-error opacity-0 group-hover:opacity-100 transition-opacity"
-                          aria-label="Remove work entry"
+                          onClick={() => setShowAiSummary(true)}
+                          className="inline-flex items-center gap-1.5 rounded-lg bg-primary/10 px-3 py-1.5 text-[11px] font-bold uppercase tracking-widest text-primary transition hover:bg-primary/20"
                         >
-                          <Trash2 className="h-4 w-4" />
+                          <Sparkles className="h-3.5 w-3.5" />
+                          AI Architect
                         </button>
-                      </div>
-                      <div className="grid grid-cols-2 gap-4 mb-4">
-                        <NordicInput label="Company" value={w.name} onChange={(e) => updateWorkEntry(w.id, { name: e.target.value })} placeholder="Acme Corp" />
-                        <NordicInput label="Position" value={w.position} onChange={(e) => updateWorkEntry(w.id, { position: e.target.value })} placeholder="Software Engineer" />
-                      </div>
-                      <div className="grid grid-cols-2 gap-4 mb-4">
-                        <NordicInput label="Start Date" value={w.startDate} onChange={(e) => updateWorkEntry(w.id, { startDate: e.target.value })} placeholder="Jan 2020" />
-                        <NordicInput label="End Date" value={w.endDate} onChange={(e) => updateWorkEntry(w.id, { endDate: e.target.value })} placeholder="Present" />
-                      </div>
-                      <div className="mb-4">
-                        <NordicInput label="Summary" value={w.summary} onChange={(e) => updateWorkEntry(w.id, { summary: e.target.value })} placeholder="Led frontend development..." />
-                      </div>
-                      <div>
-                        <label className="nordic-input-label">Highlights (one per line)</label>
-                        <NordicTextarea value={w.highlights.join("\n")} onChange={(e) => updateWorkEntry(w.id, { highlights: e.target.value.split("\n").filter(Boolean) })} placeholder="Shipped new feature X..." rows={3} />
-                      </div>
+                      )}
                     </div>
-                  ))}
-                  {work.length === 0 && (
-                    <p className="text-sm text-nordic-text-tertiary italic">No experience entries yet. Click <strong>Add</strong> to begin.</p>
-                  )}
+                    {showAiSummary && (
+                      <SummaryGeneratorAssistant
+                        currentSummary={basics.summary || ""}
+                        onApply={(text) => { setBasics({ summary: text }); setShowAiSummary(false); }}
+                        onCancel={() => setShowAiSummary(false)}
+                      />
+                    )}
+                    <NordicTextarea value={basics.summary} onChange={(e) => setBasics({ summary: e.target.value })} placeholder="A brief overview of your professional background and goals..." rows={5} />
+                  </div>
                 </div>
               </div>
-            </div>
-          )}
-
-          {/* ── Step 3: Education ── */}
-          {currentStep === 3 && (
-            <div className="space-y-6">
-              <div className="bg-nordic-surface border border-nordic-border p-6">
-                <div className="flex items-center justify-between mb-6">
-                  <h2 className="text-base font-semibold text-nordic-text">Education</h2>
-                  <button onClick={addEducationEntry} className="nordic-btn-ghost text-xs">
-                    <Plus className="h-3 w-3 mr-1" /> Add
-                  </button>
-                </div>
-                <div className="space-y-6">
-                  {education.map((e, index) => (
-                    <div key={e.id} className="relative group border-b border-nordic-border pb-8 last:border-0 last:pb-0">
-                      <div className="flex items-center justify-between mb-4">
-                        <h3 className="text-sm font-semibold text-nordic-text-secondary uppercase tracking-wider">Degree {index + 1}</h3>
-                        <button
-                          onClick={() => removeEducationEntry(e.id)}
-                          className="p-1 text-nordic-text-tertiary hover:text-nordic-error opacity-0 group-hover:opacity-100 transition-opacity"
-                          aria-label="Remove education entry"
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </button>
-                      </div>
-                      <div className="grid grid-cols-2 gap-4 mb-4">
-                        <NordicInput label="Institution" value={e.institution} onChange={(ev) => updateEducationEntry(e.id, { institution: ev.target.value })} placeholder="University of Tech" />
-                        <NordicInput label="Area of Study" value={e.area} onChange={(ev) => updateEducationEntry(e.id, { area: ev.target.value })} placeholder="Computer Science" />
-                      </div>
-                      <div className="grid grid-cols-2 gap-4">
-                        <NordicInput label="Degree Type" value={e.studyType} onChange={(ev) => updateEducationEntry(e.id, { studyType: ev.target.value })} placeholder="B.S." />
-                        <NordicInput label="End Date" value={e.endDate} onChange={(ev) => updateEducationEntry(e.id, { endDate: ev.target.value })} placeholder="May 2019" />
-                      </div>
-                    </div>
-                  ))}
-                  {education.length === 0 && (
-                    <p className="text-sm text-nordic-text-tertiary italic">No education entries yet. Click <strong>Add</strong> to begin.</p>
-                  )}
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* ── Step 4: Skills ── */}
-          {currentStep === 4 && (
-            <div className="space-y-6">
-              <div className="bg-nordic-surface border border-nordic-border p-6">
-                <div className="flex items-center justify-between mb-6">
-                  <h2 className="text-base font-semibold text-nordic-text">Skills</h2>
-                  <button onClick={addSkillEntry} className="nordic-btn-ghost text-xs">
-                    <Plus className="h-3 w-3 mr-1" /> Add
-                  </button>
-                </div>
-                <Reorder.Group axis="y" values={skills} onReorder={(newOrder) => store.setSkills(newOrder)} className="grid grid-cols-1 gap-3">
-                  {skills.map((s) => (
-                    <Reorder.Item key={s.id} value={s} className="flex items-center gap-3 px-3 py-2.5 bg-nordic-bg border border-nordic-border group cursor-grab active:cursor-grabbing hover:border-nordic-accent focus-within:border-nordic-accent focus-within:ring-1 focus-within:ring-nordic-accent/50 transition-all">
-                      <div className="text-nordic-text-tertiary flex-shrink-0 cursor-grab active:cursor-grabbing">
-                        <GripVertical className="size-4" />
-                      </div>
-                      <div className="flex-1">
-                        <input
-                          value={s.name}
-                          onChange={(e) => updateSkillEntry(s.id, { name: e.target.value })}
-                          placeholder="e.g. React.js"
-                          className="w-full bg-transparent border-none text-sm text-nordic-text focus:outline-none focus:ring-0 placeholder:italic placeholder:text-nordic-text-tertiary"
-                        />
-                      </div>
-                      <button
-                        onClick={() => removeSkillEntry(s.id)}
-                        className="p-1 text-nordic-text-tertiary hover:text-nordic-error opacity-0 group-hover:opacity-100 transition-opacity"
-                        aria-label="Remove skill"
-                      >
-                        <Trash2 className="size-4" />
-                      </button>
-                    </Reorder.Item>
-                  ))}
-                  {skills.length === 0 && (
-                    <p className="text-sm text-nordic-text-tertiary italic mt-2">No skills added yet. Click <strong>Add</strong> to begin.</p>
-                  )}
-                </Reorder.Group>
-              </div>
-            </div>
-          )}
-        </ResumeStepWizard>
-
-        {/* Step Navigation Footer */}
-        <div className="shrink-0 border-t border-nordic-border bg-nordic-surface/80 backdrop-blur-sm px-8 py-5 flex items-center justify-between z-10">
-          <span className="text-xs text-nordic-text-tertiary font-medium uppercase tracking-wider">
-            Step {currentStep} of {totalSteps}
-          </span>
-          <div className="flex items-center gap-3">
-            {currentStep > 1 && (
-              <button
-                onClick={() => setCurrentStep((s) => Math.max(1, s - 1))}
-                className="nordic-btn-secondary"
-              >
-                ← Back
-              </button>
             )}
-            {currentStep < totalSteps ? (
-              <button
-                onClick={() => setCurrentStep((s) => Math.min(totalSteps, s + 1))}
-                className="nordic-btn-primary"
-              >
-                Next →
-              </button>
-            ) : (
-              <button
-                onClick={handleExport}
-                disabled={!canExport || isExporting}
-                className="nordic-btn-primary disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-2"
-              >
-                <Download className="h-4 w-4" />
-                {isExporting ? "Exporting..." : "Export PDF"}
-              </button>
+
+            {/* ── Step 2: Experience ── */}
+            {currentStep === 2 && (
+              <div className="space-y-6">
+                <div className="bg-nordic-surface border border-nordic-border p-6">
+                  <div className="flex items-center justify-between mb-6">
+                    <h2 className="text-base font-semibold text-nordic-text">Experience</h2>
+                    <button onClick={addWorkEntry} className="nordic-btn-ghost text-xs"><Plus className="h-3 w-3 mr-1" /> Add</button>
+                  </div>
+                  <div className="space-y-6">
+                    {work.map((w, index) => (
+                      <div key={w.id} className="relative group border-b border-nordic-border pb-8 last:border-0 last:pb-0">
+                        <div className="flex items-center justify-between mb-4">
+                          <h3 className="text-sm font-semibold text-nordic-text-secondary uppercase tracking-wider">Role {index + 1}</h3>
+                          <button onClick={() => removeWorkEntry(w.id)} className="p-1 text-nordic-text-tertiary hover:text-nordic-error opacity-0 group-hover:opacity-100 transition-opacity" aria-label="Remove work entry">
+                            <Trash2 className="h-4 w-4" />
+                          </button>
+                        </div>
+                        <div className="grid grid-cols-2 gap-4 mb-4">
+                          <NordicInput label="Company" value={w.name} onChange={(e) => updateWorkEntry(w.id, { name: e.target.value })} placeholder="Acme Corp" />
+                          <NordicInput label="Position" value={w.position} onChange={(e) => updateWorkEntry(w.id, { position: e.target.value })} placeholder="Software Engineer" />
+                        </div>
+                        <div className="grid grid-cols-2 gap-4 mb-4">
+                          <NordicInput label="Start Date" value={w.startDate} onChange={(e) => updateWorkEntry(w.id, { startDate: e.target.value })} placeholder="Jan 2020" />
+                          <NordicInput label="End Date" value={w.endDate} onChange={(e) => updateWorkEntry(w.id, { endDate: e.target.value })} placeholder="Present" />
+                        </div>
+                        <div className="mb-4">
+                          <div className="flex items-center justify-between mb-1.5">
+                            <label className="nordic-input-label mb-0">Summary</label>
+                            <VoiceMemoButton entryId={w.id} />
+                          </div>
+                          <NordicInput value={w.summary} onChange={(e) => updateWorkEntry(w.id, { summary: e.target.value })} placeholder="Led frontend development..." />
+                        </div>
+                        <div className="mb-4">
+                          <HighlightsEditor entry={w} />
+                        </div>
+                        <div className="mb-4">
+                          <ImpactScorePanel entry={w} />
+                        </div>
+                      </div>
+                    ))}
+                    {work.length === 0 && (
+                      <p className="text-sm text-nordic-text-tertiary italic">No experience entries yet. Click <strong>Add</strong> to begin.</p>
+                    )}
+                  </div>
+                </div>
+              </div>
             )}
-          </div>
-        </div>
+
+            {/* ── Step 3: Education ── */}
+            {currentStep === 3 && (
+              <div className="space-y-6">
+                <div className="bg-nordic-surface border border-nordic-border p-6">
+                  <div className="flex items-center justify-between mb-6">
+                    <h2 className="text-base font-semibold text-nordic-text">Education</h2>
+                    <button onClick={addEducationEntry} className="nordic-btn-ghost text-xs"><Plus className="h-3 w-3 mr-1" /> Add</button>
+                  </div>
+                  <div className="space-y-6">
+                    {education.map((e, index) => (
+                      <div key={e.id} className="relative group border-b border-nordic-border pb-8 last:border-0 last:pb-0">
+                        <div className="flex items-center justify-between mb-4">
+                          <h3 className="text-sm font-semibold text-nordic-text-secondary uppercase tracking-wider">Degree {index + 1}</h3>
+                          <button onClick={() => removeEducationEntry(e.id)} className="p-1 text-nordic-text-tertiary hover:text-nordic-error opacity-0 group-hover:opacity-100 transition-opacity" aria-label="Remove education entry">
+                            <Trash2 className="h-4 w-4" />
+                          </button>
+                        </div>
+                        <div className="grid grid-cols-2 gap-4 mb-4">
+                          <NordicInput label="Institution" value={e.institution} onChange={(ev) => updateEducationEntry(e.id, { institution: ev.target.value })} placeholder="University of Tech" />
+                          <NordicInput label="Area of Study" value={e.area} onChange={(ev) => updateEducationEntry(e.id, { area: ev.target.value })} placeholder="Computer Science" />
+                        </div>
+                        <div className="grid grid-cols-2 gap-4">
+                          <NordicInput label="Degree Type" value={e.studyType} onChange={(ev) => updateEducationEntry(e.id, { studyType: ev.target.value })} placeholder="B.S." />
+                          <NordicInput label="End Date" value={e.endDate} onChange={(ev) => updateEducationEntry(e.id, { endDate: ev.target.value })} placeholder="May 2019" />
+                        </div>
+                      </div>
+                    ))}
+                    {education.length === 0 && (
+                      <p className="text-sm text-nordic-text-tertiary italic">No education entries yet. Click <strong>Add</strong> to begin.</p>
+                    )}
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* ── Step 4: Design (Skills + Template — Ambient Shelf lives here) ── */}
+            {currentStep === 4 && (
+              <div className="bg-nordic-surface border border-nordic-border p-6">
+                <h2 className="text-base font-semibold text-nordic-text mb-4">Skills & Competencies</h2>
+                <CoreCompetenciesArray />
+              </div>
+            )}
+            </div>
+          </main>
+          
+          {/* ── Phase 3: Ambient Shelf (template picker for step 4) ── */}
+          <AnimatePresence>
+            {showAmbientShelf && (
+              <motion.div
+                className="ambient-shelf fixed bottom-9 left-1/2 -translate-x-1/2 z-30 rounded-2xl px-6 py-4"
+                initial={{ y: 80, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                exit={{ y: 80, opacity: 0 }}
+                transition={{ type: "spring", stiffness: 380, damping: 34 }}
+                drag="y"
+                dragConstraints={{ top: 0, bottom: 0 }}
+                dragElastic={0.05}
+                whileHover={{ scale: 1.01 }}
+                aria-label="Template Selector"
+              >
+                <div className="flex items-center gap-2 mb-3">
+                  <span className="text-[9px] font-bold uppercase tracking-widest text-nordic-text-tertiary">Choose Template</span>
+                </div>
+                <div className="flex gap-3 overflow-x-auto pb-1">
+                  {TEMPLATES_LIST.map(({ id, name, icon: Icon }) => (
+                    <motion.button
+                      key={id}
+                      onClick={() => setActiveTemplate(id)}
+                      whileHover={{ scale: 1.04, rotateX: 2, rotateY: -2 }}
+                      whileTap={{ scale: 0.96 }}
+                      transition={{ type: "spring", stiffness: 400, damping: 25 }}
+                      className={`shrink-0 flex flex-col items-center gap-2 w-20 px-3 py-3 rounded-xl border transition-all ${
+                        activeTemplate === id
+                          ? "border-nordic-accent bg-nordic-accent/15 text-nordic-accent shadow-[0_0_20px_rgba(37,99,235,0.2)]"
+                          : "border-white/8 bg-white/3 text-nordic-text-tertiary hover:text-nordic-text hover:border-white/15 hover:bg-white/6"
+                      }`}
+                      aria-pressed={activeTemplate === id}
+                    >
+                      <Icon className="w-5 h-5" strokeWidth={1.5} />
+                      <span className="text-[9px] font-bold uppercase tracking-wider text-center leading-tight">{name}</span>
+                    </motion.button>
+                  ))}
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+        </SidebarInset>
       </div>
-    </div>
+    </SidebarProvider>
   );
 }

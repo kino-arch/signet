@@ -1,4 +1,5 @@
 import { useState } from "react"
+import { motion } from "framer-motion"
 import type { GhostBullet } from "@/lib/ghost-schema"
 import { VerifyCard } from "./VerifyCard"
 import { RewriteAssistant } from "./RewriteAssistant"
@@ -91,20 +92,19 @@ export function AutopsyBullet({ bullet, onUpdate }: AutopsyBulletProps) {
         </div>
 
         <TooltipProvider>
-          <Tooltip>
+          <Tooltip delayDuration={200}>
             <TooltipTrigger asChild>
-              <span
+              <motion.span
+                layout
                 className={cn(
-                  "text-sm leading-relaxed",
-                  bullet.provenance === "user_verified" && "text-slate-200",
-                  bullet.provenance === "estimated" &&
-                    "text-amber-100/90 underline decoration-amber-500/50 decoration-dashed underline-offset-4",
-                  bullet.provenance === "inferred" &&
-                    "text-red-100/90 underline decoration-red-500/50 decoration-wavy underline-offset-4"
+                  "relative inline-block text-sm leading-relaxed transition-all duration-500",
+                  bullet.provenance === "user_verified" ? "text-nordic-text" : "px-2 py-0.5 -ml-2 rounded-md liquid-glass text-white cursor-pointer shadow-sm hover:shadow-md",
+                  bullet.provenance === "estimated" && "border-blue-400/30 hover:border-blue-400/60",
+                  bullet.provenance === "inferred" && "border-red-500/40 hover:border-red-500/70"
                 )}
               >
                 {bullet.text}
-              </span>
+              </motion.span>
             </TooltipTrigger>
             <TooltipContent
               side="top"

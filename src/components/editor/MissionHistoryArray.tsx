@@ -30,6 +30,7 @@ import type { WorkEntry } from "@/store/useDataSlateStore"
 import { ReforgeModal } from "@/components/editor/ReforgeModal"
 import { HighlightsEditor } from "@/components/editor/HighlightsEditor"
 import { ImpactScorePanel } from "@/components/editor/ImpactScorePanel"
+import { VoiceMemoButton } from "@/components/editor/VoiceMemoButton"
 import { cn } from "@/lib/utils"
 
 // ─── Single Sortable Work Block ───────────────────────────────────────────────
@@ -170,7 +171,17 @@ function WorkBlock({ entry }: { entry: WorkEntry }) {
           </div>
 
           <div className="space-y-1.5">
-            <Label className="text-xs uppercase tracking-widest text-nordic-text-secondary font-mono">Summary (Paragraph)</Label>
+            <div className="flex items-center justify-between">
+              <Label className="text-xs uppercase tracking-widest text-nordic-text-secondary font-mono">Summary (Paragraph)</Label>
+              <VoiceMemoButton 
+                onTranscriptComplete={(transcript) => {
+                  const newSummary = entry.summary 
+                    ? `${entry.summary} ${transcript}`
+                    : transcript
+                  updateWorkEntry(entry.id, { summary: newSummary })
+                }}
+              />
+            </div>
             <Textarea
               value={entry.summary}
               onChange={(e) =>

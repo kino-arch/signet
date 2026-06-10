@@ -1,11 +1,14 @@
+import { useState } from "react"
 import { useDataSlateStore } from "@/store/useDataSlateStore"
 import { telemetry } from "@/lib/telemetry"
 import { NordicInput } from "@/components/nordic/NordicInput"
 import { NordicTextarea } from "@/components/nordic/NordicTextarea"
-import { AIAssistButton } from "@/components/nordic/AIAssistButton"
+import { Sparkles } from "lucide-react"
+import { SummaryGeneratorAssistant } from "./SummaryGeneratorAssistant"
 
 export function IdentityArrayV2() {
   const { basics, setBasics } = useDataSlateStore()
+  const [showAiSummary, setShowAiSummary] = useState(false)
 
   const handleUpdate = (field: string, value: string) => {
     setBasics({ [field]: value })
@@ -89,13 +92,28 @@ export function IdentityArrayV2() {
         <div>
           <div className="flex items-center justify-between mb-1.5">
             <label className="nordic-input-label">Professional Summary</label>
-            <AIAssistButton
-              onGenerate={async () =>
-                "Experienced professional with a strong track record of delivering results..."
-              }
-              onResult={(text) => handleUpdate("summary", text)}
-            />
+            {!showAiSummary && (
+              <button
+                onClick={() => setShowAiSummary(true)}
+                className="inline-flex items-center gap-1.5 rounded-lg bg-primary/10 px-3 py-1.5 text-[11px] font-bold uppercase tracking-widest text-primary transition hover:bg-primary/20"
+              >
+                <Sparkles className="h-3.5 w-3.5" />
+                AI Architect
+              </button>
+            )}
           </div>
+          
+          {showAiSummary && (
+            <SummaryGeneratorAssistant 
+              currentSummary={basics.summary || ""}
+              onApply={(text) => {
+                handleUpdate("summary", text)
+                setShowAiSummary(false)
+              }}
+              onCancel={() => setShowAiSummary(false)}
+            />
+          )}
+
           <NordicTextarea
             value={basics.summary ?? ""}
             onChange={(e) => handleUpdate("summary", e.target.value)}

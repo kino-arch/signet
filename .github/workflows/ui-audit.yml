@@ -1,0 +1,81 @@
+name: UI/UX Consistency Audit
+
+on:
+  push:
+    branches: [main, develop, 'refactor/**', 'feat/**']
+  pull_request:
+    branches: [main, develop]
+
+jobs:
+  audit:
+    name: UI Consistency Audit
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 11.5.1
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      # ─── Type Safety ────────────────────────────────────────────────────────
+      - name: TypeScript type check
+        run: pnpm run typecheck
+
+      # ─── Linting ─────────────────────────────────────────────────────────────
+      - name: ESLint (JS/TS)
+        run: pnpm run lint:js
+
+      - name: Stylelint (CSS)
+        run: pnpm run lint:css
+
+      # ─── Build Validation ────────────────────────────────────────────────────
+      - name: Production build
+        run: pnpm run build
+
+      - name: Bundle size check
+        run: |
+          echo "=== Bundle Size Report ==="
+          du -sh dist/assets/*.js 2>/dev/null | sort -rh | head -20 || echo "No JS assets found"
+          du -sh dist/assets/*.css 2>/dev/null | sort -rh | head -10 || echo "No CSS assets found"
+          echo "=== Total dist size ==="
+          du -sh dist/
+
+      # ─── Forbidden Import Detection ──────────────────────────────────────────
+      - name: Check for forbidden imports
+        run: |
+          echo "Checking for forbidden @tabler/icons-react imports..."
+          if grep -r "@tabler/icons-react" src/ --include="*.tsx" --include="*.ts" -l 2>/dev/null; then
+            echo "ERROR: @tabler/icons-react imports detected. Migrate to lucide-react."
+            exit 1
+          else
+            echo "✓ No @tabler/icons-react imports found."
+          fi
+
+          echo "Checking for next-themes imports..."
+          if grep -r "next-themes" src/ --include="*.tsx" --include="*.ts" -l 2>/dev/null; then
+            echo "ERROR: next-themes imports detected. Use the custom ThemeProvider in src/components/theme-provider.tsx."
+            exit 1
+          else
+            echo "✓ No next-themes imports found."
+          fi
+
+          echo "Checking for valibot imports..."
+          if grep -r "from \"valibot\"" src/ --include="*.tsx" --include="*.ts" -l 2>/dev/null; then
+            echo "ERROR: valibot imports detected. Use zod for validation."
+            exit 1
+          else
+            echo "✓ No valibot imports found."
+          fi

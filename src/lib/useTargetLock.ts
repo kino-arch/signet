@@ -1,5 +1,6 @@
 import { useState } from "react"
 import { useForgeStore } from "../store/useForgeStore"
+import { supabase } from "@/lib/supabase"
 
 export type TargetLockStatus =
   | "idle"
@@ -61,14 +62,18 @@ export interface TargetLockBriefing {
 }
 
 // ─── Retry helper ─────────────────────────────────────────────────────────────
-// FunctionsFetchError is a transient network-level error (CORS preflight race,
-// Cloudflare 502, etc.). We retry up to 3 times with exponential backoff.
+// Attaches the active Supabase session Bearer token on every request so the
+// Hono auth middleware on the API router does not reject with 401.
 async function invokeWithRetry(
   url: string,
   body: Record<string, unknown>,
   maxRetries = 3
 ): Promise<{ data: Record<string, unknown> | null; error: unknown }> {
   let lastError: unknown = null
+
+  // Fetch session once per invocation — cheap cached call.
+  const { data: sessionData } = await supabase.auth.getSession()
+  const accessToken = sessionData?.session?.access_token ?? ""
 
   for (let attempt = 0; attempt < maxRetries; attempt++) {
     if (attempt > 0) {
@@ -78,7 +83,10 @@ async function invokeWithRetry(
     try {
       const res = await fetch(url, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
+        },
         body: JSON.stringify(body),
       })
 
@@ -90,6 +98,7 @@ async function invokeWithRetry(
           )
           continue
         }
+        // 4xx errors are not retryable — surface immediately.
         return { data: null, error: lastError }
       }
 
